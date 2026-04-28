@@ -53,8 +53,6 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
     defaultValues,
   })
 
-  const kcal = watch('dailyKcal')
-
   const nudge = (field: keyof PlanData, delta: number, min: number, max: number) => {
     const current = watch(field) || 0
     setValue(field, Math.min(Math.max(current + delta, min), max), { shouldValidate: true })

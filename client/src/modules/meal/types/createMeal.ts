@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const mealItemSchema = z.object({
   foodName: z.string().min(1, 'Nome do alimento obrigatório'),
   quantity: z
-    .number({ invalid_type_error: 'Informe a quantidade' })
+    .number({ error: 'Informe a quantidade' })
     .min(1, 'Mínimo 1g')
     .max(2000, 'Máximo 2000g'),
 })
@@ -11,7 +11,7 @@ export const mealItemSchema = z.object({
 export const createMealSchema = z.object({
   name: z.string().min(1, 'Nome da refeição obrigatório').max(100),
   mealType: z.enum(['breakfast', 'lunch', 'snack', 'dinner', 'supper'], {
-    required_error: 'Selecione o tipo da refeição',
+    error: 'Selecione o tipo da refeição',
   }),
   time: z.string().min(1, 'Horário obrigatório'),
   items: z
