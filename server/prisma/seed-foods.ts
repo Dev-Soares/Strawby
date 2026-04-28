@@ -13,9 +13,10 @@ const db = new PrismaClient({ adapter })
 
 // ─── Constants ───
 const BATCH_SIZE = 500
-const MAX_RETRIES = 10
-const BASE_DELAY = 15000
-const REQUEST_DELAY = 8000
+const MAX_RETRIES = 8
+const BASE_DELAY = 10000
+const REQUEST_DELAY = 3000
+const MAX_PAGES = 60 // 60 páginas × 100 produtos = 6000 candidatos
 
 // ─── Interfaces ───
 interface FoodEntry {
@@ -42,22 +43,64 @@ function safeNum(val: unknown): number {
   return 0
 }
 
-function normalize(str: string): string {
-  return str.trim().toLowerCase()
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+// ─── Normalização para deduplicação ───
+function normalizeForCompare(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')   // remove acentos
+    .replace(/[^a-z0-9\s]/g, ' ')      // remove pontuação
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+// ─── Filtro de qualidade de nome ───
+const FOREIGN_WORDS = /\b(chicken|crispy|beef|pork|turkey|lamb|pollo|poulet|boeuf|burger|nugget|steak|wrap|sandwich|smoothie|sauce|dressing|flavour|flavor)\b/i
+
 function isValidFoodName(name: string): boolean {
-  if (name.length > 70) return false
+  // Comprimento razoável
+  if (name.length < 3 || name.length > 70) return false
+  // Máximo de 7 palavras
   if (name.split(/\s+/).length > 7) return false
+  // Caracteres de produto comercial
   if (/[%*|#@[\]{}\\<>]/.test(name)) return false
-  if (/\d+(g|ml|kg|l|mg|kcal|cal)\b/i.test(name)) return false
+  // Parênteses
+  if (name.includes('(')) return false
+  // Medidas embutidas
+  if (/\d+(g|ml|kg|l\b|mg|kcal|cal)\b/i.test(name)) return false
+  // Começa com número
   if (/^\d/.test(name)) return false
-  if (name === name.toUpperCase() && name.length > 5) return false
+  // Tudo em maiúsculo (marca gritando)
+  if (name.length > 5 && name === name.toUpperCase()) return false
+  // Separador de marca "Produto - Marca"
+  if (/ - /.test(name)) return false
+  // Duas ou mais vírgulas/ponto-e-vírgulas (lista de ingredientes)
+  if (/[,;].*[,;]/.test(name)) return false
+  // URL
+  if (/https?:\/\/|www\./.test(name)) return false
+  // Palavras em idioma estrangeiro
+  if (FOREIGN_WORDS.test(name)) return false
+
   return true
 }
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+// ─── Validação nutricional ───
+function isNutritionPlausible(calories: number, protein: number, carbs: number, fat: number): boolean {
+  const totalMacros = protein + carbs + fat
+  // Macros não podem ultrapassar 105g por 100g de alimento
+  if (totalMacros > 105) return false
+  // Calorias estimadas pelos macros
+  const estimated = protein * 4 + carbs * 4 + fat * 9
+  // Deve estar dentro de 35% das calorias declaradas
+  if (calories > 10 && estimated > 10) {
+    const ratio = Math.abs(calories - estimated) / calories
+    if (ratio > 0.35) return false
+  }
+  return true
 }
 
 // ─── Load TACO ───
@@ -82,96 +125,129 @@ function loadTaco(): FoodEntry[] {
   return foods
 }
 
-// ─── OFF Search Terms ───
-const OFF_SEARCH_TERMS = [
-  'arroz', 'feijão', 'macarrão', 'pão', 'leite', 'queijo', 'iogurte', 'manteiga',
-  'ovo', 'frango', 'carne bovina', 'carne suína', 'peixe', 'atum', 'sardinha',
-  'presunto', 'salsicha', 'linguiça', 'bacon', 'mortadela',
-  'banana', 'maçã', 'laranja', 'manga', 'abacaxi', 'melancia', 'uva', 'morango',
-  'tomate', 'cebola', 'alho', 'batata', 'cenoura', 'brócolis', 'alface', 'milho',
-  'farinha', 'açúcar', 'sal', 'óleo', 'azeite', 'vinagre', 'molho de tomate',
-  'chocolate', 'biscoito', 'bolacha', 'bolo', 'sorvete', 'gelatina',
-  'café', 'chá', 'suco', 'refrigerante', 'cerveja', 'vinho',
-  'aveia', 'granola', 'cereal', 'whey protein', 'pasta de amendoim',
-  'castanha', 'amendoim', 'nozes', 'amêndoa',
-  'azeite de oliva', 'óleo de coco', 'margarina',
-  'creme de leite', 'leite condensado', 'requeijão',
-  'peito de frango', 'filé de peixe', 'camarão',
-  'abóbora', 'berinjela', 'pepino', 'pimentão', 'couve', 'espinafre',
-  'lentilha', 'grão de bico', 'ervilha', 'soja',
-  'tapioca', 'cuscuz', 'polenta', 'mandioca',
-  'mel', 'geleia', 'doce de leite',
-]
-
-// ─── Load Open Food Facts ───
+// ─── Load Open Food Facts (apenas Brasil, por popularidade) ───
 async function loadOpenFoodFacts(): Promise<FoodEntry[]> {
   const foods: FoodEntry[] = []
-  const baseUrl = 'https://world.openfoodfacts.org/cgi/search.pl'
-  const totalRequests = OFF_SEARCH_TERMS.length * 2
-  let completed = 0
+  let page = 1
   let failures = 0
+  let emptyPages = 0
 
-  for (const term of OFF_SEARCH_TERMS) {
-    for (let page = 1; page <= 2; page++) {
-      let success = false
+  console.log('[OFF] Buscando produtos brasileiros por popularidade...')
 
-      for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
-        try {
-          const resp = await axios.get(baseUrl, {
-            params: {
-              search_terms: term,
-              search_simple: 1,
-              action: 'process',
-              json: 1,
-              page_size: 50,
-              page,
-            },
-            timeout: 30000,
-          })
+  while (page <= MAX_PAGES) {
+    let success = false
 
-          const products = resp.data?.products ?? []
-          for (const p of products) {
-            const name = p.product_name?.trim()
-            if (!name || !isValidFoodName(name)) continue
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        const resp = await axios.get('https://world.openfoodfacts.org/api/v2/search', {
+          params: {
+            countries_tags: 'en:brazil',
+            fields: 'product_name,nutriments',
+            sort_by: 'unique_scans_n',
+            page_size: 100,
+            page,
+          },
+          timeout: 30000,
+        })
 
-            const n = p.nutriments ?? {}
-            const calories = round2(safeNum(n['energy-kcal_100g']))
-            const protein = round2(safeNum(n['proteins_100g']))
-            const carbs = round2(safeNum(n['carbohydrates_100g']))
-            const fat = round2(safeNum(n['fat_100g']))
+        const products: any[] = resp.data?.products ?? []
 
-            if (calories === 0 && protein === 0 && carbs === 0 && fat === 0) continue
-
-            foods.push({ name, calories, protein, carbs, fat })
+        if (products.length === 0) {
+          emptyPages++
+          if (emptyPages >= 3) {
+            console.log('[OFF] Sem mais produtos, finalizando.')
+            return foods
           }
-
           success = true
           break
-        } catch (err: any) {
-          const status = err.response?.status
-          if (attempt < MAX_RETRIES && (status === 503 || status === 429 || err.code === 'ECONNRESET' || err.code === 'ETIMEDOUT')) {
-            const delay = BASE_DELAY * attempt
-            console.warn(`[OFF] Erro ${status || err.code} ao buscar "${term}" p${page} — tentativa ${attempt}/${MAX_RETRIES}, aguardando ${delay / 1000}s...`)
-            await sleep(delay)
-          } else {
-            console.warn(`[OFF] Falha definitiva ao buscar "${term}" p${page}: ${err.message}`)
-          }
+        }
+
+        emptyPages = 0
+
+        for (const p of products) {
+          const name = p.product_name?.trim()
+          if (!name || !isValidFoodName(name)) continue
+
+          const n = p.nutriments ?? {}
+          const calories = round2(safeNum(n['energy-kcal_100g']))
+          const protein = round2(safeNum(n['proteins_100g']))
+          const carbs = round2(safeNum(n['carbohydrates_100g']))
+          const fat = round2(safeNum(n['fat_100g']))
+
+          if (calories === 0 && protein === 0 && carbs === 0 && fat === 0) continue
+          if (!isNutritionPlausible(calories, protein, carbs, fat)) continue
+
+          foods.push({ name, calories, protein, carbs, fat })
+        }
+
+        success = true
+        break
+      } catch (err: any) {
+        const status = err.response?.status
+        const retryable = status === 503 || status === 429 || err.code === 'ECONNRESET' || err.code === 'ETIMEDOUT'
+        if (attempt < MAX_RETRIES && retryable) {
+          const delay = BASE_DELAY * attempt
+          console.warn(`[OFF] p${page} tentativa ${attempt}/${MAX_RETRIES} — aguardando ${delay / 1000}s...`)
+          await sleep(delay)
+        } else {
+          console.warn(`[OFF] Falha definitiva p${page}: ${err.message}`)
         }
       }
-
-      if (!success) failures++
-      completed++
-
-      if (completed % 10 === 0) {
-        console.log(`[OFF] Progresso: ${completed}/${totalRequests} requisições (${failures} falhas)`)
-      }
-
-      await sleep(REQUEST_DELAY)
     }
+
+    if (!success) failures++
+
+    console.log(`[OFF] p${page}/${MAX_PAGES} — ${foods.length} válidos até agora (${failures} falhas)`)
+    page++
+    await sleep(REQUEST_DELAY)
   }
 
-  console.log(`[OFF] ${foods.length} alimentos carregados (${failures} requisições falharam de ${totalRequests})`)
+  console.log(`[OFF] ${foods.length} alimentos carregados`)
   return foods
+}
+
+// ─── Deduplicação TACO-first com similaridade ───
+function deduplicateTacoFirst(tacoFoods: FoodEntry[], offFoods: FoodEntry[]): FoodEntry[] {
+  // Monta set de palavras-chave por alimento TACO
+  const tacoNormalized = new Set(tacoFoods.map((f) => normalizeForCompare(f.name)))
+
+  const tacoWordSets = tacoFoods.map((f) =>
+    new Set(normalizeForCompare(f.name).split(' ').filter((w) => w.length > 3)),
+  )
+
+  function isTacoDuplicate(offName: string): boolean {
+    const normalized = normalizeForCompare(offName)
+
+    // Match exato
+    if (tacoNormalized.has(normalized)) return true
+
+    // Match por sobreposição de palavras-chave (>= 80%)
+    const offWords = normalized.split(' ').filter((w) => w.length > 3)
+    if (offWords.length === 0) return false
+
+    for (const tacoWords of tacoWordSets) {
+      if (tacoWords.size === 0) continue
+      const overlap = offWords.filter((w) => tacoWords.has(w)).length
+      const similarity = overlap / Math.max(offWords.length, tacoWords.size)
+      if (similarity >= 0.8) return true
+    }
+
+    return false
+  }
+
+  // Deduplicação interna do OFF
+  const seen = new Set(tacoNormalized)
+  const filteredOff: FoodEntry[] = []
+
+  for (const food of offFoods) {
+    if (isTacoDuplicate(food.name)) continue
+    const key = normalizeForCompare(food.name)
+    if (seen.has(key)) continue
+    seen.add(key)
+    filteredOff.push(food)
+  }
+
+  return [...tacoFoods, ...filteredOff]
 }
 
 // ─── Insert in Batches ───
@@ -180,10 +256,7 @@ async function insertBatch(foods: FoodEntry[]): Promise<number> {
 
   for (let i = 0; i < foods.length; i += BATCH_SIZE) {
     const batch = foods.slice(i, i + BATCH_SIZE)
-    const result = await db.food.createMany({
-      data: batch,
-      skipDuplicates: true,
-    })
+    const result = await db.food.createMany({ data: batch, skipDuplicates: true })
     inserted += result.count
     console.log(`[DB] Lote ${Math.floor(i / BATCH_SIZE) + 1}: ${result.count} inseridos`)
   }
@@ -193,22 +266,14 @@ async function insertBatch(foods: FoodEntry[]): Promise<number> {
 
 // ─── Main ───
 async function main() {
-  console.log('Iniciando seed de alimentos...\n')
+  console.log('Iniciando seed de alimentos (TACO + OFF Brasil)...\n')
 
   const tacoFoods = loadTaco()
   const offFoods = await loadOpenFoodFacts()
 
-  const seen = new Set<string>()
-  const allFoods: FoodEntry[] = []
-
-  for (const food of [...tacoFoods, ...offFoods]) {
-    const key = normalize(food.name)
-    if (seen.has(key)) continue
-    seen.add(key)
-    allFoods.push(food)
-  }
-
-  console.log(`\n[TOTAL] ${allFoods.length} alimentos únicos (após deduplicação e filtros)`)
+  console.log(`\n[DEDUP] Deduplicando OFF contra TACO...`)
+  const allFoods = deduplicateTacoFirst(tacoFoods, offFoods)
+  console.log(`[TOTAL] ${allFoods.length} alimentos únicos (${tacoFoods.length} TACO + ${allFoods.length - tacoFoods.length} OFF)`)
 
   await db.food.deleteMany()
   console.log('[DB] Tabela Food limpa')

@@ -92,16 +92,16 @@ export class FoodService {
     const words = splitSearchWords(trimmed);
 
     try {
-      const results = await this.prisma.food.findMany({
-        where: {
-          AND: words.map((word) => ({
-            name: { contains: word, mode: 'insensitive' },
-          })),
-        },
-        select: foodSelect,
-        orderBy: { name: 'asc' },
-        take: 50,
-      });
+      const results = await this.prisma.$queryRaw<FoodPublic[]>`
+        SELECT id, name, calories, protein, carbs, fat
+        FROM "Food"
+        WHERE ${Prisma.join(
+          words.map((w) => Prisma.sql`unaccent(name) ILIKE unaccent(${`%${w}%`})`),
+          ' AND ',
+        )}
+        ORDER BY name ASC
+        LIMIT 50
+      `;
 
       return rankByRelevance(results, trimmed).slice(0, 20);
     } catch {
