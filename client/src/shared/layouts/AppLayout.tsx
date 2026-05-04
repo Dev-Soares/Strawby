@@ -17,7 +17,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
             className="text-neutral-950 text-base sm:text-lg md:text-xl tracking-tighter"
             style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 800 }}
           >
-            HealthCheck
+            Strawby
           </span>
         </div>
 

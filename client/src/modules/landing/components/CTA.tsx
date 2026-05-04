@@ -32,12 +32,12 @@ export default function CTA() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.5, ease: 'easeOut' }}
         >
-          <img src="/logo.png" alt="HealthCheck" className="w-16 h-16 object-contain" />
+          <img src="/logo.png" alt="Strawby" className="w-16 h-16 object-contain" />
           <span
             className="text-neutral-950 text-3xl tracking-tighter"
             style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 800 }}
           >
-            HealthCheck
+            Strawby
           </span>
         </motion.a>
 

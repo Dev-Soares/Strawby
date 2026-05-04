@@ -2,12 +2,12 @@ import { ArrowRight } from '@phosphor-icons/react'
 
 const productLinks = [
   { label: 'Funcionalidades', href: '#funcionalidades' },
-  { label: 'Preços',          href: '#precos' },
+  { label: 'Preços', href: '#precos' },
 ]
 
 const legalLinks = [
   { label: 'Privacidade', href: '/privacidade' },
-  { label: 'Termos',      href: '/termos' },
+  { label: 'Termos', href: '/termos' },
 ]
 
 export default function Footer() {
@@ -21,12 +21,12 @@ export default function Footer() {
           {/* Brand side */}
           <div className="max-w-sm">
             <a href="/" className="flex items-center gap-2 mb-8">
-              <img src="/logo.png" alt="HealthCheck" className="w-10 h-10 object-contain" />
+              <img src="/logo.png" alt="Strawby" className="w-10 h-10 object-contain" />
               <span
                 className="text-neutral-950 text-xl tracking-tighter"
                 style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 800 }}
               >
-                HealthCheck
+                Strawby
               </span>
             </a>
 
@@ -87,7 +87,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-10 border-t border-neutral-100 mt-16">
           <p className="text-xs text-neutral-400">
-            © 2025 HealthCheck. Todos os direitos reservados.
+            © 2025 Strawby. Todos os direitos reservados.
           </p>
           <p className="text-xs text-neutral-400">
             Feito para quem leva saúde a sério.

@@ -23,9 +23,9 @@ export default function SignUpPage() {
           </Link>
 
           <Link to="/" className="flex items-center gap-3 w-fit">
-            <img src="/logo.png" alt="HealthCheck" className="w-14 h-14 object-contain" />
+            <img src="/logo.png" alt="Strawby" className="w-14 h-14 object-contain" />
             <span className="text-neutral-900 text-[28px] font-black tracking-tighter">
-              HealthCheck
+              Strawby
             </span>
           </Link>
         </div>

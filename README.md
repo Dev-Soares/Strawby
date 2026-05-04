@@ -1,4 +1,4 @@
-# HealthCheck
+# Strawby
 
 Monorepo full-stack para rastreamento de refeições e nutrição. O usuário cadastra alimentos (ou usa o catálogo pré-populado com dados da tabela TACO) e registra suas refeições diárias, acompanhando calorias, proteínas, carboidratos e gorduras.
 
@@ -36,7 +36,7 @@ Arquitetura **pnpm workspaces** com dois pacotes independentes:
 ## Estrutura do projeto
 
 ```
-HealthCheck/
+Strawby/
 ├── server/                          # API NestJS
 │   ├── src/
 │   │   ├── app.module.ts
@@ -123,7 +123,7 @@ HealthCheck/
 
 ```bash
 git clone <url-do-repositorio>
-cd HealthCheck
+cd Strawby
 pnpm install
 ```
 

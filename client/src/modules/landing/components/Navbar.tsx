@@ -18,12 +18,12 @@ export default function Navbar() {
       <div className="w-full max-w-5xl flex items-center justify-between">
 
         <a href="/" className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <img src="/logo.png" alt="HealthCheck" className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 object-contain shrink-0" />
+          <img src="/logo.png" alt="Strawby" className="w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 object-contain shrink-0" />
           <span
             className="text-neutral-950 text-lg sm:text-xl md:text-2xl tracking-tighter truncate"
             style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 800 }}
           >
-            HealthCheck
+            Strawby
           </span>
         </a>
 
