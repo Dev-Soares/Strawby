@@ -7,7 +7,7 @@ interface BlobMenuProps {
   onClose: () => void
 }
 
-const blobPath = 'M 24 0 C 8 8, 0 22, 2 38 C 4 54, 22 58, 20 70 C 16 82, 6 86, 10 94 C 13 97, 16 99, 14 100 L 100 100 L 100 0 Z'
+const blobPath = 'M 24 0 C 8 8, 0 22, 2 38 C 4 54, 22 58, 20 70 C 16 82, 6 86, 10 94 C 12 98, 16 100, 22 100 L 100 100 L 100 0 Z'
 
 const navItems = [
   { number: '01', label: 'Início', href: '/home' },
@@ -83,9 +83,9 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
               })}
             </nav>
 
-            {/* Bottom CTAs */}
+            {/* Bottom CTA */}
             <motion.div
-              className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4 mt-8 md:mt-10 pointer-events-auto"
+              className="flex justify-end mt-8 md:mt-10 pointer-events-auto"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
@@ -94,17 +94,10 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
               <Link
                 to="/login"
                 onClick={onClose}
-                className="text-white/60 hover:text-white text-sm font-bold bg-white/15 hover:bg-white/25 border border-white/30 hover:border-white/50 px-6 py-3.5 rounded-full transition-all duration-200"
+                className="group bg-white text-red-600 hover:bg-neutral-950 hover:text-white text-sm sm:text-base font-black px-7 sm:px-9 py-3.5 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-[0_10px_30px_-8px_rgba(0,0,0,0.35)] hover:shadow-[0_18px_40px_-10px_rgba(0,0,0,0.6)] hover:-translate-y-0.5 hover:scale-[1.03] tracking-tight"
               >
                 Sair da conta
-              </Link>
-              <Link
-                to="/home"
-                onClick={onClose}
-                className="group bg-white text-red-600 text-sm font-bold px-7 py-3.5 rounded-full hover:bg-neutral-100 transition-all duration-200 flex items-center gap-2"
-              >
-                Início
-                <ArrowRight size={15} weight="bold" className="group-hover:translate-x-1 transition-transform duration-200" />
+                <ArrowRight size={17} weight="bold" className="group-hover:translate-x-1.5 transition-transform duration-300" />
               </Link>
             </motion.div>
           </div>

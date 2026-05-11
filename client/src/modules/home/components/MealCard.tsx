@@ -57,36 +57,48 @@ export default function MealCard({ meal }: MealCardProps) {
   const MealIcon = config.icon
 
   return (
-    <div className="group flex items-center gap-5 bg-white rounded-3xl p-5 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
+    <div className="group flex items-center gap-3 sm:gap-5 bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer">
       <div
-        className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${config.bg}`}
+        className={`w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 ${config.bg}`}
       >
-        <MealIcon size={26} weight="bold" className={config.text} />
+        <MealIcon size={20} weight="bold" className={`${config.text} sm:hidden`} />
+        <MealIcon size={26} weight="bold" className={`${config.text} hidden sm:block`} />
       </div>
 
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <p className="text-sm font-bold text-neutral-900 truncate">{meal.name}</p>
+        <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
+          <p className="text-[13px] sm:text-sm font-bold text-neutral-900 truncate">
+            {meal.name}
+          </p>
           <span
-            className={`text-[9px] font-black tracking-widest px-2.5 py-1 rounded-full shrink-0 ${config.bg} ${config.text}`}
+            className={`hidden sm:inline-block text-[9px] font-black tracking-widest px-2.5 py-1 rounded-full shrink-0 ${config.bg} ${config.text}`}
           >
             {config.label}
           </span>
         </div>
-        <p className="text-xs text-neutral-400 truncate">{meal.foods.join(' · ')}</p>
+        <p className="text-[11px] sm:text-xs text-neutral-400 truncate">
+          <span className="font-bold text-neutral-500 mr-1.5 tabular-nums sm:hidden">
+            {meal.time}
+          </span>
+          {meal.foods.join(' · ')}
+        </p>
       </div>
 
-      <div className="flex items-center gap-4 shrink-0">
-        <span className="text-[10px] text-neutral-400 font-bold tabular-nums">{meal.time}</span>
-        <div className="text-right min-w-[3rem]">
-          <p className={`text-xl font-black leading-none tabular-nums ${config.accent}`}>
+      <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+        <span className="hidden sm:inline text-[10px] text-neutral-400 font-bold tabular-nums">
+          {meal.time}
+        </span>
+        <div className="text-right min-w-10 sm:min-w-12">
+          <p className={`text-base sm:text-xl font-black leading-none tabular-nums ${config.accent}`}>
             {meal.kcal}
           </p>
-          <p className="text-[9px] font-bold text-neutral-400 uppercase tracking-wide mt-1">kcal</p>
+          <p className="text-[8px] sm:text-[9px] font-bold text-neutral-400 uppercase tracking-wide mt-0.5 sm:mt-1">
+            kcal
+          </p>
         </div>
         <ArrowRight
           size={14}
-          className="text-neutral-300 group-hover:text-neutral-500 group-hover:translate-x-0.5 transition-all duration-200"
+          className="text-neutral-300 group-hover:text-neutral-500 group-hover:translate-x-0.5 transition-all duration-200 hidden sm:block"
         />
       </div>
     </div>

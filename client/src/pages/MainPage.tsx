@@ -27,16 +27,17 @@ const userName = 'Bernardo'
 
 const weekly: WeeklyReportData = {
   days: [
-    { day: 'S', date: 5, status: 'good', kcal: 2100, goal: 2200 },
-    { day: 'T', date: 6, status: 'good', kcal: 2150, goal: 2200 },
-    { day: 'Q', date: 7, status: 'bad', kcal: 2600, goal: 2200 },
-    { day: 'Q', date: 8, status: 'good', kcal: 2050, goal: 2200 },
+    { day: 'S', date: 5, status: 'good', kcal: 2100, goal: 2200, score: 95 },
+    { day: 'T', date: 6, status: 'warn', kcal: 2150, goal: 2200, score: 88 },
+    { day: 'Q', date: 7, status: 'bad', kcal: 2600, goal: 2200, score: 42 },
+    { day: 'Q', date: 8, status: 'good', kcal: 2050, goal: 2200, score: 92 },
     { day: 'S', date: 9, status: 'neutral', kcal: 0, goal: 2200 },
     { day: 'S', date: 10, status: 'neutral', kcal: 0, goal: 2200 },
     { day: 'D', date: 11, status: 'neutral', kcal: 0, goal: 2200 },
   ],
-  streak: 2,
-  bestStreak: 4,
+  weekScore: 317,
+  weekMaxScore: 700,
+  level: 4,
   weekTotalKcal: 8300,
   weekGoalKcal: 11000,
 }
@@ -44,14 +45,14 @@ const weekly: WeeklyReportData = {
 export default function MainPage() {
   return (
     <AppLayout>
-      <div className="px-6 sm:px-10 lg:px-16 py-10 sm:py-12 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-50/50 via-neutral-50 to-neutral-50 min-h-screen">
+      <div className="px-4 sm:px-10 lg:px-16 py-6 sm:py-10 lg:py-12 bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-amber-50/50 via-neutral-50 to-neutral-50 min-h-screen">
         <motion.div
-          className="mb-10"
+          className="mb-6 sm:mb-10"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <p className="text-xs font-black text-neutral-400 uppercase tracking-widest mb-4">
+          <p className="text-[10px] sm:text-xs font-black text-neutral-400 uppercase tracking-widest mb-2 sm:mb-4">
             {new Date().toLocaleDateString('pt-BR', {
               weekday: 'long',
               day: 'numeric',
@@ -59,13 +60,13 @@ export default function MainPage() {
             }).replace(/^\w/, (c) => c.toUpperCase())}
           </p>
           <p
-            className="text-4xl sm:text-5xl font-black text-neutral-950 leading-tight tracking-tight mb-2"
+            className="text-3xl sm:text-5xl font-black text-neutral-950 leading-tight tracking-tight mb-1 sm:mb-2"
             style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
           >
             Olá, {userName}
           </p>
           <h1
-            className="text-xl sm:text-2xl font-black text-neutral-950 leading-tight tracking-tight"
+            className="text-base sm:text-2xl font-black text-neutral-950 leading-tight tracking-tight"
             style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
           >
             Vamos cuidar da sua{' '}
@@ -73,10 +74,10 @@ export default function MainPage() {
           </h1>
         </motion.div>
 
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
           <WeeklyReport data={weekly} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start">
             <DailySummary data={summary} />
             <MealList meals={meals} />
           </div>
