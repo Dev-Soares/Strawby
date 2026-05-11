@@ -6,6 +6,7 @@ import MainPage from './pages/MainPage'
 import FoodsPage from './pages/FoodsPage'
 import PlanPage from './pages/PlanPage'
 import CreateMealPage from './pages/CreateMealPage'
+import ScorePage from './pages/ScorePage'
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/create-account" element={<SignUpPage />} />
       <Route path="/home" element={<MainPage />} />
+      <Route path="/score" element={<ScorePage />} />
       <Route path="/foods" element={<FoodsPage />} />
       <Route path="/plan" element={<PlanPage />} />
       <Route path="/meals/new" element={<CreateMealPage />} />

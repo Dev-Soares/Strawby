@@ -23,7 +23,7 @@ export default function FoodCard({ food }: FoodCardProps) {
 
       <div className="flex items-center gap-1.5 mb-4">
         <Fire size={13} weight="fill" className="text-red-500 shrink-0" />
-        <span className="text-xl font-black text-neutral-900 tabular-nums leading-none">
+        <span className="text-xl font-extrabold text-neutral-900 tabular-nums leading-none">
           {Math.round(food.calories)}
         </span>
         <span className="text-xs font-medium text-neutral-400 pb-0.5">kcal</span>

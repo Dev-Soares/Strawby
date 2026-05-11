@@ -52,9 +52,9 @@ export default function FoodsPage() {
 
   return (
     <AppLayout>
-      <div className="px-10 sm:px-16 py-12 max-w-5xl mx-auto">
+      <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12 max-w-5xl mx-auto">
         <div className="mb-8">
-          <h1 className="font-display text-4xl sm:text-5xl font-black text-neutral-950 tracking-tight leading-none">
+          <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-neutral-950 tracking-tight leading-none">
             Alimentos
           </h1>
           <p className="text-sm text-neutral-500 mt-3">Mais de 10.000 alimentos na base de dados</p>

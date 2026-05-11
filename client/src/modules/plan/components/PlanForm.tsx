@@ -51,7 +51,7 @@ export default function PlanForm({ defaultValues }: PlanFormProps) {
               <input
                 {...register('dailyKcal', { valueAsNumber: true })}
                 type="number"
-                className="w-36 text-5xl font-black text-neutral-950 bg-transparent outline-none text-right border-b-2 border-neutral-200 focus:border-red-500 pb-1 transition-colors duration-200"
+                className="w-36 text-5xl font-extrabold text-neutral-950 bg-transparent outline-none text-right border-b-2 border-neutral-200 focus:border-red-500 pb-1 transition-colors duration-200"
               />
               <span className="text-lg font-semibold text-neutral-400 pb-1.5">kcal</span>
             </div>
@@ -89,7 +89,7 @@ export default function PlanForm({ defaultValues }: PlanFormProps) {
                 <input
                   {...register(macro.field, { valueAsNumber: true })}
                   type="number"
-                  className="w-full text-4xl font-black text-neutral-950 bg-transparent outline-none border-b-2 border-neutral-200 focus:border-neutral-400 pb-0.5 transition-colors duration-200"
+                  className="w-full text-4xl font-extrabold text-neutral-950 bg-transparent outline-none border-b-2 border-neutral-200 focus:border-neutral-400 pb-0.5 transition-colors duration-200"
                   style={{ borderBottomColor: `${macro.color}40` }}
                   onFocus={(e) => e.currentTarget.style.borderBottomColor = macro.color}
                   onBlur={(e) => e.currentTarget.style.borderBottomColor = `${macro.color}40`}

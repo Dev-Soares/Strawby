@@ -85,7 +85,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
             {/* Header */}
             <div className="flex items-center justify-between px-8 pt-8 pb-6">
               <div>
-                <h2 className="text-xl font-black text-neutral-950 tracking-tight">Editar Plano</h2>
+                <h2 className="text-xl font-extrabold text-neutral-950 tracking-tight">Editar Plano</h2>
                 <p className="text-sm text-neutral-400 mt-0.5">Ajuste seus objetivos nutricionais</p>
               </div>
               <button
@@ -102,14 +102,14 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
               <div className="mx-8 rounded-2xl bg-linear-to-br from-red-50 to-red-100/40 border border-red-100 px-8 py-7">
                 <div className="flex items-center gap-2 mb-6">
                   <Fire size={14} weight="fill" className="text-red-500" />
-                  <span className="text-[10px] font-black text-red-600 uppercase tracking-[0.12em]">Meta calórica diária</span>
+                  <span className="text-[10px] font-extrabold text-red-600 uppercase tracking-[0.12em]">Meta calórica diária</span>
                 </div>
 
                 <div className="flex items-center justify-between gap-5">
                   <button
                     type="button"
                     onClick={() => nudge('dailyKcal', -50, 1000, 5000)}
-                    className="w-14 h-14 rounded-full border-2 border-red-200 bg-white text-red-600 text-2xl font-black flex items-center justify-center hover:border-red-400 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
+                    className="w-14 h-14 rounded-full border-2 border-red-200 bg-white text-red-600 text-2xl font-extrabold flex items-center justify-center hover:border-red-400 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
                   >
                     −
                   </button>
@@ -118,7 +118,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
                     <input
                       {...register('dailyKcal', { valueAsNumber: true })}
                       type="number"
-                      className="font-display text-7xl font-black text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-200 focus:border-red-500 pb-1 cursor-text transition-colors duration-150"
+                      className="font-display text-7xl font-extrabold text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-200 focus:border-red-500 pb-1 cursor-text transition-colors duration-150"
                     />
                     <p className="text-sm font-semibold text-neutral-400 mt-2">kcal / dia · mín 1000 · máx 5000</p>
                     <p className="text-[10px] text-red-400/70 mt-1">clique no número para digitar</p>
@@ -127,7 +127,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
                   <button
                     type="button"
                     onClick={() => nudge('dailyKcal', +50, 1000, 5000)}
-                    className="w-14 h-14 rounded-full border-2 border-red-200 bg-white text-red-600 text-2xl font-black flex items-center justify-center hover:border-red-400 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
+                    className="w-14 h-14 rounded-full border-2 border-red-200 bg-white text-red-600 text-2xl font-extrabold flex items-center justify-center hover:border-red-400 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
                   >
                     +
                   </button>
@@ -141,7 +141,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
                     key={macro.field}
                     className={`${macro.bg} ${macro.border} border rounded-2xl px-5 py-5 flex flex-col items-center`}
                   >
-                    <span className={`text-[9px] font-black uppercase tracking-[0.14em] ${macro.textColor} mb-4`}>
+                    <span className={`text-[9px] font-extrabold uppercase tracking-[0.14em] ${macro.textColor} mb-4`}>
                       {macro.label}
                     </span>
 
@@ -149,7 +149,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
                       <input
                         {...register(macro.field, { valueAsNumber: true })}
                         type="number"
-                        className="font-display text-5xl font-black text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150"
+                        className="font-display text-5xl font-extrabold text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150"
                         style={{ borderBottomColor: `${macro.color}55` }}
                         onFocus={(e) => { e.currentTarget.style.borderBottomColor = macro.color }}
                         onBlur={(e) => { e.currentTarget.style.borderBottomColor = `${macro.color}55` }}
@@ -163,7 +163,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
                       <button
                         type="button"
                         onClick={() => nudge(macro.field, -macro.step, 0, macro.max)}
-                        className="w-9 h-9 rounded-full bg-white shadow-sm hover:shadow-md font-black text-base flex items-center justify-center transition-shadow cursor-pointer"
+                        className="w-9 h-9 rounded-full bg-white shadow-sm hover:shadow-md font-extrabold text-base flex items-center justify-center transition-shadow cursor-pointer"
                         style={{ color: macro.color }}
                       >
                         −
@@ -172,7 +172,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
                       <button
                         type="button"
                         onClick={() => nudge(macro.field, +macro.step, 0, macro.max)}
-                        className="w-9 h-9 rounded-full bg-white shadow-sm hover:shadow-md font-black text-base flex items-center justify-center transition-shadow cursor-pointer"
+                        className="w-9 h-9 rounded-full bg-white shadow-sm hover:shadow-md font-extrabold text-base flex items-center justify-center transition-shadow cursor-pointer"
                         style={{ color: macro.color }}
                       >
                         +

@@ -10,9 +10,10 @@ interface BlobMenuProps {
 const blobPath = 'M 24 0 C 8 8, 0 22, 2 38 C 4 54, 22 58, 20 70 C 16 82, 6 86, 10 94 C 12 98, 16 100, 22 100 L 100 100 L 100 0 Z'
 
 const navItems = [
-  { number: '01', label: 'Início', href: '/home' },
-  { number: '02', label: 'Alimentos', href: '/foods' },
-  { number: '03', label: 'Plano', href: '/plan' },
+  { label: 'Início', href: '/home' },
+  { label: 'Pontuação', href: '/score' },
+  { label: 'Alimentos', href: '/foods' },
+  { label: 'Plano', href: '/plan' },
 ]
 
 export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
@@ -22,7 +23,7 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 overflow-hidden"
+          className="fixed inset-0 z-65 overflow-hidden"
           initial={{ x: '100%' }}
           animate={{ x: '0%' }}
           exit={{ x: '100%' }}
@@ -41,11 +42,11 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
 
           {/* Content — positioned inside red zone */}
           <div
-            className="absolute inset-0 flex flex-col justify-around md:justify-center pl-[14%] sm:pl-[18%] md:pl-[22%] pr-6 sm:pr-10 md:pr-16 pointer-events-none"
+            className="absolute inset-0 flex flex-col justify-between md:justify-center pl-[14%] sm:pl-[18%] md:pl-[22%] pr-6 sm:pr-10 md:pr-16 pt-20 sm:pt-24 md:pt-0 pb-8 md:pb-0 pointer-events-none"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Nav items */}
-            <nav className="flex flex-col mt-14 md:mt-0 pointer-events-auto">
+            <nav className="flex flex-col pointer-events-auto">
               {navItems.map((item, i) => {
                 const isActive = pathname === item.href
                 return (
@@ -60,13 +61,10 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
                     <Link
                       to={item.href}
                       onClick={onClose}
-                      className="group flex items-center gap-4 py-5 sm:py-6"
+                      className="group flex items-center gap-4 py-3.5 sm:py-6"
                     >
-                      <span className="text-white/40 text-[10px] sm:text-xs font-bold tracking-widest shrink-0">
-                        {item.number}
-                      </span>
                       <span
-                        className={`font-black text-[38px] sm:text-[50px] lg:text-[62px] leading-none tracking-tight transition-all duration-200 group-hover:translate-x-2 ${
+                        className={`font-extrabold text-[32px] sm:text-[50px] lg:text-[62px] leading-none tracking-tight transition-all duration-200 group-hover:translate-x-2 ${
                           isActive ? 'text-white' : 'text-white/85 group-hover:text-white'
                         }`}
                       >
@@ -85,7 +83,7 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
 
             {/* Bottom CTA */}
             <motion.div
-              className="flex justify-end mt-8 md:mt-10 pointer-events-auto"
+              className="flex justify-end mt-6 md:mt-10 pointer-events-auto"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
@@ -94,7 +92,7 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
               <Link
                 to="/login"
                 onClick={onClose}
-                className="group bg-white text-red-600 hover:bg-neutral-950 hover:text-white text-sm sm:text-base font-black px-7 sm:px-9 py-3.5 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-[0_10px_30px_-8px_rgba(0,0,0,0.35)] hover:shadow-[0_18px_40px_-10px_rgba(0,0,0,0.6)] hover:-translate-y-0.5 hover:scale-[1.03] tracking-tight"
+                className="group bg-white text-red-600 hover:bg-neutral-950 hover:text-white text-sm sm:text-base font-extrabold px-7 sm:px-9 py-3.5 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-[0_10px_30px_-8px_rgba(0,0,0,0.35)] hover:shadow-[0_18px_40px_-10px_rgba(0,0,0,0.6)] hover:-translate-y-0.5 hover:scale-[1.03] tracking-tight"
               >
                 Sair da conta
                 <ArrowRight size={17} weight="bold" className="group-hover:translate-x-1.5 transition-transform duration-300" />

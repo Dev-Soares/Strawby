@@ -85,7 +85,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
               {meal.name}
             </p>
             <span
-              className={`hidden sm:inline-block text-[9px] font-black tracking-widest px-2.5 py-1 rounded-full shrink-0 ${config.bg} ${config.text}`}
+              className={`hidden sm:inline-block text-[9px] font-extrabold tracking-widest px-2.5 py-1 rounded-full shrink-0 ${config.bg} ${config.text}`}
             >
               {config.label}
             </span>
@@ -103,7 +103,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
             {meal.time}
           </span>
           <div className="text-right min-w-10 sm:min-w-12">
-            <p className={`text-base sm:text-xl font-black leading-none tabular-nums ${config.accent}`}>
+            <p className={`text-base sm:text-xl font-extrabold leading-none tabular-nums ${config.accent}`}>
               {meal.kcal}
             </p>
             <p className="text-[8px] sm:text-[9px] font-bold text-neutral-400 uppercase tracking-wide mt-0.5 sm:mt-1">
@@ -144,7 +144,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                       </span>
                     </div>
                     <div className="flex items-baseline gap-1 shrink-0">
-                      <span className={`text-base sm:text-lg font-black tabular-nums leading-none ${config.accent}`}>
+                      <span className={`text-base sm:text-lg font-extrabold tabular-nums leading-none ${config.accent}`}>
                         {food.kcal}
                       </span>
                       <span className="text-[9px] sm:text-[10px] font-bold text-neutral-400 uppercase tracking-wide">
@@ -155,28 +155,28 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                   <div className="grid grid-cols-3 gap-1.5">
                     <div className="flex items-center gap-1.5 bg-amber-100 border border-amber-200 rounded-lg px-2 py-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0" />
-                      <span className="text-[10px] sm:text-[11px] font-black text-amber-900 tabular-nums">
+                      <span className="text-[10px] sm:text-[11px] font-extrabold text-amber-900 tabular-nums">
                         {food.protein}<span className="text-amber-700 font-bold">g</span>
                       </span>
-                      <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-amber-800 ml-auto">
+                      <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-amber-800 ml-auto">
                         P
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5 bg-blue-100 border border-blue-200 rounded-lg px-2 py-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
-                      <span className="text-[10px] sm:text-[11px] font-black text-blue-900 tabular-nums">
+                      <span className="text-[10px] sm:text-[11px] font-extrabold text-blue-900 tabular-nums">
                         {food.carbs}<span className="text-blue-700 font-bold">g</span>
                       </span>
-                      <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-blue-800 ml-auto">
+                      <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-blue-800 ml-auto">
                         C
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5 bg-violet-100 border border-violet-200 rounded-lg px-2 py-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-violet-600 shrink-0" />
-                      <span className="text-[10px] sm:text-[11px] font-black text-violet-900 tabular-nums">
+                      <span className="text-[10px] sm:text-[11px] font-extrabold text-violet-900 tabular-nums">
                         {food.fat}<span className="text-violet-700 font-bold">g</span>
                       </span>
-                      <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-violet-800 ml-auto">
+                      <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-violet-800 ml-auto">
                         G
                       </span>
                     </div>

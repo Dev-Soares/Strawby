@@ -52,7 +52,7 @@ function DayCell({ day, idx, isToday }: { day: WeekDay; idx: number; isToday: bo
       transition={{ type: 'spring', stiffness: 320, damping: 22 }}
     >
       <div
-        className={`relative flex flex-col rounded-2xl overflow-hidden aspect-3/5 sm:aspect-5/7 transition-colors ${
+        className={`relative flex flex-col rounded-2xl overflow-hidden aspect-4/5 sm:aspect-5/7 transition-colors ${
           isToday
             ? 'bg-red-600 shadow-[0_10px_24px_-10px_rgba(220,38,38,0.5)]'
             : 'bg-white border border-neutral-200/80 hover:border-neutral-300'
@@ -75,7 +75,7 @@ function DayCell({ day, idx, isToday }: { day: WeekDay; idx: number; isToday: bo
         {/* Data */}
         <div className="flex-1 flex flex-col items-center justify-center px-1">
           <span
-            className={`font-display text-[26px] sm:text-[30px] md:text-[34px] font-black tabular-nums leading-none tracking-tight ${
+            className={`font-display text-[26px] sm:text-[30px] md:text-[34px] font-extrabold tabular-nums leading-none tracking-tight ${
               isToday
                 ? 'text-white'
                 : dimmed
@@ -117,15 +117,15 @@ export default function WeeklyReport({ data }: WeeklyReportProps) {
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 sm:gap-2 mb-1 flex-wrap">
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.22em] sm:tracking-[0.3em] text-neutral-400">
+                <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-[0.22em] sm:tracking-[0.3em] text-neutral-400">
                   {yearLabel}
                 </span>
                 <span className="w-1 h-1 rounded-full bg-neutral-300" />
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.22em] sm:tracking-[0.3em] text-neutral-400">
+                <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-[0.22em] sm:tracking-[0.3em] text-neutral-400">
                   Semana {weekNumber}
                 </span>
               </div>
-              <h2 className="font-display text-xl sm:text-3xl font-black text-neutral-950 tracking-tight leading-none truncate">
+              <h2 className="font-display text-xl sm:text-3xl font-extrabold text-neutral-950 tracking-tight leading-none truncate">
                 {displayMonth}
               </h2>
               <p className="text-[11px] sm:text-xs text-neutral-500 mt-1 sm:mt-1.5 font-medium">
@@ -138,7 +138,7 @@ export default function WeeklyReport({ data }: WeeklyReportProps) {
 
       {/* Grid de dias */}
       <div className="px-3 sm:px-6 py-4 sm:py-6 bg-white">
-        <div className="grid grid-cols-7 gap-1.5 sm:gap-2.5">
+        <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 sm:gap-2.5">
           {data.days.map((day, idx) => (
             <DayCell
               key={day.day + day.date}

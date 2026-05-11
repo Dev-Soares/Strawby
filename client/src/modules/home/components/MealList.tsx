@@ -36,7 +36,7 @@ export default function MealList({ meals }: MealListProps) {
             Seu histórico do dia
           </p>
         </div>
-        <span className="text-[11px] sm:text-xs font-black text-neutral-500 tabular-nums shrink-0">
+        <span className="text-[11px] sm:text-xs font-extrabold text-neutral-500 tabular-nums shrink-0">
           {totalKcal.toLocaleString('pt-BR')} kcal
         </span>
       </div>

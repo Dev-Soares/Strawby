@@ -134,7 +134,7 @@ export default function PlanMealsSection() {
     <div className="px-10 sm:px-16 pb-32">
       <div className="flex items-end justify-between mb-6">
         <div>
-          <h2 className="font-display text-2xl sm:text-3xl font-black text-neutral-950 tracking-tight leading-none">
+          <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-neutral-950 tracking-tight leading-none">
             Refeições
           </h2>
           <p className="text-sm text-neutral-500 mt-1.5">Distribuição do seu plano ao longo do dia</p>
@@ -176,7 +176,7 @@ export default function PlanMealsSection() {
                     <MealIcon size={18} weight="bold" style={{ color: meal.accentText }} />
                   </div>
                   <span
-                    className="text-[10px] font-black tracking-widest px-2.5 py-1 rounded-full"
+                    className="text-[10px] font-extrabold tracking-widest px-2.5 py-1 rounded-full"
                     style={{ backgroundColor: meal.accentLight, color: meal.accentText }}
                   >
                     {meal.label}
@@ -186,7 +186,7 @@ export default function PlanMealsSection() {
                 {/* Kcal */}
                 <div className="mb-1">
                   <span
-                    className="font-display text-5xl font-black leading-none tabular-nums"
+                    className="font-display text-5xl font-extrabold leading-none tabular-nums"
                     style={{ color: meal.accent }}
                   >
                     {meal.kcal}
@@ -255,7 +255,7 @@ export default function PlanMealsSection() {
                             <p className="text-xs font-medium text-neutral-500 mt-0.5">{food.grams}g</p>
                           </div>
                           <span
-                            className="text-sm font-black tabular-nums shrink-0 ml-4"
+                            className="text-sm font-extrabold tabular-nums shrink-0 ml-4"
                             style={{ color: meal.accent }}
                           >
                             {food.kcal} kcal

@@ -16,11 +16,11 @@ function MacroBar({ label, value, max, unit, color, trackColor }: MacroRing) {
 
   return (
     <div className="flex flex-col min-w-0">
-      <span className="text-[10px] sm:text-xs font-black text-red-600 uppercase tracking-widest mb-1.5">
+      <span className="text-[10px] sm:text-xs font-extrabold text-red-600 uppercase tracking-widest mb-1.5">
         {shortLabel}
       </span>
       <div className="flex items-baseline gap-1 mb-2 sm:mb-3">
-        <span className="text-xl sm:text-2xl font-black text-neutral-950 tabular-nums leading-none">
+        <span className="text-xl sm:text-2xl font-extrabold text-neutral-950 tabular-nums leading-none">
           {displayValue}
         </span>
         <span className="text-[9px] sm:text-[10px] font-bold text-neutral-400 uppercase">
@@ -68,7 +68,7 @@ export default function DailySummary({ data }: DailySummaryProps) {
           <div className="flex items-center gap-1 sm:gap-1.5 bg-red-50 rounded-xl sm:rounded-2xl px-2.5 sm:px-4 py-1.5 sm:py-2 shrink-0">
             <FireIcon size={14} weight="fill" className="text-red-500 sm:hidden" />
             <FireIcon size={16} weight="fill" className="text-red-500 hidden sm:block" />
-            <span className="text-xs sm:text-sm font-black text-red-600 tabular-nums">
+            <span className="text-xs sm:text-sm font-extrabold text-red-600 tabular-nums">
               {calorias.value.toLocaleString('pt-BR')}
             </span>
             <span className="text-[9px] sm:text-[10px] font-bold text-red-400 uppercase">

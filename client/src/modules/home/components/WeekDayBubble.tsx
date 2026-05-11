@@ -25,11 +25,11 @@ export default function WeekDayBubble({ day, isToday }: WeekDayBubbleProps) {
   return (
     <div className="flex flex-col items-center gap-2">
       <div
-        className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-black transition-all duration-300 ${bgClass} ${todayRing}`}
+        className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-extrabold transition-all duration-300 ${bgClass} ${todayRing}`}
       >
         {day.date}
       </div>
-      <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">
+      <span className="text-[10px] font-extrabold text-neutral-400 uppercase tracking-widest">
         {day.day}
       </span>
     </div>

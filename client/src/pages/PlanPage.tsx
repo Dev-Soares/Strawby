@@ -24,11 +24,11 @@ export default function PlanPage() {
 
   return (
     <AppLayout>
-      <div className="px-10 sm:px-16 py-12">
+      <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12">
         {/* Header */}
         <div className="flex items-start justify-between mb-8">
           <div>
-            <h1 className="font-display text-4xl sm:text-5xl font-black text-neutral-950 tracking-tight leading-none">
+            <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-neutral-950 tracking-tight leading-none">
               Meu Plano
             </h1>
             <p className="text-sm text-neutral-500 mt-3">Seus objetivos nutricionais diários</p>
@@ -53,7 +53,7 @@ export default function PlanPage() {
             </div>
 
             <div className="mb-2">
-              <span className="font-display text-8xl font-black text-neutral-950 leading-none tabular-nums">
+              <span className="font-display text-8xl font-extrabold text-neutral-950 leading-none tabular-nums">
                 {plan.dailyKcal.toLocaleString('pt-BR')}
               </span>
             </div>
@@ -85,7 +85,7 @@ export default function PlanPage() {
                       <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest">{macro.label}</span>
                     </div>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-2xl font-black text-neutral-950 tabular-nums">{value}</span>
+                      <span className="text-2xl font-extrabold text-neutral-950 tabular-nums">{value}</span>
                       <span className="text-sm font-semibold text-neutral-500">g</span>
                     </div>
                   </div>
@@ -104,7 +104,7 @@ export default function PlanPage() {
       </div>
 
       {/* Divider */}
-      <div className="mx-10 sm:mx-16 border-t border-neutral-100 my-2" />
+      <div className="mx-4 sm:mx-10 lg:mx-16 border-t border-neutral-100 my-2" />
 
       <PlanMealsSection />
 
