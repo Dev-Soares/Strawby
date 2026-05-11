@@ -118,7 +118,7 @@ export const MealScalarFieldEnum = {
   id: 'id',
   name: 'name',
   date: 'date',
-  planId: 'planId',
+  userId: 'userId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

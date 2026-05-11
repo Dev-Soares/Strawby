@@ -11,12 +11,12 @@ export type MealTotals = {
   fat: number;
 };
 
-export type MealPublic = Pick<Meal, 'id' | 'name' | 'date' | 'planId'> & {
+export type MealPublic = Pick<Meal, 'id' | 'name' | 'date' | 'userId'> & {
   items: MealItemWithFood[];
   totals: MealTotals;
 };
 
-export type MealSummary = Pick<Meal, 'id' | 'name' | 'date' | 'planId'> & {
+export type MealSummary = Pick<Meal, 'id' | 'name' | 'date' | 'userId'> & {
   totals: MealTotals;
 };
 

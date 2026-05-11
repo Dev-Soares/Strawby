@@ -27,29 +27,19 @@ export class MealService {
     );
   }
 
-  private async getPlanId(userId: string): Promise<string> {
-    const plan = await this.prisma.plan.findUnique({
-      where: { userId },
-      select: { id: true },
-    });
-    if (!plan) throw new NotFoundException('Plano não encontrado');
-    return plan.id;
-  }
-
   async create(userId: string, dto: CreateMealDto): Promise<MealPublic> {
-    const planId = await this.getPlanId(userId);
     try {
       const meal = await this.prisma.meal.create({
         data: {
           name: dto.name,
           date: dto.date ? new Date(dto.date) : undefined,
-          planId,
+          userId,
         },
         select: {
           id: true,
           name: true,
           date: true,
-          planId: true,
+          userId: true,
           items: { select: mealItemSelect },
         },
       });
@@ -60,15 +50,14 @@ export class MealService {
   }
 
   async findAllByUser(userId: string): Promise<MealSummary[]> {
-    const planId = await this.getPlanId(userId);
     try {
       const meals = await this.prisma.meal.findMany({
-        where: { planId },
+        where: { userId },
         select: {
           id: true,
           name: true,
           date: true,
-          planId: true,
+          userId: true,
           items: { select: mealItemSelect },
         },
         orderBy: { date: 'desc' },
@@ -83,15 +72,14 @@ export class MealService {
   }
 
   async findOne(id: string, userId: string): Promise<MealPublic> {
-    const planId = await this.getPlanId(userId);
     try {
       const meal = await this.prisma.meal.findFirst({
-        where: { id, planId },
+        where: { id, userId },
         select: {
           id: true,
           name: true,
           date: true,
-          planId: true,
+          userId: true,
           items: { select: mealItemSelect },
         },
       });
@@ -106,10 +94,9 @@ export class MealService {
   }
 
   async update(id: string, userId: string, dto: UpdateMealDto): Promise<MealPublic> {
-    const planId = await this.getPlanId(userId);
     try {
       const meal = await this.prisma.meal.update({
-        where: { id, planId },
+        where: { id, userId },
         data: {
           ...(dto.name !== undefined && { name: dto.name }),
           ...(dto.date !== undefined && { date: new Date(dto.date) }),
@@ -118,7 +105,7 @@ export class MealService {
           id: true,
           name: true,
           date: true,
-          planId: true,
+          userId: true,
           items: { select: mealItemSelect },
         },
       });
@@ -135,10 +122,9 @@ export class MealService {
   }
 
   async remove(id: string, userId: string): Promise<{ id: string }> {
-    const planId = await this.getPlanId(userId);
     try {
       return await this.prisma.meal.delete({
-        where: { id, planId },
+        where: { id, userId },
         select: { id: true },
       });
     } catch (error) {
@@ -153,10 +139,9 @@ export class MealService {
   }
 
   async addItem(mealId: string, userId: string, dto: AddMealItemDto): Promise<MealItemWithFood> {
-    const planId = await this.getPlanId(userId);
     try {
       const updated = await this.prisma.meal.update({
-        where: { id: mealId, planId },
+        where: { id: mealId, userId },
         data: {
           items: { create: { foodId: dto.foodId, quantity: dto.quantity } },
         },
@@ -176,10 +161,9 @@ export class MealService {
   }
 
   async removeItem(mealId: string, itemId: string, userId: string): Promise<{ id: string }> {
-    const planId = await this.getPlanId(userId);
     try {
       const { count } = await this.prisma.mealItem.deleteMany({
-        where: { id: itemId, meal: { id: mealId, planId } },
+        where: { id: itemId, meal: { id: mealId, userId } },
       });
 
       if (count === 0) throw new NotFoundException('Item não encontrado na refeição');

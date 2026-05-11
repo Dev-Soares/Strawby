@@ -17,7 +17,7 @@ import { UpdateMealDto } from './dto/update-meal.dto';
 import { MealService } from './meal.service';
 
 @UseGuards(AuthGuard)
-@Controller('plan/meal')
+@Controller('meal')
 export class MealController {
   constructor(private readonly mealService: MealService) {}
 
