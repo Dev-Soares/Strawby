@@ -18,10 +18,7 @@ export default function CreateMealPage() {
             <ArrowLeft size={18} weight="bold" className="text-red-600" />
           </button>
           <div>
-            <h1
-              className="text-4xl sm:text-5xl font-black text-neutral-950 tracking-tight leading-none"
-              style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
-            >
+            <h1 className="font-display text-4xl sm:text-5xl font-black text-neutral-950 tracking-tight leading-none">
               Nova Refeição
             </h1>
             <p className="text-sm text-neutral-500 mt-2">Adicione uma refeição ao seu plano</p>

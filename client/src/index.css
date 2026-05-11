@@ -2,6 +2,7 @@
 
 @theme {
   --font-sans: 'Satoshi', sans-serif;
+  --font-display: 'Cabinet Grotesk', sans-serif;
   --animate-twinkle: twinkle 3s ease-in-out infinite;
 }
 
@@ -28,6 +29,18 @@
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+@keyframes marqueeX {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marqueeX 60s linear infinite;
+  will-change: transform;
 }
 
 @keyframes waveUndulate {

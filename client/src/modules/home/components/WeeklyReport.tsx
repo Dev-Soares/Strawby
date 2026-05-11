@@ -75,14 +75,13 @@ function DayCell({ day, idx, isToday }: { day: WeekDay; idx: number; isToday: bo
         {/* Data */}
         <div className="flex-1 flex flex-col items-center justify-center px-1">
           <span
-            className={`text-[26px] sm:text-[30px] md:text-[34px] font-black tabular-nums leading-none tracking-tight ${
+            className={`font-display text-[26px] sm:text-[30px] md:text-[34px] font-black tabular-nums leading-none tracking-tight ${
               isToday
                 ? 'text-white'
                 : dimmed
                   ? 'text-neutral-300'
                   : 'text-neutral-900'
             }`}
-            style={{ fontFamily: "'Cabinet Grotesk', 'Satoshi', sans-serif" }}
           >
             {day.date}
           </span>
@@ -126,10 +125,7 @@ export default function WeeklyReport({ data }: WeeklyReportProps) {
                   Semana {weekNumber}
                 </span>
               </div>
-              <h2
-                className="text-xl sm:text-3xl font-black text-neutral-950 tracking-tight leading-none truncate"
-                style={{ fontFamily: "'Cabinet Grotesk', 'Satoshi', sans-serif" }}
-              >
+              <h2 className="font-display text-xl sm:text-3xl font-black text-neutral-950 tracking-tight leading-none truncate">
                 {displayMonth}
               </h2>
               <p className="text-[11px] sm:text-xs text-neutral-500 mt-1 sm:mt-1.5 font-medium">

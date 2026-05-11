@@ -47,10 +47,7 @@ export default function WeeklyScore({ score, maxScore }: WeeklyScoreProps) {
             <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.22em] sm:tracking-[0.3em] text-neutral-400">
               Score da semana
             </span>
-            <h2
-              className="text-xl sm:text-3xl font-black text-neutral-950 tracking-tight leading-none mt-1"
-              style={{ fontFamily: "'Cabinet Grotesk', 'Satoshi', sans-serif" }}
-            >
+            <h2 className="font-display text-xl sm:text-3xl font-black text-neutral-950 tracking-tight leading-none mt-1">
               Desempenho
             </h2>
             <p className="text-[11px] sm:text-xs text-neutral-500 mt-1 sm:mt-1.5 font-medium">
@@ -90,10 +87,7 @@ export default function WeeklyScore({ score, maxScore }: WeeklyScoreProps) {
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span
-              className="text-[32px] sm:text-[52px] font-black text-neutral-950 leading-none tabular-nums tracking-tight"
-              style={{ fontFamily: "'Cabinet Grotesk', 'Satoshi', sans-serif" }}
-            >
+            <span className="font-display text-[32px] sm:text-[52px] font-black text-neutral-950 leading-none tabular-nums tracking-tight">
               {normalized}
             </span>
             <span className="text-[9px] sm:text-xs font-bold text-neutral-400 tracking-widest mt-1">
@@ -115,10 +109,7 @@ export default function WeeklyScore({ score, maxScore }: WeeklyScoreProps) {
               <span className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-neutral-500">
                 Pontos
               </span>
-              <span
-                className="text-lg sm:text-2xl font-black text-neutral-950 tabular-nums tracking-tight mt-0.5"
-                style={{ fontFamily: "'Cabinet Grotesk', 'Satoshi', sans-serif" }}
-              >
+              <span className="font-display text-lg sm:text-2xl font-black text-neutral-950 tabular-nums tracking-tight mt-0.5">
                 {score}
                 <span className="text-neutral-400 font-bold">/{maxScore}</span>
               </span>
@@ -128,8 +119,8 @@ export default function WeeklyScore({ score, maxScore }: WeeklyScoreProps) {
                 Aproveitamento
               </span>
               <span
-                className="text-lg sm:text-2xl font-black tabular-nums tracking-tight mt-0.5"
-                style={{ fontFamily: "'Cabinet Grotesk', 'Satoshi', sans-serif", color }}
+                className="font-display text-lg sm:text-2xl font-black tabular-nums tracking-tight mt-0.5"
+                style={{ color }}
               >
                 {normalized}%
               </span>

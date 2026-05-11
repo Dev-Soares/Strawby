@@ -7,7 +7,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Outfit', 'sans-serif'],
+        sans: ['Satoshi', 'sans-serif'],
+        display: ['Cabinet Grotesk', 'sans-serif'],
       },
     },
   },

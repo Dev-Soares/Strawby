@@ -52,7 +52,7 @@ export default function HowItWorks() {
           <p className="text-[10px] text-neutral-400 font-black uppercase tracking-widest mb-3">
             Como funciona
           </p>
-          <h2 className="text-[40px] md:text-[56px] font-black tracking-tighter text-neutral-950 leading-none">
+          <h2 className="font-display text-[40px] md:text-[56px] font-black tracking-tighter text-neutral-950 leading-none">
             Simples assim.
           </h2>
         </motion.div>
@@ -69,14 +69,14 @@ export default function HowItWorks() {
             >
               <div className="shrink-0 flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-2 w-full md:w-52">
                 <StepIcon size={28} weight="duotone" className="text-neutral-400" />
-                <span className="font-black text-[52px] md:text-[64px] leading-none tracking-tighter text-red-600 tabular-nums">
+                <span className="font-display font-black text-[52px] md:text-[64px] leading-none tracking-tighter text-red-600 tabular-nums">
                   {time}
                 </span>
               </div>
 
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-3 mb-3">
-                  <h3 className="text-xl font-black text-neutral-950 tracking-tight">{title}</h3>
+                  <h3 className="font-display text-xl font-black text-neutral-950 tracking-tight">{title}</h3>
                   <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400 border border-neutral-200 rounded-full px-3 py-1 leading-none">
                     {tag}
                   </span>

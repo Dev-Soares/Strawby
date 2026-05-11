@@ -69,8 +69,7 @@ export default function CreateMealForm() {
         <input
           {...register('name')}
           placeholder="Ex: Café da manhã proteico"
-          className="w-full text-2xl font-bold text-neutral-950 bg-transparent outline-none border-b-2 border-neutral-200 focus:border-neutral-500 pb-2 transition-colors duration-150 placeholder:text-neutral-300"
-          style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
+          className="font-display w-full text-2xl font-bold text-neutral-950 bg-transparent outline-none border-b-2 border-neutral-200 focus:border-neutral-500 pb-2 transition-colors duration-150 placeholder:text-neutral-300"
         />
         {errors.name && <p className="text-xs text-red-500 mt-2">{errors.name.message}</p>}
       </div>
@@ -122,8 +121,7 @@ export default function CreateMealForm() {
         <input
           {...register('time')}
           type="time"
-          className="text-3xl font-black text-neutral-950 bg-transparent outline-none border-b-2 border-neutral-200 focus:border-neutral-500 pb-1 transition-colors duration-150 tabular-nums cursor-pointer"
-          style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
+          className="font-display text-3xl font-black text-neutral-950 bg-transparent outline-none border-b-2 border-neutral-200 focus:border-neutral-500 pb-1 transition-colors duration-150 tabular-nums cursor-pointer"
         />
         {errors.time && <p className="text-xs text-red-500 mt-2">{errors.time.message}</p>}
       </div>

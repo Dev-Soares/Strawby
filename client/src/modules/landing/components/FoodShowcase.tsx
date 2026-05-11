@@ -80,13 +80,7 @@ const containerVariants = {
 
 export default function FoodShowcase() {
   return (
-    <section id="funcionalidades" className="relative overflow-hidden min-h-screen flex items-center py-28 bg-neutral-950">
-
-      {/* Glow edges */}
-      <div className="absolute top-0 left-0 right-0 h-40 bg-linear-to-b from-red-900/35 to-transparent pointer-events-none" />
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-linear-to-t from-red-900/35 to-transparent pointer-events-none" />
-      <div className="absolute top-0 left-0 bottom-0 w-40 bg-linear-to-r from-red-900/20 to-transparent pointer-events-none" />
-      <div className="absolute top-0 right-0 bottom-0 w-40 bg-linear-to-l from-red-900/20 to-transparent pointer-events-none" />
+    <section id="funcionalidades" className="relative overflow-hidden flex items-center pt-40 lg:pt-56 pb-28 lg:pb-32 bg-white">
 
       <div className="relative max-w-6xl mx-auto px-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-16 mb-24">
@@ -95,7 +89,7 @@ export default function FoodShowcase() {
           <div className="shrink-0 max-w-md">
 
             <motion.h2
-              className="text-white font-black text-[44px] sm:text-[52px] lg:text-[60px] leading-[1.02] tracking-tight"
+              className="text-neutral-950 font-black text-[44px] sm:text-[52px] lg:text-[60px] leading-[1.02] tracking-tight"
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
@@ -109,7 +103,7 @@ export default function FoodShowcase() {
             </motion.h2>
 
             <motion.p
-              className="text-neutral-400 text-[17px] leading-relaxed mt-6"
+              className="text-neutral-600 text-[17px] leading-relaxed mt-6"
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
@@ -119,23 +113,23 @@ export default function FoodShowcase() {
             </motion.p>
 
             <motion.div
-              className="flex items-center gap-6 mt-10 pt-8 border-t border-red-800"
+              className="flex items-center gap-6 mt-10 pt-8 border-t border-neutral-200"
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.6, ease, delay: 0.3 }}
             >
               <div>
-                <p className="text-red-600 font-black text-[38px] leading-none tracking-tight">
+                <p className="font-display text-red-600 font-black text-[38px] leading-none tracking-tight">
                   10K<span className="text-red-600">+</span>
                 </p>
                 <p className="text-neutral-500 text-[13px] font-semibold uppercase tracking-wider mt-2">
                   alimentos
                 </p>
               </div>
-              <div className="w-px h-14 bg-linear-to-b from-transparent via-red-800 to-transparent" />
+              <div className="w-px h-14 bg-linear-to-b from-transparent via-neutral-300 to-transparent" />
               <div>
-                <p className="text-red-600 font-black text-[38px] leading-none tracking-tight">
+                <p className="font-display text-red-600 font-black text-[38px] leading-none tracking-tight">
                   100<span className="text-red-600">%</span>
                 </p>
                 <p className="text-neutral-500 text-[13px] font-semibold uppercase tracking-wider mt-2">

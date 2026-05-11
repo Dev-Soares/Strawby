@@ -104,16 +104,10 @@ export default function MainPage() {
               month: 'long',
             }).replace(/^\w/, (c) => c.toUpperCase())}
           </p>
-          <p
-            className="text-4xl sm:text-5xl font-black text-neutral-950 leading-tight tracking-tight mb-2"
-            style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
-          >
+          <p className="font-display text-4xl sm:text-5xl font-black text-neutral-950 leading-tight tracking-tight mb-2">
             Olá, {userName}
           </p>
-          <h1
-            className="text-lg sm:text-2xl font-black text-neutral-950 leading-tight tracking-tight"
-            style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
-          >
+          <h1 className="font-display text-lg sm:text-2xl font-black text-neutral-950 leading-tight tracking-tight">
             Vamos cuidar da sua{' '}
             <span className="text-red-600">alimentação</span>?
           </h1>

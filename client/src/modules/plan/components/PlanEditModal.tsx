@@ -118,8 +118,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
                     <input
                       {...register('dailyKcal', { valueAsNumber: true })}
                       type="number"
-                      className="text-7xl font-black text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-200 focus:border-red-500 pb-1 cursor-text transition-colors duration-150"
-                      style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
+                      className="font-display text-7xl font-black text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-200 focus:border-red-500 pb-1 cursor-text transition-colors duration-150"
                     />
                     <p className="text-sm font-semibold text-neutral-400 mt-2">kcal / dia · mín 1000 · máx 5000</p>
                     <p className="text-[10px] text-red-400/70 mt-1">clique no número para digitar</p>
@@ -150,8 +149,8 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
                       <input
                         {...register(macro.field, { valueAsNumber: true })}
                         type="number"
-                        className="text-5xl font-black text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150"
-                        style={{ fontFamily: "'Cabinet Grotesk', sans-serif", borderBottomColor: `${macro.color}55` }}
+                        className="font-display text-5xl font-black text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150"
+                        style={{ borderBottomColor: `${macro.color}55` }}
                         onFocus={(e) => { e.currentTarget.style.borderBottomColor = macro.color }}
                         onBlur={(e) => { e.currentTarget.style.borderBottomColor = `${macro.color}55` }}
                       />

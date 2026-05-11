@@ -134,10 +134,7 @@ export default function PlanMealsSection() {
     <div className="px-10 sm:px-16 pb-32">
       <div className="flex items-end justify-between mb-6">
         <div>
-          <h2
-            className="text-2xl sm:text-3xl font-black text-neutral-950 tracking-tight leading-none"
-            style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
-          >
+          <h2 className="font-display text-2xl sm:text-3xl font-black text-neutral-950 tracking-tight leading-none">
             Refeições
           </h2>
           <p className="text-sm text-neutral-500 mt-1.5">Distribuição do seu plano ao longo do dia</p>
@@ -189,16 +186,16 @@ export default function PlanMealsSection() {
                 {/* Kcal */}
                 <div className="mb-1">
                   <span
-                    className="text-5xl font-black leading-none tabular-nums"
-                    style={{ color: meal.accent, fontFamily: "'Cabinet Grotesk', sans-serif" }}
+                    className="font-display text-5xl font-black leading-none tabular-nums"
+                    style={{ color: meal.accent }}
                   >
                     {meal.kcal}
                   </span>
                   <span className="text-lg font-bold text-neutral-400 ml-2">kcal</span>
                 </div>
                 <p
-                  className="text-base font-bold mb-0.5"
-                  style={{ fontFamily: "'Cabinet Grotesk', sans-serif", color: meal.accentText }}
+                  className="font-display text-base font-bold mb-0.5"
+                  style={{ color: meal.accentText }}
                 >
                   {meal.name}
                 </p>

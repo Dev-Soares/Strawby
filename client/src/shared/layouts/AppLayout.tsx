@@ -35,10 +35,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           }`}
         >
           <img src="/logo.png" alt="" className="w-8 h-8 sm:w-9 sm:h-9 object-contain" />
-          <span
-            className="text-neutral-950 text-base sm:text-lg md:text-xl tracking-tighter"
-            style={{ fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 800 }}
-          >
+          <span className="font-display text-neutral-950 text-base sm:text-lg md:text-xl tracking-tighter font-extrabold">
             Strawby
           </span>
         </div>

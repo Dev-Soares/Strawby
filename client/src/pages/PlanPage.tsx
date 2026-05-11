@@ -28,10 +28,7 @@ export default function PlanPage() {
         {/* Header */}
         <div className="flex items-start justify-between mb-8">
           <div>
-            <h1
-              className="text-4xl sm:text-5xl font-black text-neutral-950 tracking-tight leading-none"
-              style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
-            >
+            <h1 className="font-display text-4xl sm:text-5xl font-black text-neutral-950 tracking-tight leading-none">
               Meu Plano
             </h1>
             <p className="text-sm text-neutral-500 mt-3">Seus objetivos nutricionais diários</p>
@@ -56,10 +53,7 @@ export default function PlanPage() {
             </div>
 
             <div className="mb-2">
-              <span
-                className="text-8xl font-black text-neutral-950 leading-none tabular-nums"
-                style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
-              >
+              <span className="font-display text-8xl font-black text-neutral-950 leading-none tabular-nums">
                 {plan.dailyKcal.toLocaleString('pt-BR')}
               </span>
             </div>
