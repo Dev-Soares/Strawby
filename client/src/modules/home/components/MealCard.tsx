@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { CoffeeIcon, ForkKnifeIcon, LeafIcon, MoonIcon, CookieIcon, CaretDownIcon } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
@@ -58,18 +57,19 @@ const mealConfig: Record<MealType, MealConfig> = {
 
 interface MealCardProps {
   meal: Meal
+  isOpen: boolean
+  onToggle: () => void
 }
 
-export default function MealCard({ meal }: MealCardProps) {
+export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
   const config = mealConfig[meal.mealType]
   const MealIcon = config.icon
-  const [open, setOpen] = useState(false)
 
   return (
     <div className="bg-white rounded-2xl sm:rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={onToggle}
         className="w-full flex items-center gap-3 sm:gap-5 p-3 sm:p-5 cursor-pointer text-left"
       >
         <div
@@ -114,13 +114,13 @@ export default function MealCard({ meal }: MealCardProps) {
             size={16}
             weight="bold"
             className={`${config.accent} transition-transform duration-250`}
-            style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)' }}
+            style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
           />
         </div>
       </button>
 
       <AnimatePresence initial={false}>
-        {open && (
+        {isOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}

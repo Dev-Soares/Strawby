@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { PlusIcon } from '@phosphor-icons/react'
 import type { Meal } from '../types/meal'
@@ -22,6 +23,9 @@ const item = {
 
 export default function MealList({ meals }: MealListProps) {
   const totalKcal = meals.reduce((sum, m) => sum + m.kcal, 0)
+  const [openId, setOpenId] = useState<string | null>(null)
+
+  const toggle = (id: string) => setOpenId((prev) => (prev === id ? null : id))
 
   return (
     <div>
@@ -45,7 +49,11 @@ export default function MealList({ meals }: MealListProps) {
       >
         {meals.map((meal) => (
           <motion.div key={meal.id} variants={item}>
-            <MealCard meal={meal} />
+            <MealCard
+              meal={meal}
+              isOpen={openId === meal.id}
+              onToggle={() => toggle(meal.id)}
+            />
           </motion.div>
         ))}
 
