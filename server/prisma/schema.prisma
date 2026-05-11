@@ -8,14 +8,15 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  plan      Plan?
-  meals     Meal[]
+  id         String      @id @default(uuid())
+  name       String
+  email      String      @unique
+  password   String
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  plan       Plan?
+  meals      Meal[]
+  planMeals  PlanMeal[]
 }
 
 model Plan {
@@ -31,15 +32,16 @@ model Plan {
 }
 
 model Food {
-  id        String     @id @default(uuid())
-  name      String
-  calories  Float
-  protein   Float
-  carbs     Float
-  fat       Float
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  mealItems MealItem[]
+  id            String         @id @default(uuid())
+  name          String
+  calories      Float
+  protein       Float
+  carbs         Float
+  fat           Float
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  mealItems     MealItem[]
+  planMealItems PlanMealItem[]
 }
 
 model Meal {
@@ -62,4 +64,26 @@ model MealItem {
   food      Food     @relation(fields: [foodId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model PlanMeal {
+  id        String         @id @default(uuid())
+  name      String
+  date      DateTime       @default(now())
+  userId    String
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     PlanMealItem[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model PlanMealItem {
+  id         String   @id @default(uuid())
+  quantity   Float
+  planMealId String
+  foodId     String
+  planMeal   PlanMeal @relation(fields: [planMealId], references: [id], onDelete: Cascade)
+  food       Food     @relation(fields: [foodId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }

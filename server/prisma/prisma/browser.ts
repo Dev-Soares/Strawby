@@ -42,3 +42,13 @@ export type Meal = Prisma.MealModel
  * 
  */
 export type MealItem = Prisma.MealItemModel
+/**
+ * Model PlanMeal
+ * 
+ */
+export type PlanMeal = Prisma.PlanMealModel
+/**
+ * Model PlanMealItem
+ * 
+ */
+export type PlanMealItem = Prisma.PlanMealItemModel
