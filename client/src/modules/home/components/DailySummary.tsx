@@ -1,27 +1,33 @@
 import { motion } from 'framer-motion'
-import { Fire } from '@phosphor-icons/react'
+import { FireIcon } from '@phosphor-icons/react'
 import type { DailySummary, MacroRing } from '../types/dailySummary'
+
+const macroShortLabels: Record<string, string> = {
+  CALORIAS: 'KCAL',
+  PROTEÍNA: 'P',
+  CARBOS: 'C',
+  GORDURA: 'G',
+}
 
 function MacroBar({ label, value, max, unit, color, trackColor }: MacroRing) {
   const progress = Math.min(value / max, 1)
   const displayValue = unit === 'kcal' ? value.toLocaleString('pt-BR') : value
+  const shortLabel = macroShortLabels[label] ?? label
 
   return (
-    <div className="flex-1 min-w-0">
-      <div className="flex items-end justify-between mb-2 sm:mb-3 gap-1">
-        <span className="text-[9px] sm:text-[10px] font-black text-neutral-400 uppercase tracking-widest truncate">
-          {label}
+    <div className="flex flex-col min-w-0">
+      <span className="text-[10px] sm:text-xs font-black text-red-600 uppercase tracking-widest mb-1.5">
+        {shortLabel}
+      </span>
+      <div className="flex items-baseline gap-1 mb-2 sm:mb-3">
+        <span className="text-xl sm:text-2xl font-black text-neutral-950 tabular-nums leading-none">
+          {displayValue}
         </span>
-        <div className="flex items-baseline gap-1 shrink-0">
-          <span className="text-lg sm:text-2xl font-black text-neutral-950 tabular-nums leading-none">
-            {displayValue}
-          </span>
-          <span className="text-[9px] sm:text-[10px] font-bold text-neutral-400 uppercase">
-            {unit}
-          </span>
-        </div>
+        <span className="text-[9px] sm:text-[10px] font-bold text-neutral-400 uppercase">
+          {unit}
+        </span>
       </div>
-      <div className="h-2.5 sm:h-3 rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
+      <div className="h-2 sm:h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
         <motion.div
           className="h-full rounded-full"
           style={{ backgroundColor: color }}
@@ -54,14 +60,14 @@ export default function DailySummary({ data }: DailySummaryProps) {
       <div className="relative">
         <div className="flex items-center justify-between mb-6 sm:mb-8 gap-3">
           <div className="min-w-0">
-            <h2 className="text-sm font-bold text-neutral-900">Resumo diário</h2>
+            <h2 className="text-base sm:text-lg font-bold text-neutral-900">Resumo diário</h2>
             <p className="text-[11px] sm:text-xs text-neutral-400 mt-0.5">
               Acompanhe seus macros
             </p>
           </div>
           <div className="flex items-center gap-1 sm:gap-1.5 bg-red-50 rounded-xl sm:rounded-2xl px-2.5 sm:px-4 py-1.5 sm:py-2 shrink-0">
-            <Fire size={14} weight="fill" className="text-red-500 sm:hidden" />
-            <Fire size={16} weight="fill" className="text-red-500 hidden sm:block" />
+            <FireIcon size={14} weight="fill" className="text-red-500 sm:hidden" />
+            <FireIcon size={16} weight="fill" className="text-red-500 hidden sm:block" />
             <span className="text-xs sm:text-sm font-black text-red-600 tabular-nums">
               {calorias.value.toLocaleString('pt-BR')}
             </span>

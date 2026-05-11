@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Check, X, CalendarBlank, Warning } from '@phosphor-icons/react'
+import { CheckIcon, XIcon, CalendarBlankIcon, WarningIcon } from '@phosphor-icons/react'
 import type { WeeklyReportData, WeekDay, WeekDayStatus } from '../types/weeklyReport'
 
 interface WeeklyReportProps {
@@ -21,21 +21,21 @@ function StatusMark({ status }: { status: WeekDayStatus }) {
   if (status === 'good') {
     return (
       <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center shrink-0 bg-emerald-500">
-        <Check size={12} weight="bold" className="text-white" />
+        <CheckIcon size={12} weight="bold" className="text-white" />
       </div>
     )
   }
   if (status === 'warn') {
     return (
       <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center shrink-0 bg-amber-500">
-        <Warning size={12} weight="bold" className="text-white" />
+        <WarningIcon size={12} weight="bold" className="text-white" />
       </div>
     )
   }
   if (status === 'bad') {
     return (
       <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-red-500 flex items-center justify-center shrink-0">
-        <X size={12} weight="bold" className="text-white" />
+        <XIcon size={12} weight="bold" className="text-white" />
       </div>
     )
   }
@@ -52,7 +52,7 @@ function DayCell({ day, idx, isToday }: { day: WeekDay; idx: number; isToday: bo
       transition={{ type: 'spring', stiffness: 320, damping: 22 }}
     >
       <div
-        className={`relative flex flex-col rounded-xl sm:rounded-2xl overflow-hidden aspect-4/6 sm:aspect-5/7 transition-colors ${
+        className={`relative flex flex-col rounded-2xl overflow-hidden aspect-3/5 sm:aspect-5/7 transition-colors ${
           isToday
             ? 'bg-red-600 shadow-[0_10px_24px_-10px_rgba(220,38,38,0.5)]'
             : 'bg-white border border-neutral-200/80 hover:border-neutral-300'
@@ -60,7 +60,7 @@ function DayCell({ day, idx, isToday }: { day: WeekDay; idx: number; isToday: bo
       >
         {/* Header dia da semana */}
         <div
-          className={`text-center pt-1.5 sm:pt-2.5 pb-1 sm:pb-1.5 text-[8px] sm:text-[9px] font-bold uppercase tracking-[0.16em] sm:tracking-[0.22em] ${
+          className={`text-center pt-2 sm:pt-2.5 pb-1 sm:pb-1.5 text-[9px] sm:text-[9px] font-bold uppercase tracking-[0.18em] sm:tracking-[0.22em] ${
             isToday
               ? 'text-white/70'
               : dimmed
@@ -75,7 +75,7 @@ function DayCell({ day, idx, isToday }: { day: WeekDay; idx: number; isToday: bo
         {/* Data */}
         <div className="flex-1 flex flex-col items-center justify-center px-1">
           <span
-            className={`text-[22px] sm:text-[30px] md:text-[34px] font-black tabular-nums leading-none tracking-tight ${
+            className={`text-[26px] sm:text-[30px] md:text-[34px] font-black tabular-nums leading-none tracking-tight ${
               isToday
                 ? 'text-white'
                 : dimmed
@@ -89,7 +89,7 @@ function DayCell({ day, idx, isToday }: { day: WeekDay; idx: number; isToday: bo
         </div>
 
         {/* Footer: status */}
-        <div className="flex items-center justify-center pb-2 sm:pb-3 pt-0.5 sm:pt-1 min-h-[22px] sm:min-h-7">
+        <div className="flex items-center justify-center pb-2.5 sm:pb-3 pt-1 min-h-[26px] sm:min-h-7">
           <StatusMark status={day.status} />
         </div>
       </div>
@@ -114,7 +114,7 @@ export default function WeeklyReport({ data }: WeeklyReportProps) {
         <div className="flex items-start justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-3 sm:gap-4 min-w-0">
             <div className="hidden sm:flex w-12 h-12 rounded-2xl bg-red-50 items-center justify-center shrink-0">
-              <CalendarBlank size={22} weight="duotone" className="text-red-600" />
+              <CalendarBlankIcon size={22} weight="duotone" className="text-red-600" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 sm:gap-2 mb-1 flex-wrap">
@@ -157,20 +157,20 @@ export default function WeeklyReport({ data }: WeeklyReportProps) {
       {/* Rodapé: legenda */}
       <div className="px-4 sm:px-8 pb-5 sm:pb-6 pt-1 sm:pt-2 flex items-center justify-end gap-3 sm:gap-4 flex-wrap">
         <div className="flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-emerald-500" />
-          <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+          <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-neutral-600">
             Meta
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-amber-500" />
-          <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+          <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+          <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-neutral-600">
             Atenção
           </span>
         </div>
         <div className="flex items-center gap-1.5">
-          <div className="w-2 h-2 rounded-full bg-red-500" />
-          <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
+          <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-neutral-600">
             Excedeu
           </span>
         </div>

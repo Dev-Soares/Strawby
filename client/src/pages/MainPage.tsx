@@ -3,6 +3,7 @@ import AppLayout from '../shared/layouts/AppLayout'
 import DailySummary from '../modules/home/components/DailySummary'
 import MealList from '../modules/home/components/MealList'
 import WeeklyReport from '../modules/home/components/WeeklyReport'
+import WeeklyScore from '../modules/home/components/WeeklyScore'
 import type { DailySummary as DailySummaryType } from '../modules/home/types/dailySummary'
 import type { Meal } from '../modules/home/types/meal'
 import type { WeeklyReportData } from '../modules/home/types/weeklyReport'
@@ -17,10 +18,54 @@ const summary: DailySummaryType = {
 }
 
 const meals: Meal[] = [
-  { id: '1', name: 'Café da manhã', mealType: 'breakfast', foods: ['Ovos mexidos', 'Pão integral', 'Café'], time: '07:30', kcal: 420 },
-  { id: '2', name: 'Almoço', mealType: 'lunch', foods: ['Frango grelhado', 'Arroz', 'Feijão', 'Salada'], time: '12:15', kcal: 680 },
-  { id: '3', name: 'Lanche', mealType: 'snack', foods: ['Banana', 'Mix de castanhas'], time: '15:30', kcal: 210 },
-  { id: '4', name: 'Jantar', mealType: 'dinner', foods: ['Salmão grelhado', 'Brócolis', 'Quinoa'], time: '19:45', kcal: 520 },
+  {
+    id: '1',
+    name: 'Café da manhã',
+    mealType: 'breakfast',
+    time: '07:30',
+    kcal: 420,
+    foods: [
+      { name: 'Ovos mexidos', grams: 120, kcal: 186, protein: 13, carbs: 1, fat: 14 },
+      { name: 'Pão integral', grams: 60, kcal: 158, protein: 6, carbs: 28, fat: 2 },
+      { name: 'Café', grams: 200, kcal: 76, protein: 1, carbs: 16, fat: 0 },
+    ],
+  },
+  {
+    id: '2',
+    name: 'Almoço',
+    mealType: 'lunch',
+    time: '12:15',
+    kcal: 680,
+    foods: [
+      { name: 'Frango grelhado', grams: 180, kcal: 243, protein: 42, carbs: 0, fat: 8 },
+      { name: 'Arroz branco', grams: 150, kcal: 195, protein: 4, carbs: 42, fat: 1 },
+      { name: 'Feijão preto', grams: 130, kcal: 148, protein: 10, carbs: 25, fat: 1 },
+      { name: 'Salada mista', grams: 100, kcal: 94, protein: 2, carbs: 6, fat: 7 },
+    ],
+  },
+  {
+    id: '3',
+    name: 'Lanche',
+    mealType: 'snack',
+    time: '15:30',
+    kcal: 210,
+    foods: [
+      { name: 'Banana prata', grams: 100, kcal: 89, protein: 1, carbs: 23, fat: 0 },
+      { name: 'Mix de castanhas', grams: 25, kcal: 121, protein: 4, carbs: 4, fat: 11 },
+    ],
+  },
+  {
+    id: '4',
+    name: 'Jantar',
+    mealType: 'dinner',
+    time: '19:45',
+    kcal: 520,
+    foods: [
+      { name: 'Salmão grelhado', grams: 180, kcal: 312, protein: 38, carbs: 0, fat: 18 },
+      { name: 'Brócolis no vapor', grams: 150, kcal: 51, protein: 4, carbs: 10, fat: 1 },
+      { name: 'Quinoa cozida', grams: 120, kcal: 157, protein: 5, carbs: 28, fat: 3 },
+    ],
+  },
 ]
 
 const userName = 'Bernardo'
@@ -52,7 +97,7 @@ export default function MainPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <p className="text-[10px] sm:text-xs font-black text-neutral-400 uppercase tracking-widest mb-2 sm:mb-4">
+          <p className="text-xs sm:text-sm font-black text-neutral-500 uppercase tracking-widest mb-3 sm:mb-4">
             {new Date().toLocaleDateString('pt-BR', {
               weekday: 'long',
               day: 'numeric',
@@ -60,13 +105,13 @@ export default function MainPage() {
             }).replace(/^\w/, (c) => c.toUpperCase())}
           </p>
           <p
-            className="text-3xl sm:text-5xl font-black text-neutral-950 leading-tight tracking-tight mb-1 sm:mb-2"
+            className="text-4xl sm:text-5xl font-black text-neutral-950 leading-tight tracking-tight mb-2"
             style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
           >
             Olá, {userName}
           </p>
           <h1
-            className="text-base sm:text-2xl font-black text-neutral-950 leading-tight tracking-tight"
+            className="text-lg sm:text-2xl font-black text-neutral-950 leading-tight tracking-tight"
             style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
           >
             Vamos cuidar da sua{' '}
@@ -77,7 +122,9 @@ export default function MainPage() {
         <div className="space-y-4 sm:space-y-5">
           <WeeklyReport data={weekly} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start">
+          <WeeklyScore score={weekly.weekScore} maxScore={weekly.weekMaxScore} />
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start pt-4">
             <DailySummary data={summary} />
             <MealList meals={meals} />
           </div>
