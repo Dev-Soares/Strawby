@@ -7,12 +7,14 @@ interface WeekDayBubbleProps {
 
 const statusRing: Record<WeekDayStatus, string> = {
   good: 'ring-emerald-400',
+  warn: 'ring-amber-400',
   bad: 'ring-red-400',
   neutral: 'ring-neutral-200',
 }
 
 const statusBg: Record<WeekDayStatus, string> = {
   good: 'bg-emerald-50 text-emerald-700',
+  warn: 'bg-amber-50 text-amber-700',
   bad: 'bg-red-50 text-red-700',
   neutral: 'bg-neutral-50 text-neutral-300',
 }
