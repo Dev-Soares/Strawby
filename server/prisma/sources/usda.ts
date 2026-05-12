@@ -1,6 +1,6 @@
 import axios from 'axios'
 import AdmZip from 'adm-zip'
-import { FoodEntry, isNutritionPlausible, isValidFoodName, round2, safeNum } from './common.js'
+import { cleanUsdaJunk, FoodEntry, isNutritionPlausible, isValidFoodName, round2, safeNum } from './common.js'
 import { translateName } from '../translations.js'
 import { hasBrazilianBrand, looksLikeBrand, shouldKeepBrandedFood } from './brands.js'
 
@@ -132,9 +132,17 @@ async function loadUsdaSource(cfg: UsdaSourceConfig): Promise<FoodEntry[]> {
 
   for (const row of foodRows) {
     const fdcId = row['fdc_id']
-    const description = row['description']?.trim()
+    const dataType = row['data_type']
+    const rawDescription = row['description']?.trim()
+    const description = rawDescription ? cleanUsdaJunk(rawDescription) : ''
     if (!fdcId || !description) continue
     if (!isValidFoodName(description)) continue
+
+    // Foundation: só foundation_food (resto é sample/sub_sample/agricultural — sem macros)
+    if (cfg.source === 'USDA_FOUNDATION' && dataType !== 'foundation_food') continue
+
+    // SR Legacy: só sr_legacy_food (defensive)
+    if (cfg.source === 'USDA_SR_LEGACY' && dataType !== 'sr_legacy_food') continue
 
     // Filtra marcas: mantém só genéricas ou marcas BR
     if (!shouldKeepBrandedFood(description)) continue

@@ -108,6 +108,7 @@ export const FoodScalarFieldEnum = {
   nameOriginal: 'nameOriginal',
   source: 'source',
   sourceId: 'sourceId',
+  sourceUrl: 'sourceUrl',
   category: 'category',
   priority: 'priority',
   calories: 'calories',
@@ -116,6 +117,7 @@ export const FoodScalarFieldEnum = {
   fat: 'fat',
   fiber: 'fiber',
   sodium: 'sodium',
+  servingSize: 'servingSize',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

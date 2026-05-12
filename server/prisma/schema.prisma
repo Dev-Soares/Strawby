@@ -37,6 +37,7 @@ model Food {
   nameOriginal  String?
   source        FoodSource
   sourceId      String?
+  sourceUrl     String?
   category      String?
   priority      Int            @default(0)
   calories      Float
@@ -45,6 +46,7 @@ model Food {
   fat           Float
   fiber         Float?
   sodium        Float?
+  servingSize   String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   mealItems     MealItem[]

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { FoodEntry, isNutritionPlausible, isValidFoodName, round2 } from './common.js'
+import { cleanUsdaJunk, FoodEntry, isNutritionPlausible, isValidFoodName, round2 } from './common.js'
 import { translateName } from '../translations.js'
 import { hasBrazilianBrand, looksLikeBrand, shouldKeepBrandedFood } from './brands.js'
 
@@ -51,7 +51,8 @@ export async function loadCnf(): Promise<FoodEntry[]> {
 
     const entries: FoodEntry[] = []
     for (const food of foods) {
-      const name = food.food_description?.trim()
+      const rawName = food.food_description?.trim()
+      const name = rawName ? cleanUsdaJunk(rawName) : ''
       if (!name) continue
       if (!isValidFoodName(name)) continue
       if (!shouldKeepBrandedFood(name)) continue

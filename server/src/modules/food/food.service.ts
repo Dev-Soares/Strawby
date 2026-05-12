@@ -29,7 +29,7 @@ export class FoodService {
     try {
       return await this.prisma.food.findMany({
         select: foodSelect,
-        orderBy: { name: 'asc' },
+        orderBy: [{ priority: 'desc' }, { name: 'asc' }],
       });
     } catch {
       throw new InternalServerErrorException('Erro ao buscar alimentos');
@@ -93,13 +93,13 @@ export class FoodService {
 
     try {
       const results = await this.prisma.$queryRaw<FoodPublic[]>`
-        SELECT id, name, calories, protein, carbs, fat
+        SELECT id, name, source::text AS source, priority, calories, protein, carbs, fat, fiber, sodium
         FROM "Food"
         WHERE ${Prisma.join(
           words.map((w) => Prisma.sql`unaccent(name) ILIKE unaccent(${`%${w}%`})`),
           ' AND ',
         )}
-        ORDER BY name ASC
+        ORDER BY priority DESC, name ASC
         LIMIT 50
       `;
 

@@ -71,6 +71,16 @@ export function isNutritionPlausible(
   return true
 }
 
+// Remove sufixos verbosos USDA tipo "(Includes foods for USDA's food Distribution Program)".
+export function cleanUsdaJunk(name: string): string {
+  return name
+    .replace(/\s*\(Includes [^)]*USDA[^)]*\)/gi, '')
+    .replace(/\s*\(Includes alimentos[^)]*\)/gi, '')
+    .replace(/\s*\(NDB[^)]*\)/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 // Normalização para deduplicação cross-source.
 export function normalizeForCompare(str: string): string {
   return str
