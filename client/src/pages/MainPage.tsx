@@ -1,8 +1,11 @@
+import { motion } from 'framer-motion'
 import AppLayout from '../shared/layouts/AppLayout'
 import DailySummary from '../modules/home/components/DailySummary'
 import MealList from '../modules/home/components/MealList'
+import WeeklyReport from '../modules/home/components/WeeklyReport'
 import type { DailySummary as DailySummaryType } from '../modules/home/types/dailySummary'
 import type { Meal } from '../modules/home/types/meal'
+import type { WeeklyReportData } from '../modules/home/types/weeklyReport'
 
 const summary: DailySummaryType = {
   macros: [
@@ -17,34 +20,66 @@ const meals: Meal[] = [
   { id: '1', name: 'Café da manhã', mealType: 'breakfast', foods: ['Ovos mexidos', 'Pão integral', 'Café'], time: '07:30', kcal: 420 },
   { id: '2', name: 'Almoço', mealType: 'lunch', foods: ['Frango grelhado', 'Arroz', 'Feijão', 'Salada'], time: '12:15', kcal: 680 },
   { id: '3', name: 'Lanche', mealType: 'snack', foods: ['Banana', 'Mix de castanhas'], time: '15:30', kcal: 210 },
+  { id: '4', name: 'Jantar', mealType: 'dinner', foods: ['Salmão grelhado', 'Brócolis', 'Quinoa'], time: '19:45', kcal: 520 },
 ]
+
+const userName = 'Bernardo'
+
+const weekly: WeeklyReportData = {
+  days: [
+    { day: 'S', date: 5, status: 'good', kcal: 2100, goal: 2200 },
+    { day: 'T', date: 6, status: 'good', kcal: 2150, goal: 2200 },
+    { day: 'Q', date: 7, status: 'bad', kcal: 2600, goal: 2200 },
+    { day: 'Q', date: 8, status: 'good', kcal: 2050, goal: 2200 },
+    { day: 'S', date: 9, status: 'neutral', kcal: 0, goal: 2200 },
+    { day: 'S', date: 10, status: 'neutral', kcal: 0, goal: 2200 },
+    { day: 'D', date: 11, status: 'neutral', kcal: 0, goal: 2200 },
+  ],
+  streak: 2,
+  bestStreak: 4,
+  weekTotalKcal: 8300,
+  weekGoalKcal: 11000,
+}
 
 export default function MainPage() {
   return (
     <AppLayout>
-      <div className="px-10 sm:px-16 py-12">
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-base">☀️</span>
-            <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Bom dia</span>
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-black text-neutral-950 leading-tight tracking-tight">
-            Como está sua{' '}
-            <span className="text-red-600">alimentação</span>{' '}
-            hoje?
-          </h1>
-          <p className="text-sm font-medium text-neutral-500 mt-3">
+      <div className="px-6 sm:px-10 lg:px-16 py-10 sm:py-12 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-amber-50/50 via-neutral-50 to-neutral-50 min-h-screen">
+        <motion.div
+          className="mb-10"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <p className="text-xs font-black text-neutral-400 uppercase tracking-widest mb-4">
             {new Date().toLocaleDateString('pt-BR', {
               weekday: 'long',
               day: 'numeric',
               month: 'long',
             }).replace(/^\w/, (c) => c.toUpperCase())}
           </p>
-        </div>
+          <p
+            className="text-4xl sm:text-5xl font-black text-neutral-950 leading-tight tracking-tight mb-2"
+            style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
+          >
+            Olá, {userName}
+          </p>
+          <h1
+            className="text-xl sm:text-2xl font-black text-neutral-950 leading-tight tracking-tight"
+            style={{ fontFamily: "'Cabinet Grotesk', sans-serif" }}
+          >
+            Vamos cuidar da sua{' '}
+            <span className="text-red-600">alimentação</span>?
+          </h1>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <DailySummary data={summary} />
-          <MealList meals={meals} />
+        <div className="space-y-5">
+          <WeeklyReport data={weekly} />
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
+            <DailySummary data={summary} />
+            <MealList meals={meals} />
+          </div>
         </div>
       </div>
     </AppLayout>

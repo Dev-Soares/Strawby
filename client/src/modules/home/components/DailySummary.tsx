@@ -1,40 +1,28 @@
+import { motion } from 'framer-motion'
 import { Fire } from '@phosphor-icons/react'
 import type { DailySummary, MacroRing } from '../types/dailySummary'
 
-const RADIUS = 40
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS
-
-function CircularRing({ label, value, max, unit, color, trackColor }: MacroRing) {
+function MacroBar({ label, value, max, unit, color, trackColor }: MacroRing) {
   const progress = Math.min(value / max, 1)
-  const dashOffset = CIRCUMFERENCE * (1 - progress)
   const displayValue = unit === 'kcal' ? value.toLocaleString('pt-BR') : value
-  const pct = Math.round(progress * 100)
 
   return (
-    <div className="flex flex-col items-center gap-3 flex-1">
-      <div className="relative w-28 h-28">
-        <svg width="112" height="112" viewBox="0 0 100 100" className="-rotate-90">
-          <circle cx="50" cy="50" r={RADIUS} fill="none" stroke={trackColor} strokeWidth="8" />
-          <circle
-            cx="50" cy="50" r={RADIUS} fill="none"
-            stroke={color} strokeWidth="8"
-            strokeDasharray={CIRCUMFERENCE}
-            strokeDashoffset={dashOffset}
-            strokeLinecap="round"
-          />
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
-          <span className="text-xl font-black text-neutral-900 leading-none tabular-nums">{displayValue}</span>
-          <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider">
-            {unit === 'kcal' ? 'KCAL' : unit.toUpperCase()}
-          </span>
+    <div className="flex-1 min-w-0">
+      <div className="flex items-end justify-between mb-3">
+        <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">{label}</span>
+        <div className="flex items-baseline gap-1">
+          <span className="text-2xl font-black text-neutral-950 tabular-nums leading-none">{displayValue}</span>
+          <span className="text-[10px] font-bold text-neutral-400 uppercase">{unit}</span>
         </div>
       </div>
-      <div className="text-center">
-        <p className="text-[11px] font-black text-neutral-600 uppercase tracking-widest">{label}</p>
-        <p className="text-[10px] font-medium mt-0.5" style={{ color }}>
-          {pct}% da meta
-        </p>
+      <div className="h-3 rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
+        <motion.div
+          className="h-full rounded-full"
+          style={{ backgroundColor: color }}
+          initial={{ width: 0 }}
+          animate={{ width: `${progress * 100}%` }}
+          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+        />
       </div>
     </div>
   )
@@ -49,42 +37,53 @@ export default function DailySummary({ data }: DailySummaryProps) {
   const calPct = Math.round((calorias.value / calorias.max) * 100)
 
   return (
-    <div className="relative bg-white rounded-2xl border border-neutral-200 shadow-sm p-7 h-full flex flex-col">
-      {/* Kcal badge */}
-      <div className="absolute -top-3.5 right-5 flex items-center gap-1.5 bg-red-50 border border-red-100 rounded-xl px-3 py-1.5">
-        <Fire size={14} weight="fill" className="text-red-500" />
-        <span className="text-xs font-bold text-red-600">
-          {calorias.value.toLocaleString('pt-BR')} kcal
-        </span>
-      </div>
+    <motion.div
+      className="relative bg-white rounded-3xl shadow-sm p-8 overflow-hidden"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="absolute top-0 right-0 w-48 h-48 bg-red-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 opacity-60 pointer-events-none" />
 
-      <div className="mb-6">
-        <h2 className="text-base font-bold text-neutral-900">Resumo diário</h2>
-        <p className="text-sm text-neutral-500 mt-0.5">Acompanhe seus macros</p>
-      </div>
-
-      <div className="flex items-start justify-between gap-2 flex-1">
-        {data.macros.map((macro) => (
-          <CircularRing key={macro.label} {...macro} />
-        ))}
-      </div>
-
-      {/* Calorie progress bar */}
-      <div className="mt-6 pt-5 border-t border-neutral-100">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-neutral-500">Progresso calórico do dia</span>
-          <span className="text-xs font-bold text-neutral-700 tabular-nums">
-            {calorias.value.toLocaleString('pt-BR')} / {calorias.max.toLocaleString('pt-BR')} kcal
-          </span>
+      <div className="relative">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-sm font-bold text-neutral-900">Resumo diário</h2>
+            <p className="text-xs text-neutral-400 mt-0.5">Acompanhe seus macros</p>
+          </div>
+          <div className="flex items-center gap-1.5 bg-red-50 rounded-2xl px-4 py-2">
+            <Fire size={16} weight="fill" className="text-red-500" />
+            <span className="text-sm font-black text-red-600 tabular-nums">
+              {calorias.value.toLocaleString('pt-BR')}
+            </span>
+            <span className="text-[10px] font-bold text-red-400 uppercase">kcal</span>
+          </div>
         </div>
-        <div className="h-2 rounded-full bg-red-50 overflow-hidden">
-          <div
-            className="h-full rounded-full bg-red-500 transition-all duration-700"
-            style={{ width: `${calPct}%` }}
-          />
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+          {data.macros.map((macro) => (
+            <MacroBar key={macro.label} {...macro} />
+          ))}
         </div>
-        <p className="text-xs font-medium text-neutral-500 mt-1.5">{calPct}% da meta diária consumida</p>
+
+        <div className="mt-8 pt-6 border-t border-neutral-100">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-semibold text-neutral-500">Progresso calórico do dia</span>
+            <span className="text-xs font-bold text-neutral-700 tabular-nums">
+              {calorias.value.toLocaleString('pt-BR')} / {calorias.max.toLocaleString('pt-BR')} kcal
+            </span>
+          </div>
+          <div className="h-3 rounded-full bg-red-50 overflow-hidden">
+            <motion.div
+              className="h-full rounded-full bg-red-500"
+              initial={{ width: 0 }}
+              animate={{ width: `${calPct}%` }}
+              transition={{ duration: 1, ease: 'easeOut', delay: 0.4 }}
+            />
+          </div>
+          <p className="text-xs font-medium text-neutral-400 mt-2">{calPct}% da meta diária consumida</p>
+        </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
