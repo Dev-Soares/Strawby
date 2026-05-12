@@ -27,26 +27,39 @@ export type AggregateFood = {
 }
 
 export type FoodAvgAggregateOutputType = {
+  priority: number | null
   calories: number | null
   protein: number | null
   carbs: number | null
   fat: number | null
+  fiber: number | null
+  sodium: number | null
 }
 
 export type FoodSumAggregateOutputType = {
+  priority: number | null
   calories: number | null
   protein: number | null
   carbs: number | null
   fat: number | null
+  fiber: number | null
+  sodium: number | null
 }
 
 export type FoodMinAggregateOutputType = {
   id: string | null
   name: string | null
+  nameOriginal: string | null
+  source: $Enums.FoodSource | null
+  sourceId: string | null
+  category: string | null
+  priority: number | null
   calories: number | null
   protein: number | null
   carbs: number | null
   fat: number | null
+  fiber: number | null
+  sodium: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,10 +67,17 @@ export type FoodMinAggregateOutputType = {
 export type FoodMaxAggregateOutputType = {
   id: string | null
   name: string | null
+  nameOriginal: string | null
+  source: $Enums.FoodSource | null
+  sourceId: string | null
+  category: string | null
+  priority: number | null
   calories: number | null
   protein: number | null
   carbs: number | null
   fat: number | null
+  fiber: number | null
+  sodium: number | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -65,10 +85,17 @@ export type FoodMaxAggregateOutputType = {
 export type FoodCountAggregateOutputType = {
   id: number
   name: number
+  nameOriginal: number
+  source: number
+  sourceId: number
+  category: number
+  priority: number
   calories: number
   protein: number
   carbs: number
   fat: number
+  fiber: number
+  sodium: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -76,26 +103,39 @@ export type FoodCountAggregateOutputType = {
 
 
 export type FoodAvgAggregateInputType = {
+  priority?: true
   calories?: true
   protein?: true
   carbs?: true
   fat?: true
+  fiber?: true
+  sodium?: true
 }
 
 export type FoodSumAggregateInputType = {
+  priority?: true
   calories?: true
   protein?: true
   carbs?: true
   fat?: true
+  fiber?: true
+  sodium?: true
 }
 
 export type FoodMinAggregateInputType = {
   id?: true
   name?: true
+  nameOriginal?: true
+  source?: true
+  sourceId?: true
+  category?: true
+  priority?: true
   calories?: true
   protein?: true
   carbs?: true
   fat?: true
+  fiber?: true
+  sodium?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -103,10 +143,17 @@ export type FoodMinAggregateInputType = {
 export type FoodMaxAggregateInputType = {
   id?: true
   name?: true
+  nameOriginal?: true
+  source?: true
+  sourceId?: true
+  category?: true
+  priority?: true
   calories?: true
   protein?: true
   carbs?: true
   fat?: true
+  fiber?: true
+  sodium?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -114,10 +161,17 @@ export type FoodMaxAggregateInputType = {
 export type FoodCountAggregateInputType = {
   id?: true
   name?: true
+  nameOriginal?: true
+  source?: true
+  sourceId?: true
+  category?: true
+  priority?: true
   calories?: true
   protein?: true
   carbs?: true
   fat?: true
+  fiber?: true
+  sodium?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -212,10 +266,17 @@ export type FoodGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 export type FoodGroupByOutputType = {
   id: string
   name: string
+  nameOriginal: string | null
+  source: $Enums.FoodSource
+  sourceId: string | null
+  category: string | null
+  priority: number
   calories: number
   protein: number
   carbs: number
   fat: number
+  fiber: number | null
+  sodium: number | null
   createdAt: Date
   updatedAt: Date
   _count: FoodCountAggregateOutputType | null
@@ -246,10 +307,17 @@ export type FoodWhereInput = {
   NOT?: Prisma.FoodWhereInput | Prisma.FoodWhereInput[]
   id?: Prisma.StringFilter<"Food"> | string
   name?: Prisma.StringFilter<"Food"> | string
+  nameOriginal?: Prisma.StringNullableFilter<"Food"> | string | null
+  source?: Prisma.EnumFoodSourceFilter<"Food"> | $Enums.FoodSource
+  sourceId?: Prisma.StringNullableFilter<"Food"> | string | null
+  category?: Prisma.StringNullableFilter<"Food"> | string | null
+  priority?: Prisma.IntFilter<"Food"> | number
   calories?: Prisma.FloatFilter<"Food"> | number
   protein?: Prisma.FloatFilter<"Food"> | number
   carbs?: Prisma.FloatFilter<"Food"> | number
   fat?: Prisma.FloatFilter<"Food"> | number
+  fiber?: Prisma.FloatNullableFilter<"Food"> | number | null
+  sodium?: Prisma.FloatNullableFilter<"Food"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Food"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Food"> | Date | string
   mealItems?: Prisma.MealItemListRelationFilter
@@ -259,10 +327,17 @@ export type FoodWhereInput = {
 export type FoodOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameOriginal?: Prisma.SortOrderInput | Prisma.SortOrder
+  source?: Prisma.SortOrder
+  sourceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  priority?: Prisma.SortOrder
   calories?: Prisma.SortOrder
   protein?: Prisma.SortOrder
   carbs?: Prisma.SortOrder
   fat?: Prisma.SortOrder
+  fiber?: Prisma.SortOrderInput | Prisma.SortOrder
+  sodium?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   mealItems?: Prisma.MealItemOrderByRelationAggregateInput
@@ -271,27 +346,42 @@ export type FoodOrderByWithRelationInput = {
 
 export type FoodWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  source_sourceId?: Prisma.FoodSourceSourceIdCompoundUniqueInput
   AND?: Prisma.FoodWhereInput | Prisma.FoodWhereInput[]
   OR?: Prisma.FoodWhereInput[]
   NOT?: Prisma.FoodWhereInput | Prisma.FoodWhereInput[]
   name?: Prisma.StringFilter<"Food"> | string
+  nameOriginal?: Prisma.StringNullableFilter<"Food"> | string | null
+  source?: Prisma.EnumFoodSourceFilter<"Food"> | $Enums.FoodSource
+  sourceId?: Prisma.StringNullableFilter<"Food"> | string | null
+  category?: Prisma.StringNullableFilter<"Food"> | string | null
+  priority?: Prisma.IntFilter<"Food"> | number
   calories?: Prisma.FloatFilter<"Food"> | number
   protein?: Prisma.FloatFilter<"Food"> | number
   carbs?: Prisma.FloatFilter<"Food"> | number
   fat?: Prisma.FloatFilter<"Food"> | number
+  fiber?: Prisma.FloatNullableFilter<"Food"> | number | null
+  sodium?: Prisma.FloatNullableFilter<"Food"> | number | null
   createdAt?: Prisma.DateTimeFilter<"Food"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Food"> | Date | string
   mealItems?: Prisma.MealItemListRelationFilter
   planMealItems?: Prisma.PlanMealItemListRelationFilter
-}, "id">
+}, "id" | "source_sourceId">
 
 export type FoodOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameOriginal?: Prisma.SortOrderInput | Prisma.SortOrder
+  source?: Prisma.SortOrder
+  sourceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
+  priority?: Prisma.SortOrder
   calories?: Prisma.SortOrder
   protein?: Prisma.SortOrder
   carbs?: Prisma.SortOrder
   fat?: Prisma.SortOrder
+  fiber?: Prisma.SortOrderInput | Prisma.SortOrder
+  sodium?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.FoodCountOrderByAggregateInput
@@ -307,10 +397,17 @@ export type FoodScalarWhereWithAggregatesInput = {
   NOT?: Prisma.FoodScalarWhereWithAggregatesInput | Prisma.FoodScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Food"> | string
   name?: Prisma.StringWithAggregatesFilter<"Food"> | string
+  nameOriginal?: Prisma.StringNullableWithAggregatesFilter<"Food"> | string | null
+  source?: Prisma.EnumFoodSourceWithAggregatesFilter<"Food"> | $Enums.FoodSource
+  sourceId?: Prisma.StringNullableWithAggregatesFilter<"Food"> | string | null
+  category?: Prisma.StringNullableWithAggregatesFilter<"Food"> | string | null
+  priority?: Prisma.IntWithAggregatesFilter<"Food"> | number
   calories?: Prisma.FloatWithAggregatesFilter<"Food"> | number
   protein?: Prisma.FloatWithAggregatesFilter<"Food"> | number
   carbs?: Prisma.FloatWithAggregatesFilter<"Food"> | number
   fat?: Prisma.FloatWithAggregatesFilter<"Food"> | number
+  fiber?: Prisma.FloatNullableWithAggregatesFilter<"Food"> | number | null
+  sodium?: Prisma.FloatNullableWithAggregatesFilter<"Food"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Food"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Food"> | Date | string
 }
@@ -318,10 +415,17 @@ export type FoodScalarWhereWithAggregatesInput = {
 export type FoodCreateInput = {
   id?: string
   name: string
+  nameOriginal?: string | null
+  source: $Enums.FoodSource
+  sourceId?: string | null
+  category?: string | null
+  priority?: number
   calories: number
   protein: number
   carbs: number
   fat: number
+  fiber?: number | null
+  sodium?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   mealItems?: Prisma.MealItemCreateNestedManyWithoutFoodInput
@@ -331,10 +435,17 @@ export type FoodCreateInput = {
 export type FoodUncheckedCreateInput = {
   id?: string
   name: string
+  nameOriginal?: string | null
+  source: $Enums.FoodSource
+  sourceId?: string | null
+  category?: string | null
+  priority?: number
   calories: number
   protein: number
   carbs: number
   fat: number
+  fiber?: number | null
+  sodium?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   mealItems?: Prisma.MealItemUncheckedCreateNestedManyWithoutFoodInput
@@ -344,10 +455,17 @@ export type FoodUncheckedCreateInput = {
 export type FoodUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameOriginal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumFoodSourceFieldUpdateOperationsInput | $Enums.FoodSource
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   calories?: Prisma.FloatFieldUpdateOperationsInput | number
   protein?: Prisma.FloatFieldUpdateOperationsInput | number
   carbs?: Prisma.FloatFieldUpdateOperationsInput | number
   fat?: Prisma.FloatFieldUpdateOperationsInput | number
+  fiber?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sodium?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   mealItems?: Prisma.MealItemUpdateManyWithoutFoodNestedInput
@@ -357,10 +475,17 @@ export type FoodUpdateInput = {
 export type FoodUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameOriginal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumFoodSourceFieldUpdateOperationsInput | $Enums.FoodSource
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   calories?: Prisma.FloatFieldUpdateOperationsInput | number
   protein?: Prisma.FloatFieldUpdateOperationsInput | number
   carbs?: Prisma.FloatFieldUpdateOperationsInput | number
   fat?: Prisma.FloatFieldUpdateOperationsInput | number
+  fiber?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sodium?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   mealItems?: Prisma.MealItemUncheckedUpdateManyWithoutFoodNestedInput
@@ -370,10 +495,17 @@ export type FoodUncheckedUpdateInput = {
 export type FoodCreateManyInput = {
   id?: string
   name: string
+  nameOriginal?: string | null
+  source: $Enums.FoodSource
+  sourceId?: string | null
+  category?: string | null
+  priority?: number
   calories: number
   protein: number
   carbs: number
   fat: number
+  fiber?: number | null
+  sodium?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -381,10 +513,17 @@ export type FoodCreateManyInput = {
 export type FoodUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameOriginal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumFoodSourceFieldUpdateOperationsInput | $Enums.FoodSource
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   calories?: Prisma.FloatFieldUpdateOperationsInput | number
   protein?: Prisma.FloatFieldUpdateOperationsInput | number
   carbs?: Prisma.FloatFieldUpdateOperationsInput | number
   fat?: Prisma.FloatFieldUpdateOperationsInput | number
+  fiber?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sodium?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -392,39 +531,68 @@ export type FoodUpdateManyMutationInput = {
 export type FoodUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameOriginal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumFoodSourceFieldUpdateOperationsInput | $Enums.FoodSource
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   calories?: Prisma.FloatFieldUpdateOperationsInput | number
   protein?: Prisma.FloatFieldUpdateOperationsInput | number
   carbs?: Prisma.FloatFieldUpdateOperationsInput | number
   fat?: Prisma.FloatFieldUpdateOperationsInput | number
+  fiber?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sodium?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type FoodSourceSourceIdCompoundUniqueInput = {
+  source: $Enums.FoodSource
+  sourceId: string
 }
 
 export type FoodCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameOriginal?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  sourceId?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   calories?: Prisma.SortOrder
   protein?: Prisma.SortOrder
   carbs?: Prisma.SortOrder
   fat?: Prisma.SortOrder
+  fiber?: Prisma.SortOrder
+  sodium?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type FoodAvgOrderByAggregateInput = {
+  priority?: Prisma.SortOrder
   calories?: Prisma.SortOrder
   protein?: Prisma.SortOrder
   carbs?: Prisma.SortOrder
   fat?: Prisma.SortOrder
+  fiber?: Prisma.SortOrder
+  sodium?: Prisma.SortOrder
 }
 
 export type FoodMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameOriginal?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  sourceId?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   calories?: Prisma.SortOrder
   protein?: Prisma.SortOrder
   carbs?: Prisma.SortOrder
   fat?: Prisma.SortOrder
+  fiber?: Prisma.SortOrder
+  sodium?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -432,24 +600,58 @@ export type FoodMaxOrderByAggregateInput = {
 export type FoodMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  nameOriginal?: Prisma.SortOrder
+  source?: Prisma.SortOrder
+  sourceId?: Prisma.SortOrder
+  category?: Prisma.SortOrder
+  priority?: Prisma.SortOrder
   calories?: Prisma.SortOrder
   protein?: Prisma.SortOrder
   carbs?: Prisma.SortOrder
   fat?: Prisma.SortOrder
+  fiber?: Prisma.SortOrder
+  sodium?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type FoodSumOrderByAggregateInput = {
+  priority?: Prisma.SortOrder
   calories?: Prisma.SortOrder
   protein?: Prisma.SortOrder
   carbs?: Prisma.SortOrder
   fat?: Prisma.SortOrder
+  fiber?: Prisma.SortOrder
+  sodium?: Prisma.SortOrder
 }
 
 export type FoodScalarRelationFilter = {
   is?: Prisma.FoodWhereInput
   isNot?: Prisma.FoodWhereInput
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
+export type EnumFoodSourceFieldUpdateOperationsInput = {
+  set?: $Enums.FoodSource
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type FoodCreateNestedOneWithoutMealItemsInput = {
@@ -483,10 +685,17 @@ export type FoodUpdateOneRequiredWithoutPlanMealItemsNestedInput = {
 export type FoodCreateWithoutMealItemsInput = {
   id?: string
   name: string
+  nameOriginal?: string | null
+  source: $Enums.FoodSource
+  sourceId?: string | null
+  category?: string | null
+  priority?: number
   calories: number
   protein: number
   carbs: number
   fat: number
+  fiber?: number | null
+  sodium?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   planMealItems?: Prisma.PlanMealItemCreateNestedManyWithoutFoodInput
@@ -495,10 +704,17 @@ export type FoodCreateWithoutMealItemsInput = {
 export type FoodUncheckedCreateWithoutMealItemsInput = {
   id?: string
   name: string
+  nameOriginal?: string | null
+  source: $Enums.FoodSource
+  sourceId?: string | null
+  category?: string | null
+  priority?: number
   calories: number
   protein: number
   carbs: number
   fat: number
+  fiber?: number | null
+  sodium?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   planMealItems?: Prisma.PlanMealItemUncheckedCreateNestedManyWithoutFoodInput
@@ -523,10 +739,17 @@ export type FoodUpdateToOneWithWhereWithoutMealItemsInput = {
 export type FoodUpdateWithoutMealItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameOriginal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumFoodSourceFieldUpdateOperationsInput | $Enums.FoodSource
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   calories?: Prisma.FloatFieldUpdateOperationsInput | number
   protein?: Prisma.FloatFieldUpdateOperationsInput | number
   carbs?: Prisma.FloatFieldUpdateOperationsInput | number
   fat?: Prisma.FloatFieldUpdateOperationsInput | number
+  fiber?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sodium?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   planMealItems?: Prisma.PlanMealItemUpdateManyWithoutFoodNestedInput
@@ -535,10 +758,17 @@ export type FoodUpdateWithoutMealItemsInput = {
 export type FoodUncheckedUpdateWithoutMealItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameOriginal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumFoodSourceFieldUpdateOperationsInput | $Enums.FoodSource
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   calories?: Prisma.FloatFieldUpdateOperationsInput | number
   protein?: Prisma.FloatFieldUpdateOperationsInput | number
   carbs?: Prisma.FloatFieldUpdateOperationsInput | number
   fat?: Prisma.FloatFieldUpdateOperationsInput | number
+  fiber?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sodium?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   planMealItems?: Prisma.PlanMealItemUncheckedUpdateManyWithoutFoodNestedInput
@@ -547,10 +777,17 @@ export type FoodUncheckedUpdateWithoutMealItemsInput = {
 export type FoodCreateWithoutPlanMealItemsInput = {
   id?: string
   name: string
+  nameOriginal?: string | null
+  source: $Enums.FoodSource
+  sourceId?: string | null
+  category?: string | null
+  priority?: number
   calories: number
   protein: number
   carbs: number
   fat: number
+  fiber?: number | null
+  sodium?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   mealItems?: Prisma.MealItemCreateNestedManyWithoutFoodInput
@@ -559,10 +796,17 @@ export type FoodCreateWithoutPlanMealItemsInput = {
 export type FoodUncheckedCreateWithoutPlanMealItemsInput = {
   id?: string
   name: string
+  nameOriginal?: string | null
+  source: $Enums.FoodSource
+  sourceId?: string | null
+  category?: string | null
+  priority?: number
   calories: number
   protein: number
   carbs: number
   fat: number
+  fiber?: number | null
+  sodium?: number | null
   createdAt?: Date | string
   updatedAt?: Date | string
   mealItems?: Prisma.MealItemUncheckedCreateNestedManyWithoutFoodInput
@@ -587,10 +831,17 @@ export type FoodUpdateToOneWithWhereWithoutPlanMealItemsInput = {
 export type FoodUpdateWithoutPlanMealItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameOriginal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumFoodSourceFieldUpdateOperationsInput | $Enums.FoodSource
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   calories?: Prisma.FloatFieldUpdateOperationsInput | number
   protein?: Prisma.FloatFieldUpdateOperationsInput | number
   carbs?: Prisma.FloatFieldUpdateOperationsInput | number
   fat?: Prisma.FloatFieldUpdateOperationsInput | number
+  fiber?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sodium?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   mealItems?: Prisma.MealItemUpdateManyWithoutFoodNestedInput
@@ -599,10 +850,17 @@ export type FoodUpdateWithoutPlanMealItemsInput = {
 export type FoodUncheckedUpdateWithoutPlanMealItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  nameOriginal?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.EnumFoodSourceFieldUpdateOperationsInput | $Enums.FoodSource
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  priority?: Prisma.IntFieldUpdateOperationsInput | number
   calories?: Prisma.FloatFieldUpdateOperationsInput | number
   protein?: Prisma.FloatFieldUpdateOperationsInput | number
   carbs?: Prisma.FloatFieldUpdateOperationsInput | number
   fat?: Prisma.FloatFieldUpdateOperationsInput | number
+  fiber?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  sodium?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   mealItems?: Prisma.MealItemUncheckedUpdateManyWithoutFoodNestedInput
@@ -651,10 +909,17 @@ export type FoodCountOutputTypeCountPlanMealItemsArgs<ExtArgs extends runtime.Ty
 export type FoodSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  nameOriginal?: boolean
+  source?: boolean
+  sourceId?: boolean
+  category?: boolean
+  priority?: boolean
   calories?: boolean
   protein?: boolean
   carbs?: boolean
   fat?: boolean
+  fiber?: boolean
+  sodium?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   mealItems?: boolean | Prisma.Food$mealItemsArgs<ExtArgs>
@@ -665,10 +930,17 @@ export type FoodSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type FoodSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  nameOriginal?: boolean
+  source?: boolean
+  sourceId?: boolean
+  category?: boolean
+  priority?: boolean
   calories?: boolean
   protein?: boolean
   carbs?: boolean
   fat?: boolean
+  fiber?: boolean
+  sodium?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["food"]>
@@ -676,10 +948,17 @@ export type FoodSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 export type FoodSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
+  nameOriginal?: boolean
+  source?: boolean
+  sourceId?: boolean
+  category?: boolean
+  priority?: boolean
   calories?: boolean
   protein?: boolean
   carbs?: boolean
   fat?: boolean
+  fiber?: boolean
+  sodium?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["food"]>
@@ -687,15 +966,22 @@ export type FoodSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
 export type FoodSelectScalar = {
   id?: boolean
   name?: boolean
+  nameOriginal?: boolean
+  source?: boolean
+  sourceId?: boolean
+  category?: boolean
+  priority?: boolean
   calories?: boolean
   protein?: boolean
   carbs?: boolean
   fat?: boolean
+  fiber?: boolean
+  sodium?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type FoodOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "calories" | "protein" | "carbs" | "fat" | "createdAt" | "updatedAt", ExtArgs["result"]["food"]>
+export type FoodOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "nameOriginal" | "source" | "sourceId" | "category" | "priority" | "calories" | "protein" | "carbs" | "fat" | "fiber" | "sodium" | "createdAt" | "updatedAt", ExtArgs["result"]["food"]>
 export type FoodInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   mealItems?: boolean | Prisma.Food$mealItemsArgs<ExtArgs>
   planMealItems?: boolean | Prisma.Food$planMealItemsArgs<ExtArgs>
@@ -713,10 +999,17 @@ export type $FoodPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
+    nameOriginal: string | null
+    source: $Enums.FoodSource
+    sourceId: string | null
+    category: string | null
+    priority: number
     calories: number
     protein: number
     carbs: number
     fat: number
+    fiber: number | null
+    sodium: number | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["food"]>
@@ -1146,10 +1439,17 @@ export interface Prisma__FoodClient<T, Null = never, ExtArgs extends runtime.Typ
 export interface FoodFieldRefs {
   readonly id: Prisma.FieldRef<"Food", 'String'>
   readonly name: Prisma.FieldRef<"Food", 'String'>
+  readonly nameOriginal: Prisma.FieldRef<"Food", 'String'>
+  readonly source: Prisma.FieldRef<"Food", 'FoodSource'>
+  readonly sourceId: Prisma.FieldRef<"Food", 'String'>
+  readonly category: Prisma.FieldRef<"Food", 'String'>
+  readonly priority: Prisma.FieldRef<"Food", 'Int'>
   readonly calories: Prisma.FieldRef<"Food", 'Float'>
   readonly protein: Prisma.FieldRef<"Food", 'Float'>
   readonly carbs: Prisma.FieldRef<"Food", 'Float'>
   readonly fat: Prisma.FieldRef<"Food", 'Float'>
+  readonly fiber: Prisma.FieldRef<"Food", 'Float'>
+  readonly sodium: Prisma.FieldRef<"Food", 'Float'>
   readonly createdAt: Prisma.FieldRef<"Food", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Food", 'DateTime'>
 }

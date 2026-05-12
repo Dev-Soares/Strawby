@@ -34,14 +34,34 @@ model Plan {
 model Food {
   id            String         @id @default(uuid())
   name          String
+  nameOriginal  String?
+  source        FoodSource
+  sourceId      String?
+  category      String?
+  priority      Int            @default(0)
   calories      Float
   protein       Float
   carbs         Float
   fat           Float
+  fiber         Float?
+  sodium        Float?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   mealItems     MealItem[]
   planMealItems PlanMealItem[]
+
+  @@unique([source, sourceId])
+  @@index([priority(sort: Desc), name])
+}
+
+enum FoodSource {
+  TACO
+  USDA_FOUNDATION
+  USDA_SR_LEGACY
+  CNF
+  LIVS
+  OFF
+  MANUAL
 }
 
 model Meal {

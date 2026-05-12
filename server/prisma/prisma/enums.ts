@@ -9,7 +9,14 @@
 * 🟢 You can import this file directly.
 */
 
+export const FoodSource = {
+  TACO: 'TACO',
+  USDA_FOUNDATION: 'USDA_FOUNDATION',
+  USDA_SR_LEGACY: 'USDA_SR_LEGACY',
+  CNF: 'CNF',
+  LIVS: 'LIVS',
+  OFF: 'OFF',
+  MANUAL: 'MANUAL'
+} as const
 
-
-// This file is empty because there are no enums in the schema.
-export {}
+export type FoodSource = (typeof FoodSource)[keyof typeof FoodSource]

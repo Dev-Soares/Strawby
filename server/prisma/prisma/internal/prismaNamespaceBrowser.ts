@@ -105,10 +105,17 @@ export type PlanScalarFieldEnum = (typeof PlanScalarFieldEnum)[keyof typeof Plan
 export const FoodScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  nameOriginal: 'nameOriginal',
+  source: 'source',
+  sourceId: 'sourceId',
+  category: 'category',
+  priority: 'priority',
   calories: 'calories',
   protein: 'protein',
   carbs: 'carbs',
   fat: 'fat',
+  fiber: 'fiber',
+  sodium: 'sodium',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -178,4 +185,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

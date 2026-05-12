@@ -996,10 +996,17 @@ export type PlanScalarFieldEnum = (typeof PlanScalarFieldEnum)[keyof typeof Plan
 export const FoodScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  nameOriginal: 'nameOriginal',
+  source: 'source',
+  sourceId: 'sourceId',
+  category: 'category',
+  priority: 'priority',
   calories: 'calories',
   protein: 'protein',
   carbs: 'carbs',
   fat: 'fat',
+  fiber: 'fiber',
+  sodium: 'sodium',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1071,6 +1078,14 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
 
 /**
  * Field references
@@ -1116,6 +1131,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'FoodSource'
+ */
+export type EnumFoodSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FoodSource'>
+    
+
+
+/**
+ * Reference to a field of type 'FoodSource[]'
+ */
+export type ListEnumFoodSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FoodSource[]'>
     
 
 
