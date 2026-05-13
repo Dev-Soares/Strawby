@@ -67,7 +67,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center px-4"
+          className="fixed inset-0 z-[80] flex items-center justify-center px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -83,10 +83,10 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
             transition={{ duration: 0.24, ease: [0.34, 1.05, 0.64, 1] }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-8 pt-8 pb-6">
+            <div className="flex items-center justify-between px-5 sm:px-8 pt-6 sm:pt-8 pb-5 sm:pb-6">
               <div>
-                <h2 className="text-xl font-extrabold text-neutral-950 tracking-tight">Editar Plano</h2>
-                <p className="text-sm text-neutral-400 mt-0.5">Ajuste seus objetivos nutricionais</p>
+                <h2 className="text-lg sm:text-xl font-extrabold text-neutral-950 tracking-tight">Editar Plano</h2>
+                <p className="text-xs sm:text-sm text-neutral-400 mt-0.5">Ajuste seus objetivos nutricionais</p>
               </div>
               <button
                 type="button"
@@ -97,37 +97,37 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
               </button>
             </div>
 
-            <form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit} className="max-h-[70vh] sm:max-h-none overflow-y-auto">
               {/* Calorie section */}
-              <div className="mx-8 rounded-2xl bg-linear-to-br from-red-50 to-red-100/40 border border-red-100 px-8 py-7">
-                <div className="flex items-center gap-2 mb-6">
+              <div className="mx-5 sm:mx-8 rounded-2xl bg-linear-to-br from-red-50 to-red-100/40 border border-red-100 px-4 sm:px-8 py-5 sm:py-7">
+                <div className="flex items-center gap-2 mb-4 sm:mb-6">
                   <Fire size={14} weight="fill" className="text-red-500" />
                   <span className="text-[10px] font-extrabold text-red-600 uppercase tracking-[0.12em]">Meta calórica diária</span>
                 </div>
 
-                <div className="flex items-center justify-between gap-5">
+                <div className="flex items-center justify-between gap-3 sm:gap-5">
                   <button
                     type="button"
                     onClick={() => nudge('dailyKcal', -50, 1000, 5000)}
-                    className="w-14 h-14 rounded-full border-2 border-red-200 bg-white text-red-600 text-2xl font-extrabold flex items-center justify-center hover:border-red-400 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
+                    className="w-11 h-11 sm:w-14 sm:h-14 rounded-full border-2 border-red-200 bg-white text-red-600 text-xl sm:text-2xl font-extrabold flex items-center justify-center hover:border-red-400 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
                   >
                     −
                   </button>
 
-                  <div className="text-center flex-1">
+                  <div className="text-center flex-1 min-w-0">
                     <input
                       {...register('dailyKcal', { valueAsNumber: true })}
                       type="number"
-                      className="font-display text-7xl font-extrabold text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-200 focus:border-red-500 pb-1 cursor-text transition-colors duration-150"
+                      className="font-display text-5xl sm:text-7xl font-extrabold text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-200 focus:border-red-500 pb-1 cursor-text transition-colors duration-150"
                     />
-                    <p className="text-sm font-semibold text-neutral-400 mt-2">kcal / dia · mín 1000 · máx 5000</p>
-                    <p className="text-[10px] text-red-400/70 mt-1">clique no número para digitar</p>
+                    <p className="text-xs sm:text-sm font-semibold text-neutral-400 mt-2">kcal / dia · mín 1000 · máx 5000</p>
+                    <p className="text-[10px] text-red-400/70 mt-1 hidden sm:block">clique no número para digitar</p>
                   </div>
 
                   <button
                     type="button"
                     onClick={() => nudge('dailyKcal', +50, 1000, 5000)}
-                    className="w-14 h-14 rounded-full border-2 border-red-200 bg-white text-red-600 text-2xl font-extrabold flex items-center justify-center hover:border-red-400 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
+                    className="w-11 h-11 sm:w-14 sm:h-14 rounded-full border-2 border-red-200 bg-white text-red-600 text-xl sm:text-2xl font-extrabold flex items-center justify-center hover:border-red-400 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
                   >
                     +
                   </button>
@@ -135,44 +135,44 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
               </div>
 
               {/* Macro cards */}
-              <div className="grid grid-cols-3 gap-4 mx-8 mt-5">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 mx-5 sm:mx-8 mt-4 sm:mt-5">
                 {macroConfig.map((macro) => (
                   <div
                     key={macro.field}
-                    className={`${macro.bg} ${macro.border} border rounded-2xl px-5 py-5 flex flex-col items-center`}
+                    className={`${macro.bg} ${macro.border} border rounded-2xl px-2 sm:px-5 py-4 sm:py-5 flex flex-col items-center`}
                   >
-                    <span className={`text-[9px] font-extrabold uppercase tracking-[0.14em] ${macro.textColor} mb-4`}>
+                    <span className={`text-[8px] sm:text-[9px] font-extrabold uppercase tracking-[0.14em] ${macro.textColor} mb-3 sm:mb-4`}>
                       {macro.label}
                     </span>
 
-                    <div className="flex items-end justify-center gap-1 mb-1 w-full">
+                    <div className="flex items-end justify-center gap-0.5 sm:gap-1 mb-1 w-full">
                       <input
                         {...register(macro.field, { valueAsNumber: true })}
                         type="number"
-                        className="font-display text-5xl font-extrabold text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150"
+                        className="font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150"
                         style={{ borderBottomColor: `${macro.color}55` }}
                         onFocus={(e) => { e.currentTarget.style.borderBottomColor = macro.color }}
                         onBlur={(e) => { e.currentTarget.style.borderBottomColor = `${macro.color}55` }}
                       />
-                      <span className="text-base font-bold text-neutral-400 pb-1.5 shrink-0">g</span>
+                      <span className="text-sm sm:text-base font-bold text-neutral-400 pb-1 shrink-0">g</span>
                     </div>
 
-                    <p className="text-[9px] text-neutral-400 mb-5">máx. {macro.max}g</p>
+                    <p className="text-[8px] sm:text-[9px] text-neutral-400 mb-3 sm:mb-5">máx. {macro.max}g</p>
 
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-1.5 sm:gap-2.5">
                       <button
                         type="button"
                         onClick={() => nudge(macro.field, -macro.step, 0, macro.max)}
-                        className="w-9 h-9 rounded-full bg-white shadow-sm hover:shadow-md font-extrabold text-base flex items-center justify-center transition-shadow cursor-pointer"
+                        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white shadow-sm hover:shadow-md font-extrabold text-sm sm:text-base flex items-center justify-center transition-shadow cursor-pointer"
                         style={{ color: macro.color }}
                       >
                         −
                       </button>
-                      <span className="text-[9px] font-bold text-neutral-400">±{macro.step}g</span>
+                      <span className="text-[8px] sm:text-[9px] font-bold text-neutral-400">±{macro.step}g</span>
                       <button
                         type="button"
                         onClick={() => nudge(macro.field, +macro.step, 0, macro.max)}
-                        className="w-9 h-9 rounded-full bg-white shadow-sm hover:shadow-md font-extrabold text-base flex items-center justify-center transition-shadow cursor-pointer"
+                        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white shadow-sm hover:shadow-md font-extrabold text-sm sm:text-base flex items-center justify-center transition-shadow cursor-pointer"
                         style={{ color: macro.color }}
                       >
                         +
@@ -183,7 +183,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
               </div>
 
               {/* Footer */}
-              <div className="flex gap-3 px-8 py-7">
+              <div className="flex gap-3 px-5 sm:px-8 py-5 sm:py-7">
                 <button
                   type="button"
                   onClick={onClose}

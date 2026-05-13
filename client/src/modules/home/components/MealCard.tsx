@@ -159,7 +159,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                         {food.protein}<span className="text-amber-700 font-bold">g</span>
                       </span>
                       <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-amber-800 ml-auto">
-                        P
+                        Prot
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5 bg-blue-100 border border-blue-200 rounded-lg px-2 py-1">
@@ -168,7 +168,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                         {food.carbs}<span className="text-blue-700 font-bold">g</span>
                       </span>
                       <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-blue-800 ml-auto">
-                        C
+                        Carb
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5 bg-violet-100 border border-violet-200 rounded-lg px-2 py-1">
@@ -177,7 +177,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                         {food.fat}<span className="text-violet-700 font-bold">g</span>
                       </span>
                       <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-violet-800 ml-auto">
-                        G
+                        Gord
                       </span>
                     </div>
                   </div>

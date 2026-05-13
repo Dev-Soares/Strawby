@@ -2,22 +2,14 @@ import { motion } from 'framer-motion'
 import { FireIcon } from '@phosphor-icons/react'
 import type { DailySummary, MacroRing } from '../types/dailySummary'
 
-const macroShortLabels: Record<string, string> = {
-  CALORIAS: 'KCAL',
-  PROTEÍNA: 'P',
-  CARBOS: 'C',
-  GORDURA: 'G',
-}
-
 function MacroBar({ label, value, max, unit, color, trackColor }: MacroRing) {
   const progress = Math.min(value / max, 1)
   const displayValue = unit === 'kcal' ? value.toLocaleString('pt-BR') : value
-  const shortLabel = macroShortLabels[label] ?? label
 
   return (
     <div className="flex flex-col min-w-0">
       <span className="text-[10px] sm:text-xs font-extrabold text-red-600 uppercase tracking-widest mb-1.5">
-        {shortLabel}
+        {label}
       </span>
       <div className="flex items-baseline gap-1 mb-2 sm:mb-3">
         <span className="text-xl sm:text-2xl font-extrabold text-neutral-950 tabular-nums leading-none">

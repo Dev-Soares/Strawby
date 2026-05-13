@@ -9,7 +9,7 @@ const summary: DailySummaryType = {
   macros: [
     { label: 'CALORIAS', value: 1310, max: 2200, unit: 'kcal', color: '#dc2626', trackColor: '#fee2e2' },
     { label: 'PROTEÍNA', value: 82, max: 150, unit: 'g', color: '#f59e0b', trackColor: '#fef3c7' },
-    { label: 'CARBOS', value: 145, max: 280, unit: 'g', color: '#3b82f6', trackColor: '#dbeafe' },
+    { label: 'CARBOIDRATOS', value: 145, max: 280, unit: 'g', color: '#3b82f6', trackColor: '#dbeafe' },
     { label: 'GORDURA', value: 48, max: 73, unit: 'g', color: '#a855f7', trackColor: '#f3e8ff' },
   ],
 }

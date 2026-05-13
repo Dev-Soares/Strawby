@@ -79,7 +79,7 @@ export default function CreateMealForm() {
         <p className="text-xs font-black text-neutral-500 uppercase tracking-widest mb-4">
           Tipo de refeição
         </p>
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
           {(Object.entries(mealTypes) as [MealType, MealTypeConfig][]).map(([key, cfg]) => {
             const Ico = cfg.icon
             const isSelected = selectedType === key
@@ -131,7 +131,7 @@ export default function CreateMealForm() {
         <div className="flex items-center justify-between mb-5">
           <div>
             <p className="text-xs font-black text-neutral-500 uppercase tracking-widest">Alimentos</p>
-            <p className="text-xs text-neutral-400 mt-0.5">{fields.length} item{fields.length !== 1 ? 's' : ''} adicionado{fields.length !== 1 ? 's' : ''}</p>
+            <p className="text-xs text-neutral-400 mt-0.5">{fields.length} {fields.length !== 1 ? 'itens' : 'item'} adicionado{fields.length !== 1 ? 's' : ''}</p>
           </div>
           {fields.length > 0 && (
             <span
@@ -144,7 +144,7 @@ export default function CreateMealForm() {
         </div>
 
         {/* Add food row */}
-        <div className="flex gap-3 mb-5 p-4 rounded-2xl bg-neutral-50 border border-neutral-100">
+        <div className="flex flex-col sm:flex-row gap-3 mb-5 p-4 rounded-2xl bg-neutral-50 border border-neutral-100">
           <div className="flex-1 flex flex-col gap-1.5">
             <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Nome</label>
             <input
@@ -155,7 +155,7 @@ export default function CreateMealForm() {
               className="text-sm font-semibold text-neutral-800 bg-white border border-neutral-200 rounded-xl px-4 py-3 outline-none focus:border-neutral-400 transition-all duration-150 placeholder:text-neutral-300 w-full"
             />
           </div>
-          <div className="w-24 flex flex-col gap-1.5">
+          <div className="w-full sm:w-24 flex flex-col gap-1.5">
             <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Qtd (g)</label>
             <input
               type="number"
@@ -169,11 +169,11 @@ export default function CreateMealForm() {
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <span className="text-[10px] font-black text-transparent uppercase tracking-widest select-none">_</span>
+            <span className="text-[10px] font-black text-transparent uppercase tracking-widest select-none hidden sm:block">_</span>
             <button
               type="button"
               onClick={addItem}
-              className="h-11.5 px-5 rounded-xl flex items-center justify-center gap-2 font-bold text-sm shrink-0 transition-colors duration-150 cursor-pointer text-white bg-red-600 hover:bg-red-700"
+              className="h-11.5 px-5 rounded-xl flex items-center justify-center gap-2 font-bold text-sm shrink-0 transition-colors duration-150 cursor-pointer text-white bg-red-600 hover:bg-red-700 w-full sm:w-auto"
             >
               <Plus size={16} weight="bold" />
               Adicionar

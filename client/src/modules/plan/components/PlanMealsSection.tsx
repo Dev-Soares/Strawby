@@ -132,10 +132,10 @@ export default function PlanMealsSection() {
 
   return (
     <div className="px-10 sm:px-16 pb-32">
-      <div className="flex items-end justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
         <div>
           <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-neutral-950 tracking-tight leading-none">
-            Refeições
+            Refeições planejadas
           </h2>
           <p className="text-sm text-neutral-500 mt-1.5">Distribuição do seu plano ao longo do dia</p>
         </div>
@@ -144,8 +144,11 @@ export default function PlanMealsSection() {
             {meals.length} refeições · {totalKcal.toLocaleString('pt-BR')} kcal total
           </span>
           <button
-            onClick={() => navigate('/meals/new')}
-            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-colors duration-150 cursor-pointer shrink-0"
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+              navigate('/meals/new')
+            }}
+            className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-3 rounded-xl transition-colors duration-150 cursor-pointer shrink-0 w-full sm:w-auto"
           >
             <Plus size={15} weight="bold" />
             Nova refeição
