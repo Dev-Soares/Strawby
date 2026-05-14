@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Plus } from '@phosphor-icons/react'
-import { Coffee, ForkKnife, Leaf, Moon, Cookie, CaretDown } from '@phosphor-icons/react'
+import { Plus, CaretDown } from '@phosphor-icons/react'
+import { Coffee, ForkKnife, Leaf, Moon, Cookie } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
 
 interface Food {
@@ -222,23 +222,35 @@ export default function PlanMealsSection() {
                 </div>
               </div>
 
-              {/* Dropdown trigger */}
-              <button
-                type="button"
-                onClick={() => toggle(meal.id)}
-                className="w-full flex items-center justify-between px-5 py-3.5 border-t border-neutral-100 hover:bg-neutral-50 transition-colors duration-150 cursor-pointer"
-                style={{ color: meal.accentText }}
-              >
-                <span className="text-sm font-bold">
-                  {meal.foods.length} alimentos
-                </span>
-                <CaretDown
-                  size={16}
-                  weight="bold"
-                  className="transition-transform duration-250"
-                  style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
-                />
-              </button>
+              {/* Footer */}
+              <div className="flex items-center border-t border-neutral-100">
+                <button
+                  type="button"
+                  onClick={() => toggle(meal.id)}
+                  className="flex-1 flex items-center justify-between px-5 py-3.5 hover:bg-neutral-50 transition-colors duration-150 cursor-pointer"
+                  style={{ color: meal.accentText }}
+                >
+                  <span className="text-sm font-bold">
+                    {meal.foods.length} alimentos
+                  </span>
+                  <CaretDown
+                    size={16}
+                    weight="bold"
+                    className="transition-transform duration-250"
+                    style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+                  />
+                </button>
+                <div className="w-px h-6 bg-neutral-100" />
+                <button
+                  type="button"
+                  onClick={() => navigate(`/foods/select?mealId=${meal.id}`)}
+                  className="flex items-center gap-1.5 px-5 py-3.5 text-sm font-bold hover:bg-neutral-50 transition-colors duration-150 cursor-pointer"
+                  style={{ color: meal.accentText }}
+                >
+                  <Plus size={15} weight="bold" />
+                  Adicionar
+                </button>
+              </div>
 
               {/* Food list — animated */}
               <AnimatePresence initial={false}>

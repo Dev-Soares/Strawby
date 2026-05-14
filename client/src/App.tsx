@@ -6,6 +6,7 @@ import MainPage from './pages/MainPage'
 import FoodsPage from './pages/FoodsPage'
 import PlanPage from './pages/PlanPage'
 import CreateMealPage from './pages/CreateMealPage'
+import SelectFoodPage from './pages/SelectFoodPage'
 import ScorePage from './pages/ScorePage'
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
       <Route path="/foods" element={<FoodsPage />} />
       <Route path="/plan" element={<PlanPage />} />
       <Route path="/meals/new" element={<CreateMealPage />} />
+      <Route path="/foods/select" element={<SelectFoodPage />} />
     </Routes>
   )
 }

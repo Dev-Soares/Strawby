@@ -14,9 +14,7 @@ export const createMealSchema = z.object({
     error: 'Selecione o tipo da refeição',
   }),
   time: z.string().min(1, 'Horário obrigatório'),
-  items: z
-    .array(mealItemSchema)
-    .min(1, 'Adicione pelo menos um alimento'),
+  items: z.array(mealItemSchema),
 })
 
 export type CreateMealData = z.infer<typeof createMealSchema>
