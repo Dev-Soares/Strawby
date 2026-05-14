@@ -23,6 +23,8 @@ export type Meal = {
   name: string
   date: string
   userId: string
+  mealType: string | null
+  time: string | null
   items: MealItem[]
   totals: MealTotals
 }

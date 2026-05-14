@@ -9,8 +9,6 @@ import { useDeletePlanMeal } from '../../plan-meal/hooks/useDeletePlanMeal'
 import PlanMealsSectionSkeleton from '../skeletons/PlanMealsSectionSkeleton'
 import type { PlanMealSummary } from '../../plan-meal/types/planMeal'
 
-type MealType = 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'supper'
-
 interface MealTypeConfig {
   icon: Icon
   label: string
