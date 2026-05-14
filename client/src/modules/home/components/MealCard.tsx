@@ -1,7 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { CoffeeIcon, ForkKnifeIcon, LeafIcon, MoonIcon, CookieIcon, CaretDownIcon } from '@phosphor-icons/react'
+import { useNavigate } from 'react-router-dom'
+import { CoffeeIcon, ForkKnifeIcon, LeafIcon, MoonIcon, CookieIcon, CaretDownIcon, Trash, Plus } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
-import type { Meal, MealType } from '../types/meal'
+import type { Meal } from '../../meal/types/meal'
+import { useDeleteMeal } from '../../meal/hooks/useDeleteMeal'
 
 interface MealConfig {
   icon: Icon
@@ -12,7 +14,7 @@ interface MealConfig {
   divider: string
 }
 
-const mealConfig: Record<MealType, MealConfig> = {
+const mealConfig: Record<string, MealConfig> = {
   breakfast: {
     icon: CoffeeIcon,
     label: 'CAFÉ DA MANHÃ',
@@ -55,6 +57,15 @@ const mealConfig: Record<MealType, MealConfig> = {
   },
 }
 
+const fallbackConfig: MealConfig = {
+  icon: CoffeeIcon,
+  label: 'REFEIÇÃO',
+  bg: 'bg-neutral-50',
+  text: 'text-neutral-700',
+  accent: 'text-neutral-600',
+  divider: 'border-neutral-100',
+}
+
 interface MealCardProps {
   meal: Meal
   isOpen: boolean
@@ -62,8 +73,13 @@ interface MealCardProps {
 }
 
 export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
-  const config = mealConfig[meal.mealType]
+  const navigate = useNavigate()
+  const deleteMutation = useDeleteMeal()
+  const config = mealConfig[meal.mealType ?? ''] || fallbackConfig
   const MealIcon = config.icon
+
+  const displayTime = meal.time
+    ?? new Date(meal.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
 
   return (
     <div className="bg-white rounded-2xl sm:rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
@@ -92,19 +108,19 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
           </div>
           <p className="text-[11px] sm:text-xs text-neutral-400 truncate">
             <span className="font-bold text-neutral-500 mr-1.5 tabular-nums sm:hidden">
-              {meal.time}
+              {displayTime}
             </span>
-            {meal.foods.length} {meal.foods.length === 1 ? 'alimento' : 'alimentos'}
+            {meal.items.length} {meal.items.length === 1 ? 'alimento' : 'alimentos'}
           </p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           <span className="hidden sm:inline text-[10px] text-neutral-400 font-bold tabular-nums">
-            {meal.time}
+            {displayTime}
           </span>
           <div className="text-right min-w-10 sm:min-w-12">
             <p className={`text-base sm:text-xl font-extrabold leading-none tabular-nums ${config.accent}`}>
-              {meal.kcal}
+              {Math.round(meal.totals.calories)}
             </p>
             <p className="text-[8px] sm:text-[9px] font-bold text-neutral-400 uppercase tracking-wide mt-0.5 sm:mt-1">
               kcal
@@ -129,23 +145,23 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
             className="overflow-hidden"
           >
             <div className={`border-t ${config.divider} bg-neutral-50/50 p-3 sm:p-4 flex flex-col gap-2`}>
-              {meal.foods.map((food) => (
+              {meal.items.map((item) => (
                 <div
-                  key={food.name}
+                  key={item.id}
                   className="bg-white rounded-xl px-3.5 sm:px-4 py-3 border border-neutral-100"
                 >
                   <div className="flex items-center justify-between gap-3 mb-2.5">
                     <div className="min-w-0 flex items-baseline gap-2">
                       <p className="text-[13px] sm:text-sm font-bold text-neutral-900 truncate">
-                        {food.name}
+                        {item.food.name}
                       </p>
                       <span className="text-[10px] sm:text-[11px] font-bold text-neutral-400 tabular-nums shrink-0">
-                        {food.grams}g
+                        {Math.round(item.quantity)}g
                       </span>
                     </div>
                     <div className="flex items-baseline gap-1 shrink-0">
                       <span className={`text-base sm:text-lg font-extrabold tabular-nums leading-none ${config.accent}`}>
-                        {food.kcal}
+                        {Math.round(item.calories)}
                       </span>
                       <span className="text-[9px] sm:text-[10px] font-bold text-neutral-400 uppercase tracking-wide">
                         kcal
@@ -156,7 +172,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                     <div className="flex items-center gap-1.5 bg-amber-100 border border-amber-200 rounded-lg px-2 py-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-600 shrink-0" />
                       <span className="text-[10px] sm:text-[11px] font-extrabold text-amber-900 tabular-nums">
-                        {food.protein}<span className="text-amber-700 font-bold">g</span>
+                        {Math.round(item.protein)}<span className="text-amber-700 font-bold">g</span>
                       </span>
                       <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-amber-800 ml-auto">
                         Prot
@@ -165,7 +181,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                     <div className="flex items-center gap-1.5 bg-blue-100 border border-blue-200 rounded-lg px-2 py-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-600 shrink-0" />
                       <span className="text-[10px] sm:text-[11px] font-extrabold text-blue-900 tabular-nums">
-                        {food.carbs}<span className="text-blue-700 font-bold">g</span>
+                        {Math.round(item.carbs)}<span className="text-blue-700 font-bold">g</span>
                       </span>
                       <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-blue-800 ml-auto">
                         Carb
@@ -174,7 +190,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                     <div className="flex items-center gap-1.5 bg-violet-100 border border-violet-200 rounded-lg px-2 py-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-violet-600 shrink-0" />
                       <span className="text-[10px] sm:text-[11px] font-extrabold text-violet-900 tabular-nums">
-                        {food.fat}<span className="text-violet-700 font-bold">g</span>
+                        {Math.round(item.fat)}<span className="text-violet-700 font-bold">g</span>
                       </span>
                       <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider text-violet-800 ml-auto">
                         Gord
@@ -183,6 +199,24 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                   </div>
                 </div>
               ))}
+
+              <button
+                type="button"
+                onClick={() => navigate(`/foods/select?mealId=${meal.id}&type=meal`)}
+                className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-neutral-100 text-neutral-700 text-xs font-bold hover:bg-neutral-200 transition-colors duration-150 cursor-pointer"
+              >
+                <Plus size={14} weight="bold" />
+                Adicionar alimento
+              </button>
+
+              <button
+                type="button"
+                onClick={() => deleteMutation.mutate(meal.id)}
+                className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100 transition-colors duration-150 cursor-pointer mt-1"
+              >
+                <Trash size={14} weight="bold" />
+                Remover refeição
+              </button>
             </div>
           </motion.div>
         )}

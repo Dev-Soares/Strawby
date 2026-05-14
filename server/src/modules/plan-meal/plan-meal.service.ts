@@ -23,10 +23,10 @@ export class PlanMealService {
   private computeTotals(items: PlanMealItemWithFood[]): PlanMealTotals {
     return items.reduce(
       (initial, item) => ({
-        calories: initial.calories + (item.food.calories / 100) * item.quantity,
-        protein: initial.protein + (item.food.protein / 100) * item.quantity,
-        carbs: initial.carbs + (item.food.carbs / 100) * item.quantity,
-        fat: initial.fat + (item.food.fat / 100) * item.quantity,
+        calories: initial.calories + item.calories,
+        protein: initial.protein + item.protein,
+        carbs: initial.carbs + item.carbs,
+        fat: initial.fat + item.fat,
       }),
       { calories: 0, protein: 0, carbs: 0, fat: 0 },
     );
@@ -155,10 +155,26 @@ export class PlanMealService {
     dto: AddPlanMealItemDto,
   ): Promise<PlanMealItemWithFood> {
     try {
+      const food = await this.prisma.food.findUnique({
+        where: { id: dto.foodId },
+        select: { id: true, name: true, calories: true, protein: true, carbs: true, fat: true },
+      });
+      if (!food) throw new NotFoundException('Alimento não encontrado');
+
+      const ratio = dto.quantity / 100;
       const updated = await this.prisma.planMeal.update({
         where: { id: planMealId, userId },
         data: {
-          items: { create: { foodId: dto.foodId, quantity: dto.quantity } },
+          items: {
+            create: {
+              foodId: dto.foodId,
+              quantity: dto.quantity,
+              calories: food.calories * ratio,
+              protein: food.protein * ratio,
+              carbs: food.carbs * ratio,
+              fat: food.fat * ratio,
+            },
+          },
         },
         select: {
           items: { select: planMealItemSelect, orderBy: { createdAt: 'desc' }, take: 1 },
@@ -167,9 +183,9 @@ export class PlanMealService {
 
       return updated.items[0];
     } catch (error) {
+      if (error instanceof NotFoundException) throw error;
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2025') throw new NotFoundException('Refeição planejada não encontrada');
-        if (error.code === 'P2003') throw new NotFoundException('Alimento não encontrado');
       }
       throw new InternalServerErrorException('Erro ao adicionar item à refeição planejada');
     }

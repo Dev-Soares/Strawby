@@ -7,6 +7,7 @@ import FoodSkeleton from '../modules/food/skeletons/FoodSkeleton'
 import { useSearchFood } from '../modules/food/hooks/useSearchFood'
 import type { Food } from '../modules/food/types/food'
 import toast from 'react-hot-toast'
+import { useAddMealItem } from '../modules/meal/hooks/useAddMealItem'
 import { useAddPlanMealItem } from '../modules/plan-meal/hooks/useAddPlanMealItem'
 
 const macros = [
@@ -60,7 +61,11 @@ export default function SelectFoodPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const mealId = searchParams.get('mealId')
-  const addItem = useAddPlanMealItem()
+  const type = searchParams.get('type') ?? 'plan-meal'
+  const isPlanMeal = type === 'plan-meal'
+
+  const addMealItem = useAddMealItem()
+  const addPlanMealItem = useAddPlanMealItem()
 
   const [search, setSearch] = useState('')
   const [step, setStep] = useState<'search' | 'quantity'>('search')
@@ -77,18 +82,18 @@ export default function SelectFoodPage() {
 
   const handleConfirm = () => {
     if (!selectedFood || !mealId) return
-    addItem.mutate(
-      {
-        planMealId: mealId,
-        dto: { foodId: selectedFood.id, quantity: Number(quantity) },
-      },
-      {
-        onSuccess: () => {
-          toast.success(`${selectedFood.name} (${quantity}g) adicionado à refeição`)
-          navigate('/plan')
-        },
-      },
-    )
+
+    const payload = { foodId: selectedFood.id, quantity: Number(quantity) }
+    const onSuccess = () => {
+      toast.success(`${selectedFood.name} (${quantity}g) adicionado à refeição`)
+      navigate(isPlanMeal ? '/plan' : '/home')
+    }
+
+    if (isPlanMeal) {
+      addPlanMealItem.mutate({ planMealId: mealId, dto: payload }, { onSuccess })
+    } else {
+      addMealItem.mutate({ mealId, dto: payload }, { onSuccess })
+    }
   }
 
   const handleBack = () => {
@@ -96,7 +101,7 @@ export default function SelectFoodPage() {
       setStep('search')
       setSelectedFood(null)
     } else {
-      navigate('/plan')
+      navigate(isPlanMeal ? '/plan' : '/home')
     }
   }
 

@@ -31,6 +31,11 @@ export class MealController {
     return this.mealService.findAllByUser(req.user.sub);
   }
 
+  @Get('day/:day')
+  findAllByDay(@Req() req: AuthenticatedRequest, @Param('day') day: string) {
+    return this.mealService.findAllByUserAndDay(req.user.sub, day);
+  }
+
   @Get(':id')
   findOne(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.mealService.findOne(id, req.user.sub);

@@ -1,7 +1,7 @@
 import { PlanMeal, PlanMealItem } from '@prisma/client';
 
-export type PlanMealItemWithFood = Pick<PlanMealItem, 'id' | 'quantity'> & {
-  food: { id: string; name: string; calories: number; protein: number; carbs: number; fat: number };
+export type PlanMealItemWithFood = Pick<PlanMealItem, 'id' | 'quantity' | 'calories' | 'protein' | 'carbs' | 'fat'> & {
+  food: { id: string; name: string };
 };
 
 export type PlanMealTotals = {
@@ -23,14 +23,14 @@ export type PlanMealSummary = Pick<PlanMeal, 'id' | 'name' | 'type' | 'date' | '
 export const planMealItemSelect = {
   id: true,
   quantity: true,
+  calories: true,
+  protein: true,
+  carbs: true,
+  fat: true,
   food: {
     select: {
       id: true,
       name: true,
-      calories: true,
-      protein: true,
-      carbs: true,
-      fat: true,
     },
   },
 } as const;

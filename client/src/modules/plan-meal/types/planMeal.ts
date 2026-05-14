@@ -8,13 +8,13 @@ export type PlanMealTotals = {
 export type PlanMealItem = {
   id: string
   quantity: number
+  calories: number
+  protein: number
+  carbs: number
+  fat: number
   food: {
     id: string
     name: string
-    calories: number
-    protein: number
-    carbs: number
-    fat: number
   }
 }
 

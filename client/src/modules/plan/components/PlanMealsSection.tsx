@@ -128,7 +128,7 @@ function PlanMealCard({
         <div className="w-px h-6 bg-neutral-100" />
         <button
           type="button"
-          onClick={() => navigate(`/foods/select?mealId=${meal.id}`)}
+          onClick={() => navigate(`/foods/select?mealId=${meal.id}&type=plan-meal`)}
           className="flex items-center gap-1.5 px-5 py-3.5 text-sm font-bold hover:bg-neutral-50 transition-colors duration-150 cursor-pointer"
           style={{ color: config.accentText }}
         >
@@ -182,7 +182,7 @@ export default function PlanMealsSection() {
           <button
             onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' })
-              navigate('/meals/new')
+              navigate('/meals/new?type=plan-meal')
             }}
             className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-3 rounded-xl transition-colors duration-150 cursor-pointer shrink-0 w-full sm:w-auto"
           >

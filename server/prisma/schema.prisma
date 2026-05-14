@@ -81,6 +81,10 @@ model Meal {
 model MealItem {
   id        String   @id @default(uuid())
   quantity  Float
+  calories  Float
+  protein   Float
+  carbs     Float
+  fat       Float
   mealId    String
   foodId    String
   meal      Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
@@ -104,6 +108,10 @@ model PlanMeal {
 model PlanMealItem {
   id         String   @id @default(uuid())
   quantity   Float
+  calories   Float
+  protein    Float
+  carbs      Float
+  fat        Float
   planMealId String
   foodId     String
   planMeal   PlanMeal @relation(fields: [planMealId], references: [id], onDelete: Cascade)

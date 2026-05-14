@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { PlusIcon } from '@phosphor-icons/react'
-import type { Meal } from '../types/meal'
+import type { Meal } from '../../meal/types/meal'
 import MealCard from './MealCard'
 
 interface MealListProps {
@@ -22,7 +23,8 @@ const item = {
 }
 
 export default function MealList({ meals }: MealListProps) {
-  const totalKcal = meals.reduce((sum, m) => sum + m.kcal, 0)
+  const navigate = useNavigate()
+  const totalKcal = meals.reduce((sum, m) => sum + m.totals.calories, 0)
   const [openId, setOpenId] = useState<string | null>(null)
 
   const toggle = (id: string) => setOpenId((prev) => (prev === id ? null : id))
@@ -37,7 +39,7 @@ export default function MealList({ meals }: MealListProps) {
           </p>
         </div>
         <span className="text-[11px] sm:text-xs font-extrabold text-neutral-500 tabular-nums shrink-0">
-          {totalKcal.toLocaleString('pt-BR')} kcal
+          {Math.round(totalKcal).toLocaleString('pt-BR')} kcal
         </span>
       </div>
 
@@ -58,6 +60,8 @@ export default function MealList({ meals }: MealListProps) {
         ))}
 
         <motion.button
+          type="button"
+          onClick={() => navigate('/meals/new?type=meal')}
           className="flex items-center justify-center gap-2 py-3 sm:py-4 rounded-2xl sm:rounded-3xl border border-dashed border-neutral-200 text-[13px] sm:text-sm font-semibold text-neutral-400 hover:border-red-300 hover:text-red-500 hover:bg-red-50/50 transition-all duration-200 cursor-pointer mt-1"
           variants={item}
         >

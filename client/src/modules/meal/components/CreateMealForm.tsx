@@ -1,10 +1,11 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Coffee, ForkKnife, Leaf, Moon, Cookie, FloppyDisk } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
 import toast from 'react-hot-toast'
 import { createMealSchema, type CreateMealData } from '../types/createMeal'
+import { useCreateMeal } from '../hooks/useCreateMeal'
 import { useCreatePlanMeal } from '../../plan-meal/hooks/useCreatePlanMeal'
 
 type MealType = 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'supper'
@@ -28,6 +29,11 @@ const mealTypes: Record<MealType, MealTypeConfig> = {
 
 export default function CreateMealForm() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const type = searchParams.get('type') ?? 'meal'
+  const isPlanMeal = type === 'plan-meal'
+
+  const createMeal = useCreateMeal()
   const createPlanMeal = useCreatePlanMeal()
 
   const {
@@ -38,21 +44,29 @@ export default function CreateMealForm() {
     formState: { errors },
   } = useForm<CreateMealData>({
     resolver: zodResolver(createMealSchema),
-    defaultValues: { items: [], time: '07:00' },
+    defaultValues: { time: '07:00' },
   })
 
   const selectedType = watch('mealType')
 
   const onSubmit = handleSubmit((data) => {
-    createPlanMeal.mutate(
-      { name: data.name, type: data.mealType, date: new Date().toISOString() },
-      {
+    const basePayload = { name: data.name, type: data.mealType, date: new Date().toISOString() }
+
+    if (isPlanMeal) {
+      createPlanMeal.mutate(basePayload, {
         onSuccess: () => {
-          toast.success('Refeição criada com sucesso!')
+          toast.success('Refeição planejada criada com sucesso!')
           navigate('/plan')
         },
-      },
-    )
+      })
+    } else {
+      createMeal.mutate(basePayload, {
+        onSuccess: () => {
+          toast.success('Refeição criada com sucesso!')
+          navigate('/home')
+        },
+      })
+    }
   })
 
   return (
