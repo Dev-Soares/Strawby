@@ -3,19 +3,12 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { MealKind, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { AddMealItemDto } from './dto/add-meal-item.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
-import {
-  MealItemWithFood,
-  MealPublic,
-  MealSummary,
-  MealTotals,
-  mealItemSelect,
-  mealSelect,
-} from './meal.types';
+import { MealItemWithFood, MealPublic, MealSummary, MealTotals, mealItemSelect } from './meal.types';
 
 @Injectable()
 export class MealService {
@@ -38,13 +31,20 @@ export class MealService {
       const meal = await this.prisma.meal.create({
         data: {
           name: dto.name,
-          kind: dto.kind,
           mealType: dto.mealType,
           time: dto.time,
           date: dto.date ? new Date(dto.date) : undefined,
           userId,
         },
-        select: mealSelect,
+        select: {
+          id: true,
+          name: true,
+          mealType: true,
+          time: true,
+          date: true,
+          userId: true,
+          items: { select: mealItemSelect },
+        },
       });
       return { ...meal, totals: this.computeTotals(meal.items) };
     } catch {
@@ -52,11 +52,19 @@ export class MealService {
     }
   }
 
-  async findAllByUser(userId: string, kind?: MealKind): Promise<MealSummary[]> {
+  async findAllByUser(userId: string): Promise<MealSummary[]> {
     try {
       const meals = await this.prisma.meal.findMany({
-        where: { userId, ...(kind && { kind }) },
-        select: mealSelect,
+        where: { userId },
+        select: {
+          id: true,
+          name: true,
+          mealType: true,
+          time: true,
+          date: true,
+          userId: true,
+          items: { select: mealItemSelect },
+        },
         orderBy: { date: 'desc' },
       });
       return meals.map(({ items, ...meal }) => ({
@@ -68,11 +76,7 @@ export class MealService {
     }
   }
 
-  async findAllByUserAndDay(
-    userId: string,
-    day: string,
-    kind?: MealKind,
-  ): Promise<MealPublic[]> {
+  async findAllByUserAndDay(userId: string, day: string): Promise<MealPublic[]> {
     try {
       const start = new Date(day + 'T00:00:00.000Z');
       if (isNaN(start.getTime())) {
@@ -84,13 +88,20 @@ export class MealService {
       const meals = await this.prisma.meal.findMany({
         where: {
           userId,
-          ...(kind && { kind }),
           date: {
             gte: start,
             lt: end,
           },
         },
-        select: mealSelect,
+        select: {
+          id: true,
+          name: true,
+          mealType: true,
+          time: true,
+          date: true,
+          userId: true,
+          items: { select: mealItemSelect },
+        },
         orderBy: { date: 'desc' },
       });
       return meals.map(({ items, ...meal }) => ({
@@ -100,6 +111,7 @@ export class MealService {
       }));
     } catch (error) {
       if (error instanceof InternalServerErrorException) throw error;
+      console.error('findAllByUserAndDay error:', error);
       throw new InternalServerErrorException('Erro ao buscar refeições');
     }
   }
@@ -108,7 +120,15 @@ export class MealService {
     try {
       const meal = await this.prisma.meal.findFirst({
         where: { id, userId },
-        select: mealSelect,
+        select: {
+          id: true,
+          name: true,
+          mealType: true,
+          time: true,
+          date: true,
+          userId: true,
+          items: { select: mealItemSelect },
+        },
       });
 
       if (!meal) throw new NotFoundException('Refeição não encontrada');
@@ -126,11 +146,17 @@ export class MealService {
         where: { id, userId },
         data: {
           ...(dto.name !== undefined && { name: dto.name }),
-          ...(dto.mealType !== undefined && { mealType: dto.mealType }),
-          ...(dto.time !== undefined && { time: dto.time }),
           ...(dto.date !== undefined && { date: new Date(dto.date) }),
         },
-        select: mealSelect,
+        select: {
+          id: true,
+          name: true,
+          mealType: true,
+          time: true,
+          date: true,
+          userId: true,
+          items: { select: mealItemSelect },
+        },
       });
       return { ...meal, totals: this.computeTotals(meal.items) };
     } catch (error) {
