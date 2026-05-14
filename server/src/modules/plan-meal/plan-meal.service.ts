@@ -37,12 +37,14 @@ export class PlanMealService {
       const planMeal = await this.prisma.planMeal.create({
         data: {
           name: dto.name,
+          type: dto.type,
           date: dto.date ? new Date(dto.date) : undefined,
           userId,
         },
         select: {
           id: true,
           name: true,
+          type: true,
           date: true,
           userId: true,
           items: { select: planMealItemSelect },
@@ -61,6 +63,7 @@ export class PlanMealService {
         select: {
           id: true,
           name: true,
+          type: true,
           date: true,
           userId: true,
           items: { select: planMealItemSelect },
@@ -83,6 +86,7 @@ export class PlanMealService {
         select: {
           id: true,
           name: true,
+          type: true,
           date: true,
           userId: true,
           items: { select: planMealItemSelect },
@@ -104,11 +108,13 @@ export class PlanMealService {
         where: { id, userId },
         data: {
           ...(dto.name !== undefined && { name: dto.name }),
+          ...(dto.type !== undefined && { type: dto.type }),
           ...(dto.date !== undefined && { date: new Date(dto.date) }),
         },
         select: {
           id: true,
           name: true,
+          type: true,
           date: true,
           userId: true,
           items: { select: planMealItemSelect },

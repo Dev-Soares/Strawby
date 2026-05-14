@@ -5,6 +5,7 @@ import { Coffee, ForkKnife, Leaf, Moon, Cookie, FloppyDisk } from '@phosphor-ico
 import type { Icon } from '@phosphor-icons/react'
 import toast from 'react-hot-toast'
 import { createMealSchema, type CreateMealData } from '../types/createMeal'
+import { useCreatePlanMeal } from '../../plan-meal/hooks/useCreatePlanMeal'
 
 type MealType = 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'supper'
 
@@ -27,6 +28,7 @@ const mealTypes: Record<MealType, MealTypeConfig> = {
 
 export default function CreateMealForm() {
   const navigate = useNavigate()
+  const createPlanMeal = useCreatePlanMeal()
 
   const {
     register,
@@ -42,9 +44,15 @@ export default function CreateMealForm() {
   const selectedType = watch('mealType')
 
   const onSubmit = handleSubmit((data) => {
-    console.log('Nova refeição:', data)
-    toast.success('Refeição criada com sucesso!')
-    navigate('/plan')
+    createPlanMeal.mutate(
+      { name: data.name, type: data.mealType, date: new Date().toISOString() },
+      {
+        onSuccess: () => {
+          toast.success('Refeição criada com sucesso!')
+          navigate('/plan')
+        },
+      },
+    )
   })
 
   return (

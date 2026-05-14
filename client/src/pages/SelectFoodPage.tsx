@@ -7,6 +7,7 @@ import FoodSkeleton from '../modules/food/skeletons/FoodSkeleton'
 import { useSearchFood } from '../modules/food/hooks/useSearchFood'
 import type { Food } from '../modules/food/types/food'
 import toast from 'react-hot-toast'
+import { useAddPlanMealItem } from '../modules/plan-meal/hooks/useAddPlanMealItem'
 
 const macros = [
   { key: 'protein' as const, label: 'Prot', colorClass: 'text-amber-500' },
@@ -58,8 +59,8 @@ function SelectableFoodCard({ food, onSelect }: { food: Food; onSelect: (food: F
 export default function SelectFoodPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  // mealId será usado quando o backend de refeições estiver integrado
-  searchParams.get('mealId')
+  const mealId = searchParams.get('mealId')
+  const addItem = useAddPlanMealItem()
 
   const [search, setSearch] = useState('')
   const [step, setStep] = useState<'search' | 'quantity'>('search')
@@ -75,9 +76,19 @@ export default function SelectFoodPage() {
   }
 
   const handleConfirm = () => {
-    if (!selectedFood) return
-    toast.success(`${selectedFood.name} (${quantity}g) adicionado à refeição`)
-    navigate('/plan')
+    if (!selectedFood || !mealId) return
+    addItem.mutate(
+      {
+        planMealId: mealId,
+        dto: { foodId: selectedFood.id, quantity: Number(quantity) },
+      },
+      {
+        onSuccess: () => {
+          toast.success(`${selectedFood.name} (${quantity}g) adicionado à refeição`)
+          navigate('/plan')
+        },
+      },
+    )
   }
 
   const handleBack = () => {

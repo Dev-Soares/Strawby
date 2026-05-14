@@ -8,6 +8,11 @@ export class CreatePlanMealDto {
   @MaxLength(200)
   name: string;
 
+  @ApiPropertyOptional({ example: 'breakfast' })
+  @IsString()
+  @IsOptional()
+  type?: string;
+
   @ApiPropertyOptional({ example: '2026-04-13T08:00:00.000Z' })
   @IsDateString()
   @IsOptional()

@@ -68,6 +68,8 @@ enum FoodSource {
 model Meal {
   id        String     @id @default(uuid())
   name      String
+  mealType  String?
+  time      String?
   date      DateTime   @default(now())
   userId    String
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
