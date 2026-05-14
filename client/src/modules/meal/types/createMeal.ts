@@ -7,3 +7,7 @@ export const createMealSchema = z.object({
 })
 
 export type CreateMealData = z.infer<typeof createMealSchema>
+
+export type CreateMealPayload = CreateMealData & {
+  name: string
+}
