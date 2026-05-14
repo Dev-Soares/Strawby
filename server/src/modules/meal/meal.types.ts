@@ -1,4 +1,4 @@
-import { Meal, MealItem } from '@prisma/prisma/client';
+import { Meal, MealItem } from '@prisma/client';
 
 export type MealItemWithFood = Pick<MealItem, 'id' | 'quantity'> & {
   food: { id: string; name: string; calories: number; protein: number; carbs: number; fat: number };

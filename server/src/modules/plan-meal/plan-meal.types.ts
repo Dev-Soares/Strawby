@@ -1,4 +1,4 @@
-import { PlanMeal, PlanMealItem } from '@prisma/prisma/client';
+import { PlanMeal, PlanMealItem } from '@prisma/client';
 
 export type PlanMealItemWithFood = Pick<PlanMealItem, 'id' | 'quantity'> & {
   food: { id: string; name: string; calories: number; protein: number; carbs: number; fat: number };

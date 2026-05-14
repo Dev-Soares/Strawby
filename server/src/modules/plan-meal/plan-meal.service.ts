@@ -3,7 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/prisma/client';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { AddPlanMealItemDto } from './dto/add-plan-meal-item.dto';
 import { CreatePlanMealDto } from './dto/create-plan-meal.dto';

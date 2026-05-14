@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
-import { Prisma, User } from '@prisma/prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashService } from '../../common/hash/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';

@@ -1,4 +1,4 @@
-import { Food } from '@prisma/prisma/client';
+import { Food } from '@prisma/client';
 
 export type FoodPublic = Pick<
   Food,

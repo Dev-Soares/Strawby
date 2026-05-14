@@ -4,7 +4,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Plan, Prisma } from '@prisma/prisma/client';
+import { Plan, Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
