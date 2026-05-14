@@ -3,10 +3,19 @@ import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Plus, CaretDown, Trash } from '@phosphor-icons/react'
 import { Coffee, ForkKnife, Leaf, Moon, Cookie } from '@phosphor-icons/react'
+import type { Icon } from '@phosphor-icons/react'
 import { useGetPlanMeals } from '../../plan-meal/hooks/useGetPlanMeals'
 import { useDeletePlanMeal } from '../../plan-meal/hooks/useDeletePlanMeal'
 import PlanMealsSectionSkeleton from '../skeletons/PlanMealsSectionSkeleton'
-import type { MealTypeConfig, PlanMealCardProps } from '../types/planMealsSection'
+import type { PlanMealSummary } from '../../plan-meal/types/planMeal'
+
+interface MealTypeConfig {
+  icon: Icon
+  label: string
+  accent: string
+  accentLight: string
+  accentText: string
+}
 
 const mealTypeConfig: Record<string, MealTypeConfig> = {
   breakfast: { icon: Coffee, label: 'MANHÃ', accent: '#ea580c', accentLight: '#fed7aa', accentText: '#c2410c' },
@@ -16,7 +25,15 @@ const mealTypeConfig: Record<string, MealTypeConfig> = {
   supper: { icon: Cookie, label: 'CEIA', accent: '#475569', accentLight: '#cbd5e1', accentText: '#334155' },
 }
 
-function PlanMealCard({ meal, isOpen, onToggle }: PlanMealCardProps) {
+function PlanMealCard({
+  meal,
+  isOpen,
+  onToggle,
+}: {
+  meal: PlanMealSummary
+  isOpen: boolean
+  onToggle: () => void
+}) {
   const navigate = useNavigate()
   const deleteMutation = useDeletePlanMeal()
   const config = mealTypeConfig[meal.type || ''] || mealTypeConfig.breakfast

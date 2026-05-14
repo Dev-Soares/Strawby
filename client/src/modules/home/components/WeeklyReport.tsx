@@ -1,6 +1,10 @@
 import { motion } from 'framer-motion'
 import { CheckIcon, XIcon, CalendarBlankIcon, WarningIcon } from '@phosphor-icons/react'
-import type { WeekDay, WeekDayStatus, WeeklyReportProps } from '../types/weeklyReport'
+import type { WeeklyReportData, WeekDay, WeekDayStatus } from '../types/weeklyReport'
+
+interface WeeklyReportProps {
+  data: WeeklyReportData
+}
 
 const fullDayNames = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB', 'DOM']
 const shortDayNames = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']

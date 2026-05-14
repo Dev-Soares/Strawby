@@ -1,6 +1,10 @@
 import { motion } from 'framer-motion'
 import { Trophy } from '@phosphor-icons/react'
-import type { WeeklyScoreProps } from '../types/weeklyScore'
+
+interface WeeklyScoreProps {
+  score: number
+  maxScore: number
+}
 
 const RADIUS = 70
 const STROKE = 14

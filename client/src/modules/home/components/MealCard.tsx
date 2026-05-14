@@ -1,9 +1,19 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { CoffeeIcon, ForkKnifeIcon, LeafIcon, MoonIcon, CookieIcon, CaretDownIcon, Trash, Plus } from '@phosphor-icons/react'
-import type { MealConfig, MealCardProps } from '../types/mealCard'
+import type { Icon } from '@phosphor-icons/react'
+import type { Meal } from '../../meal/types/meal'
 import { useDeleteMeal } from '../../meal/hooks/useDeleteMeal'
 import { useDay } from '../contexts/DayContext'
+
+interface MealConfig {
+  icon: Icon
+  label: string
+  bg: string
+  text: string
+  accent: string
+  divider: string
+}
 
 const mealConfig: Record<string, MealConfig> = {
   breakfast: {
@@ -55,6 +65,12 @@ const fallbackConfig: MealConfig = {
   text: 'text-neutral-700',
   accent: 'text-neutral-600',
   divider: 'border-neutral-100',
+}
+
+interface MealCardProps {
+  meal: Meal
+  isOpen: boolean
+  onToggle: () => void
 }
 
 export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
