@@ -3,14 +3,12 @@ import { motion } from 'framer-motion'
 import {
   HouseSimpleIcon,
   TrophyIcon,
-  ForkKnifeIcon,
   TargetIcon,
 } from '@phosphor-icons/react'
 
 const tabs = [
   { label: 'Início', href: '/home', icon: HouseSimpleIcon },
   { label: 'Pontuação', href: '/score', icon: TrophyIcon },
-  { label: 'Alimentos', href: '/foods', icon: ForkKnifeIcon },
   { label: 'Plano', href: '/plan', icon: TargetIcon },
 ]
 
@@ -28,7 +26,7 @@ export default function TopTabBar({ hidden = false }: TopTabBarProps) {
       }`}
     >
       <div className="px-2 sm:px-10 lg:px-16">
-        <div className="grid grid-cols-4 sm:flex sm:items-center sm:gap-2">
+        <div className="grid grid-cols-3 sm:flex sm:items-center sm:gap-2">
           {tabs.map((tab) => {
             const Icon = tab.icon
             const active = pathname === tab.href
