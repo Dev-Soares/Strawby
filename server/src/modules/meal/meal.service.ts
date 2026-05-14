@@ -76,8 +76,10 @@ export class MealService {
 
   async findAllByUserAndDay(userId: string, day: string): Promise<MealPublic[]> {
     try {
-      const start = new Date(day);
-      start.setUTCHours(0, 0, 0, 0);
+      const start = new Date(day + 'T00:00:00.000Z');
+      if (isNaN(start.getTime())) {
+        throw new InternalServerErrorException('Data inválida');
+      }
       const end = new Date(start);
       end.setUTCDate(end.getUTCDate() + 1);
 
@@ -105,7 +107,9 @@ export class MealService {
         items,
         totals: this.computeTotals(items),
       }));
-    } catch {
+    } catch (error) {
+      if (error instanceof InternalServerErrorException) throw error;
+      console.error('findAllByUserAndDay error:', error);
       throw new InternalServerErrorException('Erro ao buscar refeições');
     }
   }
