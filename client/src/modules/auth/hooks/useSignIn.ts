@@ -1,26 +1,33 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
+import { isAxiosError } from 'axios'
 import { signInSchema, type SignInData } from '../types/signIn'
 import { signInService } from '../service/signInService'
 
 export const useSignIn = () => {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const form = useForm<SignInData>({
     resolver: zodResolver(signInSchema),
   })
 
   const mutation = useMutation({
-    mutationFn: (data: SignInData) => signInService(data),
+    mutationFn: signInService,
     onSuccess: () => {
       toast.success('Bem-vindo de volta!')
-      navigate('/')
+      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] })
+      navigate('/home')
     },
-    onError: () => {
-      toast.error('E-mail ou senha inválidos')
+    onError: (error) => {
+      if (isAxiosError(error) && error.response?.status === 401) {
+        toast.error('E-mail ou senha inválidos')
+        return
+      }
+      toast.error('Erro ao entrar. Tente novamente.')
     },
   })
 

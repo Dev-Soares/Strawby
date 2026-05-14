@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight } from '@phosphor-icons/react'
 import { Link, useLocation } from 'react-router-dom'
+import { useSignOut } from '@/modules/auth/hooks/useSignOut'
 
 interface BlobMenuProps {
   isOpen: boolean
@@ -18,6 +19,7 @@ const navItems = [
 
 export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
   const { pathname } = useLocation()
+  const { mutate: signOut, isPending: isSigningOut } = useSignOut()
 
   return (
     <AnimatePresence>
@@ -89,14 +91,15 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3, delay: 0.5 }}
             >
-              <Link
-                to="/login"
-                onClick={onClose}
-                className="group bg-white text-red-600 hover:bg-neutral-950 hover:text-white text-sm sm:text-base font-extrabold px-7 sm:px-9 py-3.5 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-[0_10px_30px_-8px_rgba(0,0,0,0.35)] hover:shadow-[0_18px_40px_-10px_rgba(0,0,0,0.6)] hover:-translate-y-0.5 hover:scale-[1.03] tracking-tight"
+              <button
+                type="button"
+                onClick={() => signOut()}
+                disabled={isSigningOut}
+                className="group bg-white text-red-600 hover:bg-neutral-950 hover:text-white text-sm sm:text-base font-extrabold px-7 sm:px-9 py-3.5 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-[0_10px_30px_-8px_rgba(0,0,0,0.35)] hover:shadow-[0_18px_40px_-10px_rgba(0,0,0,0.6)] hover:-translate-y-0.5 hover:scale-[1.03] tracking-tight disabled:opacity-50 cursor-pointer"
               >
-                Sair da conta
+                {isSigningOut ? 'Saindo…' : 'Sair da conta'}
                 <ArrowRight size={17} weight="bold" className="group-hover:translate-x-1.5 transition-transform duration-300" />
-              </Link>
+              </button>
             </motion.div>
           </div>
         </motion.div>

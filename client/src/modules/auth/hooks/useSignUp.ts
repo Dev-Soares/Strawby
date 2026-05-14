@@ -1,25 +1,37 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
+import { isAxiosError } from 'axios'
 import { signUpSchema, type SignUpData } from '../types/signUp'
 import { signUpService } from '../service/signUpService'
+import { signInService } from '../service/signInService'
 
 export const useSignUp = () => {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const form = useForm<SignUpData>({
     resolver: zodResolver(signUpSchema),
   })
 
   const mutation = useMutation({
-    mutationFn: (data: SignUpData) => signUpService(data),
-    onSuccess: () => {
-      toast.success('Conta criada com sucesso!')
-      navigate('/login')
+    mutationFn: async (data: SignUpData) => {
+      const user = await signUpService(data)
+      await signInService({ email: data.email, password: data.password })
+      return user
     },
-    onError: () => {
+    onSuccess: (user) => {
+      toast.success('Conta criada com sucesso!')
+      queryClient.setQueryData(['auth', 'me'], user)
+      navigate('/home')
+    },
+    onError: (error) => {
+      if (isAxiosError(error) && error.response?.status === 409) {
+        toast.error('E-mail já cadastrado')
+        return
+      }
       toast.error('Não foi possível criar sua conta')
     },
   })
