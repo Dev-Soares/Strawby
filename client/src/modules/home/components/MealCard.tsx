@@ -102,11 +102,6 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
             <p className="text-[13px] sm:text-sm font-bold text-neutral-900 truncate">
               {meal.name}
             </p>
-            <span
-              className={`hidden sm:inline-block text-[9px] font-extrabold tracking-widest px-2.5 py-1 rounded-full shrink-0 ${config.bg} ${config.text}`}
-            >
-              {config.label}
-            </span>
           </div>
           <p className="text-[11px] sm:text-xs text-neutral-400 truncate">
             <span className="font-bold text-neutral-500 mr-1.5 tabular-nums sm:hidden">
