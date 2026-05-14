@@ -14,7 +14,7 @@ interface PlanEditModalProps {
 const macroConfig = [
   {
     label: 'Proteína',
-    field: 'proteinG' as const,
+    field: 'protein' as const,
     step: 5,
     max: 500,
     color: '#f59e0b',
@@ -25,7 +25,7 @@ const macroConfig = [
   },
   {
     label: 'Carboidratos',
-    field: 'carbsG' as const,
+    field: 'carbs' as const,
     step: 5,
     max: 800,
     color: '#3b82f6',
@@ -36,7 +36,7 @@ const macroConfig = [
   },
   {
     label: 'Gordura',
-    field: 'fatG' as const,
+    field: 'fat' as const,
     step: 5,
     max: 300,
     color: '#a855f7',
@@ -108,7 +108,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
                 <div className="flex items-center justify-between gap-3 sm:gap-5">
                   <button
                     type="button"
-                    onClick={() => nudge('dailyKcal', -50, 1000, 5000)}
+                    onClick={() => nudge('calories', -50, 1000, 5000)}
                     className="w-11 h-11 sm:w-14 sm:h-14 rounded-full border-2 border-red-200 bg-white text-red-600 text-xl sm:text-2xl font-extrabold flex items-center justify-center hover:border-red-400 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
                   >
                     −
@@ -116,7 +116,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
 
                   <div className="text-center flex-1 min-w-0">
                     <input
-                      {...register('dailyKcal', { valueAsNumber: true })}
+                      {...register('calories', { valueAsNumber: true })}
                       type="number"
                       className="font-display text-5xl sm:text-7xl font-extrabold text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-200 focus:border-red-500 pb-1 cursor-text transition-colors duration-150"
                     />
@@ -126,7 +126,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
 
                   <button
                     type="button"
-                    onClick={() => nudge('dailyKcal', +50, 1000, 5000)}
+                    onClick={() => nudge('calories', +50, 1000, 5000)}
                     className="w-11 h-11 sm:w-14 sm:h-14 rounded-full border-2 border-red-200 bg-white text-red-600 text-xl sm:text-2xl font-extrabold flex items-center justify-center hover:border-red-400 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
                   >
                     +

@@ -9,9 +9,9 @@ import type { Food } from '../modules/food/types/food'
 import toast from 'react-hot-toast'
 
 const macros = [
-  { key: 'protein' as const, label: 'P', colorClass: 'text-amber-500' },
-  { key: 'carbs' as const, label: 'C', colorClass: 'text-blue-500' },
-  { key: 'fat' as const, label: 'G', colorClass: 'text-violet-500' },
+  { key: 'protein' as const, label: 'Prot', colorClass: 'text-amber-500' },
+  { key: 'carbs' as const, label: 'Carb', colorClass: 'text-blue-500' },
+  { key: 'fat' as const, label: 'Gord', colorClass: 'text-violet-500' },
 ]
 
 function SelectableFoodCard({ food, onSelect }: { food: Food; onSelect: (food: Food) => void }) {
@@ -64,13 +64,13 @@ export default function SelectFoodPage() {
   const [search, setSearch] = useState('')
   const [step, setStep] = useState<'search' | 'quantity'>('search')
   const [selectedFood, setSelectedFood] = useState<Food | null>(null)
-  const [quantity, setQuantity] = useState(100)
+  const [quantity, setQuantity] = useState('100')
 
   const { data: foods, isPending, isError } = useSearchFood(search)
 
   const handleSelectFood = (food: Food) => {
     setSelectedFood(food)
-    setQuantity(100)
+    setQuantity('100')
     setStep('quantity')
   }
 
@@ -157,11 +157,11 @@ export default function SelectFoodPage() {
             {selectedFood && (
               <div className="bg-white border border-neutral-200 rounded-2xl p-5 mb-6">
                 <p className="text-base font-bold text-neutral-950 mb-1">{selectedFood.name}</p>
-                <p className="text-xs text-neutral-400 mb-4">por 100g</p>
+                <p className="text-xs text-neutral-400 mb-4">por {quantity || 0}g</p>
                 <div className="flex items-center gap-1.5 mb-4">
                   <Fire size={13} weight="fill" className="text-red-500 shrink-0" />
                   <span className="text-xl font-extrabold text-neutral-900 tabular-nums leading-none">
-                    {Math.round(selectedFood.calories)}
+                    {Math.round((selectedFood.calories * (Number(quantity) || 0)) / 100)}
                   </span>
                   <span className="text-xs font-medium text-neutral-400 pb-0.5">kcal</span>
                 </div>
@@ -170,7 +170,7 @@ export default function SelectFoodPage() {
                     <div key={key} className="flex-1 flex flex-col items-center">
                       <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wide mb-1">{label}</span>
                       <span className={`text-base font-extrabold tabular-nums ${colorClass}`}>
-                        {selectedFood[key]}g
+                        {Math.round((selectedFood[key] * (Number(quantity) || 0)) / 10) / 10}g
                       </span>
                     </div>
                   ))}
@@ -185,7 +185,7 @@ export default function SelectFoodPage() {
               <input
                 type="number"
                 value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
+                onChange={(e) => setQuantity(e.target.value)}
                 min={1}
                 max={2000}
                 className="w-full text-center text-3xl font-extrabold text-neutral-950 bg-white border border-neutral-200 rounded-2xl px-4 py-5 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all duration-200 shadow-sm tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -203,7 +203,7 @@ export default function SelectFoodPage() {
               <button
                 type="button"
                 onClick={handleConfirm}
-                disabled={!quantity || quantity < 1}
+                disabled={!quantity || Number(quantity) < 1}
                 className="flex-1 py-3.5 rounded-2xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 cursor-pointer"
               >
                 Adicionar à refeição

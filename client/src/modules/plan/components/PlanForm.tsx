@@ -6,16 +6,16 @@ import toast from 'react-hot-toast'
 
 interface MacroCard {
   label: string
-  field: keyof Pick<PlanData, 'proteinG' | 'carbsG' | 'fatG'>
+  field: keyof Pick<PlanData, 'protein' | 'carbs' | 'fat'>
   color: string
   trackColor: string
   max: number
 }
 
 const macros: MacroCard[] = [
-  { label: 'Proteína', field: 'proteinG', color: '#f59e0b', trackColor: '#fef3c7', max: 500 },
-  { label: 'Carboidratos', field: 'carbsG', color: '#3b82f6', trackColor: '#dbeafe', max: 800 },
-  { label: 'Gordura', field: 'fatG', color: '#a855f7', trackColor: '#f3e8ff', max: 300 },
+  { label: 'Proteína', field: 'protein', color: '#f59e0b', trackColor: '#fef3c7', max: 500 },
+  { label: 'Carboidratos', field: 'carbs', color: '#3b82f6', trackColor: '#dbeafe', max: 800 },
+  { label: 'Gordura', field: 'fat', color: '#a855f7', trackColor: '#f3e8ff', max: 300 },
 ]
 
 interface PlanFormProps {
@@ -28,8 +28,8 @@ export default function PlanForm({ defaultValues }: PlanFormProps) {
     defaultValues,
   })
 
-  const dailyKcal = watch('dailyKcal')
-  const watchValues = { proteinG: watch('proteinG'), carbsG: watch('carbsG'), fatG: watch('fatG') }
+  const calories = watch('calories')
+  const watchValues = { protein: watch('protein'), carbs: watch('carbs'), fat: watch('fat') }
 
   const onSubmit = handleSubmit(() => toast.success('Plano salvo com sucesso!'))
 
@@ -49,14 +49,14 @@ export default function PlanForm({ defaultValues }: PlanFormProps) {
           <div className="text-right">
             <div className="flex items-end gap-2 justify-end">
               <input
-                {...register('dailyKcal', { valueAsNumber: true })}
+                {...register('calories', { valueAsNumber: true })}
                 type="number"
                 className="w-36 text-5xl font-extrabold text-neutral-950 bg-transparent outline-none text-right border-b-2 border-neutral-200 focus:border-red-500 pb-1 transition-colors duration-200"
               />
               <span className="text-lg font-semibold text-neutral-400 pb-1.5">kcal</span>
             </div>
-            {errors.dailyKcal && (
-              <p className="text-xs text-red-500 mt-1">{errors.dailyKcal.message}</p>
+            {errors.calories && (
+              <p className="text-xs text-red-500 mt-1">{errors.calories.message}</p>
             )}
           </div>
         </div>
@@ -64,7 +64,7 @@ export default function PlanForm({ defaultValues }: PlanFormProps) {
         <div className="mt-5 h-2 rounded-full bg-red-50 overflow-hidden">
           <div
             className="h-full rounded-full bg-red-500 transition-all duration-500"
-            style={{ width: `${Math.min((Number(dailyKcal) || 0) / 5000 * 100, 100)}%` }}
+            style={{ width: `${Math.min((Number(calories) || 0) / 5000 * 100, 100)}%` }}
           />
         </div>
         <div className="flex justify-between mt-1.5">

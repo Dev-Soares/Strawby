@@ -6,9 +6,9 @@ interface FoodCardProps {
 }
 
 const macros = [
-  { key: 'protein' as const, label: 'P', colorClass: 'text-amber-500' },
-  { key: 'carbs' as const, label: 'C', colorClass: 'text-blue-500' },
-  { key: 'fat' as const, label: 'G', colorClass: 'text-violet-500' },
+  { key: 'protein' as const, label: 'Prot', colorClass: 'text-amber-500' },
+  { key: 'carbs' as const, label: 'Carb', colorClass: 'text-blue-500' },
+  { key: 'fat' as const, label: 'Gord', colorClass: 'text-violet-500' },
 ]
 
 export default function FoodCard({ food }: FoodCardProps) {
