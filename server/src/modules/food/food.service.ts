@@ -17,7 +17,7 @@ export class FoodService {
   async create(dto: CreateFoodDto): Promise<FoodPublic> {
     try {
       return await this.prisma.food.create({
-        data: dto,
+        data: dto as Prisma.FoodCreateInput,
         select: foodSelect,
       });
     } catch {
