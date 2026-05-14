@@ -49,14 +49,15 @@ export default function CreateMealForm() {
   const selectedType = watch('mealType')
 
   const onSubmit = handleSubmit((data) => {
+    const derivedName = mealTypes[data.mealType as MealType].name
     if (isPlanMeal) {
       createPlanMeal.mutate(
-        { name: data.name, type: data.mealType, date: new Date().toISOString() },
+        { name: derivedName, type: data.mealType, date: new Date().toISOString() },
         { onSuccess: () => navigate('/plan') },
       )
     } else {
       createMeal.mutate(
-        { name: data.name, mealType: data.mealType, time: data.time, date: new Date().toISOString() },
+        { name: derivedName, mealType: data.mealType, time: data.time, date: new Date().toISOString() },
         { onSuccess: () => navigate('/home') },
       )
     }
@@ -64,19 +65,6 @@ export default function CreateMealForm() {
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 max-w-2xl">
-      {/* Name */}
-      <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-6">
-        <label className="block text-xs font-black text-neutral-500 uppercase tracking-widest mb-3">
-          Nome da refeição
-        </label>
-        <input
-          {...register('name')}
-          placeholder="Ex: Café da manhã proteico"
-          className="font-display w-full text-2xl font-bold text-neutral-950 bg-transparent outline-none border-b-2 border-neutral-200 focus:border-neutral-500 pb-2 transition-colors duration-150 placeholder:text-neutral-300"
-        />
-        {errors.name && <p className="text-xs text-red-500 mt-2">{errors.name.message}</p>}
-      </div>
-
       {/* Meal type */}
       <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-6">
         <p className="text-xs font-black text-neutral-500 uppercase tracking-widest mb-4">
