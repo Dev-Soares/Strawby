@@ -1,25 +1,10 @@
-import type { UseFormRegister, FieldErrors } from 'react-hook-form'
-import type { PlanData } from '../types/plan'
-
-interface MacroRow {
-  label: string
-  fieldName: keyof Pick<PlanData, 'protein' | 'carbs' | 'fat'>
-  color: string
-  trackColor: string
-  max: number
-}
+import type { MacroRow, MacroConfigProps } from '../types/macroConfig'
 
 const macroRows: MacroRow[] = [
   { label: 'Proteína', fieldName: 'protein', color: '#f59e0b', trackColor: '#fef3c7', max: 500 },
   { label: 'Carboidratos', fieldName: 'carbs', color: '#3b82f6', trackColor: '#dbeafe', max: 800 },
   { label: 'Gordura', fieldName: 'fat', color: '#a855f7', trackColor: '#f3e8ff', max: 300 },
 ]
-
-interface MacroConfigProps {
-  register: UseFormRegister<PlanData>
-  errors: FieldErrors<PlanData>
-  watchValues: { protein: number; carbs: number; fat: number }
-}
 
 export default function MacroConfig({ register, errors, watchValues }: MacroConfigProps) {
   return (

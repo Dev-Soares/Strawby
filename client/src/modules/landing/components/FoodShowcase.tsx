@@ -25,16 +25,11 @@ import {
   Nut,
   Leaf,
 } from '@phosphor-icons/react'
-import type { Icon } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
+import type { FoodItem } from '../types/foodShowcase'
 
 const ease = [0.34, 1.05, 0.64, 1] as const
 const easeIcons = [0.34, 1.2, 0.64, 1] as const
-
-interface FoodItem {
-  icon: Icon
-  color: string
-}
 
 const foods: FoodItem[] = [
   { icon: OrangeSlice,  color: 'text-orange-500'  },

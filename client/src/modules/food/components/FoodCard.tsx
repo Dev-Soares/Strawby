@@ -1,9 +1,5 @@
 import { Fire } from '@phosphor-icons/react'
-import type { Food } from '../types/food'
-
-interface FoodCardProps {
-  food: Food
-}
+import type { FoodCardProps } from '../types/foodCard'
 
 const macros = [
   { key: 'protein' as const, label: 'Prot', colorClass: 'text-amber-500' },

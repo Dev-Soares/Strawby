@@ -1,26 +1,15 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { planSchema, type PlanData } from '../types/plan'
+import type { MacroCard, PlanFormProps } from '../types/planForm'
 import { Fire, FloppyDisk } from '@phosphor-icons/react'
 import toast from 'react-hot-toast'
-
-interface MacroCard {
-  label: string
-  field: keyof Pick<PlanData, 'protein' | 'carbs' | 'fat'>
-  color: string
-  trackColor: string
-  max: number
-}
 
 const macros: MacroCard[] = [
   { label: 'Proteína', field: 'protein', color: '#f59e0b', trackColor: '#fef3c7', max: 500 },
   { label: 'Carboidratos', field: 'carbs', color: '#3b82f6', trackColor: '#dbeafe', max: 800 },
   { label: 'Gordura', field: 'fat', color: '#a855f7', trackColor: '#f3e8ff', max: 300 },
 ]
-
-interface PlanFormProps {
-  defaultValues: PlanData
-}
 
 export default function PlanForm({ defaultValues }: PlanFormProps) {
   const { register, handleSubmit, formState: { errors }, watch } = useForm<PlanData>({

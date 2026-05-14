@@ -1,9 +1,5 @@
-import type { WeekDay, WeekDayStatus } from '../types/weeklyReport'
-
-interface WeekDayBubbleProps {
-  day: WeekDay
-  isToday?: boolean
-}
+import type { WeekDayStatus } from '../types/weeklyReport'
+import type { WeekDayBubbleProps } from '../types/weekDayBubble'
 
 const statusRing: Record<WeekDayStatus, string> = {
   good: 'ring-emerald-400',

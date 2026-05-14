@@ -1,10 +1,5 @@
-import type { Food } from '../types/food'
+import type { FoodGridProps } from '../types/foodGrid'
 import FoodCard from './FoodCard'
-
-interface FoodGridProps {
-  foods: Food[]
-  total: number
-}
 
 export default function FoodGrid({ foods, total }: FoodGridProps) {
   return (

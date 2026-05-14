@@ -2,21 +2,10 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Coffee, ForkKnife, Leaf, Moon, Cookie, FloppyDisk } from '@phosphor-icons/react'
-import type { Icon } from '@phosphor-icons/react'
 import { createMealSchema, type CreateMealData } from '../types/createMeal'
+import type { MealType, MealTypeConfig } from '../types/mealTypeConfig'
 import { useCreateMeal } from '../hooks/useCreateMeal'
 import { useCreatePlanMeal } from '../../plan-meal/hooks/useCreatePlanMeal'
-
-type MealType = 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'supper'
-
-interface MealTypeConfig {
-  icon: Icon
-  label: string
-  name: string
-  accent: string
-  accentLight: string
-  accentText: string
-}
 
 const mealTypes: Record<MealType, MealTypeConfig> = {
   breakfast: { icon: Coffee, label: 'MANHÃ', name: 'Café da manhã', accent: '#ea580c', accentLight: '#fed7aa', accentText: '#c2410c' },

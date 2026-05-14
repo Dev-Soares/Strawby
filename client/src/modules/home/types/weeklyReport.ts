@@ -25,3 +25,7 @@ export interface MonthlyScoreData {
   firstDayOffset: number
   todayDate: number
 }
+
+export interface WeeklyReportProps {
+  data: WeeklyReportData
+}

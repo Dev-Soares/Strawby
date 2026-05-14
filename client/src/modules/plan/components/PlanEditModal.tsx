@@ -1,16 +1,9 @@
 import { useForm } from 'react-hook-form'
 import { AnimatePresence, motion } from 'framer-motion'
 import { planSchema, type PlanData } from '../types/plan'
+import type { PlanEditModalProps } from '../types/planEditModal'
 import { X, Fire, FloppyDisk, PencilSimple } from '@phosphor-icons/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-
-interface PlanEditModalProps {
-  isOpen: boolean
-  onClose: () => void
-  defaultValues: PlanData
-  onSave: (data: PlanData) => void
-  isPending: boolean
-}
 
 const macroConfig = [
   {

@@ -2,13 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { PlusIcon } from '@phosphor-icons/react'
-import type { Meal } from '../../meal/types/meal'
+import type { MealListProps } from '../types/mealList'
 import MealCard from './MealCard'
 import { useDay } from '../contexts/DayContext'
-
-interface MealListProps {
-  meals: Meal[]
-}
 
 const container = {
   hidden: { opacity: 0 },

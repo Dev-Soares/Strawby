@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { FireIcon } from '@phosphor-icons/react'
-import type { DailySummary, MacroRing } from '../types/dailySummary'
+import type { MacroRing, DailySummaryProps } from '../types/dailySummary'
 
 function MacroBar({ label, value, max, unit, color, trackColor }: MacroRing) {
   const progress = Math.min(value / max, 1)
@@ -30,10 +30,6 @@ function MacroBar({ label, value, max, unit, color, trackColor }: MacroRing) {
       </div>
     </div>
   )
-}
-
-interface DailySummaryProps {
-  data: DailySummary
 }
 
 export default function DailySummary({ data }: DailySummaryProps) {

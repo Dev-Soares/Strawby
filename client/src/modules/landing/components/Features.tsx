@@ -1,6 +1,6 @@
 import { CheckIcon, XIcon, WarningIcon, FireIcon, ForkKnifeIcon, MagnifyingGlassIcon } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
-import type { ReactNode } from 'react'
+import type { Course } from '../types/features'
 
 const weekDays = [
   { day: 'SEG', date: 5, status: 'good' as const },
@@ -167,14 +167,6 @@ function SearchPreview() {
       </div>
     </div>
   )
-}
-
-interface Course {
-  course: string
-  number: string
-  title: ReactNode
-  description: string
-  preview: ReactNode
 }
 
 const menu: Course[] = [
