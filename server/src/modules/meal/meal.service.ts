@@ -31,6 +31,8 @@ export class MealService {
       const meal = await this.prisma.meal.create({
         data: {
           name: dto.name,
+          mealType: dto.mealType,
+          time: dto.time,
           date: dto.date ? new Date(dto.date) : undefined,
           userId,
         },

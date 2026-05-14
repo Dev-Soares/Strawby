@@ -49,16 +49,16 @@ export default function CreateMealForm() {
   const selectedType = watch('mealType')
 
   const onSubmit = handleSubmit((data) => {
-    const basePayload = { name: data.name, type: data.mealType, date: new Date().toISOString() }
-
     if (isPlanMeal) {
-      createPlanMeal.mutate(basePayload, {
-        onSuccess: () => navigate('/plan'),
-      })
+      createPlanMeal.mutate(
+        { name: data.name, type: data.mealType, date: new Date().toISOString() },
+        { onSuccess: () => navigate('/plan') },
+      )
     } else {
-      createMeal.mutate(basePayload, {
-        onSuccess: () => navigate('/home'),
-      })
+      createMeal.mutate(
+        { name: data.name, mealType: data.mealType, time: data.time, date: new Date().toISOString() },
+        { onSuccess: () => navigate('/home') },
+      )
     }
   })
 
