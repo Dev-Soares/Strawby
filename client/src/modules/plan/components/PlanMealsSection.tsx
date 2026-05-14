@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Plus, CaretDown, Trash } from '@phosphor-icons/react'
 import { Coffee, ForkKnife, Leaf, Moon, Cookie } from '@phosphor-icons/react'
-import { useGetPlanMeals } from '../../plan-meal/hooks/useGetPlanMeals'
-import { useDeletePlanMeal } from '../../plan-meal/hooks/useDeletePlanMeal'
+import { useGetPlanMeals } from '../../meal/hooks/useGetPlanMeals'
+import { useDeleteMeal } from '../../meal/hooks/useDeleteMeal'
 import PlanMealsSectionSkeleton from '../skeletons/PlanMealsSectionSkeleton'
 import type { MealTypeConfig, PlanMealCardProps } from '../types/planMealsSection'
 
@@ -18,8 +18,8 @@ const mealTypeConfig: Record<string, MealTypeConfig> = {
 
 function PlanMealCard({ meal, isOpen, onToggle }: PlanMealCardProps) {
   const navigate = useNavigate()
-  const deleteMutation = useDeletePlanMeal()
-  const config = mealTypeConfig[meal.type || ''] || mealTypeConfig.breakfast
+  const deleteMutation = useDeleteMeal()
+  const config = mealTypeConfig[meal.mealType || ''] || mealTypeConfig.breakfast
   const MealIcon = config.icon
   const totalKcal = Math.round(meal.totals.calories)
 
