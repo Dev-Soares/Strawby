@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { AnimatePresence, motion } from 'framer-motion'
 import { planSchema, type PlanData } from '../types/plan'
-import { X, Fire, FloppyDisk } from '@phosphor-icons/react'
+import { X, Fire, FloppyDisk, PencilSimple } from '@phosphor-icons/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 interface PlanEditModalProps {
@@ -9,6 +9,7 @@ interface PlanEditModalProps {
   onClose: () => void
   defaultValues: PlanData
   onSave: (data: PlanData) => void
+  isPending: boolean
 }
 
 const macroConfig = [
@@ -47,20 +48,14 @@ const macroConfig = [
   },
 ]
 
-export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }: PlanEditModalProps) {
-  const { handleSubmit, watch, setValue, register } = useForm<PlanData>({
+export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, isPending }: PlanEditModalProps) {
+  const { handleSubmit, register } = useForm<PlanData>({
     resolver: zodResolver(planSchema),
     defaultValues,
   })
 
-  const nudge = (field: keyof PlanData, delta: number, min: number, max: number) => {
-    const current = watch(field) || 0
-    setValue(field, Math.min(Math.max(current + delta, min), max), { shouldValidate: true })
-  }
-
   const onSubmit = handleSubmit((data) => {
     onSave(data)
-    onClose()
   })
 
   return (
@@ -105,32 +100,19 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
                   <span className="text-[10px] font-extrabold text-red-600 uppercase tracking-[0.12em]">Meta calórica diária</span>
                 </div>
 
-                <div className="flex items-center justify-between gap-3 sm:gap-5">
-                  <button
-                    type="button"
-                    onClick={() => nudge('calories', -50, 1000, 5000)}
-                    className="w-11 h-11 sm:w-14 sm:h-14 rounded-full border-2 border-red-200 bg-white text-red-600 text-xl sm:text-2xl font-extrabold flex items-center justify-center hover:border-red-400 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
-                  >
-                    −
-                  </button>
-
+                <div className="flex items-center justify-center gap-3 sm:gap-5">
                   <div className="text-center flex-1 min-w-0">
-                    <input
-                      {...register('calories', { valueAsNumber: true })}
-                      type="number"
-                      className="font-display text-5xl sm:text-7xl font-extrabold text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-200 focus:border-red-500 pb-1 cursor-text transition-colors duration-150"
-                    />
+                    <div className="flex items-center justify-center gap-2">
+                      <input
+                        {...register('calories', { valueAsNumber: true })}
+                        type="number"
+                        disabled={isPending}
+                        className="font-display text-5xl sm:text-7xl font-extrabold text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-300 focus:border-red-500 pb-1 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                      />
+                      <PencilSimple size={18} weight="bold" className="text-red-400 shrink-0 -mb-1" />
+                    </div>
                     <p className="text-xs sm:text-sm font-semibold text-neutral-400 mt-2">kcal / dia · mín 1000 · máx 5000</p>
-                    <p className="text-[10px] text-red-400/70 mt-1 hidden sm:block">clique no número para digitar</p>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => nudge('calories', +50, 1000, 5000)}
-                    className="w-11 h-11 sm:w-14 sm:h-14 rounded-full border-2 border-red-200 bg-white text-red-600 text-xl sm:text-2xl font-extrabold flex items-center justify-center hover:border-red-400 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
-                  >
-                    +
-                  </button>
                 </div>
               </div>
 
@@ -149,35 +131,17 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
                       <input
                         {...register(macro.field, { valueAsNumber: true })}
                         type="number"
-                        className="font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150"
+                        disabled={isPending}
+                        className="font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{ borderBottomColor: `${macro.color}55` }}
-                        onFocus={(e) => { e.currentTarget.style.borderBottomColor = macro.color }}
+                        onFocus={(e) => { if (!isPending) e.currentTarget.style.borderBottomColor = macro.color }}
                         onBlur={(e) => { e.currentTarget.style.borderBottomColor = `${macro.color}55` }}
                       />
                       <span className="text-sm sm:text-base font-bold text-neutral-400 pb-1 shrink-0">g</span>
+                      <PencilSimple size={14} weight="bold" className="shrink-0 mb-1.5" style={{ color: `${macro.color}aa` }} />
                     </div>
 
                     <p className="text-[8px] sm:text-[9px] text-neutral-400 mb-3 sm:mb-5">máx. {macro.max}g</p>
-
-                    <div className="flex items-center gap-1.5 sm:gap-2.5">
-                      <button
-                        type="button"
-                        onClick={() => nudge(macro.field, -macro.step, 0, macro.max)}
-                        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white shadow-sm hover:shadow-md font-extrabold text-sm sm:text-base flex items-center justify-center transition-shadow cursor-pointer"
-                        style={{ color: macro.color }}
-                      >
-                        −
-                      </button>
-                      <span className="text-[8px] sm:text-[9px] font-bold text-neutral-400">±{macro.step}g</span>
-                      <button
-                        type="button"
-                        onClick={() => nudge(macro.field, +macro.step, 0, macro.max)}
-                        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white shadow-sm hover:shadow-md font-extrabold text-sm sm:text-base flex items-center justify-center transition-shadow cursor-pointer"
-                        style={{ color: macro.color }}
-                      >
-                        +
-                      </button>
-                    </div>
                   </div>
                 ))}
               </div>
@@ -187,16 +151,22 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave }
                 <button
                   type="button"
                   onClick={onClose}
-                  className="flex-1 py-3.5 rounded-xl border border-neutral-200 text-sm font-semibold text-neutral-600 hover:bg-neutral-50 transition-colors cursor-pointer"
+                  disabled={isPending}
+                  className="flex-1 py-3.5 rounded-xl border border-neutral-200 text-sm font-semibold text-neutral-600 hover:bg-neutral-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-3.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-sm font-bold text-white flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                  disabled={isPending}
+                  className="flex-1 py-3.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-sm font-bold text-white flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <FloppyDisk size={16} weight="bold" />
-                  Salvar plano
+                  {isPending ? (
+                    <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    <FloppyDisk size={16} weight="bold" />
+                  )}
+                  {isPending ? 'Salvando…' : 'Salvar plano'}
                 </button>
               </div>
             </form>

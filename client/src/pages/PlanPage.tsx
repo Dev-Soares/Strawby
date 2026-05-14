@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { PencilSimple, Fire } from '@phosphor-icons/react'
 import AppLayout from '../shared/layouts/AppLayout'
 import PlanEditModal from '../modules/plan/components/PlanEditModal'
@@ -32,7 +33,12 @@ export default function PlanPage() {
         <>
           <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12">
             {/* Header */}
-            <div className="flex items-start justify-between mb-8">
+            <motion.div
+              className="flex items-start justify-between mb-8"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
               <div>
                 <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-neutral-950 tracking-tight leading-none">
                   Meu Plano
@@ -47,12 +53,17 @@ export default function PlanPage() {
                 <PencilSimple size={16} weight="bold" />
                 Editar plano
               </button>
-            </div>
+            </motion.div>
 
             {/* Two-column layout */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
               {/* Left — calorie card */}
-              <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-8">
+              <motion.div
+                className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
                 <div className="flex items-center gap-2 mb-6">
                   <Fire size={16} weight="fill" className="text-red-500" />
                   <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Meta calórica diária</span>
@@ -64,16 +75,22 @@ export default function PlanPage() {
                   </span>
                 </div>
                 <p className="text-base font-semibold text-neutral-500">kcal por dia</p>
-              </div>
+              </motion.div>
 
               {/* Right — macro cards stacked */}
               <div className="flex flex-col gap-4">
-                {macros.map((macro) => {
+                {macros.map((macro, index) => {
                   const value = plan[macro.field]
                   const progress = Math.min(value / macro.max, 1)
 
                   return (
-                    <div key={macro.field} className="bg-white rounded-2xl border border-neutral-200 shadow-sm px-6 py-5">
+                    <motion.div
+                      key={macro.field}
+                      className="bg-white rounded-2xl border border-neutral-200 shadow-sm px-6 py-5"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 0.2 + index * 0.08 }}
+                    >
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2.5">
                           <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: macro.color }} />
@@ -86,12 +103,15 @@ export default function PlanPage() {
                       </div>
 
                       <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: macro.trackColor }}>
-                        <div
-                          className="h-full rounded-full transition-all duration-500"
-                          style={{ width: `${progress * 100}%`, backgroundColor: macro.color }}
+                        <motion.div
+                          className="h-full rounded-full"
+                          style={{ backgroundColor: macro.color }}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${progress * 100}%` }}
+                          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.4 + index * 0.1 }}
                         />
                       </div>
-                    </div>
+                    </motion.div>
                   )
                 })}
               </div>
@@ -112,7 +132,8 @@ export default function PlanPage() {
               carbs: plan.carbs,
               fat: plan.fat,
             }}
-            onSave={(data) => editMutation.mutate(data)}
+            isPending={editMutation.isPending}
+            onSave={(data) => editMutation.mutate(data, { onSuccess: () => setModalOpen(false) })}
           />
         </>
       )}

@@ -43,7 +43,7 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
 
           {/* Content — positioned inside red zone */}
           <div
-            className="absolute inset-0 flex flex-col justify-between md:justify-center pl-[14%] sm:pl-[18%] md:pl-[22%] pr-6 sm:pr-10 md:pr-16 pt-20 sm:pt-24 md:pt-0 pb-8 md:pb-0 pointer-events-none"
+            className="absolute inset-0 flex flex-col justify-center pl-[24%] sm:pl-[20%] md:pl-[22%] pr-8 sm:pr-10 md:pr-16 pointer-events-none"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Nav items */}
@@ -62,10 +62,10 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
                     <Link
                       to={item.href}
                       onClick={onClose}
-                      className="group flex items-center gap-4 py-3.5 sm:py-6"
+                      className="group flex items-center gap-4 py-5 sm:py-6"
                     >
                       <span
-                        className={`font-extrabold text-[32px] sm:text-[50px] lg:text-[62px] leading-none tracking-tight transition-all duration-200 group-hover:translate-x-2 ${
+                        className={`font-extrabold text-[46px] sm:text-[50px] lg:text-[62px] leading-none tracking-tight transition-all duration-200 group-hover:translate-x-2 ${
                           isActive ? 'text-white' : 'text-white/85 group-hover:text-white'
                         }`}
                       >

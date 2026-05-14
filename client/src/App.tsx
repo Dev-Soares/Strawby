@@ -10,10 +10,13 @@ import SelectFoodPage from './pages/SelectFoodPage'
 import ScorePage from './pages/ScorePage'
 import ProtectedRoute from './shared/components/ProtectedRoute'
 import PublicOnlyRoute from './shared/components/PublicOnlyRoute'
+import ScrollToTop from './shared/components/ScrollToTop'
 
 export default function App() {
   return (
-    <Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<PublicOnlyRoute><LoginPage /></PublicOnlyRoute>} />
       <Route path="/create-account" element={<PublicOnlyRoute><SignUpPage /></PublicOnlyRoute>} />
@@ -24,5 +27,6 @@ export default function App() {
       <Route path="/meals/new" element={<ProtectedRoute><CreateMealPage /></ProtectedRoute>} />
       <Route path="/foods/select" element={<ProtectedRoute><SelectFoodPage /></ProtectedRoute>} />
     </Routes>
+    </>
   )
 }

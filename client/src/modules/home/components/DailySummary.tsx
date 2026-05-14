@@ -8,14 +8,14 @@ function MacroBar({ label, value, max, unit, color, trackColor }: MacroRing) {
 
   return (
     <div className="flex flex-col min-w-0">
-      <span className="text-[10px] sm:text-xs font-extrabold text-red-600 uppercase tracking-widest mb-1.5">
+      <span className="text-xs sm:text-sm font-extrabold text-red-600 uppercase tracking-widest mb-1.5">
         {label}
       </span>
       <div className="flex items-baseline gap-1 mb-2 sm:mb-3">
         <span className="text-xl sm:text-2xl font-extrabold text-neutral-950 tabular-nums leading-none">
           {displayValue}
         </span>
-        <span className="text-[9px] sm:text-[10px] font-bold text-neutral-400 uppercase">
+        <span className="text-[10px] sm:text-xs font-bold text-neutral-400 uppercase">
           {unit}
         </span>
       </div>
@@ -52,8 +52,8 @@ export default function DailySummary({ data }: DailySummaryProps) {
       <div className="relative">
         <div className="flex items-center justify-between mb-6 sm:mb-8 gap-3">
           <div className="min-w-0">
-            <h2 className="text-base sm:text-lg font-bold text-neutral-900">Resumo diário</h2>
-            <p className="text-[11px] sm:text-xs text-neutral-400 mt-0.5">
+            <h2 className="text-lg sm:text-xl font-extrabold text-neutral-900">Resumo diário</h2>
+            <p className="text-xs sm:text-sm text-neutral-400 mt-0.5">
               Acompanhe seus macros
             </p>
           </div>
@@ -63,7 +63,7 @@ export default function DailySummary({ data }: DailySummaryProps) {
             <span className="text-xs sm:text-sm font-extrabold text-red-600 tabular-nums">
               {calorias.value.toLocaleString('pt-BR')}
             </span>
-            <span className="text-[9px] sm:text-[10px] font-bold text-red-400 uppercase">
+            <span className="text-[10px] sm:text-xs font-bold text-red-400 uppercase">
               kcal
             </span>
           </div>
@@ -77,10 +77,10 @@ export default function DailySummary({ data }: DailySummaryProps) {
 
         <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-neutral-100">
           <div className="flex items-center justify-between mb-2 sm:mb-3 gap-2">
-            <span className="text-[11px] sm:text-xs font-semibold text-neutral-500 truncate">
+            <span className="text-xs sm:text-sm font-semibold text-neutral-500 truncate">
               Progresso calórico do dia
             </span>
-            <span className="text-[10px] sm:text-xs font-bold text-neutral-700 tabular-nums shrink-0">
+            <span className="text-xs sm:text-sm font-bold text-neutral-700 tabular-nums shrink-0">
               {calorias.value.toLocaleString('pt-BR')} / {calorias.max.toLocaleString('pt-BR')} kcal
             </span>
           </div>
@@ -92,7 +92,7 @@ export default function DailySummary({ data }: DailySummaryProps) {
               transition={{ duration: 1, ease: 'easeOut', delay: 0.4 }}
             />
           </div>
-          <p className="text-[11px] sm:text-xs font-medium text-neutral-400 mt-2">
+          <p className="text-xs sm:text-sm font-medium text-neutral-400 mt-2">
             {calPct}% da meta diária consumida
           </p>
         </div>

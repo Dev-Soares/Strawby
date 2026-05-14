@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { PlusIcon } from '@phosphor-icons/react'
 import type { Meal } from '../../meal/types/meal'
 import MealCard from './MealCard'
+import { useDay } from '../contexts/DayContext'
 
 interface MealListProps {
   meals: Meal[]
@@ -24,6 +25,7 @@ const item = {
 
 export default function MealList({ meals }: MealListProps) {
   const navigate = useNavigate()
+  const { isToday } = useDay()
   const totalKcal = meals.reduce((sum, m) => sum + m.totals.calories, 0)
   const [openId, setOpenId] = useState<string | null>(null)
 
@@ -33,12 +35,12 @@ export default function MealList({ meals }: MealListProps) {
     <div>
       <div className="flex items-end justify-between mb-3 sm:mb-5 px-1 gap-2 mt-1">
         <div className="min-w-0">
-          <h2 className="text-base sm:text-lg font-bold text-neutral-900">Refeições de hoje</h2>
-          <p className="text-[11px] sm:text-xs text-neutral-400 mt-0.5">
+          <h2 className="text-lg sm:text-xl font-extrabold text-neutral-900">Refeições de hoje</h2>
+          <p className="text-xs sm:text-sm text-neutral-400 mt-0.5">
             Seu histórico do dia
           </p>
         </div>
-        <span className="text-[11px] sm:text-xs font-extrabold text-neutral-500 tabular-nums shrink-0">
+        <span className="text-xs sm:text-sm font-extrabold text-neutral-500 tabular-nums shrink-0">
           {Math.round(totalKcal).toLocaleString('pt-BR')} kcal
         </span>
       </div>
@@ -59,15 +61,17 @@ export default function MealList({ meals }: MealListProps) {
           </motion.div>
         ))}
 
-        <motion.button
-          type="button"
-          onClick={() => navigate('/meals/new?type=meal')}
-          className="flex items-center justify-center gap-2 py-3 sm:py-4 rounded-2xl sm:rounded-3xl border border-dashed border-neutral-200 text-[13px] sm:text-sm font-semibold text-neutral-400 hover:border-red-300 hover:text-red-500 hover:bg-red-50/50 transition-all duration-200 cursor-pointer mt-1"
-          variants={item}
-        >
-          <PlusIcon size={16} weight="bold" />
-          Adicionar refeição
-        </motion.button>
+        {isToday && (
+          <motion.button
+            type="button"
+            onClick={() => navigate('/meals/new?type=meal')}
+            className="flex items-center justify-center gap-2 py-3.5 sm:py-4 rounded-2xl sm:rounded-3xl bg-red-600 text-white text-sm sm:text-base font-bold hover:bg-red-700 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mt-1"
+            variants={item}
+          >
+            <PlusIcon size={18} weight="bold" />
+            Adicionar refeição
+          </motion.button>
+        )}
       </motion.div>
     </div>
   )

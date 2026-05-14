@@ -4,6 +4,7 @@ import { CoffeeIcon, ForkKnifeIcon, LeafIcon, MoonIcon, CookieIcon, CaretDownIco
 import type { Icon } from '@phosphor-icons/react'
 import type { Meal } from '../../meal/types/meal'
 import { useDeleteMeal } from '../../meal/hooks/useDeleteMeal'
+import { useDay } from '../contexts/DayContext'
 
 interface MealConfig {
   icon: Icon
@@ -74,6 +75,7 @@ interface MealCardProps {
 
 export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
   const navigate = useNavigate()
+  const { isToday } = useDay()
   const deleteMutation = useDeleteMeal()
   const config = mealConfig[meal.mealType ?? ''] || fallbackConfig
   const MealIcon = config.icon
@@ -200,22 +202,29 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                 </div>
               ))}
 
-              <button
-                type="button"
-                onClick={() => navigate(`/foods/select?mealId=${meal.id}&type=meal`)}
-                className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-neutral-100 text-neutral-700 text-xs font-bold hover:bg-neutral-200 transition-colors duration-150 cursor-pointer"
-              >
-                <Plus size={14} weight="bold" />
-                Adicionar alimento
-              </button>
+              {isToday && (
+                <button
+                  type="button"
+                  onClick={() => navigate(`/foods/select?mealId=${meal.id}&type=meal`)}
+                  className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-neutral-100 text-neutral-700 text-xs font-bold hover:bg-neutral-200 transition-colors duration-150 cursor-pointer"
+                >
+                  <Plus size={14} weight="bold" />
+                  Adicionar alimento
+                </button>
+              )}
 
               <button
                 type="button"
                 onClick={() => deleteMutation.mutate(meal.id)}
-                className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100 transition-colors duration-150 cursor-pointer mt-1"
+                disabled={deleteMutation.isPending}
+                className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100 transition-colors duration-150 cursor-pointer mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Trash size={14} weight="bold" />
-                Remover refeição
+                {deleteMutation.isPending ? (
+                  <span className="inline-block w-3 h-3 border-2 border-red-300 border-t-red-600 rounded-full animate-spin" />
+                ) : (
+                  <Trash size={14} weight="bold" />
+                )}
+                {deleteMutation.isPending ? 'Removendo…' : 'Remover refeição'}
               </button>
             </div>
           </motion.div>

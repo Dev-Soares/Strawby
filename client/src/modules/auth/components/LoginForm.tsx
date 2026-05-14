@@ -13,15 +13,15 @@ export default function LoginForm() {
   } = useSignIn()
 
   return (
-    <div className="flex flex-col md:flex-row gap-28 items-stretch w-full">
+    <div className="flex flex-col lg:flex-row gap-8 lg:gap-28 items-stretch w-full">
 
       {/* Formulário */}
       <div className="flex-1 min-w-0">
-        <h1 className="text-[52px] font-black tracking-tight text-neutral-900 leading-none mb-14">
+        <h1 className="text-4xl md:text-[52px] font-black tracking-tight text-neutral-900 leading-none mb-10 md:mb-14">
           Entrar.
         </h1>
 
-        <form onSubmit={onSubmit} className="flex flex-col gap-10">
+        <form onSubmit={onSubmit} className="flex flex-col gap-8 md:gap-10">
 
           <div>
             <label className="block text-[11px] font-semibold text-red-500 mb-3 uppercase tracking-widest">
@@ -66,12 +66,7 @@ export default function LoginForm() {
           </div>
 
           <div className="flex flex-col gap-5 pt-2">
-            <Link
-              to="/esqueci-senha"
-              className="text-[13px] text-neutral-400 hover:text-red-500 transition-colors w-fit"
-            >
-              Esqueci minha senha
-            </Link>
+            
 
             <button
               type="submit"
@@ -96,7 +91,7 @@ export default function LoginForm() {
       </div>
 
       {/* Card lateral */}
-      <div className="md:w-96 shrink-0 bg-red-600 rounded-2xl p-10 text-white flex flex-col justify-between">
+      <div className="lg:w-96 shrink-0 bg-red-600 rounded-2xl p-6 md:p-8 lg:p-10 text-white flex flex-col justify-between">
         <div className="flex flex-col gap-4">
           <h2 className="text-[22px] font-bold leading-snug">
             Acompanhe sua alimentação em segundos.

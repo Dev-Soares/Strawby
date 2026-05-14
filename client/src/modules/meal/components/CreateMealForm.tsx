@@ -3,7 +3,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Coffee, ForkKnife, Leaf, Moon, Cookie, FloppyDisk } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
-import toast from 'react-hot-toast'
 import { createMealSchema, type CreateMealData } from '../types/createMeal'
 import { useCreateMeal } from '../hooks/useCreateMeal'
 import { useCreatePlanMeal } from '../../plan-meal/hooks/useCreatePlanMeal'
@@ -54,17 +53,11 @@ export default function CreateMealForm() {
 
     if (isPlanMeal) {
       createPlanMeal.mutate(basePayload, {
-        onSuccess: () => {
-          toast.success('Refeição planejada criada com sucesso!')
-          navigate('/plan')
-        },
+        onSuccess: () => navigate('/plan'),
       })
     } else {
       createMeal.mutate(basePayload, {
-        onSuccess: () => {
-          toast.success('Refeição criada com sucesso!')
-          navigate('/home')
-        },
+        onSuccess: () => navigate('/home'),
       })
     }
   })
@@ -139,10 +132,15 @@ export default function CreateMealForm() {
       {/* Submit */}
       <button
         type="submit"
-        className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl text-sm font-bold text-white transition-colors duration-200 cursor-pointer bg-red-600 hover:bg-red-700"
+        disabled={createMeal.isPending || createPlanMeal.isPending}
+        className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl text-sm font-bold text-white transition-colors duration-200 cursor-pointer bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <FloppyDisk size={17} weight="bold" />
-        Salvar refeição
+        {createMeal.isPending || createPlanMeal.isPending ? (
+          <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+        ) : (
+          <FloppyDisk size={17} weight="bold" />
+        )}
+        {createMeal.isPending || createPlanMeal.isPending ? 'Salvando…' : 'Salvar refeição'}
       </button>
     </form>
   )

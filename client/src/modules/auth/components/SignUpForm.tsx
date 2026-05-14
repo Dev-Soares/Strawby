@@ -13,15 +13,15 @@ export default function SignUpForm() {
   } = useSignUp()
 
   return (
-    <div className="flex flex-col md:flex-row gap-28 items-stretch w-full">
+    <div className="flex flex-col lg:flex-row gap-8 lg:gap-28 items-stretch w-full">
 
       {/* Formulário vermelho */}
-      <div className="flex-1 min-w-0 bg-red-600 rounded-2xl p-10 flex flex-col">
-        <h1 className="text-[52px] font-black tracking-tight text-white leading-none mb-14">
+      <div className="flex-1 min-w-0 bg-red-600 rounded-2xl p-6 md:p-8 lg:p-10 flex flex-col">
+        <h1 className="text-4xl md:text-[52px] font-black tracking-tight text-white leading-none mb-10 md:mb-14">
           Cadastrar.
         </h1>
 
-        <form onSubmit={onSubmit} className="flex flex-col gap-10 flex-1">
+        <form onSubmit={onSubmit} className="flex flex-col gap-8 md:gap-10 flex-1">
 
           <div>
             <label className="block text-[11px] font-semibold text-white mb-3 uppercase tracking-widest">
@@ -104,7 +104,7 @@ export default function SignUpForm() {
       </div>
 
       {/* Card lateral direito (branco) */}
-      <div className="md:w-96 shrink-0 rounded-2xl border border-neutral-200 bg-neutral-50 p-10 text-neutral-900 flex flex-col justify-between">
+      <div className="lg:w-96 shrink-0 rounded-2xl border border-neutral-200 bg-neutral-50 p-6 md:p-8 lg:p-10 text-neutral-900 flex flex-col justify-between">
         <div className="flex flex-col gap-5">
           <h2 className="text-[22px] font-bold leading-snug text-neutral-900">
             Já tem uma conta?

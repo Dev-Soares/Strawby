@@ -64,10 +64,15 @@ function PlanMealCard({
             <button
               type="button"
               onClick={() => deleteMutation.mutate(meal.id)}
-              className="w-7 h-7 rounded-lg bg-neutral-100 hover:bg-red-100 text-neutral-400 hover:text-red-500 flex items-center justify-center transition-colors cursor-pointer"
+              disabled={deleteMutation.isPending}
+              className="w-7 h-7 rounded-lg bg-neutral-100 hover:bg-red-100 text-neutral-400 hover:text-red-500 flex items-center justify-center transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Remover refeição"
             >
-              <Trash size={14} weight="bold" />
+              {deleteMutation.isPending ? (
+                <span className="inline-block w-3 h-3 border-2 border-neutral-300 border-t-red-500 rounded-full animate-spin" />
+              ) : (
+                <Trash size={14} weight="bold" />
+              )}
             </button>
           </div>
         </div>
@@ -167,8 +172,18 @@ export default function PlanMealsSection() {
   const totalKcal = meals?.reduce((a, m) => a + m.totals.calories, 0) ?? 0
 
   return (
-    <div className="px-4 sm:px-10 lg:px-16 pb-32">
-      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
+    <motion.div
+      className="px-4 sm:px-10 lg:px-16 pb-32"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+    >
+      <motion.div
+        className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45 }}
+      >
         <div>
           <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-neutral-950 tracking-tight leading-none">
             Refeições planejadas
@@ -190,7 +205,7 @@ export default function PlanMealsSection() {
             Nova refeição
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {isPending && <PlanMealsSectionSkeleton />}
 
@@ -211,17 +226,35 @@ export default function PlanMealsSection() {
       )}
 
       {meals && meals.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start"
+          initial="hidden"
+          animate="show"
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: { staggerChildren: 0.08 },
+            },
+          }}
+        >
           {meals.map((meal) => (
-            <PlanMealCard
+            <motion.div
               key={meal.id}
-              meal={meal}
-              isOpen={openId === meal.id}
-              onToggle={() => toggle(meal.id)}
-            />
+              variants={{
+                hidden: { opacity: 0, y: 16 },
+                show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+              }}
+            >
+              <PlanMealCard
+                meal={meal}
+                isOpen={openId === meal.id}
+                onToggle={() => toggle(meal.id)}
+              />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
-    </div>
+    </motion.div>
   )
 }

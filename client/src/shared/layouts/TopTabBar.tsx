@@ -1,5 +1,4 @@
 import { Link, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import {
   HouseSimpleIcon,
   TrophyIcon,
@@ -51,11 +50,7 @@ export default function TopTabBar({ hidden = false }: TopTabBarProps) {
                   {tab.label}
                 </span>
                 {active && (
-                  <motion.span
-                    layoutId="top-tab-underline"
-                    className="absolute left-3 right-3 sm:left-2 sm:right-2 -bottom-px h-0.5 bg-red-600 rounded-full"
-                    transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                  />
+                  <span className="absolute left-3 right-3 sm:left-2 sm:right-2 -bottom-px h-0.5 bg-red-600 rounded-full" />
                 )}
               </Link>
             )
