@@ -108,5 +108,4 @@ export class FoodService {
       throw new InternalServerErrorException('Erro ao buscar alimentos');
     }
   }
-
 }
