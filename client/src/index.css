@@ -6,6 +6,15 @@
   --animate-twinkle: twinkle 3s ease-in-out infinite;
 }
 
+html, body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+img, svg, video {
+  max-width: 100%;
+}
+
 @keyframes twinkle {
   0%, 100% { opacity: 1;    }
   50%      { opacity: 0.35; }
