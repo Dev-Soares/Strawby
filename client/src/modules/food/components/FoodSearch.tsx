@@ -1,5 +1,9 @@
 import { MagnifyingGlass } from '@phosphor-icons/react'
-import type { FoodSearchProps } from '../types/foodSearch'
+
+interface FoodSearchProps {
+  value: string
+  onChange: (value: string) => void
+}
 
 export default function FoodSearch({ value, onChange }: FoodSearchProps) {
   return (

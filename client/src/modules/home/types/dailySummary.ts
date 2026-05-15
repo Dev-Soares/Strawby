@@ -10,7 +10,3 @@ export interface MacroRing {
 export interface DailySummary {
   macros: MacroRing[]
 }
-
-export interface DailySummaryProps {
-  data: DailySummary
-}

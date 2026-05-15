@@ -1,6 +1,14 @@
 import { CookingPotIcon, BowlSteamIcon, TrayIcon } from '@phosphor-icons/react'
+import type { Icon } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
-import type { Step } from '../types/howItWorks'
+
+interface Step {
+  time: string
+  icon: Icon
+  title: string
+  description: string
+  tag: string
+}
 
 const steps: Step[] = [
   {

@@ -6,7 +6,6 @@ import {
   Param,
   Patch,
   Post,
-  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -14,7 +13,6 @@ import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
 import { AddMealItemDto } from './dto/add-meal-item.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
-import { QueryMealDto } from './dto/query-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 import { MealService } from './meal.service';
 
@@ -29,17 +27,13 @@ export class MealController {
   }
 
   @Get()
-  findAll(@Req() req: AuthenticatedRequest, @Query() query: QueryMealDto) {
-    return this.mealService.findAllByUser(req.user.sub, query.kind);
+  findAll(@Req() req: AuthenticatedRequest) {
+    return this.mealService.findAllByUser(req.user.sub);
   }
 
   @Get('day/:day')
-  findAllByDay(
-    @Req() req: AuthenticatedRequest,
-    @Param('day') day: string,
-    @Query() query: QueryMealDto,
-  ) {
-    return this.mealService.findAllByUserAndDay(req.user.sub, day, query.kind);
+  findAllByDay(@Req() req: AuthenticatedRequest, @Param('day') day: string) {
+    return this.mealService.findAllByUserAndDay(req.user.sub, day);
   }
 
   @Get(':id')
