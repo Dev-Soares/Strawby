@@ -19,6 +19,7 @@ import {
 
 @Injectable()
 export class MealService {
+  
   constructor(private readonly prisma: PrismaService) {}
 
   private computeTotals(items: MealItemWithFood[]): MealTotals {
@@ -33,11 +34,22 @@ export class MealService {
     );
   }
 
+  private mealTypeToName(mealType?: string): string {
+    const map: Record<string, string> = {
+      breakfast: 'Café da manhã',
+      lunch: 'Almoço',
+      snack: 'Lanche',
+      dinner: 'Jantar',
+      supper: 'Ceia',
+    };
+    return map[mealType ?? ''] ?? 'Refeição';
+  }
+
   async create(userId: string, dto: CreateMealDto): Promise<MealPublic> {
     try {
       const meal = await this.prisma.meal.create({
         data: {
-          name: dto.name,
+          name: this.mealTypeToName(dto.mealType),
           kind: dto.kind,
           mealType: dto.mealType,
           time: dto.time,

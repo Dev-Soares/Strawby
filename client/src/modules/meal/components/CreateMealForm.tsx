@@ -31,16 +31,14 @@ export default function CreateMealForm() {
     formState: { errors },
   } = useForm<CreateMealData>({
     resolver: zodResolver(createMealSchema),
-    defaultValues: { time: '07:00', kind, name: '' },
+    defaultValues: { time: '07:00', kind },
   })
 
   const selectedType = watch('mealType')
 
   const onSubmit = handleSubmit((data) => {
-    const derivedName = mealTypes[data.mealType as MealType].name
     createMeal.mutate(
       {
-        name: derivedName,
         kind,
         mealType: data.mealType,
         time: isPlan ? undefined : data.time,
