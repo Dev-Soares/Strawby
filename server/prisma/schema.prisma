@@ -15,7 +15,6 @@ model User {
   updatedAt  DateTime    @updatedAt
   plan       Plan?
   meals      Meal[]
-  planMeals  PlanMeal[]
 }
 
 model Plan {
@@ -49,7 +48,6 @@ model Food {
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   mealItems     MealItem[]
-  planMealItems PlanMealItem[]
 
   @@unique([source, sourceId])
   @@index([priority(sort: Desc), name])
@@ -65,9 +63,15 @@ enum FoodSource {
   MANUAL
 }
 
+enum MealKind {
+  DAILY
+  PLAN
+}
+
 model Meal {
   id        String     @id @default(uuid())
   name      String
+  kind      MealKind   @default(DAILY)
   mealType  String?
   time      String?
   date      DateTime   @default(now())
@@ -76,6 +80,8 @@ model Meal {
   items     MealItem[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+
+  @@index([userId, kind, date])
 }
 
 model MealItem {
@@ -91,31 +97,4 @@ model MealItem {
   food      Food     @relation(fields: [foodId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-model PlanMeal {
-  id        String         @id @default(uuid())
-  name      String
-  type      String?
-  date      DateTime       @default(now())
-  userId    String
-  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items     PlanMealItem[]
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-}
-
-model PlanMealItem {
-  id         String   @id @default(uuid())
-  quantity   Float
-  calories   Float
-  protein    Float
-  carbs      Float
-  fat        Float
-  planMealId String
-  foodId     String
-  planMeal   PlanMeal @relation(fields: [planMealId], references: [id], onDelete: Cascade)
-  food       Food     @relation(fields: [foodId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
 }

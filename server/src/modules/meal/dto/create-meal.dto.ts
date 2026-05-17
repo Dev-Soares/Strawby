@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { MealKind } from '@prisma/client';
+import { IsDateString, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateMealDto {
   @ApiProperty({ example: 'Café da manhã' })
@@ -7,6 +8,11 @@ export class CreateMealDto {
   @IsNotEmpty()
   @MaxLength(200)
   name: string;
+
+  @ApiProperty({ enum: MealKind, example: MealKind.DAILY })
+  @IsEnum(MealKind)
+  @IsNotEmpty()
+  kind: MealKind;
 
   @ApiPropertyOptional({ example: 'breakfast' })
   @IsString()

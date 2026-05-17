@@ -7,7 +7,6 @@ import { HealthModule } from './modules/health/health.module';
 import { FoodModule } from './modules/food/food.module';
 import { MealModule } from './modules/meal/meal.module';
 import { PlanModule } from './modules/plan/plan.module';
-import { PlanMealModule } from './modules/plan-meal/plan-meal.module';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
@@ -47,7 +46,6 @@ import { LoggerModule } from 'nestjs-pino';
 		FoodModule,
 		MealModule,
 		PlanModule,
-		PlanMealModule,
 		ThrottlerModule.forRoot([
 			{
 				ttl: 60000,

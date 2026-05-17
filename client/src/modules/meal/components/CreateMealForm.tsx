@@ -2,21 +2,9 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Coffee, ForkKnife, Leaf, Moon, Cookie, FloppyDisk } from '@phosphor-icons/react'
-import type { Icon } from '@phosphor-icons/react'
 import { createMealSchema, type CreateMealData } from '../types/createMeal'
+import type { MealType, MealTypeConfig } from '../types/mealTypeConfig'
 import { useCreateMeal } from '../hooks/useCreateMeal'
-import { useCreatePlanMeal } from '../../plan-meal/hooks/useCreatePlanMeal'
-
-type MealType = 'breakfast' | 'lunch' | 'snack' | 'dinner' | 'supper'
-
-interface MealTypeConfig {
-  icon: Icon
-  label: string
-  name: string
-  accent: string
-  accentLight: string
-  accentText: string
-}
 
 const mealTypes: Record<MealType, MealTypeConfig> = {
   breakfast: { icon: Coffee, label: 'MANHÃ', name: 'Café da manhã', accent: '#ea580c', accentLight: '#fed7aa', accentText: '#c2410c' },
@@ -30,10 +18,10 @@ export default function CreateMealForm() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const type = searchParams.get('type') ?? 'meal'
-  const isPlanMeal = type === 'plan-meal'
+  const isPlan = type === 'plan-meal'
+  const kind = isPlan ? 'PLAN' : 'DAILY'
 
   const createMeal = useCreateMeal()
-  const createPlanMeal = useCreatePlanMeal()
 
   const {
     register,
@@ -43,24 +31,23 @@ export default function CreateMealForm() {
     formState: { errors },
   } = useForm<CreateMealData>({
     resolver: zodResolver(createMealSchema),
-    defaultValues: { time: '07:00' },
+    defaultValues: { time: '07:00', kind, name: '' },
   })
 
   const selectedType = watch('mealType')
 
   const onSubmit = handleSubmit((data) => {
     const derivedName = mealTypes[data.mealType as MealType].name
-    if (isPlanMeal) {
-      createPlanMeal.mutate(
-        { name: derivedName, type: data.mealType, date: new Date().toISOString() },
-        { onSuccess: () => navigate('/plan') },
-      )
-    } else {
-      createMeal.mutate(
-        { name: derivedName, mealType: data.mealType, time: data.time, date: new Date().toISOString() },
-        { onSuccess: () => navigate('/home') },
-      )
-    }
+    createMeal.mutate(
+      {
+        name: derivedName,
+        kind,
+        mealType: data.mealType,
+        time: isPlan ? undefined : data.time,
+        date: new Date().toISOString(),
+      },
+      { onSuccess: () => navigate(isPlan ? '/plan' : '/home') },
+    )
   })
 
   return (
@@ -104,31 +91,33 @@ export default function CreateMealForm() {
         {errors.mealType && <p className="text-xs text-red-500 mt-2">{errors.mealType.message}</p>}
       </div>
 
-      {/* Time */}
-      <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-6">
-        <label className="block text-xs font-black text-neutral-500 uppercase tracking-widest mb-3">
-          Horário
-        </label>
-        <input
-          {...register('time')}
-          type="time"
-          className="font-display text-3xl font-black text-neutral-950 bg-transparent outline-none border-b-2 border-neutral-200 focus:border-neutral-500 pb-1 transition-colors duration-150 tabular-nums cursor-pointer"
-        />
-        {errors.time && <p className="text-xs text-red-500 mt-2">{errors.time.message}</p>}
-      </div>
+      {/* Time — only DAILY */}
+      {!isPlan && (
+        <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-6">
+          <label className="block text-xs font-black text-neutral-500 uppercase tracking-widest mb-3">
+            Horário
+          </label>
+          <input
+            {...register('time')}
+            type="time"
+            className="font-display text-3xl font-black text-neutral-950 bg-transparent outline-none border-b-2 border-neutral-200 focus:border-neutral-500 pb-1 transition-colors duration-150 tabular-nums cursor-pointer"
+          />
+          {errors.time && <p className="text-xs text-red-500 mt-2">{errors.time.message}</p>}
+        </div>
+      )}
 
       {/* Submit */}
       <button
         type="submit"
-        disabled={createMeal.isPending || createPlanMeal.isPending}
+        disabled={createMeal.isPending}
         className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl text-sm font-bold text-white transition-colors duration-200 cursor-pointer bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {createMeal.isPending || createPlanMeal.isPending ? (
+        {createMeal.isPending ? (
           <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
         ) : (
           <FloppyDisk size={17} weight="bold" />
         )}
-        {createMeal.isPending || createPlanMeal.isPending ? 'Salvando…' : 'Salvar refeição'}
+        {createMeal.isPending ? 'Salvando…' : 'Salvar refeição'}
       </button>
     </form>
   )

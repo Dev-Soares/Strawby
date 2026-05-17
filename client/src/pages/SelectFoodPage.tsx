@@ -7,7 +7,6 @@ import FoodSkeleton from '../modules/food/skeletons/FoodSkeleton'
 import { useSearchFood } from '../modules/food/hooks/useSearchFood'
 import type { Food } from '../modules/food/types/food'
 import { useAddMealItem } from '../modules/meal/hooks/useAddMealItem'
-import { useAddPlanMealItem } from '../modules/plan-meal/hooks/useAddPlanMealItem'
 
 const macros = [
   { key: 'protein' as const, label: 'Prot', colorClass: 'text-amber-500' },
@@ -64,7 +63,6 @@ export default function SelectFoodPage() {
   const isPlanMeal = type === 'plan-meal'
 
   const addMealItem = useAddMealItem()
-  const addPlanMealItem = useAddPlanMealItem()
 
   const [search, setSearch] = useState('')
   const [step, setStep] = useState<'search' | 'quantity'>('search')
@@ -85,11 +83,7 @@ export default function SelectFoodPage() {
     const payload = { foodId: selectedFood.id, quantity: Number(quantity) }
     const onSuccess = () => navigate(isPlanMeal ? '/plan' : '/home')
 
-    if (isPlanMeal) {
-      addPlanMealItem.mutate({ planMealId: mealId, dto: payload }, { onSuccess })
-    } else {
-      addMealItem.mutate({ mealId, dto: payload }, { onSuccess })
-    }
+    addMealItem.mutate({ mealId, dto: payload }, { onSuccess })
   }
 
   const handleBack = () => {
@@ -215,13 +209,13 @@ export default function SelectFoodPage() {
               <button
                 type="button"
                 onClick={handleConfirm}
-                disabled={!quantity || Number(quantity) < 1 || addMealItem.isPending || addPlanMealItem.isPending}
+                disabled={!quantity || Number(quantity) < 1 || addMealItem.isPending}
                 className="flex-1 py-3.5 rounded-2xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 cursor-pointer flex items-center justify-center gap-2"
               >
-                {addMealItem.isPending || addPlanMealItem.isPending ? (
+                {addMealItem.isPending ? (
                   <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : null}
-                {addMealItem.isPending || addPlanMealItem.isPending ? 'Adicionando…' : 'Adicionar à refeição'}
+                {addMealItem.isPending ? 'Adicionando…' : 'Adicionar à refeição'}
               </button>
             </div>
           </div>

@@ -11,12 +11,12 @@ export type MealTotals = {
   fat: number;
 };
 
-export type MealPublic = Pick<Meal, 'id' | 'name' | 'mealType' | 'time' | 'date' | 'userId'> & {
+export type MealPublic = Pick<Meal, 'id' | 'name' | 'kind' | 'mealType' | 'time' | 'date' | 'userId'> & {
   items: MealItemWithFood[];
   totals: MealTotals;
 };
 
-export type MealSummary = Pick<Meal, 'id' | 'name' | 'mealType' | 'time' | 'date' | 'userId'> & {
+export type MealSummary = Pick<Meal, 'id' | 'name' | 'kind' | 'mealType' | 'time' | 'date' | 'userId'> & {
   totals: MealTotals;
 };
 
@@ -33,4 +33,15 @@ export const mealItemSelect = {
       name: true,
     },
   },
+} as const;
+
+export const mealSelect = {
+  id: true,
+  name: true,
+  kind: true,
+  mealType: true,
+  time: true,
+  date: true,
+  userId: true,
+  items: { select: mealItemSelect },
 } as const;

@@ -1,13 +1,11 @@
 import { z } from 'zod'
 
 export const createMealSchema = z.object({
-  mealType: z.string().min(1, 'Selecione o tipo de refeição'),
+  name: z.string().min(1, 'Nome da refeição obrigatório').max(200),
+  kind: z.enum(['DAILY', 'PLAN']),
+  mealType: z.string().optional(),
   time: z.string().optional(),
   date: z.string().optional(),
 })
 
 export type CreateMealData = z.infer<typeof createMealSchema>
-
-export type CreateMealPayload = CreateMealData & {
-  name: string
-}
