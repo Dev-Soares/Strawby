@@ -44,7 +44,11 @@ export default function CreateMealForm() {
         time: isPlan ? undefined : data.time,
         date: new Date().toISOString(),
       },
-      { onSuccess: () => navigate(isPlan ? '/plan' : '/home') },
+      {
+        onSuccess: (createdMeal) => {
+          navigate(`/foods/select?mealId=${createdMeal.id}&type=${type}`)
+        },
+      },
     )
   })
 
