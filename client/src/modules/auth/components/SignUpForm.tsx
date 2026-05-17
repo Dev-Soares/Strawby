@@ -6,27 +6,13 @@ import { useSignUp } from '../hooks/useSignUp'
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [confirmPasswordError, setConfirmPasswordError] = useState('')
 
   const {
     register,
     onSubmit,
-    watch,
     formState: { errors },
     isPending,
   } = useSignUp()
-
-  const password = watch('password')
-
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    if (confirmPassword !== password) {
-      setConfirmPasswordError('As senhas não coincidem')
-      return
-    }
-    setConfirmPasswordError('')
-    onSubmit(e)
-  }
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:gap-28 items-stretch w-full">
@@ -37,7 +23,7 @@ export default function SignUpForm() {
           Cadastrar.
         </h1>
 
-        <form onSubmit={handleFormSubmit} className="flex flex-col gap-8 md:gap-10 flex-1">
+        <form onSubmit={onSubmit} className="flex flex-col gap-8 md:gap-10 flex-1">
 
           <div>
             <label className="block text-[11px] font-semibold text-white mb-3 uppercase tracking-widest">
@@ -102,10 +88,9 @@ export default function SignUpForm() {
             </label>
             <div className="relative">
               <input
+                {...register('confirmPassword')}
                 type={showConfirmPassword ? 'text' : 'password'}
                 autoComplete="new-password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full border-0 border-b-2 border-white/50 bg-transparent pb-3 text-[15px] text-white placeholder-white/30 focus:outline-none focus:border-white transition-colors duration-200 pr-8"
               />
               <button
@@ -119,8 +104,8 @@ export default function SignUpForm() {
                 }
               </button>
             </div>
-            {confirmPasswordError && (
-              <p className="text-yellow-200 text-[11px] mt-2">{confirmPasswordError}</p>
+            {errors.confirmPassword && (
+              <p className="text-yellow-200 text-[11px] mt-2">{errors.confirmPassword.message}</p>
             )}
           </div>
 
