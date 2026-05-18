@@ -11,7 +11,11 @@ import { useUpdatePrivateFood } from './useUpdatePrivateFood'
 
 type FormMode = 'create' | 'edit'
 
-export const usePrivateFoodForm = () => {
+interface UsePrivateFoodFormOptions {
+  onSuccess?: () => void
+}
+
+export const usePrivateFoodForm = (opts?: UsePrivateFoodFormOptions) => {
   const [mode, setMode] = useState<FormMode>('create')
   const [editingId, setEditingId] = useState<string | null>(null)
 
@@ -28,8 +32,6 @@ export const usePrivateFoodForm = () => {
       protein: 0,
       carbs: 0,
       fat: 0,
-      fiber: undefined,
-      sodium: undefined,
       servingSize: '',
     },
   })
@@ -43,8 +45,6 @@ export const usePrivateFoodForm = () => {
       protein: 0,
       carbs: 0,
       fat: 0,
-      fiber: undefined,
-      sodium: undefined,
       servingSize: '',
     })
   }
@@ -58,21 +58,19 @@ export const usePrivateFoodForm = () => {
       protein: food.protein,
       carbs: food.carbs,
       fat: food.fat,
-      fiber: food.fiber ?? undefined,
-      sodium: food.sodium ?? undefined,
       servingSize: food.servingSize ?? '',
     })
   }
 
-  const onSubmit = form.handleSubmit((data) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     if (mode === 'create') {
-      createMutation.mutate(data, {
-        onSuccess: () => startCreate(),
-      })
+      await createMutation.mutateAsync(data)
+      startCreate()
+      opts?.onSuccess?.()
     } else if (editingId) {
-      updateMutation.mutate({ id: editingId, dto: data }, {
-        onSuccess: () => startCreate(),
-      })
+      await updateMutation.mutateAsync({ id: editingId, dto: data })
+      startCreate()
+      opts?.onSuccess?.()
     }
   })
 

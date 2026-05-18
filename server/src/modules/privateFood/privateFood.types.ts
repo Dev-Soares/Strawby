@@ -8,8 +8,6 @@ export type PrivateFoodPublic = Pick<
   | 'protein'
   | 'carbs'
   | 'fat'
-  | 'fiber'
-  | 'sodium'
   | 'servingSize'
   | 'createdAt'
 >;
@@ -21,8 +19,6 @@ export const privateFoodSelect = {
   protein: true,
   carbs: true,
   fat: true,
-  fiber: true,
-  sodium: true,
   servingSize: true,
   createdAt: true,
 } as const;

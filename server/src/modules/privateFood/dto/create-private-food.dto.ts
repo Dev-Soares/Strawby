@@ -28,18 +28,6 @@ export class CreatePrivateFoodDto {
   @Min(0)
   fat: number;
 
-  @ApiProperty({ example: 0, description: 'Fibras por 100g (g)', required: false })
-  @IsNumber()
-  @IsOptional()
-  @Min(0)
-  fiber?: number;
-
-  @ApiProperty({ example: 0.05, description: 'Sódio por 100g (g)', required: false })
-  @IsNumber()
-  @IsOptional()
-  @Min(0)
-  sodium?: number;
-
   @ApiProperty({ example: '100g', description: 'Porção de referência', required: false })
   @IsString()
   @IsOptional()

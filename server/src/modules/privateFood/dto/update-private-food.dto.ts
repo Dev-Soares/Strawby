@@ -32,18 +32,6 @@ export class UpdatePrivateFoodDto {
   @Min(0)
   fat?: number;
 
-  @ApiPropertyOptional({ example: 0 })
-  @IsNumber()
-  @IsOptional()
-  @Min(0)
-  fiber?: number;
-
-  @ApiPropertyOptional({ example: 0.05 })
-  @IsNumber()
-  @IsOptional()
-  @Min(0)
-  sodium?: number;
-
   @ApiPropertyOptional({ example: '100g' })
   @IsString()
   @IsOptional()
