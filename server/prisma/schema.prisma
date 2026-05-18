@@ -48,7 +48,7 @@ model Food {
   servingSize   String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
-  mealItems     MealItem[]
+  foodItems     FoodItem[]
 
   @@unique([source, sourceId])
   @@index([priority(sort: Desc), name])
@@ -66,7 +66,7 @@ model PrivateFood {
   servingSize String?
   userId      String
   user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  mealItems   MealItem[]
+  foodItems   FoodItem[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -97,14 +97,14 @@ model Meal {
   date      DateTime   @default(now())
   userId    String
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items     MealItem[]
+  items     FoodItem[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
   @@index([userId, kind, date])
 }
 
-model MealItem {
+model FoodItem {
   id            String       @id @default(uuid())
   quantity      Float
   calories      Float

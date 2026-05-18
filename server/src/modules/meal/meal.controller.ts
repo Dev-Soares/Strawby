@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
-import { AddMealItemDto } from './dto/add-meal-item.dto';
+import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { QueryMealDto } from './dto/query-meal.dto';
@@ -66,7 +66,7 @@ export class MealController {
   addFoodItem(
     @Req() req: AuthenticatedRequest,
     @Param('id') id: string,
-    @Body() dto: AddMealItemDto,
+    @Body() dto: AddFoodItemDto,
   ) {
     return this.mealService.addFoodItem(id, req.user.sub, dto);
   }

@@ -5,16 +5,16 @@ import {
 } from '@nestjs/common';
 import { MealKind, Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
-import { AddMealItemDto } from './dto/add-meal-item.dto';
+import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 import {
-  MealItemWithFood,
+  FoodItemPublic,
   MealPublic,
   MealSummary,
   MealTotals,
-  mealItemSelect,
+  foodItemSelect,
   mealSelect,
 } from './meal.types';
 
@@ -23,7 +23,7 @@ export class MealService {
   
   constructor(private readonly prisma: PrismaService) {}
 
-  private computeTotals(items: MealItemWithFood[]): MealTotals {
+  private computeTotals(items: FoodItemPublic[]): MealTotals {
     return items.reduce(
       (initial, item) => ({
         calories: initial.calories + item.calories,
@@ -174,7 +174,7 @@ export class MealService {
     }
   }
 
-  async addFoodItem(mealId: string, userId: string, dto: AddMealItemDto): Promise<MealItemWithFood> {
+  async addFoodItem(mealId: string, userId: string, dto: AddFoodItemDto): Promise<FoodItemPublic> {
     try {
       const food = await this.prisma.food.findUnique({
         where: { id: dto.foodId },
@@ -198,7 +198,7 @@ export class MealService {
           },
         },
         select: {
-          items: { select: mealItemSelect, orderBy: { createdAt: 'desc' }, take: 1 },
+          items: { select: foodItemSelect, orderBy: { createdAt: 'desc' }, take: 1 },
         },
       });
 
@@ -212,7 +212,7 @@ export class MealService {
     }
   }
 
-  async addPrivateFoodItem(mealId: string, userId: string, dto: AddMealPrivateFoodItemDto): Promise<MealItemWithFood> {
+  async addPrivateFoodItem(mealId: string, userId: string, dto: AddMealPrivateFoodItemDto): Promise<FoodItemPublic> {
     try {
       const privateFood = await this.prisma.privateFood.findFirst({
         where: { id: dto.privateFoodId, userId },
@@ -237,7 +237,7 @@ export class MealService {
           },
         },
         select: {
-          items: { select: mealItemSelect, orderBy: { createdAt: 'desc' }, take: 1 },
+          items: { select: foodItemSelect, orderBy: { createdAt: 'desc' }, take: 1 },
         },
       });
 
@@ -253,7 +253,7 @@ export class MealService {
 
   async removeItem(mealId: string, itemId: string, userId: string): Promise<{ id: string }> {
     try {
-      const { count } = await this.prisma.mealItem.deleteMany({
+      const { count } = await this.prisma.foodItem.deleteMany({
         where: { id: itemId, meal: { id: mealId, userId } },
       });
 

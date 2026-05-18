@@ -7,7 +7,7 @@ export type MealTotals = {
   fat: number
 }
 
-export type MealItem = {
+export type FoodItem = {
   id: string
   quantity: number
   calories: number
@@ -32,7 +32,7 @@ export type Meal = {
   time: string | null
   date: string
   userId: string
-  items: MealItem[]
+  items: FoodItem[]
   totals: MealTotals
 }
 
