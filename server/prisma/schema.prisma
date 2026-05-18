@@ -7,14 +7,15 @@ datasource db {
 }
 
 model User {
-  id         String      @id @default(uuid())
-  name       String
-  email      String      @unique
-  password   String
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  plan       Plan?
-  meals      Meal[]
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  password     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  plan         Plan?
+  meals        Meal[]
+  privateFoods PrivateFood[]
 }
 
 model Plan {
@@ -51,6 +52,24 @@ model Food {
 
   @@unique([source, sourceId])
   @@index([priority(sort: Desc), name])
+}
+
+model PrivateFood {
+  id          String   @id @default(uuid())
+  name        String
+  calories    Float
+  protein     Float
+  carbs       Float
+  fat         Float
+  fiber       Float?
+  sodium      Float?
+  servingSize String?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }
 
 enum FoodSource {
