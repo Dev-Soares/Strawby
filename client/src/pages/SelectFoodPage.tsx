@@ -1,12 +1,26 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Plus, Fire } from '@phosphor-icons/react'
 import AppLayout from '../shared/layouts/AppLayout'
 import FoodSearch from '../modules/food/components/FoodSearch'
 import FoodSkeleton from '../modules/food/skeletons/FoodSkeleton'
+import PrivateFoodSkeleton from '../modules/privateFood/skeletons/PrivateFoodSkeleton'
 import { useSearchFood } from '../modules/food/hooks/useSearchFood'
-import type { Food } from '../modules/food/types/food'
+import { useGetPrivateFoods } from '../modules/privateFood/hooks/useGetPrivateFoods'
 import { useAddMealItem } from '../modules/meal/hooks/useAddMealItem'
+import { useAddMealPrivateFoodItem } from '../modules/meal/hooks/useAddMealPrivateFoodItem'
+
+type Tab = 'public' | 'private'
+
+type SelectableFood = {
+  id: string
+  name: string
+  calories: number
+  protein: number
+  carbs: number
+  fat: number
+  kind: Tab
+}
 
 const macros = [
   { key: 'protein' as const, label: 'Prot', colorClass: 'text-amber-500' },
@@ -14,7 +28,7 @@ const macros = [
   { key: 'fat' as const, label: 'Gord', colorClass: 'text-violet-500' },
 ]
 
-function SelectableFoodCard({ food, onSelect }: { food: Food; onSelect: (food: Food) => void }) {
+function SelectableFoodCard({ food, onSelect }: { food: SelectableFood; onSelect: (food: SelectableFood) => void }) {
   return (
     <div className="group bg-white border border-neutral-200 rounded-2xl p-4 hover:border-neutral-300 hover:shadow-md transition-all duration-200 relative">
       <button
@@ -59,19 +73,46 @@ export default function SelectFoodPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const mealId = searchParams.get('mealId')
-  const type = searchParams.get('type') ?? 'plan-meal'
-  const isPlanMeal = type === 'plan-meal'
 
   const addMealItem = useAddMealItem()
+  const addMealPrivateFoodItem = useAddMealPrivateFoodItem()
 
+  const [tab, setTab] = useState<Tab>('public')
   const [search, setSearch] = useState('')
   const [step, setStep] = useState<'search' | 'quantity'>('search')
-  const [selectedFood, setSelectedFood] = useState<Food | null>(null)
+  const [selectedFood, setSelectedFood] = useState<SelectableFood | null>(null)
   const [quantity, setQuantity] = useState('100')
 
-  const { data: foods, isPending, isError } = useSearchFood(search)
+  const {
+    data: publicFoods,
+    isPending: isPublicPending,
+    isError: isPublicError,
+  } = useSearchFood(tab === 'public' ? search : '')
 
-  const handleSelectFood = (food: Food) => {
+  const {
+    data: privateFoods,
+    isPending: isPrivatePending,
+    isError: isPrivateError,
+  } = useGetPrivateFoods()
+
+  const filteredPrivateFoods = useMemo(() => {
+    if (!privateFoods) return []
+    const trimmed = search.trim().toLowerCase()
+    if (trimmed.length < 2) return privateFoods
+    return privateFoods.filter((f) => f.name.toLowerCase().includes(trimmed))
+  }, [privateFoods, search])
+
+  const foods: SelectableFood[] = useMemo(() => {
+    if (tab === 'public') {
+      return (publicFoods ?? []).map((f) => ({ ...f, kind: 'public' as const }))
+    }
+    return filteredPrivateFoods.map((f) => ({ ...f, kind: 'private' as const }))
+  }, [tab, publicFoods, filteredPrivateFoods])
+
+  const isPending = tab === 'public' ? isPublicPending : isPrivatePending
+  const isError = tab === 'public' ? isPublicError : isPrivateError
+
+  const handleSelectFood = (food: SelectableFood) => {
     setSelectedFood(food)
     setQuantity('100')
     setStep('quantity')
@@ -83,10 +124,20 @@ export default function SelectFoodPage() {
       return
     }
 
-    const payload = { foodId: selectedFood.id, quantity: Number(quantity) }
+    const q = Number(quantity)
     const onSuccess = () => navigate(`/meals/${mealId}`)
 
-    addMealItem.mutate({ mealId, dto: payload }, { onSuccess })
+    if (selectedFood.kind === 'public') {
+      addMealItem.mutate(
+        { mealId, dto: { foodId: selectedFood.id, quantity: q } },
+        { onSuccess }
+      )
+    } else {
+      addMealPrivateFoodItem.mutate(
+        { mealId, dto: { privateFoodId: selectedFood.id, quantity: q } },
+        { onSuccess }
+      )
+    }
   }
 
   const handleBack = () => {
@@ -97,6 +148,11 @@ export default function SelectFoodPage() {
       navigate(-1)
     }
   }
+
+  const tabs: { key: Tab; label: string }[] = [
+    { key: 'public', label: 'Todos' },
+    { key: 'private', label: 'Meus alimentos' },
+  ]
 
   return (
     <AppLayout>
@@ -123,6 +179,24 @@ export default function SelectFoodPage() {
 
         {step === 'search' ? (
           <div>
+            {/* Tabs */}
+            <div className="flex gap-1 mb-4 bg-neutral-100 rounded-xl p-1">
+              {tabs.map((t) => (
+                <button
+                  key={t.key}
+                  type="button"
+                  onClick={() => setTab(t.key)}
+                  className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all duration-200 cursor-pointer ${
+                    tab === t.key
+                      ? 'bg-white text-neutral-900 shadow-sm'
+                      : 'text-neutral-500 hover:text-neutral-700'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
             <div className="mb-6">
               <FoodSearch value={search} onChange={setSearch} />
             </div>
@@ -131,11 +205,17 @@ export default function SelectFoodPage() {
               <div className="flex flex-col items-center justify-center py-24 text-center">
                 <p className="text-sm font-semibold text-neutral-400 mb-1">Busque um alimento</p>
                 <p className="text-xs text-neutral-300 max-w-xs">
-                  Digite o nome de qualquer alimento para ver suas informações nutricionais
+                  {tab === 'public'
+                    ? 'Digite o nome de qualquer alimento para ver suas informações nutricionais'
+                    : 'Digite para filtrar seus alimentos privados'}
                 </p>
               </div>
             ) : isPending ? (
-              <FoodSkeleton />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {Array.from({ length: 6 }).map((_, i) =>
+                  tab === 'public' ? <FoodSkeleton key={i} /> : <PrivateFoodSkeleton key={i} />
+                )}
+              </div>
             ) : isError ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
                 <p className="text-sm font-semibold text-red-500 mb-1">Erro ao buscar alimentos</p>
@@ -146,7 +226,11 @@ export default function SelectFoodPage() {
                 <p className="text-sm font-semibold text-neutral-600 mb-1">
                   Nenhum resultado para &quot;{search}&quot;
                 </p>
-                <p className="text-xs text-neutral-400">Tente um nome diferente ou mais genérico</p>
+                <p className="text-xs text-neutral-400">
+                  {tab === 'public'
+                    ? 'Tente um nome diferente ou mais genérico'
+                    : 'Você ainda não cadastrou nenhum alimento privado'}
+                </p>
               </div>
             ) : (
               <div>
@@ -155,7 +239,7 @@ export default function SelectFoodPage() {
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {foods.map((food) => (
-                    <SelectableFoodCard key={food.id} food={food} onSelect={handleSelectFood} />
+                    <SelectableFoodCard key={`${food.kind}-${food.id}`} food={food} onSelect={handleSelectFood} />
                   ))}
                 </div>
               </div>
@@ -223,13 +307,13 @@ export default function SelectFoodPage() {
               <button
                 type="button"
                 onClick={handleConfirm}
-                disabled={!mealId || !quantity || Number(quantity) < 1 || addMealItem.isPending}
+                disabled={!mealId || !quantity || Number(quantity) < 1 || addMealItem.isPending || addMealPrivateFoodItem.isPending}
                 className="flex-1 py-3.5 rounded-2xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 cursor-pointer flex items-center justify-center gap-2"
               >
-                {addMealItem.isPending ? (
+                {addMealItem.isPending || addMealPrivateFoodItem.isPending ? (
                   <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : null}
-                {addMealItem.isPending ? 'Adicionando…' : 'Adicionar à refeição'}
+                {addMealItem.isPending || addMealPrivateFoodItem.isPending ? 'Adicionando…' : 'Adicionar à refeição'}
               </button>
             </div>
           </div>

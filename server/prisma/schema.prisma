@@ -55,7 +55,7 @@ model Food {
 }
 
 model PrivateFood {
-  id          String   @id @default(uuid())
+  id          String     @id @default(uuid())
   name        String
   calories    Float
   protein     Float
@@ -65,9 +65,10 @@ model PrivateFood {
   sodium      Float?
   servingSize String?
   userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mealItems   MealItem[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 
   @@index([userId])
 }
@@ -104,16 +105,20 @@ model Meal {
 }
 
 model MealItem {
-  id        String   @id @default(uuid())
-  quantity  Float
-  calories  Float
-  protein   Float
-  carbs     Float
-  fat       Float
-  mealId    String
-  foodId    String
-  meal      Meal     @relation(fields: [mealId], references: [id], onDelete: Cascade)
-  food      Food     @relation(fields: [foodId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String       @id @default(uuid())
+  quantity      Float
+  calories      Float
+  protein       Float
+  carbs         Float
+  fat           Float
+  mealId        String
+  foodId        String?
+  privateFoodId String?
+  meal          Meal         @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  food          Food?        @relation(fields: [foodId], references: [id])
+  privateFood   PrivateFood? @relation(fields: [privateFoodId], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([mealId])
 }

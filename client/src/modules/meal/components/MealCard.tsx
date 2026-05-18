@@ -129,7 +129,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                     >
                       <div className="min-w-0">
                         <p className="text-sm font-bold text-neutral-900 truncate">
-                          {item.food.name}
+                          {(item.food ?? item.privateFood)?.name ?? 'Alimento'}
                         </p>
                         <p className="text-xs font-bold text-neutral-400">
                           {Math.round(item.quantity)}g

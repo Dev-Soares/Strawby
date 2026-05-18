@@ -17,7 +17,11 @@ export type MealItem = {
   food: {
     id: string
     name: string
-  }
+  } | null
+  privateFood: {
+    id: string
+    name: string
+  } | null
 }
 
 export type Meal = {

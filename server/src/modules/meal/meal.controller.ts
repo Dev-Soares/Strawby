@@ -13,6 +13,7 @@ import {
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
 import { AddMealItemDto } from './dto/add-meal-item.dto';
+import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { QueryMealDto } from './dto/query-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
@@ -62,12 +63,21 @@ export class MealController {
   }
 
   @Post(':id/items')
-  addItem(
+  addFoodItem(
     @Req() req: AuthenticatedRequest,
     @Param('id') id: string,
     @Body() dto: AddMealItemDto,
   ) {
-    return this.mealService.addItem(id, req.user.sub, dto);
+    return this.mealService.addFoodItem(id, req.user.sub, dto);
+  }
+
+  @Post(':id/private-items')
+  addPrivateFoodItem(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: string,
+    @Body() dto: AddMealPrivateFoodItemDto,
+  ) {
+    return this.mealService.addPrivateFoodItem(id, req.user.sub, dto);
   }
 
   @Delete(':id/items/:itemId')

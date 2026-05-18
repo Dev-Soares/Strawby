@@ -1,7 +1,8 @@
 import { Meal, MealItem } from '@prisma/client';
 
 export type MealItemWithFood = Pick<MealItem, 'id' | 'quantity' | 'calories' | 'protein' | 'carbs' | 'fat'> & {
-  food: { id: string; name: string };
+  food: { id: string; name: string } | null;
+  privateFood: { id: string; name: string } | null;
 };
 
 export type MealTotals = {
@@ -28,6 +29,12 @@ export const mealItemSelect = {
   carbs: true,
   fat: true,
   food: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  privateFood: {
     select: {
       id: true,
       name: true,

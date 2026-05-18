@@ -1,3 +1,14 @@
+-- DropForeignKey
+ALTER TABLE "MealItem" DROP CONSTRAINT "MealItem_foodId_fkey";
+
+-- AlterTable
+ALTER TABLE "MealItem" ADD COLUMN     "privateFoodId" TEXT,
+ALTER COLUMN "foodId" DROP NOT NULL,
+ALTER COLUMN "calories" DROP DEFAULT,
+ALTER COLUMN "protein" DROP DEFAULT,
+ALTER COLUMN "carbs" DROP DEFAULT,
+ALTER COLUMN "fat" DROP DEFAULT;
+
 -- CreateTable
 CREATE TABLE "PrivateFood" (
     "id" TEXT NOT NULL,
@@ -19,5 +30,14 @@ CREATE TABLE "PrivateFood" (
 -- CreateIndex
 CREATE INDEX "PrivateFood_userId_idx" ON "PrivateFood"("userId");
 
+-- CreateIndex
+CREATE INDEX "MealItem_mealId_idx" ON "MealItem"("mealId");
+
 -- AddForeignKey
 ALTER TABLE "PrivateFood" ADD CONSTRAINT "PrivateFood_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "MealItem" ADD CONSTRAINT "MealItem_foodId_fkey" FOREIGN KEY ("foodId") REFERENCES "Food"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "MealItem" ADD CONSTRAINT "MealItem_privateFoodId_fkey" FOREIGN KEY ("privateFoodId") REFERENCES "PrivateFood"("id") ON DELETE SET NULL ON UPDATE CASCADE;

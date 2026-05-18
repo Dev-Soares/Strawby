@@ -6,6 +6,7 @@ import {
 import { MealKind, Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { AddMealItemDto } from './dto/add-meal-item.dto';
+import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 import {
@@ -173,7 +174,7 @@ export class MealService {
     }
   }
 
-  async addItem(mealId: string, userId: string, dto: AddMealItemDto): Promise<MealItemWithFood> {
+  async addFoodItem(mealId: string, userId: string, dto: AddMealItemDto): Promise<MealItemWithFood> {
     try {
       const food = await this.prisma.food.findUnique({
         where: { id: dto.foodId },
@@ -187,7 +188,7 @@ export class MealService {
         data: {
           items: {
             create: {
-              foodId: dto.foodId,
+              foodId: food.id,
               quantity: dto.quantity,
               calories: food.calories * ratio,
               protein: food.protein * ratio,
@@ -208,6 +209,44 @@ export class MealService {
         if (error.code === 'P2025') throw new NotFoundException('Refeição não encontrada');
       }
       throw new InternalServerErrorException('Erro ao adicionar item à refeição');
+    }
+  }
+
+  async addPrivateFoodItem(mealId: string, userId: string, dto: AddMealPrivateFoodItemDto): Promise<MealItemWithFood> {
+    try {
+      const privateFood = await this.prisma.privateFood.findFirst({
+        where: { id: dto.privateFoodId, userId },
+        select: { id: true, calories: true, protein: true, carbs: true, fat: true },
+      });
+      if (!privateFood) throw new NotFoundException('Alimento privado não encontrado');
+
+      const ratio = dto.quantity / 100;
+      const updated = await this.prisma.meal.update({
+        where: { id: mealId, userId },
+        data: {
+          items: {
+            create: {
+              privateFoodId: privateFood.id,
+              quantity: dto.quantity,
+              calories: privateFood.calories * ratio,
+              protein: privateFood.protein * ratio,
+              carbs: privateFood.carbs * ratio,
+              fat: privateFood.fat * ratio,
+            },
+          },
+        },
+        select: {
+          items: { select: mealItemSelect, orderBy: { createdAt: 'desc' }, take: 1 },
+        },
+      });
+
+      return updated.items[0];
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') throw new NotFoundException('Refeição não encontrada');
+      }
+      throw new InternalServerErrorException('Erro ao adicionar alimento privado à refeição');
     }
   }
 

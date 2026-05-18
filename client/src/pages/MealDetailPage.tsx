@@ -194,7 +194,7 @@ export default function MealDetailPage() {
                 <div className="flex items-center justify-between gap-3 mb-3">
                   <div className="min-w-0">
                     <p className="text-sm sm:text-base font-bold text-neutral-950 truncate">
-                      {item.food.name}
+                      {(item.food ?? item.privateFood)?.name ?? 'Alimento'}
                     </p>
                     <p className="text-xs font-bold text-neutral-400 mt-0.5">
                       {Math.round(item.quantity)}g
@@ -224,7 +224,7 @@ export default function MealDetailPage() {
                       disabled={removeItem.isPending}
                       className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-150 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{ backgroundColor: cfg.themeLight, color: cfg.theme }}
-                      aria-label={`Remover ${item.food.name}`}
+                      aria-label={`Remover ${(item.food ?? item.privateFood)?.name ?? 'Alimento'}`}
                     >
                       <X size={14} weight="bold" />
                     </button>
