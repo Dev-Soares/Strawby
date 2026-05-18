@@ -1,6 +1,7 @@
 import { useRef, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { CalendarBlank, CaretLeft, CaretRight } from '@phosphor-icons/react'
+import { toLocalISODate } from '@/shared/utils/date'
 import { useDay } from '../contexts/DayContext'
 
 const weekLabels = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
@@ -20,7 +21,7 @@ function getWeekDays(anchor: string) {
 }
 
 function iso(d: Date) {
-  return d.toISOString().split('T')[0]
+  return toLocalISODate(d)
 }
 
 export default function DaySelector() {

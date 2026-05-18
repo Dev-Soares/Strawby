@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Coffee, ForkKnife, Leaf, Moon, Cookie, FloppyDisk } from '@phosphor-icons/react'
 import toast from 'react-hot-toast'
+import { toLocalISODate } from '@/shared/utils/date'
 import { createMealSchema, type CreateMealData } from '../types/createMeal'
 import type { MealType, MealTypeConfig } from '../types/mealTypeConfig'
 import { useCreateMeal } from '../hooks/useCreateMeal'
@@ -43,7 +44,7 @@ export default function CreateMealForm() {
         kind,
         mealType: data.mealType,
         time: isPlan ? undefined : data.time,
-        date: new Date().toISOString(),
+        date: toLocalISODate(),
       },
       {
         onSuccess: (createdMeal) => {

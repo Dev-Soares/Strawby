@@ -46,14 +46,19 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
       <div className="p-4">
         {/* Top row */}
         <div className="flex items-center justify-between mb-3">
-          <div
-            className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-            style={{ backgroundColor: config.accentLight }}
-          >
-            <MealIcon size={16} weight="bold" style={{ color: config.accentText }} />
+          <div className="flex items-center gap-3 min-w-0">
+            <div
+              className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+              style={{ backgroundColor: config.accentLight }}
+            >
+              <MealIcon size={16} weight="bold" style={{ color: config.accentText }} />
+            </div>
+            <span className="text-base font-extrabold text-neutral-900 truncate">
+              {meal.name}
+            </span>
           </div>
           <span
-            className="text-[10px] font-extrabold tracking-widest px-2 py-0.5 rounded-full"
+            className="text-[10px] font-extrabold tracking-widest px-2 py-0.5 rounded-full shrink-0"
             style={{ backgroundColor: config.accentLight, color: config.accentText }}
           >
             {config.label}
@@ -70,12 +75,6 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
           </span>
           <span className="text-base font-bold text-neutral-400 ml-1.5">kcal</span>
         </div>
-        <p
-          className="font-display text-sm font-bold mb-0.5"
-          style={{ color: config.accentText }}
-        >
-          {meal.name}
-        </p>
 
         {/* Macro chips */}
         <div className="flex items-center gap-1.5 flex-wrap mt-3">
