@@ -20,6 +20,7 @@ type SelectableFood = {
   carbs: number
   fat: number
   kind: Tab
+  servingSize: string | null
 }
 
 const macros = [
@@ -44,7 +45,9 @@ function SelectableFoodCard({ food, onSelect }: { food: SelectableFood; onSelect
         <p className="text-base font-bold text-neutral-950 leading-snug mb-0.5">
           {food.name}
         </p>
-        <p className="text-xs font-medium text-neutral-400">por 100g</p>
+        <p className="text-xs font-medium text-neutral-400">
+          {food.kind === 'private' && food.servingSize ? `por ${food.servingSize}g` : 'por 100g'}
+        </p>
       </div>
 
       <div className="flex items-center gap-1.5 mb-4">
@@ -104,9 +107,9 @@ export default function SelectFoodPage() {
 
   const foods: SelectableFood[] = useMemo(() => {
     if (tab === 'public') {
-      return (publicFoods ?? []).map((f) => ({ ...f, kind: 'public' as const }))
+      return (publicFoods ?? []).map((f) => ({ ...f, kind: 'public' as const, servingSize: null }))
     }
-    return filteredPrivateFoods.map((f) => ({ ...f, kind: 'private' as const }))
+    return filteredPrivateFoods.map((f) => ({ ...f, kind: 'private' as const, servingSize: f.servingSize }))
   }, [tab, publicFoods, filteredPrivateFoods])
 
   const isPending = tab === 'public' ? isPublicPending : isPrivatePending
@@ -114,7 +117,8 @@ export default function SelectFoodPage() {
 
   const handleSelectFood = (food: SelectableFood) => {
     setSelectedFood(food)
-    setQuantity('100')
+    const defaultQuantity = food.kind === 'private' && food.servingSize ? food.servingSize : '100'
+    setQuantity(defaultQuantity)
     setStep('quantity')
   }
 
@@ -247,29 +251,33 @@ export default function SelectFoodPage() {
           </div>
         ) : (
           <div className="max-w-md mx-auto">
-            {selectedFood && (
-              <div className="bg-white border border-neutral-200 rounded-2xl p-5 mb-6">
-                <p className="text-base font-bold text-neutral-950 mb-1">{selectedFood.name}</p>
-                <p className="text-xs text-neutral-400 mb-4">por {quantity || 0}g</p>
-                <div className="flex items-center gap-1.5 mb-4">
-                  <Fire size={13} weight="fill" className="text-red-500 shrink-0" />
-                  <span className="text-xl font-extrabold text-neutral-900 tabular-nums leading-none">
-                    {Math.round((selectedFood.calories * (Number(quantity) || 0)) / 100)}
-                  </span>
-                  <span className="text-xs font-medium text-neutral-400 pb-0.5">kcal</span>
+            {selectedFood && (() => {
+              const base = selectedFood.kind === 'private' && selectedFood.servingSize ? Number(selectedFood.servingSize) : 100
+              const q = Number(quantity) || 0
+              return (
+                <div className="bg-white border border-neutral-200 rounded-2xl p-5 mb-6">
+                  <p className="text-base font-bold text-neutral-950 mb-1">{selectedFood.name}</p>
+                  <p className="text-xs text-neutral-400 mb-4">por {quantity || 0}g</p>
+                  <div className="flex items-center gap-1.5 mb-4">
+                    <Fire size={13} weight="fill" className="text-red-500 shrink-0" />
+                    <span className="text-xl font-extrabold text-neutral-900 tabular-nums leading-none">
+                      {Math.round((selectedFood.calories * q) / base)}
+                    </span>
+                    <span className="text-xs font-medium text-neutral-400 pb-0.5">kcal</span>
+                  </div>
+                  <div className="flex gap-4">
+                    {macros.map(({ key, label, colorClass }) => (
+                      <div key={key} className="flex-1 flex flex-col items-center">
+                        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wide mb-1">{label}</span>
+                        <span className={`text-base font-extrabold tabular-nums ${colorClass}`}>
+                          {Math.round((selectedFood[key] * q) / base * 10) / 10}g
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex gap-4">
-                  {macros.map(({ key, label, colorClass }) => (
-                    <div key={key} className="flex-1 flex flex-col items-center">
-                      <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wide mb-1">{label}</span>
-                      <span className={`text-base font-extrabold tabular-nums ${colorClass}`}>
-                        {Math.round((selectedFood[key] * (Number(quantity) || 0)) / 10) / 10}g
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+              )
+            })()}
 
             {!mealId && (
               <div className="mb-4 rounded-xl bg-red-50 border border-red-200 p-4 text-sm font-semibold text-red-600">

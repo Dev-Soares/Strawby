@@ -44,9 +44,9 @@ export default function PrivateFoodList({ foods, onEdit }: PrivateFoodListProps)
           </div>
 
           <div className="mb-3 pr-20">
-            <p className="text-base font-bold text-neutral-950 leading-snug mb-0.5">{food.name}</p>
-            <p className="text-xs font-medium text-neutral-400">
-              {food.servingSize ? food.servingSize : 'por 100g'}
+            <p className="text-base font-bold text-neutral-950 leading-snug mb-1">{food.name}</p>
+            <p className="text-base font-bold text-neutral-600 tabular-nums">
+              {food.servingSize ? `${food.servingSize}g` : '100g'}
             </p>
           </div>
 

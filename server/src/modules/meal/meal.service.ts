@@ -216,11 +216,12 @@ export class MealService {
     try {
       const privateFood = await this.prisma.privateFood.findFirst({
         where: { id: dto.privateFoodId, userId },
-        select: { id: true, calories: true, protein: true, carbs: true, fat: true },
+        select: { id: true, calories: true, protein: true, carbs: true, fat: true, servingSize: true },
       });
       if (!privateFood) throw new NotFoundException('Alimento privado não encontrado');
 
-      const ratio = dto.quantity / 100;
+      const servingSize = privateFood.servingSize ? Number(privateFood.servingSize) : 100;
+      const ratio = dto.quantity / servingSize;
       const updated = await this.prisma.meal.update({
         where: { id: mealId, userId },
         data: {
