@@ -2,22 +2,17 @@
   "name": "Strawby",
   "short_name": "Strawby",
   "description": "Controle suas refeições e acompanhe sua nutrição diária com facilidade.",
-  "start_url": "/app/",
-  "scope": "/",
+  "start_url": "/app/home",
+  "scope": "/app/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#dc2626",
+  "theme_color": "#ffffff",
   "icons": [
-    {
-      "src": "/logo.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
     {
       "src": "/apple-touch-icon.png",
       "sizes": "180x180",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
