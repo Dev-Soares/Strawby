@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Coffee, ForkKnife, Leaf, Moon, Cookie, FloppyDisk } from '@phosphor-icons/react'
+import toast from 'react-hot-toast'
 import { createMealSchema, type CreateMealData } from '../types/createMeal'
 import type { MealType, MealTypeConfig } from '../types/mealTypeConfig'
 import { useCreateMeal } from '../hooks/useCreateMeal'
@@ -46,7 +47,12 @@ export default function CreateMealForm() {
       },
       {
         onSuccess: (createdMeal) => {
-          navigate(`/foods/select?mealId=${createdMeal.id}&type=${type}`)
+          if (!createdMeal?.id) {
+            console.error('[CreateMealForm] createdMeal missing id', createdMeal)
+            toast.error('Erro ao redirecionar. Tente novamente.')
+            return
+          }
+          navigate(`/meals/${createdMeal.id}`)
         },
       },
     )

@@ -64,16 +64,16 @@ export class MealService {
     }
   }
 
-  async findAllByUser(userId: string, kind?: MealKind): Promise<MealSummary[]> {
+  async findAllByUser(userId: string, kind?: MealKind): Promise<MealPublic[]> {
     try {
       const meals = await this.prisma.meal.findMany({
         where: { userId, ...(kind && { kind }) },
         select: mealSelect,
         orderBy: { date: 'desc' },
       });
-      return meals.map(({ items, ...meal }) => ({
+      return meals.map((meal) => ({
         ...meal,
-        totals: this.computeTotals(items),
+        totals: this.computeTotals(meal.items),
       }));
     } catch {
       throw new InternalServerErrorException('Erro ao buscar refeições');
@@ -103,7 +103,7 @@ export class MealService {
           },
         },
         select: mealSelect,
-        orderBy: { date: 'desc' },
+        orderBy: { date: 'asc' },
       });
       return meals.map(({ items, ...meal }) => ({
         ...meal,

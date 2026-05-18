@@ -78,10 +78,13 @@ export default function SelectFoodPage() {
   }
 
   const handleConfirm = () => {
-    if (!selectedFood || !mealId) return
+    if (!selectedFood || !mealId) {
+      console.error('[SelectFoodPage] missing mealId or selectedFood', { mealId, selectedFood })
+      return
+    }
 
     const payload = { foodId: selectedFood.id, quantity: Number(quantity) }
-    const onSuccess = () => navigate(isPlanMeal ? '/plan' : '/home')
+    const onSuccess = () => navigate(`/meals/${mealId}`)
 
     addMealItem.mutate({ mealId, dto: payload }, { onSuccess })
   }
@@ -91,7 +94,7 @@ export default function SelectFoodPage() {
       setStep('search')
       setSelectedFood(null)
     } else {
-      navigate(isPlanMeal ? '/plan' : '/home')
+      navigate(-1)
     }
   }
 
@@ -184,18 +187,29 @@ export default function SelectFoodPage() {
               </div>
             )}
 
+            {!mealId && (
+              <div className="mb-4 rounded-xl bg-red-50 border border-red-200 p-4 text-sm font-semibold text-red-600">
+                ID da refeição não encontrado. Volte e tente novamente.
+              </div>
+            )}
+
             <div className="mb-2">
               <label className="block text-xs font-black text-neutral-500 uppercase tracking-widest mb-3">
                 Quantidade (g)
               </label>
-              <input
-                type="number"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                min={1}
-                max={2000}
-                className="w-full text-center text-3xl font-extrabold text-neutral-950 bg-white border border-neutral-200 rounded-2xl px-4 py-5 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all duration-200 shadow-sm tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-              />
+              <div className="relative">
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                  min={1}
+                  max={2000}
+                  className="w-full text-center text-3xl font-extrabold text-neutral-950 bg-white border border-neutral-200 rounded-2xl px-4 py-5 pr-14 outline-none focus:border-red-400 focus:ring-2 focus:ring-red-100 transition-all duration-200 shadow-sm tabular-nums [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+                <span className="absolute right-5 top-1/2 -translate-y-1/2 text-xl font-extrabold text-neutral-400 pointer-events-none select-none">
+                  g
+                </span>
+              </div>
             </div>
 
             <div className="flex gap-3 mt-6">
@@ -209,7 +223,7 @@ export default function SelectFoodPage() {
               <button
                 type="button"
                 onClick={handleConfirm}
-                disabled={!quantity || Number(quantity) < 1 || addMealItem.isPending}
+                disabled={!mealId || !quantity || Number(quantity) < 1 || addMealItem.isPending}
                 className="flex-1 py-3.5 rounded-2xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 cursor-pointer flex items-center justify-center gap-2"
               >
                 {addMealItem.isPending ? (

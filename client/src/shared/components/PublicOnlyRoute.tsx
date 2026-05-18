@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
+import RouteSkeleton from './RouteSkeleton'
 
 interface PublicOnlyRouteProps {
   children: React.ReactNode
@@ -10,11 +11,7 @@ export default function PublicOnlyRoute({ children }: PublicOnlyRouteProps) {
   const location = useLocation()
 
   if (isPending) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="animate-pulse h-8 w-32 rounded-full bg-neutral-200" />
-      </div>
-    )
+    return <RouteSkeleton />
   }
 
   if (user) {

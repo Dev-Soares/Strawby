@@ -17,5 +17,8 @@ export default defineConfig({
         pollInterval: 10,
       },
     },
+    fs: {
+      strict: false,
+    },
   },
 })

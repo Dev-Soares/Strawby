@@ -1,5 +1,4 @@
 import type { Icon } from '@phosphor-icons/react'
-import type { MealSummary } from '../../meal/types/meal'
 
 export interface MealTypeConfig {
   icon: Icon
@@ -7,10 +6,4 @@ export interface MealTypeConfig {
   accent: string
   accentLight: string
   accentText: string
-}
-
-export interface PlanMealCardProps {
-  meal: MealSummary
-  isOpen: boolean
-  onToggle: () => void
 }

@@ -6,6 +6,7 @@ import MainPage from './pages/MainPage'
 import FoodsPage from './pages/FoodsPage'
 import PlanPage from './pages/PlanPage'
 import CreateMealPage from './pages/CreateMealPage'
+import MealDetailPage from './pages/MealDetailPage'
 import SelectFoodPage from './pages/SelectFoodPage'
 import ScorePage from './pages/ScorePage'
 import ProtectedRoute from './shared/components/ProtectedRoute'
@@ -25,6 +26,7 @@ export default function App() {
       <Route path="/foods" element={<ProtectedRoute><FoodsPage /></ProtectedRoute>} />
       <Route path="/plan" element={<ProtectedRoute><PlanPage /></ProtectedRoute>} />
       <Route path="/meals/new" element={<ProtectedRoute><CreateMealPage /></ProtectedRoute>} />
+      <Route path="/meals/:id" element={<ProtectedRoute><MealDetailPage /></ProtectedRoute>} />
       <Route path="/foods/select" element={<ProtectedRoute><SelectFoodPage /></ProtectedRoute>} />
     </Routes>
     </>

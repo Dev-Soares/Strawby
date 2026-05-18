@@ -1,10 +1,13 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft } from '@phosphor-icons/react'
 import AppLayout from '../shared/layouts/AppLayout'
 import CreateMealForm from '../modules/meal/components/CreateMealForm'
 
 export default function CreateMealPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const type = searchParams.get('type') ?? 'meal'
+  const isPlan = type === 'plan-meal'
 
   return (
     <AppLayout>
@@ -12,7 +15,7 @@ export default function CreateMealPage() {
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <button
-            onClick={() => navigate('/plan')}
+            onClick={() => navigate(isPlan ? '/plan' : '/home')}
             className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-50 hover:bg-red-100 transition-colors duration-150 cursor-pointer shrink-0"
           >
             <ArrowLeft size={18} weight="bold" className="text-red-600" />
