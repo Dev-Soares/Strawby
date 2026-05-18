@@ -1,6 +1,7 @@
 import { useRef, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { CalendarBlank, CaretLeft, CaretRight } from '@phosphor-icons/react'
+import { toLocalISODate } from '@/shared/utils/date'
 import { useDay } from '../contexts/DayContext'
 
 const weekLabels = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
@@ -20,7 +21,7 @@ function getWeekDays(anchor: string) {
 }
 
 function iso(d: Date) {
-  return d.toISOString().split('T')[0]
+  return toLocalISODate(d)
 }
 
 export default function DaySelector() {
@@ -57,7 +58,7 @@ export default function DaySelector() {
 
   return (
     <motion.div
-      className="mb-5 sm:mb-6"
+      className="mb-8 sm:mb-10"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: 0.15 }}

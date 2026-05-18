@@ -1,3 +1,5 @@
+export type MealKind = 'DAILY' | 'PLAN'
+
 export type MealTotals = {
   calories: number
   protein: number
@@ -5,7 +7,7 @@ export type MealTotals = {
   fat: number
 }
 
-export type MealItem = {
+export type FoodItem = {
   id: string
   quantity: number
   calories: number
@@ -15,16 +17,23 @@ export type MealItem = {
   food: {
     id: string
     name: string
-  }
+  } | null
+  privateFood: {
+    id: string
+    name: string
+  } | null
 }
 
 export type Meal = {
   id: string
   name: string
-  date: string
-  userId: string
+  kind: MealKind
   mealType: string | null
   time: string | null
-  items: MealItem[]
+  date: string
+  userId: string
+  items: FoodItem[]
   totals: MealTotals
 }
+
+export type MealSummary = Omit<Meal, 'items'>

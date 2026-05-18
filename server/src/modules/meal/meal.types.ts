@@ -1,7 +1,8 @@
-import { Meal, MealItem } from '@prisma/client';
+import { Meal, FoodItem } from '@prisma/client';
 
-export type MealItemWithFood = Pick<MealItem, 'id' | 'quantity' | 'calories' | 'protein' | 'carbs' | 'fat'> & {
-  food: { id: string; name: string };
+export type FoodItemPublic = Pick<FoodItem, 'id' | 'quantity' | 'calories' | 'protein' | 'carbs' | 'fat'> & {
+  food: { id: string; name: string } | null;
+  privateFood: { id: string; name: string } | null;
 };
 
 export type MealTotals = {
@@ -11,16 +12,16 @@ export type MealTotals = {
   fat: number;
 };
 
-export type MealPublic = Pick<Meal, 'id' | 'name' | 'mealType' | 'time' | 'date' | 'userId'> & {
-  items: MealItemWithFood[];
+export type MealPublic = Pick<Meal, 'id' | 'name' | 'kind' | 'mealType' | 'time' | 'date' | 'userId'> & {
+  items: FoodItemPublic[];
   totals: MealTotals;
 };
 
-export type MealSummary = Pick<Meal, 'id' | 'name' | 'mealType' | 'time' | 'date' | 'userId'> & {
+export type MealSummary = Pick<Meal, 'id' | 'name' | 'kind' | 'mealType' | 'time' | 'date' | 'userId'> & {
   totals: MealTotals;
 };
 
-export const mealItemSelect = {
+export const foodItemSelect = {
   id: true,
   quantity: true,
   calories: true,
@@ -33,4 +34,21 @@ export const mealItemSelect = {
       name: true,
     },
   },
+  privateFood: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+} as const;
+
+export const mealSelect = {
+  id: true,
+  name: true,
+  kind: true,
+  mealType: true,
+  time: true,
+  date: true,
+  userId: true,
+  items: { select: foodItemSelect },
 } as const;

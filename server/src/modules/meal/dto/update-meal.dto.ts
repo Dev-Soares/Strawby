@@ -8,6 +8,16 @@ export class UpdateMealDto {
   @MaxLength(200)
   name?: string;
 
+  @ApiPropertyOptional({ example: 'lunch' })
+  @IsString()
+  @IsOptional()
+  mealType?: string;
+
+  @ApiPropertyOptional({ example: '12:00' })
+  @IsString()
+  @IsOptional()
+  time?: string;
+
   @ApiPropertyOptional({ example: '2026-04-13T12:00:00.000Z' })
   @IsDateString()
   @IsOptional()

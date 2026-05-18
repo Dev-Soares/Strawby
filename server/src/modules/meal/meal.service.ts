@@ -3,18 +3,27 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { MealKind, Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
-import { AddMealItemDto } from './dto/add-meal-item.dto';
+import { AddFoodItemDto } from './dto/add-food-item.dto';
+import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
-import { MealItemWithFood, MealPublic, MealSummary, MealTotals, mealItemSelect } from './meal.types';
+import {
+  FoodItemPublic,
+  MealPublic,
+  MealSummary,
+  MealTotals,
+  foodItemSelect,
+  mealSelect,
+} from './meal.types';
 
 @Injectable()
 export class MealService {
+  
   constructor(private readonly prisma: PrismaService) {}
 
-  private computeTotals(items: MealItemWithFood[]): MealTotals {
+  private computeTotals(items: FoodItemPublic[]): MealTotals {
     return items.reduce(
       (initial, item) => ({
         calories: initial.calories + item.calories,
@@ -26,25 +35,29 @@ export class MealService {
     );
   }
 
+  private mealTypeToName(mealType?: string): string {
+    const map: Record<string, string> = {
+      breakfast: 'Café da manhã',
+      lunch: 'Almoço',
+      snack: 'Lanche',
+      dinner: 'Jantar',
+      supper: 'Ceia',
+    };
+    return map[mealType ?? ''] ?? 'Refeição';
+  }
+
   async create(userId: string, dto: CreateMealDto): Promise<MealPublic> {
     try {
       const meal = await this.prisma.meal.create({
         data: {
-          name: dto.name,
+          name: this.mealTypeToName(dto.mealType),
+          kind: dto.kind,
           mealType: dto.mealType,
           time: dto.time,
           date: dto.date ? new Date(dto.date) : undefined,
           userId,
         },
-        select: {
-          id: true,
-          name: true,
-          mealType: true,
-          time: true,
-          date: true,
-          userId: true,
-          items: { select: mealItemSelect },
-        },
+        select: mealSelect,
       });
       return { ...meal, totals: this.computeTotals(meal.items) };
     } catch {
@@ -52,31 +65,27 @@ export class MealService {
     }
   }
 
-  async findAllByUser(userId: string): Promise<MealSummary[]> {
+  async findAllByUser(userId: string, kind?: MealKind): Promise<MealPublic[]> {
     try {
       const meals = await this.prisma.meal.findMany({
-        where: { userId },
-        select: {
-          id: true,
-          name: true,
-          mealType: true,
-          time: true,
-          date: true,
-          userId: true,
-          items: { select: mealItemSelect },
-        },
+        where: { userId, ...(kind && { kind }) },
+        select: mealSelect,
         orderBy: { date: 'desc' },
       });
-      return meals.map(({ items, ...meal }) => ({
+      return meals.map((meal) => ({
         ...meal,
-        totals: this.computeTotals(items),
+        totals: this.computeTotals(meal.items),
       }));
     } catch {
       throw new InternalServerErrorException('Erro ao buscar refeições');
     }
   }
 
-  async findAllByUserAndDay(userId: string, day: string): Promise<MealPublic[]> {
+  async findAllByUserAndDay(
+    userId: string,
+    day: string,
+    kind?: MealKind,
+  ): Promise<MealPublic[]> {
     try {
       const start = new Date(day + 'T00:00:00.000Z');
       if (isNaN(start.getTime())) {
@@ -88,21 +97,14 @@ export class MealService {
       const meals = await this.prisma.meal.findMany({
         where: {
           userId,
+          ...(kind && { kind }),
           date: {
             gte: start,
             lt: end,
           },
         },
-        select: {
-          id: true,
-          name: true,
-          mealType: true,
-          time: true,
-          date: true,
-          userId: true,
-          items: { select: mealItemSelect },
-        },
-        orderBy: { date: 'desc' },
+        select: mealSelect,
+        orderBy: { date: 'asc' },
       });
       return meals.map(({ items, ...meal }) => ({
         ...meal,
@@ -111,7 +113,6 @@ export class MealService {
       }));
     } catch (error) {
       if (error instanceof InternalServerErrorException) throw error;
-      console.error('findAllByUserAndDay error:', error);
       throw new InternalServerErrorException('Erro ao buscar refeições');
     }
   }
@@ -120,15 +121,7 @@ export class MealService {
     try {
       const meal = await this.prisma.meal.findFirst({
         where: { id, userId },
-        select: {
-          id: true,
-          name: true,
-          mealType: true,
-          time: true,
-          date: true,
-          userId: true,
-          items: { select: mealItemSelect },
-        },
+        select: mealSelect,
       });
 
       if (!meal) throw new NotFoundException('Refeição não encontrada');
@@ -146,17 +139,11 @@ export class MealService {
         where: { id, userId },
         data: {
           ...(dto.name !== undefined && { name: dto.name }),
+          ...(dto.mealType !== undefined && { mealType: dto.mealType }),
+          ...(dto.time !== undefined && { time: dto.time }),
           ...(dto.date !== undefined && { date: new Date(dto.date) }),
         },
-        select: {
-          id: true,
-          name: true,
-          mealType: true,
-          time: true,
-          date: true,
-          userId: true,
-          items: { select: mealItemSelect },
-        },
+        select: mealSelect,
       });
       return { ...meal, totals: this.computeTotals(meal.items) };
     } catch (error) {
@@ -187,7 +174,7 @@ export class MealService {
     }
   }
 
-  async addItem(mealId: string, userId: string, dto: AddMealItemDto): Promise<MealItemWithFood> {
+  async addFoodItem(mealId: string, userId: string, dto: AddFoodItemDto): Promise<FoodItemPublic> {
     try {
       const food = await this.prisma.food.findUnique({
         where: { id: dto.foodId },
@@ -201,7 +188,7 @@ export class MealService {
         data: {
           items: {
             create: {
-              foodId: dto.foodId,
+              foodId: food.id,
               quantity: dto.quantity,
               calories: food.calories * ratio,
               protein: food.protein * ratio,
@@ -211,7 +198,7 @@ export class MealService {
           },
         },
         select: {
-          items: { select: mealItemSelect, orderBy: { createdAt: 'desc' }, take: 1 },
+          items: { select: foodItemSelect, orderBy: { createdAt: 'desc' }, take: 1 },
         },
       });
 
@@ -225,9 +212,48 @@ export class MealService {
     }
   }
 
+  async addPrivateFoodItem(mealId: string, userId: string, dto: AddMealPrivateFoodItemDto): Promise<FoodItemPublic> {
+    try {
+      const privateFood = await this.prisma.privateFood.findFirst({
+        where: { id: dto.privateFoodId, userId },
+        select: { id: true, calories: true, protein: true, carbs: true, fat: true, servingSize: true },
+      });
+      if (!privateFood) throw new NotFoundException('Alimento privado não encontrado');
+
+      const servingSize = privateFood.servingSize ? Number(privateFood.servingSize) : 100;
+      const ratio = dto.quantity / servingSize;
+      const updated = await this.prisma.meal.update({
+        where: { id: mealId, userId },
+        data: {
+          items: {
+            create: {
+              privateFoodId: privateFood.id,
+              quantity: dto.quantity,
+              calories: privateFood.calories * ratio,
+              protein: privateFood.protein * ratio,
+              carbs: privateFood.carbs * ratio,
+              fat: privateFood.fat * ratio,
+            },
+          },
+        },
+        select: {
+          items: { select: foodItemSelect, orderBy: { createdAt: 'desc' }, take: 1 },
+        },
+      });
+
+      return updated.items[0];
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') throw new NotFoundException('Refeição não encontrada');
+      }
+      throw new InternalServerErrorException('Erro ao adicionar alimento privado à refeição');
+    }
+  }
+
   async removeItem(mealId: string, itemId: string, userId: string): Promise<{ id: string }> {
     try {
-      const { count } = await this.prisma.mealItem.deleteMany({
+      const { count } = await this.prisma.foodItem.deleteMany({
         where: { id: itemId, meal: { id: mealId, userId } },
       });
 

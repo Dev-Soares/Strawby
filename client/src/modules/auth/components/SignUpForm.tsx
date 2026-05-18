@@ -5,6 +5,8 @@ import { useSignUp } from '../hooks/useSignUp'
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
   const {
     register,
     onSubmit,
@@ -77,6 +79,33 @@ export default function SignUpForm() {
             </div>
             {errors.password && (
               <p className="text-yellow-200 text-[11px] mt-2">{errors.password.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-semibold text-white mb-3 uppercase tracking-widest">
+              Confirmar Senha
+            </label>
+            <div className="relative">
+              <input
+                {...register('confirmPassword')}
+                type={showConfirmPassword ? 'text' : 'password'}
+                autoComplete="new-password"
+                className="w-full border-0 border-b-2 border-white/50 bg-transparent pb-3 text-[15px] text-white placeholder-white/30 focus:outline-none focus:border-white transition-colors duration-200 pr-8"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword((v) => !v)}
+                className="absolute right-0 bottom-3 text-white hover:text-white/70 transition-colors cursor-pointer"
+              >
+                {showConfirmPassword
+                  ? <EyeSlash size={15} weight="bold" />
+                  : <Eye size={15} weight="bold" />
+                }
+              </button>
+            </div>
+            {errors.confirmPassword && (
+              <p className="text-yellow-200 text-[11px] mt-2">{errors.confirmPassword.message}</p>
             )}
           </div>
 

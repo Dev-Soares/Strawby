@@ -13,6 +13,7 @@ const blobPath = 'M 24 0 C 8 8, 0 22, 2 38 C 4 54, 22 58, 20 70 C 16 82, 6 86, 1
 const navItems = [
   { label: 'Início', href: '/home' },
   { label: 'Pontuação', href: '/score' },
+  { label: 'Alimentos', href: '/foods' },
   { label: 'Plano', href: '/plan' },
 ]
 

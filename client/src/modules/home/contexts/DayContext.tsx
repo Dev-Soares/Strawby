@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useMemo, useCallback } from 'react'
+import { toLocalISODate } from '@/shared/utils/date'
 
 function getTodayIso() {
-  return new Date().toISOString().split('T')[0]
+  return toLocalISODate()
 }
 
 interface DayContextValue {

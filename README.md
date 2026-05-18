@@ -192,7 +192,7 @@ pnpm --filter server exec prisma studio
 User      → id, name, email, password, createdAt, updatedAt
 Food      → id, name, calories, protein, carbs, fat, createdAt, updatedAt
 Meal      → id, name, date, userId, createdAt, updatedAt
-MealItem  → id, quantity, mealId, foodId, createdAt, updatedAt
+FoodItem  → id, quantity, mealId, foodId, createdAt, updatedAt
 ```
 
 ---

@@ -6,13 +6,16 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
-import { AddMealItemDto } from './dto/add-meal-item.dto';
+import { AddFoodItemDto } from './dto/add-food-item.dto';
+import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
+import { QueryMealDto } from './dto/query-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 import { MealService } from './meal.service';
 
@@ -27,13 +30,17 @@ export class MealController {
   }
 
   @Get()
-  findAll(@Req() req: AuthenticatedRequest) {
-    return this.mealService.findAllByUser(req.user.sub);
+  findAll(@Req() req: AuthenticatedRequest, @Query() query: QueryMealDto) {
+    return this.mealService.findAllByUser(req.user.sub, query.kind);
   }
 
   @Get('day/:day')
-  findAllByDay(@Req() req: AuthenticatedRequest, @Param('day') day: string) {
-    return this.mealService.findAllByUserAndDay(req.user.sub, day);
+  findAllByDay(
+    @Req() req: AuthenticatedRequest,
+    @Param('day') day: string,
+    @Query() query: QueryMealDto,
+  ) {
+    return this.mealService.findAllByUserAndDay(req.user.sub, day, query.kind);
   }
 
   @Get(':id')
@@ -56,12 +63,21 @@ export class MealController {
   }
 
   @Post(':id/items')
-  addItem(
+  addFoodItem(
     @Req() req: AuthenticatedRequest,
     @Param('id') id: string,
-    @Body() dto: AddMealItemDto,
+    @Body() dto: AddFoodItemDto,
   ) {
-    return this.mealService.addItem(id, req.user.sub, dto);
+    return this.mealService.addFoodItem(id, req.user.sub, dto);
+  }
+
+  @Post(':id/private-items')
+  addPrivateFoodItem(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: string,
+    @Body() dto: AddMealPrivateFoodItemDto,
+  ) {
+    return this.mealService.addPrivateFoodItem(id, req.user.sub, dto);
   }
 
   @Delete(':id/items/:itemId')

@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
-import LoginSkeleton from '@/modules/auth/skeletons/LoginSkeleton'
+import RouteSkeleton from './RouteSkeleton'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -11,7 +11,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const location = useLocation()
 
   if (isPending) {
-    return <LoginSkeleton />
+    return <RouteSkeleton />
   }
 
   if (!user) {

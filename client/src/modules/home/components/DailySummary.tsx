@@ -38,7 +38,7 @@ interface DailySummaryProps {
 
 export default function DailySummary({ data }: DailySummaryProps) {
   const calorias = data.macros[0]
-  const calPct = Math.round((calorias.value / calorias.max) * 100)
+  const calPct = calorias.max > 0 ? Math.round((calorias.value / calorias.max) * 100) : 0
 
   return (
     <motion.div

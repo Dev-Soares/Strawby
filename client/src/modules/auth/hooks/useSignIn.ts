@@ -17,9 +17,9 @@ export const useSignIn = () => {
 
   const mutation = useMutation({
     mutationFn: signInService,
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('Bem-vindo de volta!')
-      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] })
+      await queryClient.refetchQueries({ queryKey: ['auth', 'me'], exact: true })
       navigate('/home')
     },
     onError: (error) => {
