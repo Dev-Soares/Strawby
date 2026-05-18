@@ -58,7 +58,7 @@ export default function DaySelector() {
 
   return (
     <motion.div
-      className="mb-5 sm:mb-6"
+      className="mb-8 sm:mb-10"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: 0.15 }}

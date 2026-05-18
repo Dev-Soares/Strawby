@@ -45,23 +45,18 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
       {/* Card body */}
       <div className="p-4">
         {/* Top row */}
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-              style={{ backgroundColor: config.accentLight }}
-            >
-              <MealIcon size={16} weight="bold" style={{ color: config.accentText }} />
-            </div>
-            <span className="text-base font-extrabold text-neutral-900 truncate">
-              {meal.name}
-            </span>
+        <div className="flex items-center gap-3 min-w-0 mb-3">
+          <div
+            className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+            style={{ backgroundColor: config.accentLight }}
+          >
+            <MealIcon size={20} weight="bold" style={{ color: config.accentText }} />
           </div>
           <span
-            className="text-[10px] font-extrabold tracking-widest px-2 py-0.5 rounded-full shrink-0"
-            style={{ backgroundColor: config.accentLight, color: config.accentText }}
+            className="text-lg font-extrabold truncate"
+            style={{ color: config.accentText }}
           >
-            {config.label}
+            {meal.name}
           </span>
         </div>
 
@@ -85,7 +80,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
           ].map(({ l, v }) => (
             <span
               key={l}
-              className="text-xs font-bold px-2.5 py-1 rounded-full tabular-nums"
+              className="text-sm font-bold px-3.5 py-1.5 rounded-full tabular-nums"
               style={{ backgroundColor: config.accentLight, color: config.accentText }}
             >
               {v}g {l}
@@ -147,15 +142,15 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                   ))}
                 </>
               ) : (
-                <p className="text-xs text-neutral-400">Nenhum alimento adicionado</p>
+                <p className="text-sm font-medium text-neutral-400 py-2">Nenhum alimento adicionado</p>
               )}
 
               <button
                 type="button"
                 onClick={() => navigate(`/meals/${meal.id}`)}
-                className="mt-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold text-white bg-red-600 hover:bg-red-700 shadow-sm transition-colors duration-150 cursor-pointer"
+                className="mt-4 w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-base font-bold text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors duration-150 cursor-pointer"
               >
-                <PencilSimple size={14} weight="bold" />
+                <PencilSimple size={18} weight="bold" />
                 Editar refeição
               </button>
             </div>

@@ -33,14 +33,14 @@ export default function MealList({ meals }: MealListProps) {
 
   return (
     <div>
-      <div className="flex items-end justify-between mb-3 sm:mb-5 px-1 gap-2 mt-1">
+      <div className="flex items-end justify-between mb-5 sm:mb-7 px-1 gap-2 mt-5 sm:mt-7">
         <div className="min-w-0">
           <h2 className="text-lg sm:text-xl font-extrabold text-neutral-900">Refeições de hoje</h2>
           <p className="text-xs sm:text-sm text-neutral-400 mt-0.5">
             Seu histórico do dia
           </p>
         </div>
-        <span className="text-xs sm:text-sm font-extrabold text-neutral-500 tabular-nums shrink-0">
+        <span className="text-xl sm:text-2xl font-extrabold text-red-600 tabular-nums shrink-0 leading-none mb-0.5">
           {Math.round(totalKcal).toLocaleString('pt-BR')} kcal
         </span>
       </div>
