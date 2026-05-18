@@ -11,7 +11,7 @@ export const useSignOut = () => {
     mutationFn: signOutService,
     onSuccess: () => {
       queryClient.removeQueries({ queryKey: ['auth', 'me'] })
-      navigate('/login')
+      navigate('/app/login')
     },
     onError: () => {
       toast.error('Erro ao sair')

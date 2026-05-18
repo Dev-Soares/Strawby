@@ -20,7 +20,7 @@ export const useSignIn = () => {
     onSuccess: async () => {
       toast.success('Bem-vindo de volta!')
       await queryClient.refetchQueries({ queryKey: ['auth', 'me'], exact: true })
-      navigate('/home')
+      navigate('/app/home')
     },
     onError: (error) => {
       if (isAxiosError(error) && error.response?.status === 401) {

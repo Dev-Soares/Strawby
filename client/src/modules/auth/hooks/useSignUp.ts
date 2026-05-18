@@ -25,7 +25,7 @@ export const useSignUp = () => {
     onSuccess: (user) => {
       toast.success('Conta criada com sucesso!')
       queryClient.setQueryData(['auth', 'me'], user)
-      navigate('/home')
+      navigate('/app/home')
     },
     onError: (error) => {
       if (isAxiosError(error) && error.response?.status === 409) {

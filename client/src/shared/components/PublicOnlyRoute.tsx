@@ -16,7 +16,7 @@ export default function PublicOnlyRoute({ children }: PublicOnlyRouteProps) {
 
   if (user) {
     const from = (location.state as { from?: { pathname: string } } | null)?.from?.pathname
-    return <Navigate to={from ?? '/home'} replace />
+    return <Navigate to={from ?? '/app/home'} replace />
   }
 
   return <>{children}</>

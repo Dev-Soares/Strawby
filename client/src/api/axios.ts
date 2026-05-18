@@ -14,9 +14,9 @@ api.interceptors.response.use(
       queryClient.invalidateQueries({ queryKey: ['auth', 'me'] })
 
       const path = window.location.pathname
-      const publicPaths = ['/', '/login', '/create-account']
+      const publicPaths = ['/', '/app/login', '/app/create-account']
       if (!publicPaths.includes(path)) {
-        window.location.href = '/login'
+        window.location.href = '/app/login'
       }
     }
     return Promise.reject(error)
