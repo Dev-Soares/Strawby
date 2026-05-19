@@ -16,6 +16,7 @@ model User {
   plan         Plan?
   meals        Meal[]
   privateFoods PrivateFood[]
+  recipes      Recipe[]
 }
 
 model Plan {
@@ -98,6 +99,7 @@ model Meal {
   userId    String
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   items     FoodItem[]
+  recipes   Recipe[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -111,14 +113,34 @@ model FoodItem {
   protein       Float
   carbs         Float
   fat           Float
-  mealId        String
+  mealId        String?
+  recipeId      String?
   foodId        String?
   privateFoodId String?
-  meal          Meal         @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  meal          Meal?        @relation(fields: [mealId], references: [id], onDelete: Cascade)
+  recipe        Recipe?      @relation(fields: [recipeId], references: [id], onDelete: Cascade)
   food          Food?        @relation(fields: [foodId], references: [id])
   privateFood   PrivateFood? @relation(fields: [privateFoodId], references: [id])
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
   @@index([mealId])
+  @@index([recipeId])
+}
+
+model Recipe {
+  id        String     @id @default(uuid())
+  name      String
+  calories  Float
+  protein   Float
+  carbs     Float
+  fat       Float
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     FoodItem[]
+  meals     Meal[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([userId])
 }
