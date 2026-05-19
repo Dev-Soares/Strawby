@@ -29,18 +29,21 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
           initial={{ x: '100%' }}
           animate={{ x: '0%' }}
           exit={{ x: '100%' }}
-          transition={{ duration: 0.65, ease: [0.76, 0, 0.24, 1] }}
+          transition={{ duration: 0.55, ease: [0.25, 1, 0.5, 1] }}
+          style={{ willChange: 'transform', touchAction: 'none' }}
           onClick={onClose}
         >
           {/* Red blob — fills right area, organic left edge, transparent outside */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-            aria-hidden="true"
-          >
-            <path d={blobPath} fill="#dc2626" />
-          </svg>
+          <div className="absolute inset-0 pointer-events-none" style={{ transform: 'translateZ(0)' }}>
+            <svg
+              className="w-full h-full"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path d={blobPath} fill="#dc2626" />
+            </svg>
+          </div>
 
           {/* Content — positioned inside red zone */}
           <div

@@ -26,7 +26,7 @@ export default function TopTabBar({ hidden = false }: TopTabBarProps) {
         hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
     >
-      <div className="px-2 sm:px-10 lg:px-16">
+      <div className="px-4 sm:px-10 lg:px-16">
         <div className="grid grid-cols-4 sm:flex sm:items-center sm:gap-2">
           {tabs.map((tab) => {
             const Icon = tab.icon
@@ -35,7 +35,7 @@ export default function TopTabBar({ hidden = false }: TopTabBarProps) {
               <Link
                 key={tab.href}
                 to={tab.href}
-                className="group relative flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-2 sm:px-4 py-2.5 sm:py-3.5 min-w-0"
+                className="group relative flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3.5 min-w-0"
               >
                 <Icon
                   size={18}
@@ -45,7 +45,7 @@ export default function TopTabBar({ hidden = false }: TopTabBarProps) {
                   }`}
                 />
                 <span
-                  className={`text-[11px] sm:text-sm font-extrabold tracking-tight transition-colors truncate max-w-full ${
+                  className={`text-[11px] sm:text-sm font-extrabold tracking-tight transition-colors max-w-full ${
                     active ? 'text-red-600' : 'text-neutral-500 group-hover:text-neutral-900'
                   }`}
                 >

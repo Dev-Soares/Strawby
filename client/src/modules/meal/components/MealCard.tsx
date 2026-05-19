@@ -120,7 +120,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
             className="overflow-hidden"
           >
             <div className="border-t border-neutral-100 px-4 py-3 flex flex-col gap-2">
-              {meal.items && meal.items.length > 0 ? (
+              {meal.items && meal.items.length > 0 && (
                 <>
                   {meal.items.map((item) => (
                     <div
@@ -141,7 +141,35 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                     </div>
                   ))}
                 </>
-              ) : (
+              )}
+
+              {meal.recipes && meal.recipes.length > 0 && (
+                <>
+                  {meal.items && meal.items.length > 0 && (
+                    <div className="h-px bg-neutral-100 my-1" />
+                  )}
+                  {meal.recipes.map((recipe) => (
+                    <div
+                      key={recipe.id}
+                      className="flex items-center justify-between"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-neutral-900 truncate">
+                          {recipe.name}
+                        </p>
+                        <p className="text-xs font-bold text-neutral-400">
+                          Receita
+                        </p>
+                      </div>
+                      <span className="text-sm font-extrabold tabular-nums text-neutral-700 shrink-0">
+                        {Math.round(recipe.calories)} kcal
+                      </span>
+                    </div>
+                  ))}
+                </>
+              )}
+
+              {(!meal.items || meal.items.length === 0) && (!meal.recipes || meal.recipes.length === 0) && (
                 <p className="text-sm font-medium text-neutral-400 py-2">Nenhum alimento adicionado</p>
               )}
 

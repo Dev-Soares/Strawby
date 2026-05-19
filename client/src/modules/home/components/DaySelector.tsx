@@ -31,15 +31,15 @@ export default function DaySelector() {
 
   const weekDays = useMemo(() => getWeekDays(selectedDay), [selectedDay])
 
-  const goPrevWeek = () => {
+  const goPrevDay = () => {
     const d = new Date(selectedDay + 'T00:00:00')
-    d.setDate(d.getDate() - 7)
+    d.setDate(d.getDate() - 1)
     setSelectedDay(iso(d))
   }
 
-  const goNextWeek = () => {
+  const goNextDay = () => {
     const d = new Date(selectedDay + 'T00:00:00')
-    d.setDate(d.getDate() + 7)
+    d.setDate(d.getDate() + 1)
     setSelectedDay(iso(d))
   }
 
@@ -67,9 +67,9 @@ export default function DaySelector() {
       <div className="flex items-center justify-between bg-white rounded-2xl border border-neutral-200 shadow-sm px-4 py-3 sm:px-5 sm:py-3.5 mb-3">
         <button
           type="button"
-          onClick={goPrevWeek}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-all duration-150 cursor-pointer shrink-0"
-          aria-label="Semana anterior"
+          onClick={goPrevDay}
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
+          aria-label="Dia anterior"
         >
           <CaretLeft size={18} weight="bold" />
         </button>
@@ -94,16 +94,16 @@ export default function DaySelector() {
 
         <button
           type="button"
-          onClick={goNextWeek}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-all duration-150 cursor-pointer shrink-0"
-          aria-label="Próxima semana"
+          onClick={goNextDay}
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
+          aria-label="Próximo dia"
         >
           <CaretRight size={18} weight="bold" />
         </button>
       </div>
 
       {/* Week strip */}
-      <div className="flex items-center justify-between gap-1 sm:gap-1.5">
+      <div className="flex flex-wrap justify-center gap-2 sm:flex-nowrap sm:items-stretch sm:justify-between sm:gap-2">
         {weekDays.map((d) => {
           const isoStr = iso(d)
           const isSelected = isoStr === selectedDay
@@ -116,22 +116,22 @@ export default function DaySelector() {
               key={isoStr}
               type="button"
               onClick={() => setSelectedDay(isoStr)}
-              className={`relative flex-1 flex flex-col items-center justify-center gap-0.5 rounded-2xl py-2.5 sm:py-3 transition-all duration-200 cursor-pointer ${
+              className={`relative basis-[calc(25%-6px)] sm:flex-1 flex flex-col items-center justify-center gap-1 rounded-2xl sm:rounded-3xl aspect-[4/5] sm:aspect-auto py-3 sm:py-5 transition-all duration-200 cursor-pointer active:scale-95 ${
                 isSelected
-                  ? 'bg-red-600 text-white shadow-sm'
+                  ? 'bg-red-600 text-white shadow-md'
                   : isToday
                     ? 'bg-white text-red-600 border border-red-200 shadow-sm'
-                    : 'bg-white text-neutral-500 border border-transparent hover:bg-neutral-100'
+                    : 'bg-white text-neutral-900 border border-transparent hover:bg-neutral-50'
               }`}
             >
-              <span className={`text-[9px] sm:text-[10px] font-bold uppercase tracking-wider ${isSelected ? 'text-red-100' : isToday ? 'text-red-400' : 'text-neutral-400'}`}>
+              <span className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider ${isSelected ? 'text-red-100' : isToday ? 'text-red-400' : 'text-neutral-400'}`}>
                 {weekLabels[weekIdx]}
               </span>
-              <span className={`text-base sm:text-lg font-extrabold tabular-nums leading-tight ${isSelected ? 'text-white' : isToday ? 'text-red-600' : 'text-neutral-800'}`}>
+              <span className={`text-2xl sm:text-2xl font-extrabold tabular-nums leading-none ${isSelected ? 'text-white' : isToday ? 'text-red-600' : 'text-neutral-950'}`}>
                 {dayNum}
               </span>
               {isToday && !isSelected && (
-                <span className="absolute bottom-1 w-1 h-1 rounded-full bg-red-500" />
+                <span className="absolute bottom-1.5 w-1.5 h-1.5 rounded-full bg-red-500" />
               )}
             </button>
           )

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Satoshi', sans-serif;
   --font-display: 'Cabinet Grotesk', sans-serif;
@@ -9,6 +11,27 @@
 html, body {
   overflow-x: clip;
   max-width: 100%;
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar — thin red line */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #dc2626;
+  border-radius: 999px;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #dc2626 transparent;
 }
 
 img, svg, video {

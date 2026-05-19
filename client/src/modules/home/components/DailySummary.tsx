@@ -8,7 +8,7 @@ function MacroBar({ label, value, max, unit, color, trackColor }: MacroRing) {
 
   return (
     <div className="flex flex-col min-w-0">
-      <span className="text-xs sm:text-sm font-extrabold text-red-600 uppercase tracking-widest mb-1.5">
+      <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest mb-1.5" style={{ color }}>
         {label}
       </span>
       <div className="flex items-baseline gap-1 mb-2 sm:mb-3">
@@ -42,7 +42,7 @@ export default function DailySummary({ data }: DailySummaryProps) {
 
   return (
     <motion.div
-      className="relative bg-white rounded-2xl sm:rounded-3xl shadow-sm p-5 sm:p-8 overflow-hidden"
+      className="relative @container bg-white rounded-2xl sm:rounded-3xl shadow-sm p-5 sm:p-8 overflow-hidden"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -69,7 +69,7 @@ export default function DailySummary({ data }: DailySummaryProps) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:gap-6 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6">
           {data.macros.map((macro) => (
             <MacroBar key={macro.label} {...macro} />
           ))}
