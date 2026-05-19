@@ -88,7 +88,7 @@ export default function MealDetailPage() {
           <p className="text-xs text-neutral-400 mb-6">Verifique sua conexão e tente novamente.</p>
           <button
             type="button"
-            onClick={() => navigate('/home')}
+            onClick={() => navigate('/app/home')}
             className="py-3 px-6 rounded-2xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 transition-colors duration-150 cursor-pointer"
           >
             Voltar para início
@@ -105,7 +105,7 @@ export default function MealDetailPage() {
     ?? new Date(meal.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
 
   const isPlan = meal.kind === 'PLAN'
-  const backPath = isPlan ? '/plan' : '/home'
+  const backPath = isPlan ? '/app/plan' : '/app/home'
 
   const totals = [
     { label: 'Calorias', value: Math.round(meal.totals.calories), unit: 'kcal', color: 'bg-red-500', track: 'bg-red-50' },
@@ -269,7 +269,7 @@ export default function MealDetailPage() {
         <div className="flex gap-3 mt-6">
           <button
             type="button"
-            onClick={() => navigate(`/foods/select?mealId=${meal.id}&type=${isPlan ? 'plan-meal' : 'meal'}`)}
+            onClick={() => navigate(`/app/foods/select?mealId=${meal.id}&type=${isPlan ? 'plan-meal' : 'meal'}`)}
             className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white shadow-md transition-colors duration-150 cursor-pointer hover:brightness-110"
             style={{ backgroundColor: cfg.theme }}
           >

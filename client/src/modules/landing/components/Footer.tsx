@@ -39,7 +39,7 @@ export default function Footer() {
             </h3>
 
             <a
-              href="/create-account"
+              href="/app/create-account"
               className="group inline-flex hover:translate-y-[-2px] items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3.5 rounded-full transition-all duration-200 text-sm"
             >
               Começar grátis

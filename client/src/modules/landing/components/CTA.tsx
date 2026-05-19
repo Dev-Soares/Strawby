@@ -66,7 +66,7 @@ export default function CTA() {
           </p>
 
           <a
-            href="/create-account"
+            href="/app/create-account"
             className="group relative inline-flex items-center hover:translate-y-[-2px] transition-all  gap-3 bg-red-600 hover:bg-red-700 text-white font-bold pl-7 pr-5 py-5 rounded-full duration-300 text-[15px] cursor-pointer"
           >
             <span className="tracking-tight">Criar minha conta</span>

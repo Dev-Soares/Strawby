@@ -121,7 +121,7 @@ export default function SignUpForm() {
             <p className="text-[13px] text-white">
               Já tem conta?{' '}
               <Link
-                to="/login"
+                to="/app/login"
                 className="font-semibold text-white underline underline-offset-2 hover:text-white transition-colors"
               >
                 Entrar agora
@@ -143,7 +143,7 @@ export default function SignUpForm() {
           </p>
         </div>
         <Link
-          to="/login"
+          to="/app/login"
           className="block text-center border-2 border-neutral-900 hover:bg-neutral-900 hover:text-white rounded-full px-4 py-3 text-[13px] font-semibold transition-all duration-200 mt-8"
         >
           Entrar

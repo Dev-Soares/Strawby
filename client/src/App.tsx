@@ -19,15 +19,15 @@ export default function App() {
       <ScrollToTop />
       <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<PublicOnlyRoute><LoginPage /></PublicOnlyRoute>} />
-      <Route path="/create-account" element={<PublicOnlyRoute><SignUpPage /></PublicOnlyRoute>} />
-      <Route path="/home" element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
-      <Route path="/score" element={<ProtectedRoute><ScorePage /></ProtectedRoute>} />
-      <Route path="/foods" element={<ProtectedRoute><FoodsPage /></ProtectedRoute>} />
-      <Route path="/plan" element={<ProtectedRoute><PlanPage /></ProtectedRoute>} />
-      <Route path="/meals/new" element={<ProtectedRoute><CreateMealPage /></ProtectedRoute>} />
-      <Route path="/meals/:id" element={<ProtectedRoute><MealDetailPage /></ProtectedRoute>} />
-      <Route path="/foods/select" element={<ProtectedRoute><SelectFoodPage /></ProtectedRoute>} />
+      <Route path="/app/login" element={<PublicOnlyRoute><LoginPage /></PublicOnlyRoute>} />
+      <Route path="/app/create-account" element={<PublicOnlyRoute><SignUpPage /></PublicOnlyRoute>} />
+      <Route path="/app/home" element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
+      <Route path="/app/score" element={<ProtectedRoute><ScorePage /></ProtectedRoute>} />
+      <Route path="/app/foods" element={<ProtectedRoute><FoodsPage /></ProtectedRoute>} />
+      <Route path="/app/plan" element={<ProtectedRoute><PlanPage /></ProtectedRoute>} />
+      <Route path="/app/meals/new" element={<ProtectedRoute><CreateMealPage /></ProtectedRoute>} />
+      <Route path="/app/meals/:id" element={<ProtectedRoute><MealDetailPage /></ProtectedRoute>} />
+      <Route path="/app/foods/select" element={<ProtectedRoute><SelectFoodPage /></ProtectedRoute>} />
     </Routes>
     </>
   )

@@ -80,7 +80,7 @@ export default function LoginForm() {
           <p className="text-[13px] text-neutral-400">
             Não tem conta?{' '}
             <Link
-              to="/create-account"
+              to="/app/create-account"
               className="font-semibold text-neutral-900 underline underline-offset-2 hover:text-red-600 transition-colors"
             >
               Cadastre-se agora
@@ -101,7 +101,7 @@ export default function LoginForm() {
           </p>
         </div>
         <Link
-          to="/create-account"
+          to="/app/create-account"
           className="block text-center border border-white/40 hover:border-white rounded-full px-4 py-3 text-[13px] font-semibold hover:bg-white hover:text-red-600 transition-all duration-200 mt-8"
         >
           Criar conta

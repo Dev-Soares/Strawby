@@ -53,7 +53,7 @@ export default function CreateMealForm() {
             toast.error('Erro ao redirecionar. Tente novamente.')
             return
           }
-          navigate(`/meals/${createdMeal.id}`)
+          navigate(`/app/meals/${createdMeal.id}`)
         },
       },
     )

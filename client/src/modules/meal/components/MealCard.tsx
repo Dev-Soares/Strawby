@@ -147,7 +147,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
 
               <button
                 type="button"
-                onClick={() => navigate(`/meals/${meal.id}`)}
+                onClick={() => navigate(`/app/meals/${meal.id}`)}
                 className="mt-4 w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-base font-bold text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors duration-150 cursor-pointer"
               >
                 <PencilSimple size={18} weight="bold" />

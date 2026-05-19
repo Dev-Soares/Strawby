@@ -7,10 +7,10 @@ import {
 } from '@phosphor-icons/react'
 
 const tabs = [
-  { label: 'Início', href: '/home', icon: HouseSimpleIcon },
-  { label: 'Pontuação', href: '/score', icon: TrophyIcon },
-  { label: 'Alimentos', href: '/foods', icon: CarrotIcon },
-  { label: 'Plano', href: '/plan', icon: TargetIcon },
+  { label: 'Início', href: '/app/home', icon: HouseSimpleIcon },
+  { label: 'Pontuação', href: '/app/score', icon: TrophyIcon },
+  { label: 'Alimentos', href: '/app/foods', icon: CarrotIcon },
+  { label: 'Plano', href: '/app/plan', icon: TargetIcon },
 ]
 
 interface TopTabBarProps {

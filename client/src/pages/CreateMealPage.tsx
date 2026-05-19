@@ -15,7 +15,7 @@ export default function CreateMealPage() {
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <button
-            onClick={() => navigate(isPlan ? '/plan' : '/home')}
+            onClick={() => navigate(isPlan ? '/app/plan' : '/app/home')}
             className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-50 hover:bg-red-100 transition-colors duration-150 cursor-pointer shrink-0"
           >
             <ArrowLeft size={18} weight="bold" className="text-red-600" />

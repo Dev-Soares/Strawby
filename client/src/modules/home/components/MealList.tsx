@@ -64,7 +64,7 @@ export default function MealList({ meals }: MealListProps) {
         {isToday && (
           <motion.button
             type="button"
-            onClick={() => navigate('/meals/new?type=meal')}
+            onClick={() => navigate('/app/meals/new?type=meal')}
             className="flex items-center justify-center gap-2 py-3.5 sm:py-4 rounded-2xl sm:rounded-3xl bg-red-600 text-white text-sm sm:text-base font-bold hover:bg-red-700 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mt-1"
             variants={item}
           >

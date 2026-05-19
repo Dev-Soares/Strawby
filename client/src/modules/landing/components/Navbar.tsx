@@ -26,13 +26,13 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2 sm:gap-3 md:gap-4 shrink-0 ml-4">
           <a
-            href="/login"
+            href="/app/login"
             className="text-neutral-600 hover:text-neutral-950 font-semibold text-sm sm:text-base px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl hover:bg-neutral-100 transition-all duration-150 whitespace-nowrap"
           >
             Entrar
           </a>
           <a
-            href="/create-account"
+            href="/app/create-account"
             className="bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold text-sm sm:text-base px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl transition-all duration-150 whitespace-nowrap"
           >
             Criar conta

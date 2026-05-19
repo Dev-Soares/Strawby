@@ -30,7 +30,7 @@ export default function PlanMealsSection() {
           <button
             onClick={() => {
               window.scrollTo({ top: 0, behavior: 'smooth' })
-              navigate('/meals/new?type=plan-meal')
+              navigate('/app/meals/new?type=plan-meal')
             }}
             className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-3 rounded-xl transition-colors duration-150 cursor-pointer shrink-0 w-full sm:w-auto"
           >

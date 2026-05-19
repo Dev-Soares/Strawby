@@ -129,7 +129,7 @@ export default function SelectFoodPage() {
     }
 
     const q = Number(quantity)
-    const onSuccess = () => navigate(`/meals/${mealId}`)
+    const onSuccess = () => navigate(`/app/meals/${mealId}`)
 
     if (selectedFood.kind === 'public') {
       addMealItem.mutate(
