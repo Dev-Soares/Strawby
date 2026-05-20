@@ -9,6 +9,8 @@ import { useSearchFood } from '../modules/food/hooks/useSearchFood'
 import { useGetPrivateFoods } from '../modules/privateFood/hooks/useGetPrivateFoods'
 import { useAddMealItem } from '../modules/meal/hooks/useAddMealItem'
 import { useAddMealPrivateFoodItem } from '../modules/meal/hooks/useAddMealPrivateFoodItem'
+import { useAddRecipeItem } from '../modules/recipe/hooks/useAddRecipeItem'
+import { useAddRecipePrivateFoodItem } from '../modules/recipe/hooks/useAddRecipePrivateFoodItem'
 
 type Tab = 'public' | 'private'
 
@@ -76,9 +78,17 @@ export default function SelectFoodPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const mealId = searchParams.get('mealId')
+  const recipeId = searchParams.get('recipeId')
+  const type = searchParams.get('type') ?? 'meal'
+
+  const isRecipe = !!recipeId
+  const targetId = mealId ?? recipeId ?? ''
+  const isPlan = type === 'plan-meal'
 
   const addMealItem = useAddMealItem()
   const addMealPrivateFoodItem = useAddMealPrivateFoodItem()
+  const addRecipeItem = useAddRecipeItem()
+  const addRecipePrivateFoodItem = useAddRecipePrivateFoodItem()
 
   const [tab, setTab] = useState<Tab>('public')
   const [search, setSearch] = useState('')
@@ -115,6 +125,8 @@ export default function SelectFoodPage() {
   const isPending = tab === 'public' ? isPublicPending : isPrivatePending
   const isError = tab === 'public' ? isPublicError : isPrivateError
 
+  const anyPending = addMealItem.isPending || addMealPrivateFoodItem.isPending || addRecipeItem.isPending || addRecipePrivateFoodItem.isPending
+
   const handleSelectFood = (food: SelectableFood) => {
     setSelectedFood(food)
     const defaultQuantity = food.kind === 'private' && food.servingSize ? food.servingSize : '100'
@@ -123,24 +135,39 @@ export default function SelectFoodPage() {
   }
 
   const handleConfirm = () => {
-    if (!selectedFood || !mealId) {
-      console.error('[SelectFoodPage] missing mealId or selectedFood', { mealId, selectedFood })
+    if (!selectedFood || !targetId) {
+      console.error('[SelectFoodPage] missing targetId or selectedFood', { targetId, selectedFood })
       return
     }
 
     const q = Number(quantity)
-    const onSuccess = () => navigate(`/app/meals/${mealId}`)
 
-    if (selectedFood.kind === 'public') {
-      addMealItem.mutate(
-        { mealId, dto: { foodId: selectedFood.id, quantity: q } },
-        { onSuccess }
-      )
+    if (isRecipe) {
+      const onSuccess = () => navigate(`/app/recipes/${targetId}`)
+      if (selectedFood.kind === 'public') {
+        addRecipeItem.mutate(
+          { recipeId: targetId, dto: { foodId: selectedFood.id, quantity: q } },
+          { onSuccess }
+        )
+      } else {
+        addRecipePrivateFoodItem.mutate(
+          { recipeId: targetId, dto: { privateFoodId: selectedFood.id, quantity: q } },
+          { onSuccess }
+        )
+      }
     } else {
-      addMealPrivateFoodItem.mutate(
-        { mealId, dto: { privateFoodId: selectedFood.id, quantity: q } },
-        { onSuccess }
-      )
+      const onSuccess = () => navigate(`/app/meals/${targetId}`)
+      if (selectedFood.kind === 'public') {
+        addMealItem.mutate(
+          { mealId: targetId, dto: { foodId: selectedFood.id, quantity: q } },
+          { onSuccess }
+        )
+      } else {
+        addMealPrivateFoodItem.mutate(
+          { mealId: targetId, dto: { privateFoodId: selectedFood.id, quantity: q } },
+          { onSuccess }
+        )
+      }
     }
   }
 
@@ -157,6 +184,8 @@ export default function SelectFoodPage() {
     { key: 'public', label: 'Todos' },
     { key: 'private', label: 'Meus alimentos' },
   ]
+
+  const contextLabel = isRecipe ? 'receita' : isPlan ? 'plano' : 'refeição'
 
   return (
     <AppLayout>
@@ -175,7 +204,7 @@ export default function SelectFoodPage() {
             </h1>
             <p className="text-sm text-neutral-500 mt-2">
               {step === 'search'
-                ? 'Escolha um alimento para adicionar à refeição'
+                ? `Escolha um alimento para adicionar à ${contextLabel}`
                 : 'Defina a quantidade em gramas'}
             </p>
           </div>
@@ -279,9 +308,9 @@ export default function SelectFoodPage() {
               )
             })()}
 
-            {!mealId && (
+            {!targetId && (
               <div className="mb-4 rounded-xl bg-red-50 border border-red-200 p-4 text-sm font-semibold text-red-600">
-                ID da refeição não encontrado. Volte e tente novamente.
+                ID não encontrado. Volte e tente novamente.
               </div>
             )}
 
@@ -315,13 +344,13 @@ export default function SelectFoodPage() {
               <button
                 type="button"
                 onClick={handleConfirm}
-                disabled={!mealId || !quantity || Number(quantity) < 1 || addMealItem.isPending || addMealPrivateFoodItem.isPending}
+                disabled={!targetId || !quantity || Number(quantity) < 1 || anyPending}
                 className="flex-1 py-3.5 rounded-2xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-150 cursor-pointer flex items-center justify-center gap-2"
               >
-                {addMealItem.isPending || addMealPrivateFoodItem.isPending ? (
+                {anyPending ? (
                   <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : null}
-                {addMealItem.isPending || addMealPrivateFoodItem.isPending ? 'Adicionando…' : 'Adicionar à refeição'}
+                {anyPending ? 'Adicionando…' : `Adicionar à ${contextLabel}`}
               </button>
             </div>
           </div>

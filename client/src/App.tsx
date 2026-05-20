@@ -9,6 +9,9 @@ import CreateMealPage from './pages/CreateMealPage'
 import MealDetailPage from './pages/MealDetailPage'
 import SelectFoodPage from './pages/SelectFoodPage'
 import ScorePage from './pages/ScorePage'
+import RecipesPage from './pages/RecipesPage'
+import CreateRecipePage from './pages/CreateRecipePage'
+import RecipeDetailPage from './pages/RecipeDetailPage'
 import ProtectedRoute from './shared/components/ProtectedRoute'
 import PublicOnlyRoute from './shared/components/PublicOnlyRoute'
 import ScrollToTop from './shared/components/ScrollToTop'
@@ -28,6 +31,9 @@ export default function App() {
       <Route path="/app/meals/new" element={<ProtectedRoute><CreateMealPage /></ProtectedRoute>} />
       <Route path="/app/meals/:id" element={<ProtectedRoute><MealDetailPage /></ProtectedRoute>} />
       <Route path="/app/foods/select" element={<ProtectedRoute><SelectFoodPage /></ProtectedRoute>} />
+      <Route path="/app/recipes" element={<ProtectedRoute><RecipesPage /></ProtectedRoute>} />
+      <Route path="/app/recipes/new" element={<ProtectedRoute><CreateRecipePage /></ProtectedRoute>} />
+      <Route path="/app/recipes/:id" element={<ProtectedRoute><RecipeDetailPage /></ProtectedRoute>} />
     </Routes>
     </>
   )

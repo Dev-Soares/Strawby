@@ -14,6 +14,7 @@ const navItems = [
   { label: 'Início', href: '/app/home' },
   { label: 'Pontuação', href: '/app/score' },
   { label: 'Alimentos', href: '/app/foods' },
+  { label: 'Receitas', href: '/app/recipes' },
   { label: 'Plano', href: '/app/plan' },
 ]
 
