@@ -87,21 +87,29 @@ export default function MealDetailPage() {
     if (!confirm) return
     if (confirm.type === 'meal') {
       deleteMutation.mutate(confirm.id, {
-        onSuccess: () => navigate(backPath),
+        onSuccess: () => {
+          setConfirm(null)
+          navigate(backPath)
+        },
       })
     } else if (confirm.type === 'mealItem') {
       removeItem.mutate(
         { mealId: confirm.mealId, itemId: confirm.itemId },
         {
           onSuccess: () => {
+            setConfirm(null)
             queryClient.invalidateQueries({ queryKey: ['meal', confirm.mealId] })
           },
         },
       )
     } else if (confirm.type === 'mealRecipe') {
-      removeRecipe.mutate({ mealId: confirm.mealId, recipeId: confirm.recipeId })
+      removeRecipe.mutate(
+        { mealId: confirm.mealId, recipeId: confirm.recipeId },
+        {
+          onSuccess: () => setConfirm(null),
+        },
+      )
     }
-    setConfirm(null)
   }
 
   const isDeletePending =

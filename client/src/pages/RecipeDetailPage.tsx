@@ -46,12 +46,19 @@ export default function RecipeDetailPage() {
     if (!confirm) return
     if (confirm.type === 'recipe') {
       deleteMutation.mutate(confirm.id, {
-        onSuccess: () => navigate('/app/foods'),
+        onSuccess: () => {
+          setConfirm(null)
+          navigate('/app/foods')
+        },
       })
     } else if (confirm.type === 'recipeItem') {
-      removeItem.mutate({ recipeId: confirm.recipeId, itemId: confirm.itemId })
+      removeItem.mutate(
+        { recipeId: confirm.recipeId, itemId: confirm.itemId },
+        {
+          onSuccess: () => setConfirm(null),
+        },
+      )
     }
-    setConfirm(null)
   }
 
   const isDeletePending =

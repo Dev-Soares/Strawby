@@ -100,9 +100,10 @@ export default function PrivateFoodList({ foods, onEdit }: PrivateFoodListProps)
         onClose={() => setConfirmId(null)}
         onConfirm={() => {
           if (confirmFood) {
-            deleteMutation.mutate(confirmFood.id)
+            deleteMutation.mutate(confirmFood.id, {
+              onSuccess: () => setConfirmId(null),
+            })
           }
-          setConfirmId(null)
         }}
         title={confirmFood ? `Remover "${confirmFood.name}"?` : 'Tem certeza?'}
         description="O alimento será excluído permanentemente."

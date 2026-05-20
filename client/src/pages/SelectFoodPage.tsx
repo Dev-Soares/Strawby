@@ -272,7 +272,7 @@ export default function SelectFoodPage() {
                   key={t.key}
                   type="button"
                   onClick={() => setTab(t.key)}
-                  className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 ${
+                  className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all duration-200 cursor-pointer flex items-center justify-center gap-1.5 px-2 sm:px-3 ${
                     tab === t.key
                       ? 'bg-white text-neutral-900 shadow-sm'
                       : 'text-neutral-500 hover:text-neutral-700'
