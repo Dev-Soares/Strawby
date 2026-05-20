@@ -1,4 +1,7 @@
+import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { PencilSimple, Trash, Fire } from '@phosphor-icons/react'
+import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 import type { PrivateFood } from '../types/privateFood'
 import { useDeletePrivateFood } from '../hooks/useDeletePrivateFood'
 
@@ -8,6 +11,19 @@ const macros = [
   { key: 'fat' as const, label: 'Gord', colorClass: 'text-violet-500' },
 ]
 
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.06 },
+  },
+}
+
+const item = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' as const } },
+}
+
 interface PrivateFoodListProps {
   foods: PrivateFood[]
   onEdit: (food: PrivateFood) => void
@@ -15,12 +31,20 @@ interface PrivateFoodListProps {
 
 export default function PrivateFoodList({ foods, onEdit }: PrivateFoodListProps) {
   const deleteMutation = useDeletePrivateFood()
+  const [confirmId, setConfirmId] = useState<string | null>(null)
+  const confirmFood = foods.find((f) => f.id === confirmId) ?? null
 
   return (
-    <div className="flex flex-col gap-3">
+    <motion.div
+      className="flex flex-col gap-3"
+      variants={container}
+      initial="hidden"
+      animate="show"
+    >
       {foods.map((food) => (
-        <div
+        <motion.div
           key={food.id}
+          variants={item}
           className="group bg-white border border-neutral-200 rounded-2xl p-4 hover:border-neutral-300 transition-all duration-200 relative"
         >
           <div className="absolute top-3 right-3 flex gap-1.5">
@@ -34,7 +58,7 @@ export default function PrivateFoodList({ foods, onEdit }: PrivateFoodListProps)
             </button>
             <button
               type="button"
-              onClick={() => deleteMutation.mutate(food.id)}
+              onClick={() => setConfirmId(food.id)}
               disabled={deleteMutation.isPending}
               className="w-8 h-8 rounded-xl bg-red-50 hover:bg-red-100 text-red-500 flex items-center justify-center transition-colors duration-150 cursor-pointer disabled:opacity-50"
               aria-label={`Remover ${food.name}`}
@@ -68,8 +92,23 @@ export default function PrivateFoodList({ foods, onEdit }: PrivateFoodListProps)
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
       ))}
-    </div>
+
+      <ConfirmDeleteModal
+        isOpen={!!confirmFood}
+        onClose={() => setConfirmId(null)}
+        onConfirm={() => {
+          if (confirmFood) {
+            deleteMutation.mutate(confirmFood.id)
+          }
+          setConfirmId(null)
+        }}
+        title={confirmFood ? `Remover "${confirmFood.name}"?` : 'Tem certeza?'}
+        description="O alimento será excluído permanentemente."
+        confirmLabel="Remover"
+        isPending={deleteMutation.isPending}
+      />
+    </motion.div>
   )
 }

@@ -4,14 +4,12 @@ import {
   TrophyIcon,
   TargetIcon,
   CarrotIcon,
-  CookingPotIcon,
 } from '@phosphor-icons/react'
 
 const tabs = [
   { label: 'Início', href: '/app/home', icon: HouseSimpleIcon },
   { label: 'Pontuação', href: '/app/score', icon: TrophyIcon },
   { label: 'Alimentos', href: '/app/foods', icon: CarrotIcon },
-  { label: 'Receitas', href: '/app/recipes', icon: CookingPotIcon },
   { label: 'Plano', href: '/app/plan', icon: TargetIcon },
 ]
 
@@ -29,7 +27,7 @@ export default function TopTabBar({ hidden = false }: TopTabBarProps) {
       }`}
     >
       <div className="px-2 sm:px-10 lg:px-16">
-        <div className="grid grid-cols-5 sm:flex sm:items-center sm:gap-2">
+        <div className="grid grid-cols-4 sm:flex sm:items-center sm:gap-2">
           {tabs.map((tab) => {
             const Icon = tab.icon
             const active = pathname === tab.href
@@ -47,7 +45,7 @@ export default function TopTabBar({ hidden = false }: TopTabBarProps) {
                   }`}
                 />
                 <span
-                  className={`text-[11px] sm:text-sm font-extrabold tracking-tight transition-colors truncate max-w-full ${
+                  className={`text-[11px] sm:text-sm font-extrabold tracking-tight transition-colors max-w-full ${
                     active ? 'text-red-600' : 'text-neutral-500 group-hover:text-neutral-900'
                   }`}
                 >

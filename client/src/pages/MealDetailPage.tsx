@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
 import {
@@ -14,10 +15,18 @@ import {
 } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
 import AppLayout from '@/shared/layouts/AppLayout'
+import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 import { useGetMeal } from '@/modules/meal/hooks/useGetMeal'
 import { useDeleteMeal } from '@/modules/meal/hooks/useDeleteMeal'
 import { useRemoveMealItem } from '@/modules/meal/hooks/useRemoveMealItem'
+import { useRemoveMealRecipe } from '@/modules/meal/hooks/useRemoveMealRecipe'
 import MealDetailSkeleton from '@/modules/meal/skeletons/MealDetailSkeleton'
+
+type ConfirmState =
+  | { type: 'meal'; id: string; name: string }
+  | { type: 'mealItem'; mealId: string; itemId: string; name: string }
+  | { type: 'mealRecipe'; mealId: string; recipeId: string; name: string }
+  | null
 
 const mealConfig: Record<string, {
   icon: Icon
@@ -71,6 +80,38 @@ export default function MealDetailPage() {
   const { data: meal, isPending, isError } = useGetMeal(id ?? '')
   const deleteMutation = useDeleteMeal()
   const removeItem = useRemoveMealItem()
+  const removeRecipe = useRemoveMealRecipe()
+  const [confirm, setConfirm] = useState<ConfirmState>(null)
+
+  const handleConfirm = () => {
+    if (!confirm) return
+    if (confirm.type === 'meal') {
+      deleteMutation.mutate(confirm.id, {
+        onSuccess: () => navigate(backPath),
+      })
+    } else if (confirm.type === 'mealItem') {
+      removeItem.mutate(
+        { mealId: confirm.mealId, itemId: confirm.itemId },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['meal', confirm.mealId] })
+          },
+        },
+      )
+    } else if (confirm.type === 'mealRecipe') {
+      removeRecipe.mutate({ mealId: confirm.mealId, recipeId: confirm.recipeId })
+    }
+    setConfirm(null)
+  }
+
+  const isDeletePending =
+    confirm?.type === 'meal'
+      ? deleteMutation.isPending
+      : confirm?.type === 'mealItem'
+        ? removeItem.isPending
+        : confirm?.type === 'mealRecipe'
+          ? removeRecipe.isPending
+          : false
 
   if (isPending) {
     return (
@@ -114,34 +155,37 @@ export default function MealDetailPage() {
     { label: 'Gordura', value: Math.round(meal.totals.fat), unit: 'g', color: 'bg-violet-500', track: 'bg-violet-50' },
   ]
 
+  const hasItems = meal.items.length > 0
+  const hasRecipes = meal.recipes.length > 0
+  const isEmpty = !hasItems && !hasRecipes
+
   return (
     <AppLayout>
       <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12 max-w-3xl mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="mb-8">
           <button
             type="button"
             onClick={() => navigate(backPath)}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-50 hover:bg-red-100 transition-colors duration-150 cursor-pointer shrink-0"
+            className="flex items-center gap-2 mb-4 text-sm font-bold text-neutral-500 hover:text-red-600 transition-colors duration-150 cursor-pointer"
           >
-            <ArrowLeft size={18} weight="bold" className="text-red-600" />
+            <ArrowLeft size={18} weight="bold" />
+            Voltar
           </button>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 mb-0.5">
-              <div
-                className="w-11 h-11 rounded-xl flex items-center justify-center"
-                style={{ backgroundColor: cfg.themeLight }}
-              >
-                <MealIcon size={22} weight="bold" style={{ color: cfg.theme }} />
-              </div>
-              <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-950 tracking-tight leading-none truncate">
-                {meal.name}
-              </h1>
+          <div className="flex items-center gap-3 mb-0.5">
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center"
+              style={{ backgroundColor: cfg.themeLight }}
+            >
+              <MealIcon size={22} weight="bold" style={{ color: cfg.theme }} />
             </div>
-            <p className="text-sm font-bold mt-1" style={{ color: cfg.theme }}>
-              {cfg.label} · {displayTime}
-            </p>
+            <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-950 tracking-tight leading-none truncate">
+              {meal.name}
+            </h1>
           </div>
+          <p className="text-sm font-bold mt-1" style={{ color: cfg.theme }}>
+            {displayTime}
+          </p>
         </div>
 
         {/* Totals */}
@@ -180,12 +224,12 @@ export default function MealDetailPage() {
         </div>
 
         {meal.items.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-neutral-200 p-8 text-center">
+          <div className="bg-white rounded-2xl border border-neutral-200 p-8 text-center mb-6">
             <p className="text-sm font-semibold text-neutral-400 mb-1">Nenhum alimento</p>
             <p className="text-xs text-neutral-300 mb-4">Adicione alimentos para compor esta refeição</p>
           </div>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 mb-6">
             {meal.items.map((item) => (
               <div
                 key={item.id}
@@ -212,14 +256,12 @@ export default function MealDetailPage() {
                     <button
                       type="button"
                       onClick={() =>
-                        removeItem.mutate(
-                          { mealId: meal.id, itemId: item.id },
-                          {
-                            onSuccess: () => {
-                              queryClient.invalidateQueries({ queryKey: ['meal', meal.id] })
-                            },
-                          },
-                        )
+                        setConfirm({
+                          type: 'mealItem',
+                          mealId: meal.id,
+                          itemId: item.id,
+                          name: (item.food ?? item.privateFood)?.name ?? 'Alimento',
+                        })
                       }
                       disabled={removeItem.isPending}
                       className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-150 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -265,6 +307,100 @@ export default function MealDetailPage() {
           </div>
         )}
 
+        {/* Recipes list */}
+        {hasRecipes && (
+          <>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-black text-neutral-900 uppercase tracking-widest">
+                Receitas ({meal.recipes.length})
+              </h2>
+            </div>
+            <div className="flex flex-col gap-3 mb-6">
+              {meal.recipes.map((recipe) => (
+                <div
+                  key={recipe.id}
+                  className="bg-white rounded-2xl border border-neutral-200 p-4 sm:p-5 hover:border-neutral-300 transition-colors duration-150"
+                >
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <div className="min-w-0">
+                      <p className="text-sm sm:text-base font-bold text-neutral-950 truncate">
+                        {recipe.name}
+                      </p>
+                      <p className="text-xs font-bold text-neutral-400 mt-0.5">
+                        Receita
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <div className="text-right">
+                        <p className="text-lg sm:text-xl font-extrabold tabular-nums leading-none" style={{ color: cfg.theme }}>
+                          {Math.round(recipe.calories)}
+                        </p>
+                        <p className="text-[9px] sm:text-[10px] font-bold text-neutral-400 uppercase tracking-wide mt-0.5">
+                          kcal
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setConfirm({
+                            type: 'mealRecipe',
+                            mealId: meal.id,
+                            recipeId: recipe.id,
+                            name: recipe.name,
+                          })
+                        }
+                        disabled={removeRecipe.isPending}
+                        className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-150 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ backgroundColor: cfg.themeLight, color: cfg.theme }}
+                        aria-label={`Remover ${recipe.name}`}
+                      >
+                        <X size={14} weight="bold" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-lg px-2 py-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                      <span className="text-[11px] font-extrabold text-amber-900 tabular-nums">
+                        {Math.round(recipe.protein)}<span className="text-amber-700 font-bold">g</span>
+                      </span>
+                      <span className="text-[9px] font-extrabold uppercase tracking-wider text-amber-800 ml-auto">
+                        Prot
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-blue-50 border border-blue-100 rounded-lg px-2 py-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
+                      <span className="text-[11px] font-extrabold text-blue-900 tabular-nums">
+                        {Math.round(recipe.carbs)}<span className="text-blue-700 font-bold">g</span>
+                      </span>
+                      <span className="text-[9px] font-extrabold uppercase tracking-wider text-blue-800 ml-auto">
+                        Carb
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-violet-50 border border-violet-100 rounded-lg px-2 py-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-violet-500 shrink-0" />
+                      <span className="text-[11px] font-extrabold text-violet-900 tabular-nums">
+                        {Math.round(recipe.fat)}<span className="text-violet-700 font-bold">g</span>
+                      </span>
+                      <span className="text-[9px] font-extrabold uppercase tracking-wider text-violet-800 ml-auto">
+                        Gord
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {isEmpty && (
+          <div className="bg-white rounded-2xl border border-neutral-200 p-8 text-center mb-6">
+            <p className="text-sm font-semibold text-neutral-400 mb-1">Nenhum item</p>
+            <p className="text-xs text-neutral-300 mb-4">Adicione alimentos ou receitas para compor esta refeição</p>
+          </div>
+        )}
+
         {/* Actions */}
         <div className="flex gap-3 mt-6">
           <button
@@ -274,16 +410,12 @@ export default function MealDetailPage() {
             style={{ backgroundColor: cfg.theme }}
           >
             <Plus size={16} weight="bold" />
-            Adicionar alimento
+            Adicionar item
           </button>
 
           <button
             type="button"
-            onClick={() =>
-              deleteMutation.mutate(meal.id, {
-                onSuccess: () => navigate(backPath),
-              })
-            }
+            onClick={() => setConfirm({ type: 'meal', id: meal.id, name: meal.name })}
             disabled={deleteMutation.isPending}
             className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white bg-red-500 hover:bg-red-600 shadow-md transition-colors duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -295,6 +427,32 @@ export default function MealDetailPage() {
             {deleteMutation.isPending ? 'Removendo…' : 'Remover refeição'}
           </button>
         </div>
+
+        <ConfirmDeleteModal
+          isOpen={!!confirm}
+          onClose={() => setConfirm(null)}
+          onConfirm={handleConfirm}
+          title={
+            confirm?.type === 'meal'
+              ? `Remover refeição "${confirm.name}"?`
+              : confirm?.type === 'mealItem'
+                ? `Remover "${confirm.name}"?`
+                : confirm?.type === 'mealRecipe'
+                  ? `Remover receita "${confirm.name}"?`
+                  : 'Tem certeza?'
+          }
+          description={
+            confirm?.type === 'meal'
+              ? 'A refeição será excluída permanentemente.'
+              : confirm?.type === 'mealItem'
+                ? 'O alimento será removido desta refeição.'
+                : confirm?.type === 'mealRecipe'
+                  ? 'A receita será removida desta refeição.'
+                  : 'Esta ação não pode ser desfeita.'
+          }
+          confirmLabel="Remover"
+          isPending={isDeletePending}
+        />
       </div>
     </AppLayout>
   )

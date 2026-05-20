@@ -1,21 +1,23 @@
+import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { CookingPot } from '@phosphor-icons/react'
-import type { RecipeSummary } from '../types/recipe'
+import { CookingPot, CaretDown, PencilSimple } from '@phosphor-icons/react'
+import type { Recipe } from '../types/recipe'
 
 export interface RecipeCardProps {
-  recipe: RecipeSummary
+  recipe: Recipe
+  isOpen: boolean
+  onToggle: () => void
 }
 
-export default function RecipeCard({ recipe }: RecipeCardProps) {
+export default function RecipeCard({ recipe, isOpen, onToggle }: RecipeCardProps) {
   const navigate = useNavigate()
   const totalKcal = Math.round(recipe.totals?.calories ?? recipe.calories)
 
   return (
-    <div
-      onClick={() => navigate(`/app/recipes/${recipe.id}`)}
-      className="bg-white border border-neutral-200 shadow-sm rounded-2xl overflow-hidden transition-shadow duration-200 hover:shadow-md cursor-pointer"
-    >
+    <div className="bg-white border border-neutral-200 shadow-sm rounded-2xl overflow-hidden transition-shadow duration-200 hover:shadow-md">
+      {/* Card body */}
       <div className="p-4">
+        {/* Top row */}
         <div className="flex items-center gap-3 min-w-0 mb-3">
           <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 bg-rose-50">
             <CookingPot size={20} weight="bold" className="text-rose-600" />
@@ -25,6 +27,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
           </span>
         </div>
 
+        {/* Kcal */}
         <div className="mb-1">
           <span className="font-display text-4xl font-extrabold leading-none tabular-nums text-rose-600">
             {totalKcal}
@@ -32,6 +35,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
           <span className="text-base font-bold text-neutral-400 ml-1.5">kcal</span>
         </div>
 
+        {/* Macro chips */}
         <div className="flex items-center gap-1.5 flex-wrap mt-3">
           {[
             { l: 'Proteína', v: Math.round(recipe.totals?.protein ?? recipe.protein) },
@@ -47,6 +51,74 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
           ))}
         </div>
       </div>
+
+      {/* Footer */}
+      <div className="border-t border-neutral-100">
+        <button
+          type="button"
+          onClick={onToggle}
+          className="w-full flex items-center justify-between px-5 py-3 hover:bg-neutral-50 transition-colors duration-150 cursor-pointer text-rose-700"
+        >
+          <span className="text-sm font-bold">
+            Ver detalhes
+          </span>
+          <CaretDown
+            size={16}
+            weight="bold"
+            className="transition-transform duration-250"
+            style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+          />
+        </button>
+      </div>
+
+      {/* Detail — animated */}
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="border-t border-neutral-100 px-4 py-3 flex flex-col gap-2">
+              {recipe.items && recipe.items.length > 0 ? (
+                <>
+                  {recipe.items.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-neutral-900 truncate">
+                          {(item.food ?? item.privateFood)?.name ?? 'Alimento'}
+                        </p>
+                        <p className="text-xs font-bold text-neutral-400">
+                          {Math.round(item.quantity)}g
+                        </p>
+                      </div>
+                      <span className="text-sm font-extrabold tabular-nums text-neutral-700 shrink-0">
+                        {Math.round(item.calories)} kcal
+                      </span>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <p className="text-sm font-medium text-neutral-400 py-2">Nenhum alimento adicionado</p>
+              )}
+
+              <button
+                type="button"
+                onClick={() => navigate(`/app/recipes/${recipe.id}`)}
+                className="mt-4 w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-base font-bold text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors duration-150 cursor-pointer"
+              >
+                <PencilSimple size={18} weight="bold" />
+                Editar receita
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

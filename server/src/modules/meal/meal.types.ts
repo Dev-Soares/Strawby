@@ -19,6 +19,7 @@ export type RecipeInMeal = {
   protein: number;
   carbs: number;
   fat: number;
+  items: FoodItemPublic[];
 };
 
 export type MealPublic = Pick<Meal, 'id' | 'name' | 'kind' | 'mealType' | 'time' | 'date' | 'userId'> & {
@@ -65,10 +66,7 @@ export const mealSelect = {
     select: {
       id: true,
       name: true,
-      calories: true,
-      protein: true,
-      carbs: true,
-      fat: true,
+      items: { select: foodItemSelect },
     },
   },
 } as const;

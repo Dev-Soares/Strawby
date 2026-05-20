@@ -7,9 +7,9 @@ export const useUpdateRecipe = () => {
   return useMutation({
     mutationFn: ({ id, name }: { id: string; name: string }) =>
       updateRecipeService(id, name),
-    onSuccess: (_, variables) => {
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData(['recipe', variables.id], data)
       queryClient.invalidateQueries({ queryKey: ['recipes'] })
-      queryClient.invalidateQueries({ queryKey: ['recipe', variables.id] })
       toast.success('Receita atualizada com sucesso!')
     },
     onError: () => {

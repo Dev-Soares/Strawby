@@ -1,15 +1,18 @@
 import { useState } from 'react'
-import { MagnifyingGlass } from '@phosphor-icons/react'
+import { useNavigate } from 'react-router-dom'
+import { MagnifyingGlass, Plus } from '@phosphor-icons/react'
 import AppLayout from '../shared/layouts/AppLayout'
 import FoodSearch from '../modules/food/components/FoodSearch'
 import FoodGrid from '../modules/food/components/FoodGrid'
 import FoodSkeleton from '../modules/food/skeletons/FoodSkeleton'
 import PrivateFoodManager from '../modules/privateFood/components/PrivateFoodManager'
+import RecipeList from '../modules/recipe/components/RecipeList'
 import { useSearchFood } from '../modules/food/hooks/useSearchFood'
 
-type Tab = 'search' | 'private'
+type Tab = 'search' | 'private' | 'recipes'
 
 export default function FoodsPage() {
+  const navigate = useNavigate()
   const [tab, setTab] = useState<Tab>('search')
   const [search, setSearch] = useState('')
   const { data: foods, isPending, isError } = useSearchFood(search)
@@ -17,6 +20,7 @@ export default function FoodsPage() {
   const tabs: { key: Tab; label: string }[] = [
     { key: 'search', label: 'Buscar' },
     { key: 'private', label: 'Meus alimentos' },
+    { key: 'recipes', label: 'Receitas' },
   ]
 
   const renderSearchContent = () => {
@@ -66,7 +70,7 @@ export default function FoodsPage() {
           <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-neutral-950 tracking-tight leading-none">
             Alimentos
           </h1>
-          <p className="text-sm text-neutral-500 mt-3">Busque na base pública ou gerencie seus alimentos privados</p>
+          <p className="text-sm text-neutral-500 mt-3">Busque na base pública, gerencie seus alimentos privados ou monte receitas</p>
         </div>
 
         <div className="flex gap-1 mb-6 bg-neutral-100 rounded-xl p-1">
@@ -93,8 +97,27 @@ export default function FoodsPage() {
             </div>
             {renderSearchContent()}
           </div>
-        ) : (
+        ) : tab === 'private' ? (
           <PrivateFoodManager />
+        ) : (
+          <div className="max-w-3xl">
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h2 className="text-lg sm:text-xl font-extrabold text-neutral-900">Suas receitas</h2>
+                <p className="text-xs sm:text-sm text-neutral-400 mt-0.5">
+                  Monte receitas para reutilizar nas refeições
+                </p>
+              </div>
+              <button
+                onClick={() => navigate('/app/recipes/new')}
+                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer shrink-0"
+              >
+                <Plus size={16} weight="bold" />
+                Nova receita
+              </button>
+            </div>
+            <RecipeList />
+          </div>
         )}
       </div>
     </AppLayout>

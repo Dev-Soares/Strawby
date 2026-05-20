@@ -24,6 +24,15 @@ export type FoodItem = {
   } | null
 }
 
+export type RecipeInMeal = {
+  id: string
+  name: string
+  calories: number
+  protein: number
+  carbs: number
+  fat: number
+}
+
 export type Meal = {
   id: string
   name: string
@@ -33,6 +42,7 @@ export type Meal = {
   date: string
   userId: string
   items: FoodItem[]
+  recipes: RecipeInMeal[]
   totals: MealTotals
 }
 

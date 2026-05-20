@@ -34,15 +34,23 @@ export class MealService {
       { calories: 0, protein: 0, carbs: 0, fat: 0 },
     );
 
-    const recipeTotals = recipes.reduce(
-      (initial, recipe) => ({
-        calories: initial.calories + recipe.calories,
-        protein: initial.protein + recipe.protein,
-        carbs: initial.carbs + recipe.carbs,
-        fat: initial.fat + recipe.fat,
-      }),
-      { calories: 0, protein: 0, carbs: 0, fat: 0 },
-    );
+    const recipeTotals = recipes.reduce((initial, recipe) => {
+      const rTotals = recipe.items.reduce(
+        (r, item) => ({
+          calories: r.calories + item.calories,
+          protein: r.protein + item.protein,
+          carbs: r.carbs + item.carbs,
+          fat: r.fat + item.fat,
+        }),
+        { calories: 0, protein: 0, carbs: 0, fat: 0 },
+      );
+      return {
+        calories: initial.calories + rTotals.calories,
+        protein: initial.protein + rTotals.protein,
+        carbs: initial.carbs + rTotals.carbs,
+        fat: initial.fat + rTotals.fat,
+      };
+    }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
 
     return {
       calories: itemTotals.calories + recipeTotals.calories,
@@ -65,15 +73,37 @@ export class MealService {
 
   private toMealPublic(meal: {
     items: FoodItemPublic[];
-    recipes: RecipeInMeal[];
+    recipes: { id: string; name: string; items: FoodItemPublic[] }[];
     [key: string]: unknown;
   }): MealPublic {
     const { items, recipes, ...rest } = meal;
+
+    const enrichedRecipes: RecipeInMeal[] = recipes.map((recipe) => {
+      const rTotals = recipe.items.reduce(
+        (r, item) => ({
+          calories: r.calories + item.calories,
+          protein: r.protein + item.protein,
+          carbs: r.carbs + item.carbs,
+          fat: r.fat + item.fat,
+        }),
+        { calories: 0, protein: 0, carbs: 0, fat: 0 },
+      );
+      return {
+        id: recipe.id,
+        name: recipe.name,
+        calories: rTotals.calories,
+        protein: rTotals.protein,
+        carbs: rTotals.carbs,
+        fat: rTotals.fat,
+        items: recipe.items,
+      };
+    });
+
     return {
       ...rest,
       items,
-      recipes,
-      totals: this.computeTotals(items, recipes),
+      recipes: enrichedRecipes,
+      totals: this.computeTotals(items, enrichedRecipes),
     } as MealPublic;
   }
 
