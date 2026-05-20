@@ -7,24 +7,24 @@ import { MealKind, Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
+import { AddMealRecipeDto } from './dto/add-meal-recipe.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 import {
   FoodItemPublic,
   MealPublic,
-  MealSummary,
   MealTotals,
+  RecipeInMeal,
   foodItemSelect,
   mealSelect,
 } from './meal.types';
 
 @Injectable()
 export class MealService {
-  
   constructor(private readonly prisma: PrismaService) {}
 
-  private computeTotals(items: FoodItemPublic[]): MealTotals {
-    return items.reduce(
+  private computeTotals(items: FoodItemPublic[], recipes: RecipeInMeal[]): MealTotals {
+    const itemTotals = items.reduce(
       (initial, item) => ({
         calories: initial.calories + item.calories,
         protein: initial.protein + item.protein,
@@ -33,6 +33,23 @@ export class MealService {
       }),
       { calories: 0, protein: 0, carbs: 0, fat: 0 },
     );
+
+    const recipeTotals = recipes.reduce(
+      (initial, recipe) => ({
+        calories: initial.calories + recipe.calories,
+        protein: initial.protein + recipe.protein,
+        carbs: initial.carbs + recipe.carbs,
+        fat: initial.fat + recipe.fat,
+      }),
+      { calories: 0, protein: 0, carbs: 0, fat: 0 },
+    );
+
+    return {
+      calories: itemTotals.calories + recipeTotals.calories,
+      protein: itemTotals.protein + recipeTotals.protein,
+      carbs: itemTotals.carbs + recipeTotals.carbs,
+      fat: itemTotals.fat + recipeTotals.fat,
+    };
   }
 
   private mealTypeToName(mealType?: string): string {
@@ -44,6 +61,20 @@ export class MealService {
       supper: 'Ceia',
     };
     return map[mealType ?? ''] ?? 'Refeição';
+  }
+
+  private toMealPublic(meal: {
+    items: FoodItemPublic[];
+    recipes: RecipeInMeal[];
+    [key: string]: unknown;
+  }): MealPublic {
+    const { items, recipes, ...rest } = meal;
+    return {
+      ...rest,
+      items,
+      recipes,
+      totals: this.computeTotals(items, recipes),
+    } as MealPublic;
   }
 
   async create(userId: string, dto: CreateMealDto): Promise<MealPublic> {
@@ -59,7 +90,7 @@ export class MealService {
         },
         select: mealSelect,
       });
-      return { ...meal, totals: this.computeTotals(meal.items) };
+      return this.toMealPublic(meal);
     } catch {
       throw new InternalServerErrorException('Erro ao criar refeição');
     }
@@ -72,10 +103,7 @@ export class MealService {
         select: mealSelect,
         orderBy: { date: 'desc' },
       });
-      return meals.map((meal) => ({
-        ...meal,
-        totals: this.computeTotals(meal.items),
-      }));
+      return meals.map((meal) => this.toMealPublic(meal));
     } catch {
       throw new InternalServerErrorException('Erro ao buscar refeições');
     }
@@ -106,11 +134,7 @@ export class MealService {
         select: mealSelect,
         orderBy: { date: 'asc' },
       });
-      return meals.map(({ items, ...meal }) => ({
-        ...meal,
-        items,
-        totals: this.computeTotals(items),
-      }));
+      return meals.map((meal) => this.toMealPublic(meal));
     } catch (error) {
       if (error instanceof InternalServerErrorException) throw error;
       throw new InternalServerErrorException('Erro ao buscar refeições');
@@ -126,7 +150,7 @@ export class MealService {
 
       if (!meal) throw new NotFoundException('Refeição não encontrada');
 
-      return { ...meal, totals: this.computeTotals(meal.items) };
+      return this.toMealPublic(meal);
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException('Erro ao buscar refeição');
@@ -145,7 +169,7 @@ export class MealService {
         },
         select: mealSelect,
       });
-      return { ...meal, totals: this.computeTotals(meal.items) };
+      return this.toMealPublic(meal);
     } catch (error) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&
@@ -263,6 +287,55 @@ export class MealService {
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
       throw new InternalServerErrorException('Erro ao remover item da refeição');
+    }
+  }
+
+  async addRecipe(mealId: string, userId: string, dto: AddMealRecipeDto): Promise<MealPublic> {
+    try {
+      const recipe = await this.prisma.recipe.findFirst({
+        where: { id: dto.recipeId, userId },
+        select: { id: true },
+      });
+      if (!recipe) throw new NotFoundException('Receita não encontrada');
+
+      const meal = await this.prisma.meal.update({
+        where: { id: mealId, userId },
+        data: {
+          recipes: {
+            connect: { id: recipe.id },
+          },
+        },
+        select: mealSelect,
+      });
+
+      return this.toMealPublic(meal);
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') throw new NotFoundException('Refeição não encontrada');
+      }
+      throw new InternalServerErrorException('Erro ao adicionar receita à refeição');
+    }
+  }
+
+  async removeRecipe(mealId: string, recipeId: string, userId: string): Promise<MealPublic> {
+    try {
+      const meal = await this.prisma.meal.update({
+        where: { id: mealId, userId },
+        data: {
+          recipes: {
+            disconnect: { id: recipeId },
+          },
+        },
+        select: mealSelect,
+      });
+
+      return this.toMealPublic(meal);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') throw new NotFoundException('Refeição não encontrada');
+      }
+      throw new InternalServerErrorException('Erro ao remover receita da refeição');
     }
   }
 }

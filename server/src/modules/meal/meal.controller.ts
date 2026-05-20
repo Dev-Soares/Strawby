@@ -14,6 +14,7 @@ import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
 import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
+import { AddMealRecipeDto } from './dto/add-meal-recipe.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { QueryMealDto } from './dto/query-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
@@ -87,5 +88,23 @@ export class MealController {
     @Param('itemId') itemId: string,
   ) {
     return this.mealService.removeItem(id, itemId, req.user.sub);
+  }
+
+  @Post(':id/recipes')
+  addRecipe(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: string,
+    @Body() dto: AddMealRecipeDto,
+  ) {
+    return this.mealService.addRecipe(id, req.user.sub, dto);
+  }
+
+  @Delete(':id/recipes/:recipeId')
+  removeRecipe(
+    @Req() req: AuthenticatedRequest,
+    @Param('id') id: string,
+    @Param('recipeId') recipeId: string,
+  ) {
+    return this.mealService.removeRecipe(id, recipeId, req.user.sub);
   }
 }
