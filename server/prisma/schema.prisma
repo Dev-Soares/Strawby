@@ -53,6 +53,7 @@ model Food {
 
   @@unique([source, sourceId])
   @@index([priority(sort: Desc), name])
+  @@index([name(ops: raw("gin_trgm_ops"))], type: Gin)
 }
 
 model PrivateFood {

@@ -34,7 +34,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const message =
       exception instanceof HttpException
         ? exception.message
-        : "Internal server error";
+        : "Erro interno do servidor";
 
     res.status(status).json({
       statusCode: status,

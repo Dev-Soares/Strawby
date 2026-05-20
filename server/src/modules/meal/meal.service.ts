@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -147,7 +148,7 @@ export class MealService {
     try {
       const start = new Date(day + 'T00:00:00.000Z');
       if (isNaN(start.getTime())) {
-        throw new InternalServerErrorException('Data inválida');
+        throw new BadRequestException('Data inválida');
       }
       const end = new Date(start);
       end.setUTCDate(end.getUTCDate() + 1);
@@ -166,7 +167,7 @@ export class MealService {
       });
       return meals.map((meal) => this.toMealPublic(meal));
     } catch (error) {
-      if (error instanceof InternalServerErrorException) throw error;
+      if (error instanceof BadRequestException || error instanceof InternalServerErrorException) throw error;
       throw new InternalServerErrorException('Erro ao buscar refeições');
     }
   }
