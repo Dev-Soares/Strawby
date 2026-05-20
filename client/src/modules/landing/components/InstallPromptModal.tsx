@@ -188,14 +188,14 @@ export default function InstallPromptModal({ isOpen, onClose, platform }: Instal
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
           <motion.div
-            className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden max-h-[85vh] overflow-y-auto"
+            className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden max-h-[85vh] flex flex-col"
             initial={{ opacity: 0, scale: 0.96, y: 14 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 14 }}
             transition={{ duration: 0.24, ease: [0.34, 1.05, 0.64, 1] }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 pt-6 pb-4 sticky top-0 bg-white z-10">
+            <div className="flex items-center justify-between px-6 pt-6 pb-4 shrink-0 bg-white z-10">
               <h2 className="text-lg font-extrabold text-neutral-950 tracking-tight">
                 {platform === 'android' ? 'Instalar no Android' : 'Instalar no iPhone/iPad'}
               </h2>
@@ -208,12 +208,12 @@ export default function InstallPromptModal({ isOpen, onClose, platform }: Instal
               </button>
             </div>
 
-            <div className="px-6 pb-8">
+            <div className="px-6 pb-8 overflow-y-auto">
               {platform === 'android' ? <AndroidGuide /> : <IosGuide />}
             </div>
 
             {/* Footer */}
-            <div className="px-6 pb-6 sticky bottom-0 bg-white">
+            <div className="px-6 pb-6 shrink-0 bg-white">
               <button
                 type="button"
                 onClick={onClose}
