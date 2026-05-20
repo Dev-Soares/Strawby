@@ -1,13 +1,12 @@
 import {
-  ConflictException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Plan, Prisma } from '@prisma/client';
+import { Plan } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
+import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 
 type PlanPublic = Pick<Plan, 'id' | 'calories' | 'protein' | 'carbs' | 'fat' | 'userId'>;
 
@@ -28,13 +27,9 @@ export class PlanService {
         select: { id: true, calories: true, protein: true, carbs: true, fat: true, userId: true },
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        throw new ConflictException('Usuário já possui um plano');
-      }
-      throw new InternalServerErrorException('Erro ao criar plano');
+      mapPrismaError(error, 'Erro ao criar plano', {
+        p2002: 'Usuário já possui um plano',
+      });
     }
   }
 
@@ -49,8 +44,7 @@ export class PlanService {
 
       return plan;
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException('Erro ao buscar plano');
+      mapPrismaError(error, 'Erro ao buscar plano');
     }
   }
 
@@ -67,13 +61,9 @@ export class PlanService {
         select: { id: true, calories: true, protein: true, carbs: true, fat: true, userId: true },
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException('Plano não encontrado');
-      }
-      throw new InternalServerErrorException('Erro ao atualizar plano');
+      mapPrismaError(error, 'Erro ao atualizar plano', {
+        p2025: 'Plano não encontrado',
+      });
     }
   }
 
@@ -84,13 +74,9 @@ export class PlanService {
         select: { id: true },
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException('Plano não encontrado');
-      }
-      throw new InternalServerErrorException('Erro ao deletar plano');
+      mapPrismaError(error, 'Erro ao deletar plano', {
+        p2025: 'Plano não encontrado',
+      });
     }
   }
 }

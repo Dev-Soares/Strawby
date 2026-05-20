@@ -1,9 +1,7 @@
 import {
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddRecipePrivateFoodItemDto } from './dto/add-recipe-private-food-item.dto';
@@ -16,6 +14,7 @@ import {
   foodItemSelect,
   recipeSelect,
 } from './recipe.types';
+import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 
 @Injectable()
 export class RecipeService {
@@ -47,8 +46,8 @@ export class RecipeService {
         select: recipeSelect,
       });
       return { ...recipe, totals: this.computeTotals(recipe.items) };
-    } catch {
-      throw new InternalServerErrorException('Erro ao criar receita');
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao criar receita');
     }
   }
 
@@ -63,8 +62,8 @@ export class RecipeService {
         ...recipe,
         totals: this.computeTotals(recipe.items),
       }));
-    } catch {
-      throw new InternalServerErrorException('Erro ao buscar receitas');
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar receitas');
     }
   }
 
@@ -79,8 +78,7 @@ export class RecipeService {
 
       return { ...recipe, totals: this.computeTotals(recipe.items) };
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException('Erro ao buscar receita');
+      mapPrismaError(error, 'Erro ao buscar receita');
     }
   }
 
@@ -95,13 +93,9 @@ export class RecipeService {
       });
       return { ...recipe, totals: this.computeTotals(recipe.items) };
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException('Receita não encontrada');
-      }
-      throw new InternalServerErrorException('Erro ao atualizar receita');
+      mapPrismaError(error, 'Erro ao atualizar receita', {
+        p2025: 'Receita não encontrada',
+      });
     }
   }
 
@@ -112,13 +106,9 @@ export class RecipeService {
         select: { id: true },
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException('Receita não encontrada');
-      }
-      throw new InternalServerErrorException('Erro ao deletar receita');
+      mapPrismaError(error, 'Erro ao deletar receita', {
+        p2025: 'Receita não encontrada',
+      });
     }
   }
 
@@ -152,11 +142,9 @@ export class RecipeService {
 
       return updated.items[0];
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') throw new NotFoundException('Receita não encontrada');
-      }
-      throw new InternalServerErrorException('Erro ao adicionar item à receita');
+      mapPrismaError(error, 'Erro ao adicionar item à receita', {
+        p2025: 'Receita não encontrada',
+      });
     }
   }
 
@@ -191,11 +179,9 @@ export class RecipeService {
 
       return updated.items[0];
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') throw new NotFoundException('Receita não encontrada');
-      }
-      throw new InternalServerErrorException('Erro ao adicionar alimento privado à receita');
+      mapPrismaError(error, 'Erro ao adicionar alimento privado à receita', {
+        p2025: 'Receita não encontrada',
+      });
     }
   }
 
@@ -207,10 +193,9 @@ export class RecipeService {
 
       return { id: itemId };
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-        throw new NotFoundException('Item não encontrado na receita');
-      }
-      throw new InternalServerErrorException('Erro ao remover item da receita');
+      mapPrismaError(error, 'Erro ao remover item da receita', {
+        p2025: 'Item não encontrado na receita',
+      });
     }
   }
 }
