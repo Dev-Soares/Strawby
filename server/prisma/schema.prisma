@@ -17,6 +17,19 @@ model User {
   meals        Meal[]
   privateFoods PrivateFood[]
   recipes      Recipe[]
+  dailyScores  DailyScore[]
+}
+
+model DailyScore {
+  id        String        @id @default(uuid())
+  date      DateTime
+  score     Float
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, date])
 }
 
 model Plan {

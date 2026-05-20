@@ -12,6 +12,13 @@ export type MealTotals = {
   fat: number;
 };
 
+export type MealMacros = {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+};
+
 export type RecipeInMeal = {
   id: string;
   name: string;
