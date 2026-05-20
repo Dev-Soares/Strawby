@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, DotsThreeVertical, Export, Plus, Check, ArrowDown, ArrowBendDownRight } from '@phosphor-icons/react'
+import { X, DotsThreeVertical, Export, Plus, Check, ArrowDown } from '@phosphor-icons/react'
 
 type Platform = 'android' | 'ios'
 

@@ -2,14 +2,12 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { AndroidLogo, AppleLogo, Globe } from '@phosphor-icons/react'
 import { useAndroidInstall } from '@/shared/hooks/useAndroidInstall'
-import { useIosInstall } from '@/shared/hooks/useIosInstall'
 import InstallPromptModal from './InstallPromptModal'
 
 type Platform = 'android' | 'ios'
 
 export default function DownloadSection() {
-  const { isInstallable, promptInstall, shouldShowGuide: androidNeedsGuide } = useAndroidInstall()
-  const { isIos } = useIosInstall()
+  const { isInstallable, promptInstall } = useAndroidInstall()
   const [modalOpen, setModalOpen] = useState(false)
   const [modalPlatform, setModalPlatform] = useState<Platform>('android')
 
