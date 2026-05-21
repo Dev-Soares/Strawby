@@ -8,5 +8,6 @@ import { PlanService } from './plan.service';
   imports: [DatabaseModule, AuthGuardModule],
   controllers: [PlanController],
   providers: [PlanService],
+  exports: [PlanService],
 })
 export class PlanModule {}

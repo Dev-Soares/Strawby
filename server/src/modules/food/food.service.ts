@@ -1,6 +1,5 @@
 import {
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -8,7 +7,8 @@ import { rankByRelevance, splitSearchWords } from '../../common/utils/search.uti
 import { PrismaService } from '../database/prisma.service';
 import { CreateFoodDto } from './dto/create-food.dto';
 import { UpdateFoodDto } from './dto/update-food.dto';
-import { FoodPublic, foodSelect } from './food.types';
+import { FoodPublic, foodSelect } from './types';
+import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 
 @Injectable()
 export class FoodService {
@@ -20,8 +20,8 @@ export class FoodService {
         data: dto as Prisma.FoodCreateInput,
         select: foodSelect,
       });
-    } catch {
-      throw new InternalServerErrorException('Erro ao criar alimento');
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao criar alimento');
     }
   }
 
@@ -31,8 +31,8 @@ export class FoodService {
         select: foodSelect,
         orderBy: [{ priority: 'desc' }, { name: 'asc' }],
       });
-    } catch {
-      throw new InternalServerErrorException('Erro ao buscar alimentos');
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar alimentos');
     }
   }
 
@@ -45,8 +45,7 @@ export class FoodService {
       if (!food) throw new NotFoundException('Alimento não encontrado');
       return food;
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException('Erro ao buscar alimento');
+      mapPrismaError(error, 'Erro ao buscar alimento');
     }
   }
 
@@ -58,13 +57,9 @@ export class FoodService {
         select: foodSelect,
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException('Alimento não encontrado');
-      }
-      throw new InternalServerErrorException('Erro ao atualizar alimento');
+      mapPrismaError(error, 'Erro ao atualizar alimento', {
+        p2025: 'Alimento não encontrado',
+      });
     }
   }
 
@@ -75,13 +70,9 @@ export class FoodService {
         select: foodSelect,
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException('Alimento não encontrado');
-      }
-      throw new InternalServerErrorException('Erro ao deletar alimento');
+      mapPrismaError(error, 'Erro ao deletar alimento', {
+        p2025: 'Alimento não encontrado',
+      });
     }
   }
 
@@ -104,8 +95,8 @@ export class FoodService {
       `;
 
       return rankByRelevance(results, trimmed).slice(0, 20);
-    } catch {
-      throw new InternalServerErrorException('Erro ao buscar alimentos');
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar alimentos');
     }
   }
 }

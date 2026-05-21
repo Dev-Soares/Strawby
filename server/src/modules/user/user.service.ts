@@ -1,23 +1,23 @@
 import {
-  ConflictException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashService } from '../../common/hash/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
-
-type UserPublic = Pick<User, 'id' | 'name' | 'email'>;
+import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
+import { DailyScoreService } from '../daily-score/daily-score.service';
+import { UserPublic, userSelect } from './types';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly hashService: HashService,
+    private readonly dailyScoreService: DailyScoreService,
   ) {}
 
   async create(data: CreateUserDto): Promise<UserPublic> {
@@ -28,29 +28,21 @@ export class UserService {
           name: data.name,
           email: data.email,
           password: hashedPassword,
-          plan:{
+          plan: {
             create: {
               calories: 0,
               protein: 0,
               carbs: 0,
               fat: 0,
-            }
-          }
+            },
+          },
         },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
+        select: userSelect,
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2002'
-      ) {
-        throw new ConflictException('E-mail já cadastrado');
-      }
-      throw new InternalServerErrorException('Erro ao criar usuário');
+      mapPrismaError(error, 'Erro ao criar usuário', {
+        p2002: 'E-mail já cadastrado',
+      });
     }
   }
 
@@ -66,8 +58,7 @@ export class UserService {
 
       return user;
     } catch (error) {
-      if (error instanceof UnauthorizedException) throw error
-      throw new InternalServerErrorException('Erro ao buscar usuário');
+      mapPrismaError(error, 'Erro ao buscar usuário');
     }
   }
 
@@ -75,23 +66,17 @@ export class UserService {
     try {
       const user = await this.prisma.user.findUnique({
         where: { id },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
+        select: userSelect,
       });
 
       if (!user) {
         throw new NotFoundException('Usuário não encontrado');
       }
+      const score = await this.dailyScoreService.getAverageScoreByUser(id);
 
-      return user;
+      return { ...user, score };
     } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException('Erro ao buscar usuário');
+      mapPrismaError(error, 'Erro ao buscar usuário');
     }
   }
 
@@ -103,20 +88,13 @@ export class UserService {
           ...(dto.name !== undefined && { name: dto.name }),
           ...(dto.email !== undefined && { email: dto.email }),
         },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
+        select: userSelect,
       });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') throw new NotFoundException('Usuário não encontrado');
-        if (error.code === 'P2002') throw new ConflictException('E-mail já cadastrado');
-      }
-      throw new InternalServerErrorException(
-        'Erro ao atualizar informações do Usuário',
-      );
+      mapPrismaError(error, 'Erro ao atualizar informações do usuário', {
+        p2002: 'E-mail já cadastrado',
+        p2025: 'Usuário não encontrado',
+      });
     }
   }
 
@@ -124,13 +102,12 @@ export class UserService {
     try {
       return await this.prisma.user.delete({
         where: { id },
+        select: userSelect,
       });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') throw new NotFoundException('Usuário não encontrado');
-      }
-      throw new InternalServerErrorException('Erro ao deletar usuário');
+      mapPrismaError(error, 'Erro ao deletar usuário', {
+        p2025: 'Usuário não encontrado',
+      });
     }
   }
 }
-

@@ -10,8 +10,8 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      queryClient.setQueryData(['auth', 'me'], null)
-      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] })
+      queryClient.setQueryData(['user', 'me'], null)
+      queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
 
       const path = window.location.pathname
       const publicPaths = ['/', '/app/login', '/app/create-account']

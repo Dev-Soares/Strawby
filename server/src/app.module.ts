@@ -12,6 +12,7 @@ import { PlanModule } from './modules/plan/plan.module';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
+import { DailyScoreModule } from './modules/daily-score/daily-score.module';
 
 @Module({
 	imports: [
@@ -50,12 +51,14 @@ import { LoggerModule } from 'nestjs-pino';
 		MealModule,
 		RecipeModule,
 		PlanModule,
+		DailyScoreModule,
 		ThrottlerModule.forRoot([
 			{
 				ttl: 60000,
 				limit: 100,
 			},
 		]),
+		
 	],
 	providers: [
 		{

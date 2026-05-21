@@ -1,9 +1,9 @@
 import {
+  BadRequestException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { MealKind, Prisma } from '@prisma/client';
+import { MealKind } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
@@ -17,7 +17,8 @@ import {
   RecipeInMeal,
   foodItemSelect,
   mealSelect,
-} from './meal.types';
+} from './types';
+import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 
 @Injectable()
 export class MealService {
@@ -121,8 +122,8 @@ export class MealService {
         select: mealSelect,
       });
       return this.toMealPublic(meal);
-    } catch {
-      throw new InternalServerErrorException('Erro ao criar refeição');
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao criar refeição');
     }
   }
 
@@ -134,8 +135,8 @@ export class MealService {
         orderBy: { date: 'desc' },
       });
       return meals.map((meal) => this.toMealPublic(meal));
-    } catch {
-      throw new InternalServerErrorException('Erro ao buscar refeições');
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar refeições');
     }
   }
 
@@ -147,7 +148,7 @@ export class MealService {
     try {
       const start = new Date(day + 'T00:00:00.000Z');
       if (isNaN(start.getTime())) {
-        throw new InternalServerErrorException('Data inválida');
+        throw new BadRequestException('Data inválida');
       }
       const end = new Date(start);
       end.setUTCDate(end.getUTCDate() + 1);
@@ -166,8 +167,7 @@ export class MealService {
       });
       return meals.map((meal) => this.toMealPublic(meal));
     } catch (error) {
-      if (error instanceof InternalServerErrorException) throw error;
-      throw new InternalServerErrorException('Erro ao buscar refeições');
+      mapPrismaError(error, 'Erro ao buscar refeições');
     }
   }
 
@@ -182,8 +182,7 @@ export class MealService {
 
       return this.toMealPublic(meal);
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException('Erro ao buscar refeição');
+      mapPrismaError(error, 'Erro ao buscar refeição');
     }
   }
 
@@ -201,13 +200,9 @@ export class MealService {
       });
       return this.toMealPublic(meal);
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException('Refeição não encontrada');
-      }
-      throw new InternalServerErrorException('Erro ao atualizar refeição');
+      mapPrismaError(error, 'Erro ao atualizar refeição', {
+        p2025: 'Refeição não encontrada',
+      });
     }
   }
 
@@ -218,13 +213,9 @@ export class MealService {
         select: { id: true },
       });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException('Refeição não encontrada');
-      }
-      throw new InternalServerErrorException('Erro ao deletar refeição');
+      mapPrismaError(error, 'Erro ao deletar refeição', {
+        p2025: 'Refeição não encontrada',
+      });
     }
   }
 
@@ -258,11 +249,9 @@ export class MealService {
 
       return updated.items[0];
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') throw new NotFoundException('Refeição não encontrada');
-      }
-      throw new InternalServerErrorException('Erro ao adicionar item à refeição');
+      mapPrismaError(error, 'Erro ao adicionar item à refeição', {
+        p2025: 'Refeição não encontrada',
+      });
     }
   }
 
@@ -297,11 +286,9 @@ export class MealService {
 
       return updated.items[0];
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') throw new NotFoundException('Refeição não encontrada');
-      }
-      throw new InternalServerErrorException('Erro ao adicionar alimento privado à refeição');
+      mapPrismaError(error, 'Erro ao adicionar alimento privado à refeição', {
+        p2025: 'Refeição não encontrada',
+      });
     }
   }
 
@@ -315,8 +302,7 @@ export class MealService {
 
       return { id: itemId };
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      throw new InternalServerErrorException('Erro ao remover item da refeição');
+      mapPrismaError(error, 'Erro ao remover item da refeição');
     }
   }
 
@@ -340,11 +326,9 @@ export class MealService {
 
       return this.toMealPublic(meal);
     } catch (error) {
-      if (error instanceof NotFoundException) throw error;
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') throw new NotFoundException('Refeição não encontrada');
-      }
-      throw new InternalServerErrorException('Erro ao adicionar receita à refeição');
+      mapPrismaError(error, 'Erro ao adicionar receita à refeição', {
+        p2025: 'Refeição não encontrada',
+      });
     }
   }
 
@@ -362,10 +346,9 @@ export class MealService {
 
       return this.toMealPublic(meal);
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2025') throw new NotFoundException('Refeição não encontrada');
-      }
-      throw new InternalServerErrorException('Erro ao remover receita da refeição');
+      mapPrismaError(error, 'Erro ao remover receita da refeição', {
+        p2025: 'Refeição não encontrada',
+      });
     }
   }
 }

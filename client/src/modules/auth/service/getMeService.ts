@@ -4,6 +4,7 @@ export type UserPublic = {
   id: string
   name: string
   email: string
+  score?: number | null
 }
 
 export const getMeService = async (): Promise<UserPublic | null> => {

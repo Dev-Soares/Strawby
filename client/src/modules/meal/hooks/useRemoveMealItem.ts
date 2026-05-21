@@ -9,6 +9,8 @@ export const useRemoveMealItem = () => {
       removeMealItemService(mealId, itemId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['meals'] })
+      queryClient.invalidateQueries({ queryKey: ['daily-score-live', new Date().toISOString().split('T')[0]] })
+      queryClient.invalidateQueries({ queryKey: ['daily-scores'] })
       toast.success('Alimento removido com sucesso!')
     },
     onError: () => {

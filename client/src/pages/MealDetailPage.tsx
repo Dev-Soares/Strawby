@@ -77,7 +77,7 @@ export default function MealDetailPage() {
   const { id } = useParams<{ id: string }>()
   const queryClient = useQueryClient()
 
-  const { data: meal, isPending, isError } = useGetMeal(id ?? '')
+  const { data: meal, isLoading, isError } = useGetMeal(id ?? '')
   const deleteMutation = useDeleteMeal()
   const removeItem = useRemoveMealItem()
   const removeRecipe = useRemoveMealRecipe()
@@ -121,7 +121,7 @@ export default function MealDetailPage() {
           ? removeRecipe.isPending
           : false
 
-  if (isPending) {
+  if (isLoading) {
     return (
       <AppLayout>
         <MealDetailSkeleton />

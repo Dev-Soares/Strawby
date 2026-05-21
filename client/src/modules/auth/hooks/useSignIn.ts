@@ -19,7 +19,7 @@ export const useSignIn = () => {
     mutationFn: signInService,
     onSuccess: async () => {
       toast.success('Bem-vindo de volta!')
-      await queryClient.refetchQueries({ queryKey: ['auth', 'me'], exact: true })
+      await queryClient.refetchQueries({ queryKey: ['user', 'me'], exact: true })
       navigate('/app/home')
     },
     onError: (error) => {

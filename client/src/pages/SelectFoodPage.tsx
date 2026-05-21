@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 import { ArrowLeft, Plus, Fire, CookingPot } from '@phosphor-icons/react'
 import AppLayout from '../shared/layouts/AppLayout'
 import FoodSearch from '../modules/food/components/FoodSearch'
@@ -93,6 +94,7 @@ function SelectableFoodCard({ item, onSelect }: { item: SelectableItem; onSelect
 
 export default function SelectFoodPage() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [searchParams] = useSearchParams()
   const mealId = searchParams.get('mealId')
   const recipeId = searchParams.get('recipeId')
@@ -160,8 +162,11 @@ export default function SelectFoodPage() {
       addMealRecipe.mutate(
         { mealId, dto: { recipeId: item.id } },
         {
-          onSuccess: () => navigate(`/app/meals/${mealId}`),
-        }
+          onSuccess: async () => {
+            await queryClient.refetchQueries({ queryKey: ['meal', mealId], type: 'all' })
+            navigate(`/app/meals/${mealId}`)
+          },
+        },
       )
       return
     }
@@ -181,29 +186,47 @@ export default function SelectFoodPage() {
     const q = Number(quantity)
 
     if (isRecipe) {
-      const onSuccess = () => navigate(`/app/recipes/${targetId}`)
       if (selectedFood.kind === 'public') {
         addRecipeItem.mutate(
           { recipeId: targetId, dto: { foodId: selectedFood.id, quantity: q } },
-          { onSuccess }
+          {
+            onSuccess: async () => {
+              await queryClient.refetchQueries({ queryKey: ['recipe', targetId], type: 'all' })
+              navigate(`/app/recipes/${targetId}`)
+            },
+          },
         )
       } else {
         addRecipePrivateFoodItem.mutate(
           { recipeId: targetId, dto: { privateFoodId: selectedFood.id, quantity: q } },
-          { onSuccess }
+          {
+            onSuccess: async () => {
+              await queryClient.refetchQueries({ queryKey: ['recipe', targetId], type: 'all' })
+              navigate(`/app/recipes/${targetId}`)
+            },
+          },
         )
       }
     } else {
-      const onSuccess = () => navigate(`/app/meals/${targetId}`)
       if (selectedFood.kind === 'public') {
         addMealItem.mutate(
           { mealId: targetId, dto: { foodId: selectedFood.id, quantity: q } },
-          { onSuccess }
+          {
+            onSuccess: async () => {
+              await queryClient.refetchQueries({ queryKey: ['meal', targetId], type: 'all' })
+              navigate(`/app/meals/${targetId}`)
+            },
+          },
         )
       } else {
         addMealPrivateFoodItem.mutate(
           { mealId: targetId, dto: { privateFoodId: selectedFood.id, quantity: q } },
-          { onSuccess }
+          {
+            onSuccess: async () => {
+              await queryClient.refetchQueries({ queryKey: ['meal', targetId], type: 'all' })
+              navigate(`/app/meals/${targetId}`)
+            },
+          },
         )
       }
     }

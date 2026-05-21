@@ -1,14 +1,12 @@
 import {
-  ForbiddenException,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CreatePrivateFoodDto } from './dto/create-private-food.dto';
 import { UpdatePrivateFoodDto } from './dto/update-private-food.dto';
-import { PrivateFoodPublic, privateFoodSelect } from './privateFood.types';
+import { PrivateFoodPublic, privateFoodSelect } from './types';
+import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 
 @Injectable()
 export class PrivateFoodService {
@@ -20,8 +18,8 @@ export class PrivateFoodService {
         data: { ...dto, userId },
         select: privateFoodSelect,
       });
-    } catch {
-      throw new InternalServerErrorException('Erro ao criar alimento privado');
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao criar alimento privado');
     }
   }
 
@@ -32,8 +30,8 @@ export class PrivateFoodService {
         select: privateFoodSelect,
         orderBy: { name: 'asc' },
       });
-    } catch {
-      throw new InternalServerErrorException('Erro ao buscar alimentos privados');
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar alimentos privados');
     }
   }
 
@@ -43,58 +41,28 @@ export class PrivateFoodService {
     dto: UpdatePrivateFoodDto,
   ): Promise<PrivateFoodPublic> {
     try {
-      const existing = await this.prisma.privateFood.findUnique({
-        where: { id },
-        select: { userId: true },
-      });
-
-      if (!existing) throw new NotFoundException('Alimento privado não encontrado');
-      if (existing.userId !== userId) {
-        throw new ForbiddenException('Sem permissão para editar este alimento');
-      }
-
       return await this.prisma.privateFood.update({
-        where: { id },
+        where: { id, userId },
         data: dto,
         select: privateFoodSelect,
       });
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof ForbiddenException) throw error;
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException('Alimento privado não encontrado');
-      }
-      throw new InternalServerErrorException('Erro ao atualizar alimento privado');
+      mapPrismaError(error, 'Erro ao atualizar alimento privado', {
+        p2025: 'Alimento privado não encontrado',
+      });
     }
   }
 
   async remove(id: string, userId: string): Promise<PrivateFoodPublic> {
     try {
-      const existing = await this.prisma.privateFood.findUnique({
-        where: { id },
-        select: { userId: true },
-      });
-
-      if (!existing) throw new NotFoundException('Alimento privado não encontrado');
-      if (existing.userId !== userId) {
-        throw new ForbiddenException('Sem permissão para deletar este alimento');
-      }
-
       return await this.prisma.privateFood.delete({
-        where: { id },
+        where: { id, userId },
         select: privateFoodSelect,
       });
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof ForbiddenException) throw error;
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException('Alimento privado não encontrado');
-      }
-      throw new InternalServerErrorException('Erro ao deletar alimento privado');
+      mapPrismaError(error, 'Erro ao deletar alimento privado', {
+        p2025: 'Alimento privado não encontrado',
+      });
     }
   }
 }

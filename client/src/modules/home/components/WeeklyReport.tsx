@@ -4,18 +4,12 @@ import type { WeeklyReportData, WeekDay, WeekDayStatus } from '../types/weeklyRe
 
 interface WeeklyReportProps {
   data: WeeklyReportData
+  todayIndex: number
+  weekStartDate: Date
 }
 
 const fullDayNames = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB', 'DOM']
 const shortDayNames = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']
-const todayIndex = 3
-
-const now = new Date()
-const monthLabel = now
-  .toLocaleDateString('pt-BR', { month: 'long' })
-  .toUpperCase()
-const yearLabel = now.getFullYear()
-const weekNumber = Math.ceil(now.getDate() / 7)
 
 function StatusMark({ status }: { status: WeekDayStatus }) {
   if (status === 'good') {
@@ -96,8 +90,13 @@ function DayCell({ day, idx, isToday }: { day: WeekDay; idx: number; isToday: bo
   )
 }
 
-export default function WeeklyReport({ data }: WeeklyReportProps) {
+export default function WeeklyReport({ data, todayIndex, weekStartDate }: WeeklyReportProps) {
+  const monthLabel = weekStartDate
+    .toLocaleDateString('pt-BR', { month: 'long' })
+    .toUpperCase()
   const displayMonth = monthLabel.charAt(0) + monthLabel.slice(1).toLowerCase()
+  const yearLabel = weekStartDate.getFullYear()
+  const weekNumber = Math.ceil(weekStartDate.getDate() / 7)
 
   return (
     <motion.div
