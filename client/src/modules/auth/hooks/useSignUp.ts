@@ -24,7 +24,7 @@ export const useSignUp = () => {
     },
     onSuccess: (user) => {
       toast.success('Conta criada com sucesso!')
-      queryClient.setQueryData(['auth', 'me'], user)
+      queryClient.setQueryData(['user', 'me'], user)
       navigate('/app/home')
     },
     onError: (error) => {

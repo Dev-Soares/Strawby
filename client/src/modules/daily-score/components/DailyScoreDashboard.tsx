@@ -3,8 +3,8 @@ import { CaretLeft, CaretRight } from '@phosphor-icons/react'
 import { useGetDailyScores } from '../hooks/useGetDailyScores'
 import DailyScoreSkeleton from '../skeletons/DailyScoreSkeleton'
 import DailyScoreCard from './DailyScoreCard'
+import TotalScoreCard from './TotalScoreCard'
 import WeeklyReport from '../../home/components/WeeklyReport'
-import WeeklyScore from '../../home/components/WeeklyScore'
 import type { WeeklyReportData, WeekDayStatus } from '../../home/types/weeklyReport'
 import type { DailyScore } from '../types/dailyScore'
 
@@ -138,7 +138,7 @@ export default function DailyScoreDashboard() {
       </div>
 
       <WeeklyReport data={weekly} todayIndex={todayIndex} weekStartDate={weekStart} />
-      <WeeklyScore score={weekly.weekScore} maxScore={weekly.weekMaxScore} />
+      <TotalScoreCard />
     </div>
   )
 }

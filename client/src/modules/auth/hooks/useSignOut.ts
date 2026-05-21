@@ -10,7 +10,7 @@ export const useSignOut = () => {
   return useMutation({
     mutationFn: signOutService,
     onSuccess: () => {
-      queryClient.removeQueries({ queryKey: ['auth', 'me'] })
+      queryClient.removeQueries({ queryKey: ['user', 'me'] })
       navigate('/app/login')
     },
     onError: () => {
