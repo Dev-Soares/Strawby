@@ -10,6 +10,11 @@ import { UpdateDailyScoreDto } from './dto/update-daily-score.dto';
 export class DailyScoreController {
   constructor(private readonly dailyScoreService: DailyScoreService) {}
 
+  @Post()
+  create(@Req() req: AuthenticatedRequest, @Body() dto: CreateDailyScoreDto) {
+    return this.dailyScoreService.create(req.user.sub, dto);
+  }
+
   @Get()
   findAll(
     @Req() req: AuthenticatedRequest,

@@ -97,9 +97,12 @@ export class DailyScoreService {
       const scores = await this.prisma.dailyScore.aggregate({
         where: { userId },
         _avg: { score: true },
+        _count: { score: true },
       });
 
-      if (!scores._avg.score || scores._avg.score) return this.generateLiveScore(userId, new Date().toISOString().split('T')[0]);
+      if (scores._count.score === 0) {
+        return this.generateLiveScore(userId, new Date().toISOString().split('T')[0]);
+      }
       return scores._avg.score ?? 0;
     } catch (error) {
       mapPrismaError(error, 'Erro ao calcular pontuação média');
