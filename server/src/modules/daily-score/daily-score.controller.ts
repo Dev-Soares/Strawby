@@ -34,6 +34,14 @@ export class DailyScoreController {
     return this.dailyScoreService.generateLiveScore(req.user.sub, day);
   }
 
+  @Get('average')
+  async getAverage(@Req() req: AuthenticatedRequest) {
+    const score = await this.dailyScoreService.getAverageScoreByUser(
+      req.user.sub,
+    );
+    return { score };
+  }
+
   @Patch(':id')
   update(
     @Req() req: AuthenticatedRequest,

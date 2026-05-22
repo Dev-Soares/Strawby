@@ -4,12 +4,11 @@ import { UserController } from './user.controller';
 import { DatabaseModule } from '../database/database.module';
 import { HashModule } from 'src/common/hash/hash.module';
 import { AuthGuardModule } from 'src/common/guards/auth/auth.module';
-import { DailyScoreModule } from '../daily-score/daily-score.module';
 
 @Module({
   controllers: [UserController],
   providers: [UserService],
-  imports: [DatabaseModule, HashModule, AuthGuardModule, DailyScoreModule],
+  imports: [DatabaseModule, HashModule, AuthGuardModule],
   exports: [UserService],
 })
 export class UserModule {}

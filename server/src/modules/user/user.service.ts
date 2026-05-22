@@ -5,7 +5,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { HashService } from '../../common/hash/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
-import { DailyScoreService } from '../daily-score/daily-score.service';
 import { UserPublic, userSelect } from './types';
 
 type UserCredentials = Pick<User, 'id' | 'name' | 'password'>;
@@ -15,7 +14,6 @@ export class UserService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly hashService: HashService,
-    private readonly dailyScoreService: DailyScoreService,
   ) {}
 
   async create(data: CreateUserDto): Promise<UserPublic> {
@@ -67,9 +65,8 @@ export class UserService {
       if (!user) {
         throw new NotFoundException('Usuário não encontrado');
       }
-      const score = await this.dailyScoreService.getAverageScoreByUser(id);
 
-      return { ...user, score };
+      return user;
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar usuário');
     }

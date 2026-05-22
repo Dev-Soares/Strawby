@@ -25,17 +25,6 @@ export class FoodService {
     }
   }
 
-  async findAll(): Promise<FoodPublic[]> {
-    try {
-      return await this.prisma.food.findMany({
-        select: foodSelect,
-        orderBy: [{ priority: 'desc' }, { name: 'asc' }],
-      });
-    } catch (error) {
-      mapPrismaError(error, 'Erro ao buscar alimentos');
-    }
-  }
-
   async findOne(id: string): Promise<FoodPublic> {
     try {
       const food = await this.prisma.food.findUnique({
@@ -86,11 +75,16 @@ export class FoodService {
       const results = await this.prisma.$queryRaw<FoodPublic[]>`
         SELECT id, name, source::text AS source, priority, calories, protein, carbs, fat, fiber, sodium
         FROM "Food"
-        WHERE ${Prisma.join(
-          words.map((w) => Prisma.sql`unaccent(name) ILIKE unaccent(${`%${w}%`})`),
-          ' AND ',
-        )}
-        ORDER BY priority DESC, name ASC
+        WHERE unaccent(name) % unaccent(${trimmed})
+           OR ${Prisma.join(
+             words.map(
+               (w) => Prisma.sql`unaccent(name) ILIKE unaccent(${`%${w}%`})`,
+             ),
+             ' AND ',
+           )}
+        ORDER BY similarity(unaccent(name), unaccent(${trimmed})) DESC,
+                 priority DESC,
+                 name ASC
         LIMIT 50
       `;
 
