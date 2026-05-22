@@ -10,11 +10,6 @@ import { UpdateDailyScoreDto } from './dto/update-daily-score.dto';
 export class DailyScoreController {
   constructor(private readonly dailyScoreService: DailyScoreService) {}
 
-  @Post()
-  create(@Req() req: AuthenticatedRequest, @Body() dto: CreateDailyScoreDto) {
-    return this.dailyScoreService.create(req.user.sub, dto);
-  }
-
   @Get()
   findAll(@Req() req: AuthenticatedRequest) {
     return this.dailyScoreService.findAllByUser(req.user.sub);
@@ -23,6 +18,11 @@ export class DailyScoreController {
   @Get('day/:day')
   findByDay(@Req() req: AuthenticatedRequest, @Param('day') day: string) {
     return this.dailyScoreService.findByDay(req.user.sub, day);
+  }
+
+  @Get('live/:day')
+  findLiveScore(@Req() req: AuthenticatedRequest, @Param('day') day: string) {
+    return this.dailyScoreService.generateLiveScore(req.user.sub, day);
   }
 
   @Patch(':id')

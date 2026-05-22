@@ -6,9 +6,4 @@ export class CreateDailyScoreDto {
   @IsDateString()
   @IsNotEmpty()
   date: string;
-
-  @ApiProperty({ example: 85.5 })
-  @IsNumber()
-  @IsNotEmpty()
-  score: number;
 }

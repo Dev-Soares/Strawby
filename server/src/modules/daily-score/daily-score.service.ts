@@ -12,6 +12,7 @@ import { MealMacros, MealPublic } from '../meal/meal.types';
 import { PlanMacros } from '../plan/plan.types';
 import { PlanService } from '../plan/plan.service';
 import { MealService } from '../meal/meal.service';
+import { ratioTable } from './utils/ratio-table';
 
 type DailyScorePublic = Pick<
   DailyScore,
@@ -40,10 +41,12 @@ export class DailyScoreService {
     dto: CreateDailyScoreDto,
   ): Promise<DailyScorePublic> {
     try {
+      const score = await this.generateLiveScore(userId, dto.date);
+
       return await this.prisma.dailyScore.create({
         data: {
           date: new Date(dto.date),
-          score: dto.score,
+          score: score,
           userId,
         },
         select: dailyScoreSelect,
@@ -94,46 +97,29 @@ export class DailyScoreService {
     }
   }
 
-  async update(
-    id: string,
-    userId: string,
-    dto: UpdateDailyScoreDto,
-  ): Promise<DailyScorePublic> {
+  async getAverageScoreByUser(userId: string): Promise<number> {
     try {
-      return await this.prisma.dailyScore.update({
-        where: { id, userId },
-        data: {
-          ...(dto.date !== undefined && { date: new Date(dto.date) }),
-          ...(dto.score !== undefined && { score: dto.score }),
-        },
-        select: dailyScoreSelect,
+      const scores = await this.prisma.dailyScore.aggregate({
+        where: { userId },
+        _avg: { score: true },
       });
+      return scores._avg.score ?? 0;
     } catch (error) {
-      mapPrismaError(error, 'Erro ao atualizar pontuação', {
-        p2025: 'Pontuação não encontrada',
-      });
+      mapPrismaError(error, 'Erro ao calcular pontuação média');
     }
   }
 
-  async remove(id: string, userId: string): Promise<DailyScorePublic> {
-    try {
-      return await this.prisma.dailyScore.delete({
-        where: { id, userId },
-        select: dailyScoreSelect,
-      });
-    } catch (error) {
-      mapPrismaError(error, 'Erro ao deletar pontuação', {
-        p2025: 'Pontuação não encontrada',
-      });
+  async generateLiveScore(userId: string, day: string): Promise<number> {
+    const start = new Date(day + 'T00:00:00.000Z');
+    if (isNaN(start.getTime())) {
+      throw new BadRequestException('Data inválida');
     }
-  }
-
-  private async getScoreForDay(userId: string, day: string): Promise<number> {
     try {
       const [meals, plan] = await Promise.all([
         this.mealService.findAllByUserAndDay(userId, day, undefined),
         this.planService.findByUser(userId),
       ]);
+      if (!plan) return 0; // se não tiver plano, a pontuação é 0
       const dayMacros = this.reduceDayMacros(meals);
       const totalScore = this.calculateDailyScore(dayMacros, plan);
       return totalScore;
@@ -144,6 +130,8 @@ export class DailyScoreService {
 
   // metodo que dilui os macros de todas as refeições do dia para calcular a pontuação diária
   private reduceDayMacros(meals: MealPublic[]): MealMacros {
+    if (!meals || meals.length === 0)
+      return { calories: 0, carbs: 0, protein: 0, fat: 0 };
     return meals.reduce(
       (acc, meal) => {
         acc.calories += meal.totals.calories;
@@ -189,20 +177,44 @@ export class DailyScoreService {
     if (planMacro === 0 || mealMacro === 0) return 0;
     const ratio = mealMacro / planMacro;
 
-    const ratioTable = [
-      { min: 0.9, max: 1.1, score: 10 },
-      { min: 0.8, max: 1.2, score: 8 },
-      { min: 0.7, max: 1.3, score: 6 },
-      { min: 0.6, max: 1.4, score: 4 },
-      { min: 0.5, max: 1.5, score: 2 },
-      { min: 0, max: 0.4, score: 0 },
-      { min: 1.5, max: Infinity, score: 0 },
-    ];
-
     const macroScore = ratioTable.find(
       (ratioComparison) =>
         ratio >= ratioComparison.min && ratio <= ratioComparison.max,
     );
     return macroScore?.score || 0;
+  }
+
+  async remove(id: string, userId: string): Promise<DailyScorePublic> {
+    try {
+      return await this.prisma.dailyScore.delete({
+        where: { id, userId },
+        select: dailyScoreSelect,
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao deletar pontuação', {
+        p2025: 'Pontuação não encontrada',
+      });
+    }
+  }
+
+  async update(
+    id: string,
+    userId: string,
+    dto: UpdateDailyScoreDto,
+  ): Promise<DailyScorePublic> {
+    try {
+      return await this.prisma.dailyScore.update({
+        where: { id, userId },
+        data: {
+          ...(dto.date !== undefined && { date: new Date(dto.date) }),
+          ...(dto.score !== undefined && { score: dto.score }),
+        },
+        select: dailyScoreSelect,
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao atualizar pontuação', {
+        p2025: 'Pontuação não encontrada',
+      });
+    }
   }
 }
