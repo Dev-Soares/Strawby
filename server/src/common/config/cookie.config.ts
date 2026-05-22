@@ -9,5 +9,5 @@ export const cookieConfig: CookieOptions = {
   sameSite: isProduction ? 'none' : 'strict',
   path: '/',
   ...(cookieDomain && { domain: cookieDomain }),
-  maxAge: 1000 * 60 * 60 * 24,
+  maxAge: 1000 * 60 * 60 * 24 * 30,
 };

@@ -19,7 +19,7 @@ import { HashModule } from '../../common/hash/hash.module';
           expiresIn:
             configService.get<`${number}${'s' | 'm' | 'h' | 'd'}`>(
               'JWT_EXPIRES_IN',
-            ) ?? '1d',
+            ) ?? '15d',
         },
       }),
     }),
