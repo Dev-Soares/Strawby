@@ -1,25 +1,6 @@
 import { motion } from 'framer-motion'
 import AppLayout from '../shared/layouts/AppLayout'
-import WeeklyReport from '../modules/home/components/WeeklyReport'
-import WeeklyScore from '../modules/home/components/WeeklyScore'
-import type { WeeklyReportData } from '../modules/home/types/weeklyReport'
-
-const weekly: WeeklyReportData = {
-  days: [
-    { day: 'S', date: 5, status: 'good', kcal: 2100, goal: 2200, score: 95 },
-    { day: 'T', date: 6, status: 'warn', kcal: 2150, goal: 2200, score: 88 },
-    { day: 'Q', date: 7, status: 'bad', kcal: 2600, goal: 2200, score: 42 },
-    { day: 'Q', date: 8, status: 'good', kcal: 2050, goal: 2200, score: 92 },
-    { day: 'S', date: 9, status: 'neutral', kcal: 0, goal: 2200 },
-    { day: 'S', date: 10, status: 'neutral', kcal: 0, goal: 2200 },
-    { day: 'D', date: 11, status: 'neutral', kcal: 0, goal: 2200 },
-  ],
-  weekScore: 317,
-  weekMaxScore: 700,
-  level: 4,
-  weekTotalKcal: 8300,
-  weekGoalKcal: 11000,
-}
+import DailyScoreDashboard from '../modules/daily-score/components/DailyScoreDashboard'
 
 export default function ScorePage() {
   return (
@@ -43,10 +24,7 @@ export default function ScorePage() {
           </h1>
         </motion.div>
 
-        <div className="space-y-4 sm:space-y-5">
-          <WeeklyReport data={weekly} />
-          <WeeklyScore score={weekly.weekScore} maxScore={weekly.weekMaxScore} />
-        </div>
+        <DailyScoreDashboard />
       </div>
     </AppLayout>
   )

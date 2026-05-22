@@ -8,9 +8,11 @@ interface WeeklyReportProps {
 
 const fullDayNames = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB', 'DOM']
 const shortDayNames = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']
-const todayIndex = 3
 
 const now = new Date()
+const jsDay = now.getDay()
+const todayIndex = jsDay === 0 ? 6 : jsDay - 1
+
 const monthLabel = now
   .toLocaleDateString('pt-BR', { month: 'long' })
   .toUpperCase()
