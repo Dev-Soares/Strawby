@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddRecipePrivateFoodItemDto } from './dto/add-recipe-private-food-item.dto';
@@ -82,7 +79,11 @@ export class RecipeService {
     }
   }
 
-  async update(id: string, userId: string, dto: UpdateRecipeDto): Promise<RecipePublic> {
+  async update(
+    id: string,
+    userId: string,
+    dto: UpdateRecipeDto,
+  ): Promise<RecipePublic> {
     try {
       const recipe = await this.prisma.recipe.update({
         where: { id, userId },
@@ -112,11 +113,22 @@ export class RecipeService {
     }
   }
 
-  async addFoodItem(recipeId: string, userId: string, dto: AddFoodItemDto): Promise<FoodItemPublic> {
+  async addFoodItem(
+    recipeId: string,
+    userId: string,
+    dto: AddFoodItemDto,
+  ): Promise<FoodItemPublic> {
     try {
       const food = await this.prisma.food.findUnique({
         where: { id: dto.foodId },
-        select: { id: true, name: true, calories: true, protein: true, carbs: true, fat: true },
+        select: {
+          id: true,
+          name: true,
+          calories: true,
+          protein: true,
+          carbs: true,
+          fat: true,
+        },
       });
       if (!food) throw new NotFoundException('Alimento não encontrado');
 
@@ -136,7 +148,11 @@ export class RecipeService {
           },
         },
         select: {
-          items: { select: foodItemSelect, orderBy: { createdAt: 'desc' }, take: 1 },
+          items: {
+            select: foodItemSelect,
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+          },
         },
       });
 
@@ -148,15 +164,31 @@ export class RecipeService {
     }
   }
 
-  async addPrivateFoodItem(recipeId: string, userId: string, dto: AddRecipePrivateFoodItemDto): Promise<FoodItemPublic> {
+  async addPrivateFoodItem(
+    recipeId: string,
+    userId: string,
+    dto: AddRecipePrivateFoodItemDto,
+  ): Promise<FoodItemPublic> {
     try {
       const privateFood = await this.prisma.privateFood.findFirst({
         where: { id: dto.privateFoodId, userId },
-        select: { id: true, calories: true, protein: true, carbs: true, fat: true, servingSize: true },
+        select: {
+          id: true,
+          calories: true,
+          protein: true,
+          carbs: true,
+          fat: true,
+          servingSize: true,
+        },
       });
-      if (!privateFood) throw new NotFoundException('Alimento privado não encontrado');
+      if (!privateFood)
+        throw new NotFoundException('Alimento privado não encontrado');
 
-      const servingSize = privateFood.servingSize ? Number(privateFood.servingSize) : 100;
+      const rawServing = privateFood.servingSize
+        ? Number(privateFood.servingSize)
+        : NaN;
+      const servingSize =
+        Number.isFinite(rawServing) && rawServing > 0 ? rawServing : 100;
       const ratio = dto.quantity / servingSize;
       const updated = await this.prisma.recipe.update({
         where: { id: recipeId, userId },
@@ -173,7 +205,11 @@ export class RecipeService {
           },
         },
         select: {
-          items: { select: foodItemSelect, orderBy: { createdAt: 'desc' }, take: 1 },
+          items: {
+            select: foodItemSelect,
+            orderBy: { createdAt: 'desc' },
+            take: 1,
+          },
         },
       });
 
@@ -185,11 +221,19 @@ export class RecipeService {
     }
   }
 
-  async removeItem(recipeId: string, itemId: string, userId: string): Promise<{ id: string }> {
+  async removeItem(
+    recipeId: string,
+    itemId: string,
+    userId: string,
+  ): Promise<{ id: string }> {
     try {
-      await this.prisma.foodItem.delete({
-        where: { id: itemId, recipe: { id: recipeId, userId } },
+      const result = await this.prisma.foodItem.deleteMany({
+        where: { id: itemId, recipeId, recipe: { userId } },
       });
+
+      if (result.count === 0) {
+        throw new NotFoundException('Item não encontrado na receita');
+      }
 
       return { id: itemId };
     } catch (error) {

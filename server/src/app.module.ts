@@ -5,7 +5,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { HealthModule } from './modules/health/health.module';
 import { FoodModule } from './modules/food/food.module';
-import { PrivateFoodModule } from './modules/privateFood/privateFood.module';
+import { PrivateFoodModule } from './modules/private-food/private-food.module';
 import { MealModule } from './modules/meal/meal.module';
 import { RecipeModule } from './modules/recipe/recipe.module';
 import { PlanModule } from './modules/plan/plan.module';

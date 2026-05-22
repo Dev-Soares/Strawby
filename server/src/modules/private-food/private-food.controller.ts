@@ -9,12 +9,14 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
 import { CreatePrivateFoodDto } from './dto/create-private-food.dto';
 import { UpdatePrivateFoodDto } from './dto/update-private-food.dto';
-import { PrivateFoodService } from './privateFood.service';
+import { PrivateFoodService } from './private-food.service';
 
+@ApiTags('private-food')
 @UseGuards(AuthGuard)
 @Controller('private-food')
 export class PrivateFoodController {

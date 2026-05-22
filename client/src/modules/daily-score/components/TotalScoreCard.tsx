@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { ChartBar } from '@phosphor-icons/react'
-import { useAuth } from '../../auth/hooks/useAuth'
+import { useGetAverageScore } from '../hooks/useGetAverageScore'
 import TotalScoreCardSkeleton from '../skeletons/TotalScoreCardSkeleton'
 
 function getScoreLabel(score: number) {
@@ -17,12 +17,12 @@ function getScoreColor(score: number) {
 }
 
 export default function TotalScoreCard() {
-  const { data: user, isPending, isError } = useAuth()
+  const { data, isPending, isError } = useGetAverageScore()
 
   if (isPending) return <TotalScoreCardSkeleton />
-  if (isError || !user || user.score == null) return null
+  if (isError || !data || data.score == null) return null
 
-  const score = Math.round(user.score * 10) / 10
+  const score = Math.round(data.score * 10) / 10
   const label = getScoreLabel(score)
   const color = getScoreColor(score)
   const pct = Math.min((score / 10) * 100, 100)

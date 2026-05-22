@@ -12,7 +12,7 @@ export abstract class BaseJwtGuard {
 
   protected verifyToken(token: string): Promise<RequestTokenPayload> {
     return this.jwtService.verifyAsync(token, {
-      secret: this.configService.get<string>('JWT_SECRET'),
+      secret: this.configService.getOrThrow<string>('JWT_SECRET'),
     });
   }
 }

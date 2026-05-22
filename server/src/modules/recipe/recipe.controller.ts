@@ -9,6 +9,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
 import { AddFoodItemDto } from './dto/add-food-item.dto';
@@ -17,6 +18,7 @@ import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { RecipeService } from './recipe.service';
 
+@ApiTags('recipe')
 @UseGuards(AuthGuard)
 @Controller('recipe')
 export class RecipeController {

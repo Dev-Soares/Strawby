@@ -22,19 +22,26 @@ export class DailyScoreService {
     private readonly mealService: MealService,
   ) {}
 
+  private parseDay(day: string): Date {
+    const start = new Date(day + 'T00:00:00.000Z');
+    if (isNaN(start.getTime())) {
+      throw new BadRequestException('Data inválida');
+    }
+    return start;
+  }
+
   async create(
     userId: string,
     dto: CreateDailyScoreDto,
   ): Promise<DailyScorePublic> {
     try {
+      const date = this.parseDay(dto.date);
       const score = await this.generateLiveScore(userId, dto.date);
 
-      return await this.prisma.dailyScore.create({
-        data: {
-          date: new Date(dto.date),
-          score: score,
-          userId,
-        },
+      return await this.prisma.dailyScore.upsert({
+        where: { userId_date: { userId, date } },
+        create: { date, score, userId },
+        update: { score },
         select: dailyScoreSelect,
       });
     } catch (error) {
@@ -48,7 +55,9 @@ export class DailyScoreService {
     endDate?: string,
   ): Promise<DailyScorePublic[]> {
     try {
-      const where: { userId: string; date?: { gte?: Date; lte?: Date } } = { userId };
+      const where: { userId: string; date?: { gte?: Date; lte?: Date } } = {
+        userId,
+      };
 
       if (startDate) where.date = { gte: new Date(startDate) };
       if (endDate) where.date = { ...where.date, lte: new Date(endDate) };
@@ -101,7 +110,10 @@ export class DailyScoreService {
       });
 
       if (scores._count.score === 0) {
-        return this.generateLiveScore(userId, new Date().toISOString().split('T')[0]);
+        return this.generateLiveScore(
+          userId,
+          new Date().toISOString().split('T')[0],
+        );
       }
       return scores._avg.score ?? 0;
     } catch (error) {
@@ -186,10 +198,14 @@ export class DailyScoreService {
 
   async remove(id: string, userId: string): Promise<DailyScorePublic> {
     try {
-      return await this.prisma.dailyScore.delete({
+      const existing = await this.prisma.dailyScore.findFirst({
         where: { id, userId },
         select: dailyScoreSelect,
       });
+      if (!existing) throw new NotFoundException('Pontuação não encontrada');
+
+      await this.prisma.dailyScore.delete({ where: { id } });
+      return existing;
     } catch (error) {
       mapPrismaError(error, 'Erro ao deletar pontuação', {
         p2025: 'Pontuação não encontrada',
@@ -203,10 +219,16 @@ export class DailyScoreService {
     dto: UpdateDailyScoreDto,
   ): Promise<DailyScorePublic> {
     try {
-      return await this.prisma.dailyScore.update({
+      const existing = await this.prisma.dailyScore.findFirst({
         where: { id, userId },
+        select: { id: true },
+      });
+      if (!existing) throw new NotFoundException('Pontuação não encontrada');
+
+      return await this.prisma.dailyScore.update({
+        where: { id },
         data: {
-          ...(dto.date !== undefined && { date: new Date(dto.date) }),
+          ...(dto.date !== undefined && { date: this.parseDay(dto.date) }),
           ...(dto.score !== undefined && { score: dto.score }),
         },
         select: dailyScoreSelect,

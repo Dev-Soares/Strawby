@@ -1,10 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
 import { DailyScoreService } from './daily-score.service';
 import { CreateDailyScoreDto } from './dto/create-daily-score.dto';
 import { UpdateDailyScoreDto } from './dto/update-daily-score.dto';
 
+@ApiTags('daily-score')
 @UseGuards(AuthGuard)
 @Controller('daily-score')
 export class DailyScoreController {
@@ -32,6 +34,14 @@ export class DailyScoreController {
   @Get('live/:day')
   findLiveScore(@Req() req: AuthenticatedRequest, @Param('day') day: string) {
     return this.dailyScoreService.generateLiveScore(req.user.sub, day);
+  }
+
+  @Get('average')
+  async getAverage(@Req() req: AuthenticatedRequest) {
+    const score = await this.dailyScoreService.getAverageScoreByUser(
+      req.user.sub,
+    );
+    return { score };
   }
 
   @Patch(':id')

@@ -9,11 +9,14 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import { CreateFoodDto } from './dto/create-food.dto';
+import { SearchFoodDto } from './dto/search-food.dto';
 import { UpdateFoodDto } from './dto/update-food.dto';
 import { FoodService } from './food.service';
 
+@ApiTags('food')
 @Controller('food')
 export class FoodController {
   constructor(private readonly foodService: FoodService) {}
@@ -24,14 +27,9 @@ export class FoodController {
     return this.foodService.create(dto);
   }
 
-  @Get()
-  findAll() {
-    return this.foodService.findAll();
-  }
-
   @Get('search')
-  search(@Query('search') name: string) {
-    return this.foodService.search(name);
+  search(@Query() dto: SearchFoodDto) {
+    return this.foodService.search(dto.search);
   }
 
   @Get(':id')
