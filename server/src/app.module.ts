@@ -51,13 +51,14 @@ import { DailyScoreModule } from './modules/daily-score/daily-score.module';
 		MealModule,
 		RecipeModule,
 		PlanModule,
+		DailyScoreModule,
 		ThrottlerModule.forRoot([
 			{
 				ttl: 60000,
 				limit: 100,
 			},
 		]),
-		DailyScoreModule,
+		
 	],
 	providers: [
 		{

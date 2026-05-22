@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
 import { DailyScoreService } from './daily-score.service';
@@ -11,8 +11,12 @@ export class DailyScoreController {
   constructor(private readonly dailyScoreService: DailyScoreService) {}
 
   @Get()
-  findAll(@Req() req: AuthenticatedRequest) {
-    return this.dailyScoreService.findAllByUser(req.user.sub);
+  findAll(
+    @Req() req: AuthenticatedRequest,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
+  ) {
+    return this.dailyScoreService.findAllByUser(req.user.sub, startDate, endDate);
   }
 
   @Get('day/:day')

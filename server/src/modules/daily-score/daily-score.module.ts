@@ -13,5 +13,6 @@ import { MealModule } from '../meal/meal.module';
     PlanModule,
     MealModule,
   ],
+  exports: [DailyScoreService],
 })
 export class DailyScoreModule {}

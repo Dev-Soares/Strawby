@@ -42,10 +42,19 @@ export class DailyScoreService {
     }
   }
 
-  async findAllByUser(userId: string): Promise<DailyScorePublic[]> {
+  async findAllByUser(
+    userId: string,
+    startDate?: string,
+    endDate?: string,
+  ): Promise<DailyScorePublic[]> {
     try {
+      const where: { userId: string; date?: { gte?: Date; lte?: Date } } = { userId };
+
+      if (startDate) where.date = { gte: new Date(startDate) };
+      if (endDate) where.date = { ...where.date, lte: new Date(endDate) };
+
       return await this.prisma.dailyScore.findMany({
-        where: { userId },
+        where,
         select: dailyScoreSelect,
         orderBy: { date: 'desc' },
       });
