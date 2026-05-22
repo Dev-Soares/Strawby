@@ -8,8 +8,11 @@ export const useAddMealItem = () => {
   return useMutation({
     mutationFn: ({ mealId, dto }: { mealId: string; dto: AddMealItemData }) =>
       addMealItemService(mealId, dto),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['meal', variables.mealId] })
       queryClient.invalidateQueries({ queryKey: ['meals'] })
+      queryClient.invalidateQueries({ queryKey: ['daily-score-live', new Date().toISOString().split('T')[0]] })
+      queryClient.invalidateQueries({ queryKey: ['daily-scores'] })
       toast.success('Alimento adicionado com sucesso!')
     },
     onError: () => {

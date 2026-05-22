@@ -8,6 +8,8 @@ export const useDeleteMeal = () => {
     mutationFn: deleteMealService,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['meals'] })
+      queryClient.invalidateQueries({ queryKey: ['daily-score-live', new Date().toISOString().split('T')[0]] })
+      queryClient.invalidateQueries({ queryKey: ['daily-scores'] })
       toast.success('Refeição removida com sucesso!')
     },
     onError: () => {

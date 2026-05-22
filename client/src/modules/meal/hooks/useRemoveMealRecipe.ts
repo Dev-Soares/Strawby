@@ -10,6 +10,8 @@ export const useRemoveMealRecipe = () => {
     onSuccess: async (_, variables) => {
       await queryClient.refetchQueries({ queryKey: ['meal', variables.mealId], type: 'all' })
       await queryClient.refetchQueries({ queryKey: ['meals'], type: 'all' })
+      queryClient.invalidateQueries({ queryKey: ['daily-score-live', new Date().toISOString().split('T')[0]] })
+      queryClient.invalidateQueries({ queryKey: ['daily-scores'] })
       toast.success('Receita removida com sucesso!')
     },
     onError: () => {

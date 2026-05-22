@@ -37,7 +37,7 @@ export default function RecipeDetailPage() {
   const [editName, setEditName] = useState('')
   const [confirm, setConfirm] = useState<ConfirmState>(null)
 
-  const { data: recipe, isPending, isError } = useGetRecipe(id ?? '')
+  const { data: recipe, isLoading, isError } = useGetRecipe(id ?? '')
   const deleteMutation = useDeleteRecipe()
   const removeItem = useRemoveRecipeItem()
   const updateMutation = useUpdateRecipe()
@@ -68,7 +68,7 @@ export default function RecipeDetailPage() {
         ? removeItem.isPending
         : false
 
-  if (isPending) {
+  if (isLoading) {
     return (
       <AppLayout>
         <RecipeDetailSkeleton />

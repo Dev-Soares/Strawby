@@ -157,12 +157,8 @@ export default function SelectFoodPage() {
   const handleSelectItem = (item: SelectableItem) => {
     if (item.kind === 'recipe') {
       if (!mealId) return
-      addMealRecipe.mutate(
-        { mealId, dto: { recipeId: item.id } },
-        {
-          onSuccess: () => navigate(`/app/meals/${mealId}`),
-        }
-      )
+      navigate(`/app/meals/${mealId}`)
+      addMealRecipe.mutate({ mealId, dto: { recipeId: item.id } })
       return
     }
 
@@ -181,30 +177,18 @@ export default function SelectFoodPage() {
     const q = Number(quantity)
 
     if (isRecipe) {
-      const onSuccess = () => navigate(`/app/recipes/${targetId}`)
+      navigate(`/app/recipes/${targetId}`)
       if (selectedFood.kind === 'public') {
-        addRecipeItem.mutate(
-          { recipeId: targetId, dto: { foodId: selectedFood.id, quantity: q } },
-          { onSuccess }
-        )
+        addRecipeItem.mutate({ recipeId: targetId, dto: { foodId: selectedFood.id, quantity: q } })
       } else {
-        addRecipePrivateFoodItem.mutate(
-          { recipeId: targetId, dto: { privateFoodId: selectedFood.id, quantity: q } },
-          { onSuccess }
-        )
+        addRecipePrivateFoodItem.mutate({ recipeId: targetId, dto: { privateFoodId: selectedFood.id, quantity: q } })
       }
     } else {
-      const onSuccess = () => navigate(`/app/meals/${targetId}`)
+      navigate(`/app/meals/${targetId}`)
       if (selectedFood.kind === 'public') {
-        addMealItem.mutate(
-          { mealId: targetId, dto: { foodId: selectedFood.id, quantity: q } },
-          { onSuccess }
-        )
+        addMealItem.mutate({ mealId: targetId, dto: { foodId: selectedFood.id, quantity: q } })
       } else {
-        addMealPrivateFoodItem.mutate(
-          { mealId: targetId, dto: { privateFoodId: selectedFood.id, quantity: q } },
-          { onSuccess }
-        )
+        addMealPrivateFoodItem.mutate({ mealId: targetId, dto: { privateFoodId: selectedFood.id, quantity: q } })
       }
     }
   }
