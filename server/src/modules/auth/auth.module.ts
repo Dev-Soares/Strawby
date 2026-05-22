@@ -14,9 +14,12 @@ import { HashModule } from '../../common/hash/hash.module';
       global: true,
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
+        secret: configService.getOrThrow<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: configService.get<`${number}${'s' | 'm' | 'h' | 'd'}`>('JWT_EXPIRES_IN') ?? '1d',
+          expiresIn:
+            configService.get<`${number}${'s' | 'm' | 'h' | 'd'}`>(
+              'JWT_EXPIRES_IN',
+            ) ?? '1d',
         },
       }),
     }),

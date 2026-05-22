@@ -10,55 +10,70 @@ import { PinoLogger } from 'nestjs-pino';
 
 const PORT = process.env.PORT || 3000;
 
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Variável de ambiente obrigatória ausente: ${name}`);
+  }
+  return value;
+}
+
+function parseOrigins(raw: string | undefined): string | string[] | undefined {
+  if (!raw) return undefined;
+  const list = raw
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+  return list.length > 1 ? list : list[0];
+}
+
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule);
 
-	app.useGlobalPipes(
-		new ValidationPipe({
-			whitelist: true,
-			forbidNonWhitelisted: true,
-			transform: true,
-		}),
-	);
+  app.use(helmet());
+  app.use(cookieParser());
 
-	const swaggerConfig = new DocumentBuilder()
-		.setTitle('Fullstack Template API')
-		.setDescription('Fullstack Template API documentation')
-		.setVersion('0.1')
-		.addTag('template')
-		.build();
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
-	const document = SwaggerModule.createDocument(app, swaggerConfig);
+  const logger = await app.resolve(PinoLogger);
+  app.useGlobalFilters(new AllExceptionsFilter(logger));
 
-	app.use(
-		'/api-docs',
-		basicAuth({
-			users: {
-				[process.env.SWAGGER_USER as string]: process.env.SWAGGER_PASSWORD as string,
-			},
-			challenge: true,
-		}),
-	);
+  app.enableCors({
+    origin: parseOrigins(process.env.CORS_ORIGIN),
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Accept',
+    credentials: true,
+  });
 
-	SwaggerModule.setup('api-docs', app, document);
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('Fullstack Template API')
+    .setDescription('Fullstack Template API documentation')
+    .setVersion('0.1')
+    .addTag('template')
+    .build();
 
-	app.enableCors({
-		origin: process.env.CORS_ORIGIN,
-		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-		allowedHeaders: 'Content-Type, Accept',
-		credentials: true,
-	});
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
 
-	const logger = await app.resolve(PinoLogger);
+  app.use(
+    '/api-docs',
+    basicAuth({
+      users: {
+        [requireEnv('SWAGGER_USER')]: requireEnv('SWAGGER_PASSWORD'),
+      },
+      challenge: true,
+    }),
+  );
 
-	app.useGlobalFilters(new AllExceptionsFilter(logger));
+  SwaggerModule.setup('api-docs', app, document);
 
-	app.use(helmet());
+  await app.listen(PORT);
 
-	app.use(cookieParser());
-
-	await app.listen(PORT);
-
-	Logger.log(`API running on port ${PORT}`);
+  Logger.log(`API running on port ${PORT}`);
 }
 bootstrap();

@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -11,6 +7,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { DailyScoreService } from '../daily-score/daily-score.service';
 import { UserPublic, userSelect } from './types';
+
+type UserCredentials = Pick<User, 'id' | 'name' | 'password'>;
 
 @Injectable()
 export class UserService {
@@ -46,17 +44,14 @@ export class UserService {
     }
   }
 
-  async findByEmailWithPassword(email: string): Promise<User> {
+  async findByEmailWithPassword(
+    email: string,
+  ): Promise<UserCredentials | null> {
     try {
-      const user = await this.prisma.user.findUnique({
+      return await this.prisma.user.findUnique({
         where: { email },
+        select: { id: true, name: true, password: true },
       });
-
-      if (!user) {
-        throw new UnauthorizedException('Email ou senha inválidos');
-      }
-
-      return user;
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar usuário');
     }
