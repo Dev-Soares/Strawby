@@ -9,12 +9,14 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import { CreateFoodDto } from './dto/create-food.dto';
 import { SearchFoodDto } from './dto/search-food.dto';
 import { UpdateFoodDto } from './dto/update-food.dto';
 import { FoodService } from './food.service';
 
+@ApiTags('food')
 @Controller('food')
 export class FoodController {
   constructor(private readonly foodService: FoodService) {}

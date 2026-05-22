@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Res,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
@@ -13,6 +14,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { cookieConfig } from 'src/common/config/cookie.config';
 import type { SignInResponse, LogoutResponse } from './types';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
