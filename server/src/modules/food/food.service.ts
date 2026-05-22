@@ -7,7 +7,7 @@ import { rankByRelevance, splitSearchWords } from '../../common/utils/search.uti
 import { PrismaService } from '../database/prisma.service';
 import { CreateFoodDto } from './dto/create-food.dto';
 import { UpdateFoodDto } from './dto/update-food.dto';
-import { FoodPublic, foodSelect } from './food.types';
+import { FoodPublic, foodSelect } from './types';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 
 @Injectable()

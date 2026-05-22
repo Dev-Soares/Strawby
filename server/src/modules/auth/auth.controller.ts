@@ -3,6 +3,7 @@ import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { cookieConfig } from 'src/common/config/cookie.config';
+import type { SignInResponse, LogoutResponse } from './types';
 
 @Controller('auth')
 export class AuthController {
@@ -13,7 +14,7 @@ export class AuthController {
   async signIn(
     @Body() signInDto: SignInDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ message: string }> {
+  ): Promise<SignInResponse> {
     const result = await this.authService.signIn(signInDto.email, signInDto.password);
 
     res.cookie('access_token', result.access_token, cookieConfig)
@@ -22,7 +23,7 @@ export class AuthController {
   }
 
   @Post('logout')
-  logout(@Res({ passthrough: true }) res: Response): { message: string } {
+  logout(@Res({ passthrough: true }) res: Response): LogoutResponse {
     res.clearCookie('access_token', cookieConfig);
     return { message: 'Logged out' };
   }

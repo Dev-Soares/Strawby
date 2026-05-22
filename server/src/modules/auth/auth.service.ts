@@ -5,6 +5,7 @@ import {
 import { UserService } from '../user/user.service';
 import { HashService } from 'src/common/hash/hash.service';
 import { JwtService } from '@nestjs/jwt';
+import { AuthTokenResponse } from './types';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,7 @@ export class AuthService {
   async signIn(
     email: string,
     password: string,
-  ): Promise<{ access_token: string }> {
+  ): Promise<AuthTokenResponse> {
     const user = await this.usersService.findByEmailWithPassword(email);
 
     const passwordValid = await this.hashService.comparePassword(

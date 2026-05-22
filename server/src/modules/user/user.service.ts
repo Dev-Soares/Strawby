@@ -10,10 +10,7 @@ import { HashService } from '../../common/hash/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { DailyScoreService } from '../daily-score/daily-score.service';
-
-type UserPublic = Pick<User, 'id' | 'name' | 'email'> & {
-  score?: number | null;
-};
+import { UserPublic, userSelect } from './types';
 
 @Injectable()
 export class UserService {
@@ -40,11 +37,7 @@ export class UserService {
             },
           },
         },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
+        select: userSelect,
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao criar usuário', {
@@ -73,11 +66,7 @@ export class UserService {
     try {
       const user = await this.prisma.user.findUnique({
         where: { id },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
+        select: userSelect,
       });
 
       if (!user) {
@@ -99,11 +88,7 @@ export class UserService {
           ...(dto.name !== undefined && { name: dto.name }),
           ...(dto.email !== undefined && { email: dto.email }),
         },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
+        select: userSelect,
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao atualizar informações do usuário', {
@@ -117,11 +102,7 @@ export class UserService {
     try {
       return await this.prisma.user.delete({
         where: { id },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
+        select: userSelect,
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao deletar usuário', {

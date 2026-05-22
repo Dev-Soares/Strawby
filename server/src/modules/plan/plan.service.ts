@@ -2,13 +2,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Plan } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
-
-type PlanPublic = Pick<Plan, 'id' | 'calories' | 'protein' | 'carbs' | 'fat' | 'userId'>;
+import { PlanPublic, planSelect } from './types';
 
 @Injectable()
 export class PlanService {
@@ -24,7 +22,7 @@ export class PlanService {
           fat: dto.fat,
           userId,
         },
-        select: { id: true, calories: true, protein: true, carbs: true, fat: true, userId: true },
+        select: planSelect,
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao criar plano', {
@@ -37,7 +35,7 @@ export class PlanService {
     try {
       const plan = await this.prisma.plan.findUnique({
         where: { userId },
-        select: { id: true, calories: true, protein: true, carbs: true, fat: true, userId: true },
+        select: planSelect,
       });
 
       if (!plan) throw new NotFoundException('Plano não encontrado');
@@ -58,7 +56,7 @@ export class PlanService {
           ...(dto.carbs !== undefined && { carbs: dto.carbs }),
           ...(dto.fat !== undefined && { fat: dto.fat }),
         },
-        select: { id: true, calories: true, protein: true, carbs: true, fat: true, userId: true },
+        select: planSelect,
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao atualizar plano', {

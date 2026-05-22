@@ -17,7 +17,7 @@ import {
   RecipeInMeal,
   foodItemSelect,
   mealSelect,
-} from './meal.types';
+} from './types';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 
 @Injectable()

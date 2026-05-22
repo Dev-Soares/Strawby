@@ -13,7 +13,7 @@ import {
   RecipeTotals,
   foodItemSelect,
   recipeSelect,
-} from './recipe.types';
+} from './types';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 
 @Injectable()

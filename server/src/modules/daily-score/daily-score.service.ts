@@ -3,30 +3,16 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { DailyScore } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { CreateDailyScoreDto } from './dto/create-daily-score.dto';
 import { UpdateDailyScoreDto } from './dto/update-daily-score.dto';
-import { MealMacros, MealPublic } from '../meal/meal.types';
-import { PlanMacros } from '../plan/plan.types';
+import { MealMacros, MealPublic } from '../meal/types';
+import { PlanMacros } from '../plan/types';
 import { PlanService } from '../plan/plan.service';
 import { MealService } from '../meal/meal.service';
 import { ratioTable } from './utils/ratio-table';
-
-type DailyScorePublic = Pick<
-  DailyScore,
-  'id' | 'date' | 'score' | 'userId' | 'createdAt' | 'updatedAt'
->;
-
-const dailyScoreSelect = {
-  id: true,
-  date: true,
-  score: true,
-  userId: true,
-  createdAt: true,
-  updatedAt: true,
-} as const;
+import { DailyScorePublic, dailyScoreSelect } from './types';
 
 @Injectable()
 export class DailyScoreService {

@@ -5,7 +5,7 @@ import {
 import { PrismaService } from '../database/prisma.service';
 import { CreatePrivateFoodDto } from './dto/create-private-food.dto';
 import { UpdatePrivateFoodDto } from './dto/update-private-food.dto';
-import { PrivateFoodPublic, privateFoodSelect } from './privateFood.types';
+import { PrivateFoodPublic, privateFoodSelect } from './types';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 
 @Injectable()
