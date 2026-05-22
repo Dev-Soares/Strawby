@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -7,6 +8,7 @@ import type { OptionalAuthRequest } from 'src/common/types/req-types';
 import { OptionalAuthGuard } from 'src/common/guards/auth/optionalAuth.guard';
 import { OwnershipGuard } from 'src/common/guards/auth/ownership.guard';
 
+@ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
