@@ -134,7 +134,7 @@ export default function MealDetailPage() {
       <AppLayout>
         <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12 max-w-3xl mx-auto text-center">
           <p className="text-sm font-semibold text-red-500 mb-1">Erro ao carregar refeição</p>
-          <p className="text-xs text-neutral-400 mb-6">Verifique sua conexão e tente novamente.</p>
+          <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-6">Verifique sua conexão e tente novamente.</p>
           <button
             type="button"
             onClick={() => navigate('/app/home')}
@@ -157,10 +157,10 @@ export default function MealDetailPage() {
   const backPath = isPlan ? '/app/plan' : '/app/home'
 
   const totals = [
-    { label: 'Calorias', value: Math.round(meal.totals.calories), unit: 'kcal', color: 'bg-red-500', track: 'bg-red-50' },
-    { label: 'Proteína', value: Math.round(meal.totals.protein), unit: 'g', color: 'bg-amber-500', track: 'bg-amber-50' },
-    { label: 'Carboidrato', value: Math.round(meal.totals.carbs), unit: 'g', color: 'bg-blue-500', track: 'bg-blue-50' },
-    { label: 'Gordura', value: Math.round(meal.totals.fat), unit: 'g', color: 'bg-violet-500', track: 'bg-violet-50' },
+    { label: 'Calorias', value: Math.round(meal.totals.calories), unit: 'kcal', color: 'bg-red-500', track: 'bg-red-50 dark:bg-red-950/40' },
+    { label: 'Proteína', value: Math.round(meal.totals.protein), unit: 'g', color: 'bg-amber-500', track: 'bg-amber-50 dark:bg-amber-950/40' },
+    { label: 'Carboidrato', value: Math.round(meal.totals.carbs), unit: 'g', color: 'bg-blue-500', track: 'bg-blue-50 dark:bg-blue-950/40' },
+    { label: 'Gordura', value: Math.round(meal.totals.fat), unit: 'g', color: 'bg-violet-500', track: 'bg-violet-50 dark:bg-violet-950/40' },
   ]
 
   const hasItems = meal.items.length > 0
@@ -175,7 +175,7 @@ export default function MealDetailPage() {
           <button
             type="button"
             onClick={() => navigate(backPath)}
-            className="flex items-center gap-2 mb-4 text-sm font-bold text-neutral-500 hover:text-red-600 transition-colors duration-150 cursor-pointer"
+            className="flex items-center gap-2 mb-4 text-sm font-bold text-neutral-500 dark:text-neutral-400 hover:text-red-600 transition-colors duration-300 cursor-pointer"
           >
             <ArrowLeft size={18} weight="bold" />
             Voltar
@@ -187,7 +187,7 @@ export default function MealDetailPage() {
             >
               <MealIcon size={22} weight="bold" style={{ color: cfg.theme }} />
             </div>
-            <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-950 tracking-tight leading-none truncate">
+            <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight leading-none truncate">
               {meal.name}
             </h1>
           </div>
@@ -197,7 +197,7 @@ export default function MealDetailPage() {
         </div>
 
         {/* Totals */}
-        <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-5 sm:p-6 mb-6">
+        <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-5 sm:p-6 mb-6 transition-colors duration-300">
           <div className="flex items-center gap-2 mb-5">
             <Fire size={18} weight="fill" style={{ color: cfg.theme }} />
             <h2 className="text-sm font-black uppercase tracking-widest" style={{ color: cfg.theme }}>
@@ -207,16 +207,16 @@ export default function MealDetailPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {totals.map((t) => (
               <div key={t.label} className="flex flex-col min-w-0">
-                <span className="text-[10px] sm:text-xs font-black text-neutral-400 uppercase tracking-widest mb-1.5">
+                <span className="text-[10px] sm:text-xs font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest mb-1.5">
                   {t.label}
                 </span>
                 <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-xl sm:text-2xl font-extrabold text-neutral-950 tabular-nums leading-none">
+                  <span className="text-xl sm:text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tabular-nums leading-none">
                     {t.value}
                   </span>
-                  <span className="text-[10px] sm:text-xs font-bold text-neutral-400 uppercase">{t.unit}</span>
+                  <span className="text-[10px] sm:text-xs font-bold text-neutral-400 dark:text-neutral-500 uppercase">{t.unit}</span>
                 </div>
-                <div className={`h-2 sm:h-2.5 rounded-full overflow-hidden ${t.track}`}>
+                <div className={`h-2 sm:h-2.5 rounded-full overflow-hidden ${t.track} transition-colors duration-300`}>
                   <div className={`h-full rounded-full ${t.color}`} style={{ width: '100%' }} />
                 </div>
               </div>
@@ -226,29 +226,29 @@ export default function MealDetailPage() {
 
         {/* Items list */}
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-black text-neutral-900 uppercase tracking-widest">
+          <h2 className="text-sm font-black text-neutral-900 dark:text-neutral-200 uppercase tracking-widest">
             Alimentos ({meal.items.length})
           </h2>
         </div>
 
         {meal.items.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-neutral-200 p-8 text-center mb-6">
-            <p className="text-sm font-semibold text-neutral-400 mb-1">Nenhum alimento</p>
-            <p className="text-xs text-neutral-300 mb-4">Adicione alimentos para compor esta refeição</p>
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-8 text-center mb-6 transition-colors duration-300">
+            <p className="text-sm font-semibold text-neutral-400 dark:text-neutral-500 mb-1">Nenhum alimento</p>
+            <p className="text-xs text-neutral-300 dark:text-neutral-600 mb-4">Adicione alimentos para compor esta refeição</p>
           </div>
         ) : (
           <div className="flex flex-col gap-3 mb-6">
             {meal.items.map((item) => (
               <div
                 key={item.id}
-                className="bg-white rounded-2xl border border-neutral-200 p-4 sm:p-5 hover:border-neutral-300 transition-colors duration-150"
+                className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-4 sm:p-5 hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors duration-300"
               >
                 <div className="flex items-center justify-between gap-3 mb-3">
                   <div className="min-w-0">
-                    <p className="text-sm sm:text-base font-bold text-neutral-950 truncate">
+                    <p className="text-sm sm:text-base font-bold text-neutral-950 dark:text-neutral-100 truncate">
                       {(item.food ?? item.privateFood)?.name ?? 'Alimento'}
                     </p>
-                    <p className="text-xs font-bold text-neutral-400 mt-0.5">
+                    <p className="text-xs font-bold text-neutral-400 dark:text-neutral-500 mt-0.5">
                       {Math.round(item.quantity)}g
                     </p>
                   </div>
@@ -257,7 +257,7 @@ export default function MealDetailPage() {
                       <p className="text-lg sm:text-xl font-extrabold tabular-nums leading-none" style={{ color: cfg.theme }}>
                         {Math.round(item.calories)}
                       </p>
-                      <p className="text-[9px] sm:text-[10px] font-bold text-neutral-400 uppercase tracking-wide mt-0.5">
+                      <p className="text-[9px] sm:text-[10px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide mt-0.5">
                         kcal
                       </p>
                     </div>
@@ -272,7 +272,7 @@ export default function MealDetailPage() {
                         })
                       }
                       disabled={removeItem.isPending}
-                      className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-150 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-300 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                       style={{ backgroundColor: cfg.themeLight, color: cfg.theme }}
                       aria-label={`Remover ${(item.food ?? item.privateFood)?.name ?? 'Alimento'}`}
                     >
@@ -282,7 +282,7 @@ export default function MealDetailPage() {
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-lg px-2 py-1.5">
+                  <div className="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-100 rounded-lg px-2 py-1.5 transition-colors duration-300">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
                     <span className="text-[11px] font-extrabold text-amber-900 tabular-nums">
                       {Math.round(item.protein)}<span className="text-amber-700 font-bold">g</span>
@@ -291,7 +291,7 @@ export default function MealDetailPage() {
                       Prot
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5 bg-blue-50 border border-blue-100 rounded-lg px-2 py-1.5">
+                  <div className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-950/40 border border-blue-100 rounded-lg px-2 py-1.5 transition-colors duration-300">
                     <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
                     <span className="text-[11px] font-extrabold text-blue-900 tabular-nums">
                       {Math.round(item.carbs)}<span className="text-blue-700 font-bold">g</span>
@@ -300,7 +300,7 @@ export default function MealDetailPage() {
                       Carb
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5 bg-violet-50 border border-violet-100 rounded-lg px-2 py-1.5">
+                  <div className="flex items-center gap-1.5 bg-violet-50 dark:bg-violet-950/40 border border-violet-100 rounded-lg px-2 py-1.5 transition-colors duration-300">
                     <span className="w-1.5 h-1.5 rounded-full bg-violet-500 shrink-0" />
                     <span className="text-[11px] font-extrabold text-violet-900 tabular-nums">
                       {Math.round(item.fat)}<span className="text-violet-700 font-bold">g</span>
@@ -319,7 +319,7 @@ export default function MealDetailPage() {
         {hasRecipes && (
           <>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-black text-neutral-900 uppercase tracking-widest">
+              <h2 className="text-sm font-black text-neutral-900 dark:text-neutral-200 uppercase tracking-widest">
                 Receitas ({meal.recipes.length})
               </h2>
             </div>
@@ -327,14 +327,14 @@ export default function MealDetailPage() {
               {meal.recipes.map((recipe) => (
                 <div
                   key={recipe.id}
-                  className="bg-white rounded-2xl border border-neutral-200 p-4 sm:p-5 hover:border-neutral-300 transition-colors duration-150"
+                className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-4 sm:p-5 hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors duration-300"
                 >
                   <div className="flex items-center justify-between gap-3 mb-3">
                     <div className="min-w-0">
-                      <p className="text-sm sm:text-base font-bold text-neutral-950 truncate">
+                      <p className="text-sm sm:text-base font-bold text-neutral-950 dark:text-neutral-100 truncate">
                         {recipe.name}
                       </p>
-                      <p className="text-xs font-bold text-neutral-400 mt-0.5">
+                      <p className="text-xs font-bold text-neutral-400 dark:text-neutral-500 mt-0.5">
                         Receita
                       </p>
                     </div>
@@ -343,7 +343,7 @@ export default function MealDetailPage() {
                         <p className="text-lg sm:text-xl font-extrabold tabular-nums leading-none" style={{ color: cfg.theme }}>
                           {Math.round(recipe.calories)}
                         </p>
-                        <p className="text-[9px] sm:text-[10px] font-bold text-neutral-400 uppercase tracking-wide mt-0.5">
+                        <p className="text-[9px] sm:text-[10px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide mt-0.5">
                           kcal
                         </p>
                       </div>
@@ -358,7 +358,7 @@ export default function MealDetailPage() {
                           })
                         }
                         disabled={removeRecipe.isPending}
-                        className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-150 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-300 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{ backgroundColor: cfg.themeLight, color: cfg.theme }}
                         aria-label={`Remover ${recipe.name}`}
                       >
@@ -368,7 +368,7 @@ export default function MealDetailPage() {
                   </div>
 
                   <div className="grid grid-cols-3 gap-2">
-                    <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-100 rounded-lg px-2 py-1.5">
+                    <div className="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-100 rounded-lg px-2 py-1.5 transition-colors duration-300">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
                       <span className="text-[11px] font-extrabold text-amber-900 tabular-nums">
                         {Math.round(recipe.protein)}<span className="text-amber-700 font-bold">g</span>
@@ -377,7 +377,7 @@ export default function MealDetailPage() {
                         Prot
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5 bg-blue-50 border border-blue-100 rounded-lg px-2 py-1.5">
+                    <div className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-950/40 border border-blue-100 rounded-lg px-2 py-1.5 transition-colors duration-300">
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
                       <span className="text-[11px] font-extrabold text-blue-900 tabular-nums">
                         {Math.round(recipe.carbs)}<span className="text-blue-700 font-bold">g</span>
@@ -386,7 +386,7 @@ export default function MealDetailPage() {
                         Carb
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5 bg-violet-50 border border-violet-100 rounded-lg px-2 py-1.5">
+                    <div className="flex items-center gap-1.5 bg-violet-50 dark:bg-violet-950/40 border border-violet-100 rounded-lg px-2 py-1.5 transition-colors duration-300">
                       <span className="w-1.5 h-1.5 rounded-full bg-violet-500 shrink-0" />
                       <span className="text-[11px] font-extrabold text-violet-900 tabular-nums">
                         {Math.round(recipe.fat)}<span className="text-violet-700 font-bold">g</span>
@@ -403,9 +403,9 @@ export default function MealDetailPage() {
         )}
 
         {isEmpty && (
-          <div className="bg-white rounded-2xl border border-neutral-200 p-8 text-center mb-6">
-            <p className="text-sm font-semibold text-neutral-400 mb-1">Nenhum item</p>
-            <p className="text-xs text-neutral-300 mb-4">Adicione alimentos ou receitas para compor esta refeição</p>
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-8 text-center mb-6 transition-colors duration-300">
+            <p className="text-sm font-semibold text-neutral-400 dark:text-neutral-500 mb-1">Nenhum item</p>
+            <p className="text-xs text-neutral-300 dark:text-neutral-600 mb-4">Adicione alimentos ou receitas para compor esta refeição</p>
           </div>
         )}
 
@@ -414,7 +414,7 @@ export default function MealDetailPage() {
           <button
             type="button"
             onClick={() => navigate(`/app/foods/select?mealId=${meal.id}&type=${isPlan ? 'plan-meal' : 'meal'}`)}
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white shadow-md transition-colors duration-150 cursor-pointer hover:brightness-110"
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white shadow-md transition-colors duration-300 cursor-pointer hover:brightness-110"
             style={{ backgroundColor: cfg.theme }}
           >
             <Plus size={16} weight="bold" />
@@ -425,7 +425,7 @@ export default function MealDetailPage() {
             type="button"
             onClick={() => setConfirm({ type: 'meal', id: meal.id, name: meal.name })}
             disabled={deleteMutation.isPending}
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white bg-red-500 hover:bg-red-600 shadow-md transition-colors duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white bg-red-500 hover:bg-red-600 shadow-md transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {deleteMutation.isPending ? (
               <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />

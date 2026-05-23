@@ -69,8 +69,8 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
                       className="group flex items-center gap-4 py-5 sm:py-6"
                     >
                       <span
-                        className={`font-extrabold text-[46px] sm:text-[50px] lg:text-[62px] leading-none tracking-tight transition-all duration-200 group-hover:translate-x-2 ${
-                          isActive ? 'text-white' : 'text-white/85 group-hover:text-white'
+                        className={`font-extrabold text-[46px] sm:text-[50px] lg:text-[62px] leading-none tracking-tight text-white transition-all duration-300 ease-out group-hover:translate-x-2 ${
+                          isActive ? 'opacity-100' : 'opacity-85 group-hover:opacity-100'
                         }`}
                       >
                         {item.label}
@@ -98,7 +98,7 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
                 type="button"
                 onClick={() => signOut()}
                 disabled={isSigningOut}
-                className="group bg-white text-red-600 hover:bg-neutral-950 hover:text-white text-sm sm:text-base font-extrabold px-7 sm:px-9 py-3.5 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-[0_10px_30px_-8px_rgba(0,0,0,0.35)] hover:shadow-[0_18px_40px_-10px_rgba(0,0,0,0.6)] hover:-translate-y-0.5 hover:scale-[1.03] tracking-tight disabled:opacity-50 cursor-pointer"
+                className="group bg-white dark:bg-neutral-950 text-red-600 dark:text-red-400 hover:bg-neutral-950 hover:text-white dark:hover:bg-neutral-100 dark:hover:text-neutral-950 text-sm sm:text-base font-extrabold px-7 sm:px-9 py-3.5 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-[0_10px_30px_-8px_rgba(0,0,0,0.35)] hover:shadow-[0_18px_40px_-10px_rgba(0,0,0,0.6)] hover:-translate-y-0.5 hover:scale-[1.03] tracking-tight disabled:opacity-50 cursor-pointer"
               >
                 {isSigningOut ? 'Saindo…' : 'Sair da conta'}
                 <ArrowRight size={17} weight="bold" className="group-hover:translate-x-1.5 transition-transform duration-300" />

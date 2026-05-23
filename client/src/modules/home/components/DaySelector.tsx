@@ -64,11 +64,11 @@ export default function DaySelector() {
       transition={{ duration: 0.45, delay: 0.15 }}
     >
       {/* Header bar */}
-      <div className="flex items-center justify-between bg-white rounded-2xl border border-neutral-200 shadow-sm px-4 py-3 sm:px-5 sm:py-3.5 mb-3">
+      <div className="flex items-center justify-between bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm px-4 py-3 sm:px-5 sm:py-3.5 mb-3 transition-colors duration-300">
         <button
           type="button"
           onClick={goPrevDay}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 transition-all duration-150 cursor-pointer shrink-0"
           aria-label="Dia anterior"
         >
           <CaretLeft size={18} weight="bold" />
@@ -80,7 +80,7 @@ export default function DaySelector() {
             className="flex items-center gap-2 sm:gap-2.5 text-left cursor-pointer group"
           >
             <CalendarBlank size={16} weight="bold" className="text-red-500" />
-            <span className="text-sm sm:text-base font-extrabold text-neutral-900 group-hover:text-red-600 transition-colors duration-150">
+            <span className="text-sm sm:text-base font-extrabold text-neutral-900 dark:text-neutral-100 group-hover:text-red-600 transition-colors duration-150">
               {formattedHeader}
             </span>
             <input
@@ -95,7 +95,7 @@ export default function DaySelector() {
         <button
           type="button"
           onClick={goNextDay}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 transition-all duration-150 cursor-pointer shrink-0"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 transition-all duration-150 cursor-pointer shrink-0"
           aria-label="Próximo dia"
         >
           <CaretRight size={18} weight="bold" />
@@ -120,14 +120,14 @@ export default function DaySelector() {
                 isSelected
                   ? 'bg-red-600 text-white shadow-md'
                   : isToday
-                    ? 'bg-white text-red-600 border border-red-200 shadow-sm'
-                    : 'bg-white text-neutral-900 border border-transparent hover:bg-neutral-50'
+                    ? 'bg-white dark:bg-neutral-900 text-red-600 border border-red-200 dark:border-red-900 shadow-sm'
+                    : 'bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 border border-transparent hover:bg-neutral-50 dark:hover:bg-neutral-800'
               }`}
             >
               <span className={`text-[10px] sm:text-xs font-bold uppercase tracking-wider ${isSelected ? 'text-red-100' : isToday ? 'text-red-400' : 'text-neutral-400'}`}>
                 {weekLabels[weekIdx]}
               </span>
-              <span className={`text-2xl sm:text-2xl font-extrabold tabular-nums leading-none ${isSelected ? 'text-white' : isToday ? 'text-red-600' : 'text-neutral-950'}`}>
+              <span className={`text-2xl sm:text-2xl font-extrabold tabular-nums leading-none ${isSelected ? 'text-white' : isToday ? 'text-red-600' : 'text-neutral-950 dark:text-neutral-100'} transition-colors duration-300`}>
                 {dayNum}
               </span>
               {isToday && !isSelected && (

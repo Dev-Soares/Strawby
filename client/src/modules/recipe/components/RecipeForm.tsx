@@ -29,15 +29,15 @@ export default function RecipeForm({ onSuccess }: RecipeFormProps) {
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 max-w-2xl">
-      <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-6">
-        <label className="block text-xs font-black text-neutral-500 uppercase tracking-widest mb-3">
+      <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-6 transition-colors duration-300">
+        <label className="block text-xs font-black text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-3">
           Nome da receita
         </label>
         <input
           {...register('name')}
           type="text"
           placeholder="Ex: Omelete de claras"
-          className="w-full text-lg font-bold text-neutral-950 bg-transparent outline-none border-b-2 border-neutral-200 focus:border-neutral-500 pb-2 transition-colors duration-150 placeholder:text-neutral-300"
+          className="w-full text-lg font-bold text-neutral-950 dark:text-neutral-100 bg-transparent outline-none border-b-2 border-neutral-200 dark:border-neutral-800 focus:border-neutral-500 dark:focus:border-neutral-400 pb-2 transition-colors duration-150 placeholder:text-neutral-300 dark:placeholder:text-neutral-600"
         />
         {errors.name && <p className="text-xs text-red-500 mt-2">{errors.name.message}</p>}
       </div>

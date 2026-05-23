@@ -5,7 +5,7 @@ import LoginForm from '@/modules/auth/components/LoginForm'
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-8 lg:px-12 py-16">
+    <div className="min-h-screen bg-white dark:bg-neutral-950 flex items-center justify-center px-4 sm:px-8 lg:px-12 py-16 transition-colors duration-300">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -24,7 +24,7 @@ export default function LoginPage() {
 
           <Link to="/" className="flex items-center gap-3 w-fit">
             <img src="/logo.png" alt="Strawby" className="w-14 h-14 object-contain" />
-            <span className="text-neutral-900 text-[28px] font-black tracking-tighter">
+            <span className="text-neutral-900 dark:text-neutral-100 text-[28px] font-black tracking-tighter transition-colors duration-300">
               Strawby
             </span>
           </Link>

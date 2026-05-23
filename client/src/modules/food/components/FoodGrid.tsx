@@ -23,7 +23,7 @@ const item = {
 export default function FoodGrid({ foods, total }: FoodGridProps) {
   return (
     <div>
-      <p className="text-sm text-neutral-500 mb-4">
+      <p className="text-sm text-neutral-500 dark:text-neutral-400 mb-4 transition-colors duration-300">
         {total} alimento{total !== 1 ? 's' : ''} encontrado{total !== 1 ? 's' : ''}
       </p>
       <motion.div

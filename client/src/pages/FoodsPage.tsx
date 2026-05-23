@@ -27,11 +27,11 @@ export default function FoodsPage() {
     if (search.trim().length < 2) {
       return (
         <div className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mb-5">
+          <div className="w-16 h-16 rounded-2xl bg-red-50 dark:bg-red-950/40 flex items-center justify-center mb-5 transition-colors duration-300">
             <MagnifyingGlass size={26} weight="bold" className="text-red-400" />
           </div>
-          <p className="text-base font-semibold text-neutral-700 mb-1">Busque um alimento</p>
-          <p className="text-sm text-neutral-400 max-w-xs">
+          <p className="text-base font-semibold text-neutral-700 dark:text-neutral-300 mb-1 transition-colors duration-300">Busque um alimento</p>
+          <p className="text-sm text-neutral-400 dark:text-neutral-500 max-w-xs transition-colors duration-300">
             Digite o nome de qualquer alimento para ver suas informações nutricionais
           </p>
         </div>
@@ -44,7 +44,7 @@ export default function FoodsPage() {
       return (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <p className="text-sm font-semibold text-red-500 mb-1">Erro ao buscar alimentos</p>
-          <p className="text-xs text-neutral-400">Verifique sua conexão e tente novamente</p>
+            <p className="text-xs text-neutral-400 dark:text-neutral-500 transition-colors duration-300">Verifique sua conexão e tente novamente</p>
         </div>
       )
     }
@@ -52,10 +52,10 @@ export default function FoodsPage() {
     if (!foods || foods.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-sm font-semibold text-neutral-600 mb-1">
+            <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 mb-1 transition-colors duration-300">
             Nenhum resultado para &quot;{search}&quot;
           </p>
-          <p className="text-xs text-neutral-400">Tente um nome diferente ou mais genérico</p>
+          <p className="text-xs text-neutral-400 dark:text-neutral-500 transition-colors duration-300">Tente um nome diferente ou mais genérico</p>
         </div>
       )
     }
@@ -67,13 +67,13 @@ export default function FoodsPage() {
     <AppLayout>
       <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12 max-w-5xl mx-auto">
         <div className="mb-8">
-          <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-neutral-950 tracking-tight leading-none">
+          <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight leading-none transition-colors duration-300">
             Alimentos
           </h1>
-          <p className="text-sm text-neutral-500 mt-3">Busque na base pública, gerencie seus alimentos privados ou monte receitas</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-3 transition-colors duration-300">Busque na base pública, gerencie seus alimentos privados ou monte receitas</p>
         </div>
 
-        <div className="flex gap-1 mb-6 bg-neutral-100 rounded-xl p-1">
+        <div className="flex gap-1 mb-6 bg-neutral-100 dark:bg-neutral-800 rounded-xl p-1 transition-colors duration-300">
           {tabs.map((t) => (
             <button
               key={t.key}
@@ -81,8 +81,8 @@ export default function FoodsPage() {
               onClick={() => setTab(t.key)}
               className={`flex-1 py-2.5 rounded-lg text-sm font-bold transition-all duration-200 cursor-pointer px-2 sm:px-3 ${
                 tab === t.key
-                  ? 'bg-white text-neutral-900 shadow-sm'
-                  : 'text-neutral-500 hover:text-neutral-700'
+                  ? 'bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200 shadow-sm'
+                  : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300'
               }`}
             >
               {t.label}
@@ -103,8 +103,8 @@ export default function FoodsPage() {
           <div className="max-w-3xl">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="text-lg sm:text-xl font-extrabold text-neutral-900">Suas receitas</h2>
-                <p className="text-xs sm:text-sm text-neutral-400 mt-0.5">
+                <h2 className="text-lg sm:text-xl font-extrabold text-neutral-900 dark:text-neutral-200 transition-colors duration-300">Suas receitas</h2>
+                <p className="text-xs sm:text-sm text-neutral-400 dark:text-neutral-500 mt-0.5 transition-colors duration-300">
                   Monte receitas para reutilizar nas refeições
                 </p>
               </div>

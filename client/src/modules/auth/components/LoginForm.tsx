@@ -17,7 +17,7 @@ export default function LoginForm() {
 
       {/* Formulário */}
       <div className="flex-1 min-w-0">
-        <h1 className="text-4xl md:text-[52px] font-black tracking-tight text-neutral-900 leading-none mb-10 md:mb-14">
+        <h1 className="text-4xl md:text-[52px] font-black tracking-tight text-neutral-900 dark:text-neutral-100 leading-none mb-10 md:mb-14 transition-colors duration-300">
           Entrar.
         </h1>
 
@@ -31,7 +31,7 @@ export default function LoginForm() {
               {...register('email')}
               type="email"
               autoComplete="email"
-              className="w-full border-0 border-b-2 border-neutral-200 bg-transparent pb-3 text-[15px] text-neutral-900 focus:outline-none focus:border-red-500 transition-colors duration-200"
+              className="w-full border-0 border-b-2 border-neutral-200 dark:border-neutral-700 bg-transparent pb-3 text-[15px] text-neutral-900 dark:text-neutral-100 focus:outline-none focus:border-red-500 transition-colors duration-200"
             />
             {errors.email && (
               <p className="text-red-500 text-[11px] mt-2">{errors.email.message}</p>
@@ -47,7 +47,7 @@ export default function LoginForm() {
                 {...register('password')}
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
-                className="w-full border-0 border-b-2 border-neutral-200 bg-transparent pb-3 text-[15px] text-neutral-900 focus:outline-none focus:border-red-500 transition-colors duration-200 pr-8"
+                className="w-full border-0 border-b-2 border-neutral-200 dark:border-neutral-700 bg-transparent pb-3 text-[15px] text-neutral-900 dark:text-neutral-100 focus:outline-none focus:border-red-500 transition-colors duration-200 pr-8"
               />
               <button
                 type="button"
@@ -77,11 +77,11 @@ export default function LoginForm() {
             </button>
           </div>
 
-          <p className="text-[13px] text-neutral-400">
+          <p className="text-[13px] text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
             Não tem conta?{' '}
             <Link
               to="/app/create-account"
-              className="font-semibold text-neutral-900 underline underline-offset-2 hover:text-red-600 transition-colors"
+              className="font-semibold text-neutral-900 dark:text-neutral-200 underline underline-offset-2 hover:text-red-600 transition-colors"
             >
               Cadastre-se agora
             </Link>

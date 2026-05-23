@@ -113,12 +113,12 @@ export default function DailyScoreDashboard() {
         <button
           type="button"
           onClick={() => setWeekOffset((o) => o - 1)}
-          className="flex items-center gap-1 text-sm font-bold text-neutral-500 hover:text-neutral-950 transition-colors"
+          className="flex items-center gap-1 text-sm font-bold text-neutral-500 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-100 transition-colors duration-300"
         >
           <CaretLeft size={18} weight="bold" />
           Anterior
         </button>
-        <span className="text-xs font-bold uppercase tracking-wider text-neutral-400">
+        <span className="text-xs font-bold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
           {weekOffset === 0
             ? 'Semana atual'
             : weekOffset === -1
@@ -130,7 +130,7 @@ export default function DailyScoreDashboard() {
         <button
           type="button"
           onClick={() => setWeekOffset((o) => o + 1)}
-          className="flex items-center gap-1 text-sm font-bold text-neutral-500 hover:text-neutral-950 transition-colors"
+          className="flex items-center gap-1 text-sm font-bold text-neutral-500 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-100 transition-colors duration-300"
         >
           Próxima
           <CaretRight size={18} weight="bold" />

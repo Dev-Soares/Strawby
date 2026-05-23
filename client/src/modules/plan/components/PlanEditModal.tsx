@@ -19,9 +19,9 @@ const macroConfig = [
     step: 5,
     max: 500,
     color: '#f59e0b',
-    bg: 'bg-amber-50',
-    border: 'border-amber-100',
-    textColor: 'text-amber-600',
+    bg: 'bg-amber-50 dark:bg-amber-950/40',
+    border: 'border-amber-100 dark:border-amber-900/30',
+    textColor: 'text-amber-600 dark:text-amber-400',
     ringFocus: 'focus:ring-amber-300',
   },
   {
@@ -30,9 +30,9 @@ const macroConfig = [
     step: 5,
     max: 800,
     color: '#3b82f6',
-    bg: 'bg-blue-50',
-    border: 'border-blue-100',
-    textColor: 'text-blue-600',
+    bg: 'bg-blue-50 dark:bg-blue-950/40',
+    border: 'border-blue-100 dark:border-blue-900/30',
+    textColor: 'text-blue-600 dark:text-blue-400',
     ringFocus: 'focus:ring-blue-300',
   },
   {
@@ -41,9 +41,9 @@ const macroConfig = [
     step: 5,
     max: 300,
     color: '#a855f7',
-    bg: 'bg-purple-50',
-    border: 'border-purple-100',
-    textColor: 'text-purple-600',
+    bg: 'bg-purple-50 dark:bg-purple-950/40',
+    border: 'border-purple-100 dark:border-purple-900/30',
+    textColor: 'text-purple-600 dark:text-purple-400',
     ringFocus: 'focus:ring-purple-300',
   },
 ]
@@ -71,7 +71,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
           <motion.div
-            className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden"
+            className="relative bg-white dark:bg-neutral-900 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden transition-colors duration-300"
             initial={{ opacity: 0, scale: 0.96, y: 14 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 14 }}
@@ -80,24 +80,24 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
             {/* Header */}
             <div className="flex items-center justify-between px-5 sm:px-8 pt-6 sm:pt-8 pb-5 sm:pb-6">
               <div>
-                <h2 className="text-lg sm:text-xl font-extrabold text-neutral-950 tracking-tight">Editar Plano</h2>
-                <p className="text-xs sm:text-sm text-neutral-400 mt-0.5">Ajuste seus objetivos nutricionais</p>
+                <h2 className="text-lg sm:text-xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight transition-colors duration-300">Editar Plano</h2>
+                <p className="text-xs sm:text-sm text-neutral-400 dark:text-neutral-500 mt-0.5 transition-colors duration-300">Ajuste seus objetivos nutricionais</p>
               </div>
               <button
                 type="button"
                 onClick={onClose}
-                className="w-9 h-9 flex items-center justify-center rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors cursor-pointer"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
               >
-                <X size={15} weight="bold" className="text-neutral-600" />
+                <X size={15} weight="bold" className="text-neutral-600 dark:text-neutral-400 transition-colors duration-300" />
               </button>
             </div>
 
             <form onSubmit={onSubmit} className="max-h-[70vh] sm:max-h-none overflow-y-auto">
               {/* Calorie section */}
-              <div className="mx-5 sm:mx-8 rounded-2xl bg-linear-to-br from-red-50 to-red-100/40 border border-red-100 px-4 sm:px-8 py-5 sm:py-7">
+              <div className="mx-5 sm:mx-8 rounded-2xl bg-linear-to-br from-red-50 to-red-100/40 dark:from-red-950/30 dark:to-red-900/20 border border-red-100 dark:border-red-900/30 px-4 sm:px-8 py-5 sm:py-7 transition-colors duration-300">
                 <div className="flex items-center gap-2 mb-4 sm:mb-6">
                   <Fire size={14} weight="fill" className="text-red-500" />
-                  <span className="text-[10px] font-extrabold text-red-600 uppercase tracking-[0.12em]">Meta calórica diária</span>
+                  <span className="text-[10px] font-extrabold text-red-600 dark:text-red-400 uppercase tracking-[0.12em] transition-colors duration-300">Meta calórica diária</span>
                 </div>
 
                 <div className="flex items-center justify-center gap-3 sm:gap-5">
@@ -107,11 +107,11 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
                         {...register('calories', { valueAsNumber: true })}
                         type="number"
                         disabled={isPending}
-                        className="font-display text-5xl sm:text-7xl font-extrabold text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-300 focus:border-red-500 pb-1 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="font-display text-5xl sm:text-7xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-300 focus:border-red-500 pb-1 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                       <PencilSimple size={18} weight="bold" className="text-red-400 shrink-0 -mb-1" />
                     </div>
-                    <p className="text-xs sm:text-sm font-semibold text-neutral-400 mt-2">kcal / dia · mín 1000 · máx 5000</p>
+                    <p className="text-xs sm:text-sm font-semibold text-neutral-400 dark:text-neutral-500 mt-2 transition-colors duration-300">kcal / dia · mín 1000 · máx 5000</p>
                   </div>
                 </div>
               </div>
@@ -132,16 +132,16 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
                         {...register(macro.field, { valueAsNumber: true })}
                         type="number"
                         disabled={isPending}
-                        className="font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                         style={{ borderBottomColor: `${macro.color}55` }}
                         onFocus={(e) => { if (!isPending) e.currentTarget.style.borderBottomColor = macro.color }}
                         onBlur={(e) => { e.currentTarget.style.borderBottomColor = `${macro.color}55` }}
                       />
-                      <span className="text-sm sm:text-base font-bold text-neutral-400 pb-1 shrink-0">g</span>
+                      <span className="text-sm sm:text-base font-bold text-neutral-400 dark:text-neutral-500 pb-1 shrink-0 transition-colors duration-300">g</span>
                       <PencilSimple size={14} weight="bold" className="shrink-0 mb-1.5" style={{ color: `${macro.color}aa` }} />
                     </div>
 
-                    <p className="text-[8px] sm:text-[9px] text-neutral-400 mb-3 sm:mb-5">máx. {macro.max}g</p>
+                    <p className="text-[8px] sm:text-[9px] text-neutral-400 dark:text-neutral-500 mb-3 sm:mb-5 transition-colors duration-300">máx. {macro.max}g</p>
                   </div>
                 ))}
               </div>
@@ -152,14 +152,14 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
                   type="button"
                   onClick={onClose}
                   disabled={isPending}
-                  className="flex-1 py-3.5 rounded-xl border border-neutral-200 text-sm font-semibold text-neutral-600 hover:bg-neutral-50 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 py-3.5 rounded-xl border border-neutral-200 dark:border-neutral-700 text-sm font-semibold text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="flex-1 py-3.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-sm font-bold text-white flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 py-3.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 dark:bg-neutral-100 dark:hover:bg-neutral-200 text-sm font-bold text-white dark:text-neutral-950 flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isPending ? (
                     <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

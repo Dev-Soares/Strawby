@@ -41,7 +41,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
   const totalKcal = Math.round(meal.totals.calories)
 
   return (
-    <div className="bg-white border border-neutral-200 shadow-sm rounded-2xl overflow-hidden transition-shadow duration-200 hover:shadow-md">
+    <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm rounded-2xl overflow-hidden transition-shadow duration-200 hover:shadow-md transition-colors duration-300">
       {/* Card body */}
       <div className="p-4">
         {/* Top row */}
@@ -68,7 +68,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
           >
             {totalKcal}
           </span>
-          <span className="text-base font-bold text-neutral-400 ml-1.5">kcal</span>
+          <span className="text-base font-bold text-neutral-400 dark:text-neutral-500 ml-1.5">kcal</span>
         </div>
 
         {/* Macro chips */}
@@ -90,11 +90,11 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-neutral-100">
+      <div className="border-t border-neutral-100 dark:border-neutral-800">
         <button
           type="button"
           onClick={onToggle}
-          className="w-full flex items-center justify-between px-5 py-3 hover:bg-neutral-50 transition-colors duration-150 cursor-pointer"
+          className="w-full flex items-center justify-between px-5 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-300 cursor-pointer"
           style={{ color: config.accentText }}
         >
           <span className="text-sm font-bold">
@@ -119,7 +119,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
             transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
             className="overflow-hidden"
           >
-            <div className="border-t border-neutral-100 px-4 py-3 flex flex-col gap-2">
+            <div className="border-t border-neutral-100 dark:border-neutral-800 px-4 py-3 flex flex-col gap-2">
               {meal.items && meal.items.length > 0 && (
                 <>
                   {meal.items.map((item) => (
@@ -128,14 +128,14 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                       className="flex items-center justify-between"
                     >
                       <div className="min-w-0">
-                        <p className="text-sm font-bold text-neutral-900 truncate">
+                        <p className="text-sm font-bold text-neutral-900 dark:text-neutral-200 truncate">
                           {(item.food ?? item.privateFood)?.name ?? 'Alimento'}
                         </p>
-                        <p className="text-xs font-bold text-neutral-400">
+                        <p className="text-xs font-bold text-neutral-400 dark:text-neutral-500">
                           {Math.round(item.quantity)}g
                         </p>
                       </div>
-                      <span className="text-sm font-extrabold tabular-nums text-neutral-700 shrink-0">
+                        <span className="text-sm font-extrabold tabular-nums text-neutral-700 dark:text-neutral-300 shrink-0">
                         {Math.round(item.calories)} kcal
                       </span>
                     </div>
@@ -146,7 +146,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
               {meal.recipes && meal.recipes.length > 0 && (
                 <>
                   {meal.items && meal.items.length > 0 && (
-                    <div className="h-px bg-neutral-100 my-1" />
+                    <div className="h-px bg-neutral-100 dark:bg-neutral-800 my-1" />
                   )}
                   {meal.recipes.map((recipe) => (
                     <div
@@ -154,14 +154,14 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                       className="flex items-center justify-between"
                     >
                       <div className="min-w-0">
-                        <p className="text-sm font-bold text-neutral-900 truncate">
+                        <p className="text-sm font-bold text-neutral-900 dark:text-neutral-200 truncate">
                           {recipe.name}
                         </p>
-                        <p className="text-xs font-bold text-neutral-400">
+                        <p className="text-xs font-bold text-neutral-400 dark:text-neutral-500">
                           Receita
                         </p>
                       </div>
-                      <span className="text-sm font-extrabold tabular-nums text-neutral-700 shrink-0">
+                        <span className="text-sm font-extrabold tabular-nums text-neutral-700 dark:text-neutral-300 shrink-0">
                         {Math.round(recipe.calories)} kcal
                       </span>
                     </div>
@@ -170,13 +170,13 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
               )}
 
               {(!meal.items || meal.items.length === 0) && (!meal.recipes || meal.recipes.length === 0) && (
-                <p className="text-sm font-medium text-neutral-400 py-2">Nenhum alimento adicionado</p>
+                <p className="text-sm font-medium text-neutral-400 dark:text-neutral-500 py-2">Nenhum alimento adicionado</p>
               )}
 
               <button
                 type="button"
                 onClick={() => navigate(`/app/meals/${meal.id}`)}
-                className="mt-4 w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-base font-bold text-red-600 hover:text-red-700 hover:bg-red-50 transition-colors duration-150 cursor-pointer"
+                className="mt-4 w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-base font-bold text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors duration-300 cursor-pointer"
               >
                 <PencilSimple size={18} weight="bold" />
                 Editar refeição

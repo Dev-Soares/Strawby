@@ -35,8 +35,8 @@ export default function MealList({ meals }: MealListProps) {
     <div>
       <div className="flex items-end justify-between mb-5 sm:mb-7 px-1 gap-2 mt-5 sm:mt-7">
         <div className="min-w-0">
-          <h2 className="text-lg sm:text-xl font-extrabold text-neutral-900">Refeições de hoje</h2>
-          <p className="text-xs sm:text-sm text-neutral-400 mt-0.5">
+          <h2 className="text-lg sm:text-xl font-extrabold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">Refeições de hoje</h2>
+          <p className="text-xs sm:text-sm text-neutral-400 dark:text-neutral-500 mt-0.5 transition-colors duration-300">
             Seu histórico do dia
           </p>
         </div>

@@ -9,7 +9,7 @@ export default function MealListSkeleton() {
         <div className="h-4 w-20 rounded-full bg-neutral-200" />
       </div>
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="flex items-center gap-4 bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-sm">
+        <div key={i} className="flex items-center gap-4 bg-white dark:bg-neutral-900 rounded-2xl sm:rounded-3xl p-4 sm:p-5 shadow-sm transition-colors duration-300">
           <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-neutral-100" />
           <div className="flex-1 space-y-1.5">
             <div className="h-3.5 w-32 rounded-full bg-neutral-200" />

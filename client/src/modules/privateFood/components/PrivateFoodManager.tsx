@@ -39,7 +39,7 @@ export default function PrivateFoodManager() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-extrabold text-neutral-950">Meus alimentos</h2>
+        <h2 className="text-lg font-extrabold text-neutral-950 dark:text-neutral-100 transition-colors duration-300">Meus alimentos</h2>
         <button
           type="button"
           onClick={openCreate}
@@ -75,17 +75,17 @@ export default function PrivateFoodManager() {
         ) : isError ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <p className="text-sm font-semibold text-red-500 mb-1">Erro ao carregar alimentos</p>
-            <p className="text-xs text-neutral-400">Verifique sua conexão e tente novamente</p>
+            <p className="text-xs text-neutral-400 dark:text-neutral-500 transition-colors duration-300">Verifique sua conexão e tente novamente</p>
           </div>
         ) : filteredFoods.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-neutral-100 flex items-center justify-center mb-4">
-              <MagnifyingGlass size={22} weight="bold" className="text-neutral-400" />
+            <div className="w-14 h-14 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 transition-colors duration-300">
+              <MagnifyingGlass size={22} weight="bold" className="text-neutral-400 dark:text-neutral-500 transition-colors duration-300" />
             </div>
-            <p className="text-sm font-semibold text-neutral-600 mb-1">
+            <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 mb-1 transition-colors duration-300">
               {search.trim().length >= 2 ? `Nenhum resultado para "${search}"` : 'Nenhum alimento cadastrado'}
             </p>
-            <p className="text-xs text-neutral-400">
+            <p className="text-xs text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
               {search.trim().length >= 2
                 ? 'Tente outro termo de busca'
                 : 'Cadastre seu primeiro alimento'}

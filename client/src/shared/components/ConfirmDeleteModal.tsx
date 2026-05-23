@@ -41,16 +41,16 @@ export default function ConfirmDeleteModal({
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm bg-white rounded-2xl shadow-xl border border-neutral-200 p-6"
+            className="w-full max-w-sm bg-white dark:bg-neutral-900 rounded-2xl shadow-xl border border-neutral-200 dark:border-neutral-800 p-6 transition-colors duration-300"
           >
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
-                <Warning size={20} weight="bold" className="text-red-500" />
+              <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/40 flex items-center justify-center shrink-0 transition-colors duration-300">
+                <Warning size={20} weight="bold" className="text-red-500 dark:text-red-400" />
               </div>
-              <h3 className="text-base font-extrabold text-neutral-950">{title}</h3>
+              <h3 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 transition-colors duration-300">{title}</h3>
             </div>
 
-            <p className="text-sm font-medium text-neutral-500 mb-6 leading-relaxed">
+            <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400 mb-6 leading-relaxed transition-colors duration-300">
               {description}
             </p>
 
@@ -59,7 +59,7 @@ export default function ConfirmDeleteModal({
                 type="button"
                 onClick={onClose}
                 disabled={isPending}
-                className="flex-1 py-3 rounded-xl text-sm font-bold text-neutral-700 bg-neutral-100 hover:bg-neutral-200 transition-colors duration-150 cursor-pointer disabled:opacity-50"
+                className="flex-1 py-3 rounded-xl text-sm font-bold text-neutral-700 dark:text-neutral-300 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors duration-150 cursor-pointer disabled:opacity-50"
               >
                 {cancelLabel}
               </button>

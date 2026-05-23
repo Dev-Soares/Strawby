@@ -8,15 +8,50 @@
   --animate-twinkle: twinkle 3s ease-in-out infinite;
 }
 
+:root {
+  --macro-calories: #dc2626;
+  --macro-calories-light: #fee2e2;
+  --macro-protein: #f59e0b;
+  --macro-protein-light: #fef3c7;
+  --macro-carbs: #3b82f6;
+  --macro-carbs-light: #dbeafe;
+  --macro-fat: #a855f7;
+  --macro-fat-light: #f3e8ff;
+  --macro-score-green: #10b981;
+  --macro-score-green-light: #d1fae5;
+}
+
+.dark {
+  --macro-calories: #ef4444;
+  --macro-calories-light: #450a0a;
+  --macro-protein: #fbbf24;
+  --macro-protein-light: #451a03;
+  --macro-carbs: #60a5fa;
+  --macro-carbs-light: #1e3a8a;
+  --macro-fat: #c084fc;
+  --macro-fat-light: #4c1d95;
+  --macro-score-green: #34d399;
+  --macro-score-green-light: #064e3b;
+}
+
 html, body {
   overflow-x: clip;
   max-width: 100%;
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar — thin red line */
+/* Custom scrollbar — minimal red bar */
 ::-webkit-scrollbar {
-  width: 3px;
+  width: 4px;
+}
+
+::-webkit-scrollbar-button {
+  display: none;
+  height: 0;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 ::-webkit-scrollbar-track {
@@ -26,12 +61,29 @@ html, body {
 ::-webkit-scrollbar-thumb {
   background: #dc2626;
   border-radius: 999px;
+  min-height: 48px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b91c1c;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #991b1b;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #7f1d1d;
 }
 
 /* Firefox */
 * {
   scrollbar-width: thin;
   scrollbar-color: #dc2626 transparent;
+}
+
+.dark * {
+  scrollbar-color: #991b1b transparent;
 }
 
 img, svg, video {

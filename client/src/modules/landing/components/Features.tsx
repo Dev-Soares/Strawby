@@ -43,13 +43,13 @@ function WeeklyPreview() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 + i * 0.04 }}
           className={`relative flex flex-col items-center justify-between rounded-xl px-1 py-3 aspect-3/5 ${
-            d.today ? 'bg-red-600 shadow-[0_10px_22px_-10px_rgba(220,38,38,0.5)]' : 'bg-white border border-neutral-200'
+            d.today ? 'bg-red-600 shadow-[0_10px_22px_-10px_rgba(220,38,38,0.5)]' : 'bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800'
           }`}
         >
           <span className={`text-[8px] font-bold tracking-[0.18em] ${d.today ? 'text-white/70' : d.status === 'neutral' ? 'text-neutral-300' : 'text-neutral-400'}`}>
             {d.day}
           </span>
-          <span className={`font-display text-lg sm:text-2xl font-black tabular-nums ${d.today ? 'text-white' : d.status === 'neutral' ? 'text-neutral-300' : 'text-neutral-900'}`}>
+          <span className={`font-display text-lg sm:text-2xl font-black tabular-nums ${d.today ? 'text-white' : d.status === 'neutral' ? 'text-neutral-300 dark:text-neutral-600' : 'text-neutral-900 dark:text-neutral-100'} transition-colors duration-300`}>
             {d.date}
           </span>
           <StatusMark status={d.status} />
@@ -61,16 +61,16 @@ function WeeklyPreview() {
 
 function MacrosPreview() {
   return (
-    <div className="bg-white rounded-2xl border border-neutral-200 shadow-[0_20px_45px_-25px_rgba(0,0,0,0.15)] p-5 sm:p-6">
+    <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-[0_20px_45px_-25px_rgba(0,0,0,0.15)] p-5 sm:p-6 transition-colors duration-300">
       <div className="flex items-center gap-2 mb-4">
         <FireIcon size={13} weight="fill" className="text-red-500" />
         <span className="text-[9px] font-black uppercase tracking-[0.22em] text-neutral-500">Hoje</span>
       </div>
       <div className="mb-1">
-        <span className="font-display text-4xl sm:text-5xl font-black text-neutral-950 tabular-nums leading-none">1.310</span>
-        <span className="text-neutral-400 font-bold text-xs sm:text-sm ml-2">/ 2.200 kcal</span>
+        <span className="font-display text-4xl sm:text-5xl font-black text-neutral-950 dark:text-neutral-100 tabular-nums leading-none transition-colors duration-300">1.310</span>
+        <span className="text-neutral-400 dark:text-neutral-500 font-bold text-xs sm:text-sm ml-2 transition-colors duration-300">/ 2.200 kcal</span>
       </div>
-      <div className="h-1.5 rounded-full bg-red-50 overflow-hidden mt-4 mb-5">
+      <div className="h-1.5 rounded-full bg-red-50 dark:bg-red-950/40 overflow-hidden mt-4 mb-5 transition-colors duration-300">
         <motion.div
           className="h-full rounded-full bg-red-600"
           initial={{ width: 0 }}
@@ -83,9 +83,9 @@ function MacrosPreview() {
         {macros.map((m, i) => (
           <div key={m.label} className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between">
-              <span className="text-[9px] font-black uppercase tracking-[0.18em] text-neutral-500">{m.label}</span>
+              <span className="text-[9px] font-black uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400 transition-colors duration-300">{m.label}</span>
               <span className="font-display text-xs font-black tabular-nums" style={{ color: m.color }}>
-                {m.value}<span className="text-neutral-400 font-bold">/{m.max}g</span>
+                {m.value}<span className="text-neutral-400 dark:text-neutral-500 font-bold transition-colors duration-300">/{m.max}g</span>
               </span>
             </div>
             <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: m.bg }}>
@@ -107,7 +107,7 @@ function MacrosPreview() {
 
 function SearchPreview() {
   return (
-    <div className="bg-white rounded-2xl border border-neutral-200 shadow-[0_20px_45px_-25px_rgba(0,0,0,0.15)] p-4 sm:p-5">
+    <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-[0_20px_45px_-25px_rgba(0,0,0,0.15)] p-4 sm:p-5 transition-colors duration-300">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-1.5">
           <MagnifyingGlassIcon size={12} weight="bold" className="text-neutral-400" />
@@ -116,8 +116,8 @@ function SearchPreview() {
         <span className="text-[9px] font-black text-emerald-600 tabular-nums tracking-[0.18em]">4 / 10.247</span>
       </div>
 
-      <div className="flex items-center gap-2 bg-neutral-100 rounded-xl px-3 py-2.5 mb-3">
-        <span className="font-display text-sm sm:text-base font-bold text-neutral-900 flex-1">
+      <div className="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl px-3 py-2.5 mb-3 transition-colors duration-300">
+        <span className="font-display text-sm sm:text-base font-bold text-neutral-900 dark:text-neutral-100 flex-1 transition-colors duration-300">
           arroz
           <motion.span
             className="inline-block w-0.5 h-4 bg-red-600 align-middle ml-0.5"
@@ -125,7 +125,7 @@ function SearchPreview() {
             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           />
         </span>
-        <kbd className="text-[9px] font-bold text-neutral-500 bg-white border border-neutral-200 rounded px-1 py-0.5">⌘K</kbd>
+        <kbd className="text-[9px] font-bold text-neutral-500 dark:text-neutral-400 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded px-1 py-0.5 transition-colors duration-300">⌘K</kbd>
       </div>
 
       <div className="flex flex-col gap-1.5">
@@ -134,33 +134,33 @@ function SearchPreview() {
             key={r.name}
             className={`group flex items-center gap-2.5 sm:gap-3 rounded-xl px-3 py-2.5 transition-all cursor-pointer ${
               i === 0
-                ? 'bg-red-50/60 border border-red-200'
-                : 'bg-white border border-neutral-200 hover:border-neutral-300'
+                ? 'bg-red-50/60 dark:bg-red-950/40 border border-red-200 dark:border-red-900'
+                : 'bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700'
             }`}
             initial={{ opacity: 0, x: -16 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.4, ease: 'easeOut', delay: 0.15 + i * 0.08 }}
           >
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${i === 0 ? 'bg-red-600' : 'bg-neutral-100'}`}>
-              <ForkKnifeIcon size={13} weight="duotone" className={i === 0 ? 'text-white' : 'text-neutral-500'} />
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${i === 0 ? 'bg-red-600' : 'bg-neutral-100 dark:bg-neutral-800'} transition-colors duration-300`}>
+              <ForkKnifeIcon size={13} weight="duotone" className={i === 0 ? 'text-white' : 'text-neutral-500 dark:text-neutral-400'} />
             </div>
 
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5 mb-0.5">
-                <p className="text-[12px] font-bold text-neutral-900 truncate">{r.name}</p>
+                <p className="text-[12px] font-bold text-neutral-900 dark:text-neutral-100 truncate transition-colors duration-300">{r.name}</p>
                 {r.tag && (
-                  <span className="text-[7px] font-black tracking-[0.15em] text-red-600 bg-white border border-red-200 rounded-full px-1 py-0.5 leading-none shrink-0">
+                  <span className="text-[7px] font-black tracking-[0.15em] text-red-600 bg-white dark:bg-neutral-900 border border-red-200 dark:border-red-900 rounded-full px-1 py-0.5 leading-none shrink-0 transition-colors duration-300">
                     {r.tag}
                   </span>
                 )}
               </div>
-              <p className="text-[10px] text-neutral-500 truncate">{r.meta}</p>
+              <p className="text-[10px] text-neutral-500 dark:text-neutral-400 truncate transition-colors duration-300">{r.meta}</p>
             </div>
 
             <div className="text-right shrink-0">
-              <p className="font-display text-sm font-black text-neutral-900 tabular-nums leading-none">{r.kcal}</p>
-              <p className="text-[9px] text-neutral-400 font-bold mt-0.5">kcal</p>
+              <p className="font-display text-sm font-black text-neutral-900 dark:text-neutral-100 tabular-nums leading-none transition-colors duration-300">{r.kcal}</p>
+              <p className="text-[9px] text-neutral-400 dark:text-neutral-500 font-bold mt-0.5 transition-colors duration-300">kcal</p>
             </div>
           </motion.div>
         ))}
@@ -206,7 +206,7 @@ const menu: Course[] = [
 
 export default function Features() {
   return (
-    <section className="relative bg-stone-50 pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 lg:pb-24 overflow-hidden">
+    <section className="relative bg-stone-50 dark:bg-neutral-950 pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 lg:pb-24 overflow-hidden transition-colors duration-300">
       <div className="max-w-4xl mx-auto px-5 sm:px-8 lg:px-12">
 
         <motion.div
@@ -216,14 +216,14 @@ export default function Features() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.6, ease: [0.34, 1.05, 0.64, 1] }}
         >
-          <h2 className="font-display text-[32px] sm:text-[44px] lg:text-[56px] font-black tracking-[-0.04em] text-neutral-950 leading-[0.92]">
+          <h2 className="font-display text-[32px] sm:text-[44px] lg:text-[56px] font-black tracking-[-0.04em] text-neutral-950 dark:text-neutral-100 leading-[0.92] transition-colors duration-300">
             O que está sendo<br />
             <span className="italic text-red-600">servido hoje.</span>
           </h2>
         </motion.div>
 
         <div className="relative">
-          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-neutral-200 hidden md:block" />
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-neutral-200 dark:bg-neutral-800 hidden md:block transition-colors duration-300" />
 
           <div className="flex flex-col gap-20 sm:gap-16">
             {menu.map((c, i) => (
@@ -237,10 +237,10 @@ export default function Features() {
               >
                 <div className="flex flex-col md:flex-row md:items-start gap-6 md:gap-10">
                   <div className="md:w-1/2 order-2 md:order-1">
-                    <h3 className="font-display text-[24px] sm:text-[28px] lg:text-[32px] font-black tracking-[-0.02em] text-neutral-950 leading-[1.05] mb-3">
+                    <h3 className="font-display text-[24px] sm:text-[28px] lg:text-[32px] font-black tracking-[-0.02em] text-neutral-950 dark:text-neutral-100 leading-[1.05] mb-3 transition-colors duration-300">
                       {c.title}
                     </h3>
-                    <p className="text-[14px] sm:text-[15px] text-neutral-600 leading-relaxed">
+                    <p className="text-[14px] sm:text-[15px] text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
                       {c.description}
                     </p>
                   </div>

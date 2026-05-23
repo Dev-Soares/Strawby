@@ -37,15 +37,15 @@ export default function MacroConfig({ register, errors, watchValues }: MacroConf
                   className="w-2.5 h-2.5 rounded-full"
                   style={{ backgroundColor: row.color }}
                 />
-                <span className="text-sm font-medium text-neutral-700">{row.label}</span>
+                <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300 transition-colors duration-300">{row.label}</span>
               </div>
               <div className="flex items-center gap-2">
                 <input
                   {...register(row.fieldName, { valueAsNumber: true })}
                   type="number"
-                  className="w-16 text-right text-sm font-bold text-neutral-900 bg-transparent outline-none border-b-2 border-neutral-200 focus:border-red-400 transition-colors duration-200 pb-0.5"
+                  className="w-16 text-right text-sm font-bold text-neutral-900 dark:text-neutral-200 bg-transparent outline-none border-b-2 border-neutral-200 dark:border-neutral-700 focus:border-red-400 transition-colors duration-200 pb-0.5"
                 />
-                <span className="text-xs text-neutral-400">g</span>
+                <span className="text-xs text-neutral-400 dark:text-neutral-500 transition-colors duration-300">g</span>
               </div>
             </div>
 

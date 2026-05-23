@@ -40,10 +40,10 @@ export default function PlanPage() {
               transition={{ duration: 0.5 }}
             >
               <div>
-                <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-neutral-950 tracking-tight leading-none">
+                <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight leading-none transition-colors duration-300">
                   Meu Plano
                 </h1>
-                <p className="text-sm text-neutral-500 mt-3">Seus objetivos nutricionais diários</p>
+                <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-3 transition-colors duration-300">Seus objetivos nutricionais diários</p>
               </div>
 
               <button
@@ -59,22 +59,22 @@ export default function PlanPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
               {/* Left — calorie card */}
               <motion.div
-                className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-8"
+                className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-8 transition-colors duration-300"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
                 <div className="flex items-center gap-2 mb-6">
                   <Fire size={16} weight="fill" className="text-red-500" />
-                  <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Meta calórica diária</span>
+                  <span className="text-xs font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest transition-colors duration-300">Meta calórica diária</span>
                 </div>
 
                 <div className="mb-2">
-                  <span className="font-display text-8xl font-extrabold text-neutral-950 leading-none tabular-nums">
+                  <span className="font-display text-8xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums transition-colors duration-300">
                     {plan.calories.toLocaleString('pt-BR')}
                   </span>
                 </div>
-                <p className="text-base font-semibold text-neutral-500">kcal por dia</p>
+                <p className="text-base font-semibold text-neutral-500 dark:text-neutral-400 transition-colors duration-300">kcal por dia</p>
               </motion.div>
 
               {/* Right — macro cards stacked */}
@@ -86,7 +86,7 @@ export default function PlanPage() {
                   return (
                     <motion.div
                       key={macro.field}
-                      className="bg-white rounded-2xl border border-neutral-200 shadow-sm px-6 py-5"
+                      className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm px-6 py-5 transition-colors duration-300"
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.4, delay: 0.2 + index * 0.08 }}
@@ -94,11 +94,11 @@ export default function PlanPage() {
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-2.5">
                           <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: macro.color }} />
-                          <span className="text-xs font-bold text-neutral-500 uppercase tracking-widest">{macro.label}</span>
+                          <span className="text-xs font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest transition-colors duration-300">{macro.label}</span>
                         </div>
                         <div className="flex items-baseline gap-1">
-                          <span className="text-2xl font-extrabold text-neutral-950 tabular-nums">{value}</span>
-                          <span className="text-sm font-semibold text-neutral-500">g</span>
+                          <span className="text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tabular-nums transition-colors duration-300">{value}</span>
+                          <span className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 transition-colors duration-300">g</span>
                         </div>
                       </div>
 
@@ -119,7 +119,7 @@ export default function PlanPage() {
           </div>
 
           {/* Divider */}
-          <div className="mx-4 sm:mx-10 lg:mx-16 border-t border-neutral-100 my-2" />
+          <div className="mx-4 sm:mx-10 lg:mx-16 border-t border-neutral-100 dark:border-neutral-800 my-2 transition-colors duration-300" />
 
           <PlanMealsSection />
 

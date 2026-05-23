@@ -1,6 +1,6 @@
 export default function DailySummarySkeleton() {
   return (
-    <div className="animate-pulse bg-white rounded-2xl sm:rounded-3xl shadow-sm p-5 sm:p-8 space-y-6">
+    <div className="animate-pulse bg-white dark:bg-neutral-900 rounded-2xl sm:rounded-3xl shadow-sm p-5 sm:p-8 space-y-6 transition-colors duration-300">
       <div className="flex justify-between">
         <div className="space-y-1.5">
           <div className="h-4 w-28 rounded-full bg-neutral-200" />

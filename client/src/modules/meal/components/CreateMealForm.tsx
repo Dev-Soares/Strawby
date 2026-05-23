@@ -62,8 +62,8 @@ export default function CreateMealForm() {
   return (
     <form onSubmit={onSubmit} className="space-y-6 max-w-2xl">
       {/* Meal type */}
-      <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-6">
-        <p className="text-xs font-black text-neutral-500 uppercase tracking-widest mb-4">
+      <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-6 transition-colors duration-300">
+        <p className="text-xs font-black text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-4">
           Tipo de refeição
         </p>
         <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
@@ -75,7 +75,7 @@ export default function CreateMealForm() {
                 key={key}
                 type="button"
                 onClick={() => setValue('mealType', key, { shouldValidate: true })}
-                className="flex flex-col items-center gap-2 py-4 rounded-2xl border-2 transition-all duration-150 cursor-pointer"
+                className="flex flex-col items-center gap-2 py-4 rounded-2xl border-2 transition-all duration-300 cursor-pointer"
                 style={{
                   borderColor: isSelected ? cfg.accent : 'transparent',
                   backgroundColor: isSelected ? cfg.accentLight : '#f9fafb',
@@ -102,14 +102,14 @@ export default function CreateMealForm() {
 
       {/* Time — only DAILY */}
       {!isPlan && (
-        <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm p-6">
-          <label className="block text-xs font-black text-neutral-500 uppercase tracking-widest mb-3">
+        <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-6 transition-colors duration-300">
+          <label className="block text-xs font-black text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-3">
             Horário
           </label>
           <input
             {...register('time')}
             type="time"
-            className="font-display text-3xl font-black text-neutral-950 bg-transparent outline-none border-b-2 border-neutral-200 focus:border-neutral-500 pb-1 transition-colors duration-150 tabular-nums cursor-pointer"
+            className="font-display text-3xl font-black text-neutral-950 dark:text-neutral-100 bg-transparent outline-none border-b-2 border-neutral-200 dark:border-neutral-700 focus:border-neutral-500 dark:focus:border-neutral-500 pb-1 transition-colors duration-300 tabular-nums cursor-pointer"
           />
           {errors.time && <p className="text-xs text-red-500 mt-2">{errors.time.message}</p>}
         </div>

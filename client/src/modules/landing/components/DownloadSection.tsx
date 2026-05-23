@@ -32,10 +32,10 @@ export default function DownloadSection() {
 
   return (
     <>
-      <section className="relative bg-stone-50 py-20 lg:py-28 overflow-hidden">
+      <section className="relative bg-stone-50 dark:bg-neutral-950 py-20 lg:py-28 overflow-hidden transition-colors duration-300">
         <div className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-16 text-center">
           <motion.h2
-            className="font-display text-[32px] sm:text-[44px] lg:text-[56px] font-black tracking-[-0.04em] text-neutral-950 leading-[0.92] mb-5"
+            className="font-display text-[32px] sm:text-[44px] lg:text-[56px] font-black tracking-[-0.04em] text-neutral-950 dark:text-neutral-100 leading-[0.92] mb-5 transition-colors duration-300"
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
@@ -46,7 +46,7 @@ export default function DownloadSection() {
           </motion.h2>
 
           <motion.p
-            className="text-neutral-600 text-[17px] sm:text-[19px] leading-relaxed mb-12 max-w-lg mx-auto"
+            className="text-neutral-600 dark:text-neutral-400 text-[17px] sm:text-[19px] leading-relaxed mb-12 max-w-lg mx-auto transition-colors duration-300"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.5 }}
@@ -65,7 +65,7 @@ export default function DownloadSection() {
             <a
               href="/app/create-account"
               onClick={handleAndroid}
-              className="inline-flex items-center justify-center gap-3 w-full sm:w-auto bg-white hover:bg-red-50 border border-neutral-200 hover:border-red-200 text-neutral-900 font-bold px-7 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md text-[15px] cursor-pointer"
+              className="inline-flex items-center justify-center gap-3 w-full sm:w-auto bg-white dark:bg-neutral-900 hover:bg-red-50 dark:hover:bg-red-950/40 border border-neutral-200 dark:border-neutral-800 hover:border-red-200 dark:hover:border-red-900 text-neutral-900 dark:text-neutral-100 font-bold px-7 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md text-[15px] cursor-pointer"
             >
               <AndroidLogo size={22} weight="duotone" className="text-red-600" />
               <span>Baixar no Android</span>
@@ -74,7 +74,7 @@ export default function DownloadSection() {
             <a
               href="/app/create-account"
               onClick={handleIos}
-              className="inline-flex items-center justify-center gap-3 w-full sm:w-auto bg-white hover:bg-red-50 border border-neutral-200 hover:border-red-200 text-neutral-900 font-bold px-7 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md text-[15px] cursor-pointer"
+              className="inline-flex items-center justify-center gap-3 w-full sm:w-auto bg-white dark:bg-neutral-900 hover:bg-red-50 dark:hover:bg-red-950/40 border border-neutral-200 dark:border-neutral-800 hover:border-red-200 dark:hover:border-red-900 text-neutral-900 dark:text-neutral-100 font-bold px-7 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md text-[15px] cursor-pointer"
             >
               <AppleLogo size={22} weight="duotone" className="text-red-600" />
               <span>Baixar no iOS</span>
@@ -82,7 +82,7 @@ export default function DownloadSection() {
 
             <a
               href="/app/create-account"
-              className="inline-flex items-center justify-center gap-3 w-full sm:w-auto bg-white hover:bg-red-50 border border-neutral-200 hover:border-red-200 text-neutral-900 font-bold px-7 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md text-[15px] cursor-pointer"
+              className="inline-flex items-center justify-center gap-3 w-full sm:w-auto bg-white dark:bg-neutral-900 hover:bg-red-50 dark:hover:bg-red-950/40 border border-neutral-200 dark:border-neutral-800 hover:border-red-200 dark:hover:border-red-900 text-neutral-900 dark:text-neutral-100 font-bold px-7 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md text-[15px] cursor-pointer"
             >
               <Globe size={22} weight="duotone" className="text-red-600" />
               <span>Usar no navegador</span>

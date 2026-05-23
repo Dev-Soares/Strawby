@@ -40,19 +40,19 @@ export default function RecipeList() {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <p className="text-sm font-semibold text-red-500 mb-1">Erro ao carregar receitas</p>
-        <p className="text-xs text-neutral-400">Verifique sua conexão e tente novamente</p>
+        <p className="text-xs text-neutral-400 dark:text-neutral-500">Verifique sua conexão e tente novamente</p>
       </div>
     )
   }
 
   if (!recipes || recipes.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-2xl border border-neutral-200">
-        <div className="w-16 h-16 rounded-2xl bg-rose-50 flex items-center justify-center mb-4">
+      <div className="flex flex-col items-center justify-center py-24 text-center bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 transition-colors duration-300">
+        <div className="w-16 h-16 rounded-2xl bg-rose-50 dark:bg-rose-950/40 flex items-center justify-center mb-4 transition-colors duration-300">
           <CookingPot size={28} weight="bold" className="text-rose-300" />
         </div>
-        <p className="text-sm font-semibold text-neutral-600 mb-1">Nenhuma receita ainda</p>
-        <p className="text-xs text-neutral-400 mb-6 max-w-xs">
+        <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 mb-1">Nenhuma receita ainda</p>
+        <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-6 max-w-xs">
           Crie sua primeira receita para montar refeições mais rapidamente
         </p>
         <button

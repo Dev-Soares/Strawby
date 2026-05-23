@@ -41,12 +41,12 @@ export default function TopTabBar({ hidden = false }: TopTabBarProps) {
                   size={18}
                   weight={active ? 'fill' : 'regular'}
                   className={`shrink-0 transition-colors ${
-                    active ? 'text-red-600' : 'text-neutral-500 group-hover:text-neutral-800'
+                    active ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200'
                   }`}
                 />
                 <span
                   className={`text-[11px] sm:text-sm font-extrabold tracking-tight transition-colors max-w-full ${
-                    active ? 'text-red-600' : 'text-neutral-500 group-hover:text-neutral-900'
+                    active ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-neutral-200'
                   }`}
                 >
                   {tab.label}

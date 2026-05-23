@@ -18,13 +18,13 @@ export default function PlanMealsSection() {
     <div className="px-4 sm:px-10 lg:px-16 pb-32">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
         <div>
-          <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-neutral-950 tracking-tight leading-none">
+          <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight leading-none transition-colors duration-300">
             Refeições planejadas
           </h2>
-          <p className="text-sm text-neutral-500 mt-1.5">Distribuição do seu plano ao longo do dia</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1.5 transition-colors duration-300">Distribuição do seu plano ao longo do dia</p>
         </div>
         <div className="flex items-center gap-3">
-          <span className="text-base font-bold text-neutral-500 tabular-nums hidden sm:block">
+          <span className="text-base font-bold text-neutral-500 dark:text-neutral-400 tabular-nums hidden sm:block transition-colors duration-300">
             {meals?.length ?? 0} refeições · {Math.round(totalKcal).toLocaleString('pt-BR')} kcal total
           </span>
           <button
@@ -43,9 +43,9 @@ export default function PlanMealsSection() {
       {isPending && <PlanMealsSectionSkeleton />}
 
       {isError && (
-        <div className="rounded-xl bg-red-50 border border-red-100 p-4">
-          <p className="text-sm font-semibold text-red-600">Erro ao carregar refeições planejadas</p>
-          <p className="text-xs text-red-400 mt-1">
+        <div className="rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900/30 p-4 transition-colors duration-300">
+          <p className="text-sm font-semibold text-red-600 dark:text-red-400 transition-colors duration-300">Erro ao carregar refeições planejadas</p>
+          <p className="text-xs text-red-400 dark:text-red-500 mt-1 transition-colors duration-300">
             {error instanceof Error ? error.message : 'Erro desconhecido'}
           </p>
         </div>
@@ -53,8 +53,8 @@ export default function PlanMealsSection() {
 
       {meals && meals.length === 0 && (
         <div className="text-center py-16">
-          <p className="text-sm font-semibold text-neutral-500 mb-1">Nenhuma refeição planejada</p>
-          <p className="text-xs text-neutral-400">Clique em "Nova refeição" para começar</p>
+          <p className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 mb-1 transition-colors duration-300">Nenhuma refeição planejada</p>
+          <p className="text-xs text-neutral-400 dark:text-neutral-500 transition-colors duration-300">Clique em "Nova refeição" para começar</p>
         </div>
       )}
 

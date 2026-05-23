@@ -80,7 +80,7 @@ const containerVariants = {
 
 export default function FoodShowcase() {
   return (
-    <section id="funcionalidades" className="relative overflow-hidden flex items-center pt-40 lg:pt-56 pb-28 lg:pb-32 bg-white">
+    <section id="funcionalidades" className="relative overflow-hidden flex items-center pt-40 lg:pt-56 pb-28 lg:pb-32 bg-white dark:bg-neutral-950 transition-colors duration-300">
 
       <div className="relative max-w-6xl mx-auto px-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-16 mb-24">
@@ -89,7 +89,7 @@ export default function FoodShowcase() {
           <div className="shrink-0 max-w-md">
 
             <motion.h2
-              className="text-neutral-950 font-black text-[44px] sm:text-[52px] lg:text-[60px] leading-[1.02] tracking-tight"
+              className="text-neutral-950 dark:text-neutral-100 font-black text-[44px] sm:text-[52px] lg:text-[60px] leading-[1.02] tracking-tight transition-colors duration-300"
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
@@ -103,7 +103,7 @@ export default function FoodShowcase() {
             </motion.h2>
 
             <motion.p
-              className="text-neutral-600 text-[17px] leading-relaxed mt-6"
+              className="text-neutral-600 dark:text-neutral-400 text-[17px] leading-relaxed mt-6 transition-colors duration-300"
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
@@ -113,7 +113,7 @@ export default function FoodShowcase() {
             </motion.p>
 
             <motion.div
-              className="flex items-center gap-6 mt-10 pt-8 border-t border-neutral-200"
+              className="flex items-center gap-6 mt-10 pt-8 border-t border-neutral-200 dark:border-neutral-800 transition-colors duration-300"
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
@@ -123,16 +123,16 @@ export default function FoodShowcase() {
                 <p className="font-display text-red-600 font-black text-[38px] leading-none tracking-tight">
                   10K<span className="text-red-600">+</span>
                 </p>
-                <p className="text-neutral-500 text-[13px] font-semibold uppercase tracking-wider mt-2">
+                <p className="text-neutral-500 dark:text-neutral-400 text-[13px] font-semibold uppercase tracking-wider mt-2 transition-colors duration-300">
                   alimentos
                 </p>
               </div>
-              <div className="w-px h-14 bg-linear-to-b from-transparent via-neutral-300 to-transparent" />
+              <div className="w-px h-14 bg-linear-to-b from-transparent via-neutral-300 dark:via-neutral-700 to-transparent transition-colors duration-300" />
               <div>
                 <p className="font-display text-red-600 font-black text-[38px] leading-none tracking-tight">
                   100<span className="text-red-600">%</span>
                 </p>
-                <p className="text-neutral-500 text-[13px] font-semibold uppercase tracking-wider mt-2">
+                <p className="text-neutral-500 dark:text-neutral-400 text-[13px] font-semibold uppercase tracking-wider mt-2 transition-colors duration-300">
                   gratuito
                 </p>
               </div>

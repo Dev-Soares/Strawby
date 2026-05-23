@@ -21,7 +21,7 @@ export default function PrivateFoodModal({ isOpen, onClose, ...formProps }: Priv
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
           <motion.div
-            className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden max-h-[85vh] overflow-y-auto"
+            className="relative bg-white dark:bg-neutral-900 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden max-h-[85vh] overflow-y-auto transition-colors duration-300"
             initial={{ opacity: 0, scale: 0.96, y: 14 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 14 }}
@@ -31,9 +31,9 @@ export default function PrivateFoodModal({ isOpen, onClose, ...formProps }: Priv
             <button
               type="button"
               onClick={onClose}
-              className="absolute top-4 right-4 sm:top-6 sm:right-8 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors cursor-pointer"
+              className="absolute top-4 right-4 sm:top-6 sm:right-8 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
             >
-              <X size={15} weight="bold" className="text-neutral-600" />
+              <X size={15} weight="bold" className="text-neutral-600 dark:text-neutral-400 transition-colors duration-300" />
             </button>
 
             <PrivateFoodForm {...formProps} />

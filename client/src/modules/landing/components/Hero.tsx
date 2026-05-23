@@ -19,7 +19,7 @@ const Hero = () => {
             className="font-display font-black tracking-tighter leading-[0.88] text-balance text-[56px] md:text-[72px] lg:text-[84px] xl:text-[96px] mb-8"
             {...fadeUp(0.08)}
           >
-            <span className="text-neutral-950">Domine cada </span>
+            <span className="text-neutral-950 dark:text-neutral-100 transition-colors duration-300">Domine cada </span>
             <span className="text-red-600">refeição.</span>
           </motion.h1>
 
@@ -29,7 +29,7 @@ const Hero = () => {
           />
 
           <motion.p
-            className="text-neutral-700 text-[19px] sm:text-[20px] leading-relaxed max-w-105 mb-10 font-medium"
+            className="text-neutral-700 dark:text-neutral-400 text-[19px] sm:text-[20px] leading-relaxed max-w-105 mb-10 font-medium transition-colors duration-300"
             {...fadeUp(0.36)}
           >
             Rastreie calorias e macros com precisão. Entenda o que você come,

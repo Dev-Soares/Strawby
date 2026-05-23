@@ -133,18 +133,18 @@ export default function SignUpForm() {
       </div>
 
       {/* Card lateral direito (branco) */}
-      <div className="lg:w-96 shrink-0 rounded-2xl border border-neutral-200 bg-neutral-50 p-6 md:p-8 lg:p-10 text-neutral-900 flex flex-col justify-between">
+      <div className="lg:w-96 shrink-0 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 p-6 md:p-8 lg:p-10 text-neutral-900 dark:text-neutral-100 flex flex-col justify-between transition-colors duration-300">
         <div className="flex flex-col gap-5">
-          <h2 className="text-[22px] font-bold leading-snug text-neutral-900">
+          <h2 className="text-[22px] font-bold leading-snug text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
             Já tem uma conta?
           </h2>
-          <p className="text-neutral-600 text-[14px] leading-relaxed">
+          <p className="text-neutral-600 dark:text-neutral-400 text-[14px] leading-relaxed transition-colors duration-300">
             Entre e continue acompanhando suas calorias, proteínas e macros.
           </p>
         </div>
         <Link
           to="/app/login"
-          className="block text-center border-2 border-neutral-900 hover:bg-neutral-900 hover:text-white rounded-full px-4 py-3 text-[13px] font-semibold transition-all duration-200 mt-8"
+          className="block text-center border-2 border-neutral-900 dark:border-neutral-200 hover:bg-neutral-900 dark:hover:bg-neutral-200 hover:text-white dark:hover:text-neutral-900 rounded-full px-4 py-3 text-[13px] font-semibold transition-all duration-200 mt-8"
         >
           Entrar
         </Link>

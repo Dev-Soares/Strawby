@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, DotsThreeVertical, Export, Plus, Check, ArrowDown } from '@phosphor-icons/react'
+import { X, DotsThreeVertical, Export, Plus, Check, ArrowDown, DeviceMobile, Warning } from '@phosphor-icons/react'
 
 type Platform = 'android' | 'ios'
 
@@ -12,7 +12,7 @@ interface InstallPromptModalProps {
 function AndroidGuide() {
   return (
     <div className="space-y-5">
-      <p className="text-sm text-neutral-500 text-center">
+      <p className="text-sm text-neutral-500 dark:text-neutral-400 text-center transition-colors duration-300">
         Seu navegador não mostrou o prompt automático. Siga os passos abaixo para instalar manualmente.
       </p>
 
@@ -22,11 +22,11 @@ function AndroidGuide() {
             1
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-neutral-900">
+            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
               Abra o menu do Chrome
             </p>
-            <p className="text-sm text-neutral-600 leading-relaxed">
-              Toque nos três pontinhos <DotsThreeVertical size={18} weight="bold" className="inline align-text-bottom text-neutral-800" /> no canto superior direito da tela.
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
+              Toque nos três pontinhos <DotsThreeVertical size={18} weight="bold" className="inline align-text-bottom text-neutral-800 dark:text-neutral-200 transition-colors duration-300" /> no canto superior direito da tela.
             </p>
           </div>
         </div>
@@ -36,13 +36,13 @@ function AndroidGuide() {
             2
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-neutral-900">
+            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
               Procure a opção de instalação
             </p>
-            <p className="text-sm text-neutral-600 leading-relaxed">
-              Role o menu para baixo e toque em <strong className="text-neutral-800">&ldquo;Instalar aplicativo&rdquo;</strong> ou <strong className="text-neutral-800">&ldquo;Adicionar à tela inicial&rdquo;</strong>.
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
+              Role o menu para baixo e toque em <strong className="text-neutral-800 dark:text-neutral-200 transition-colors duration-300">&ldquo;Instalar aplicativo&rdquo;</strong> ou <strong className="text-neutral-800 dark:text-neutral-200 transition-colors duration-300">&ldquo;Adicionar à tela inicial&rdquo;</strong>.
             </p>
-            <p className="text-xs text-neutral-500 italic">
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 italic transition-colors duration-300">
               Dica: a opção pode estar perto do final do menu.
             </p>
           </div>
@@ -53,11 +53,11 @@ function AndroidGuide() {
             3
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-neutral-900">
+            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
               Confirme a instalação
             </p>
-            <p className="text-sm text-neutral-600 leading-relaxed">
-              Uma janela aparecerá perguntando se deseja instalar o Strawby. Toque em <strong className="text-neutral-800">&ldquo;Instalar&rdquo;</strong>.
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
+              Uma janela aparecerá perguntando se deseja instalar o Strawby. Toque em <strong className="text-neutral-800 dark:text-neutral-200 transition-colors duration-300">&ldquo;Instalar&rdquo;</strong>.
             </p>
           </div>
         </div>
@@ -67,10 +67,10 @@ function AndroidGuide() {
             <Check size={16} weight="bold" />
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-neutral-900">
+            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
               Pronto!
             </p>
-            <p className="text-sm text-neutral-600 leading-relaxed">
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
               O Strawby vai aparecer na sua tela inicial como um app normal, com notificações e tudo.
             </p>
           </div>
@@ -89,86 +89,116 @@ function AndroidGuide() {
 function IosGuide() {
   return (
     <div className="space-y-5">
-      <p className="text-sm text-neutral-500 text-center">
-        No iPhone/iPad, a instalação é feita pelo Safari. Siga os passos abaixo.
+      <p className="text-sm text-neutral-500 dark:text-neutral-400 text-center transition-colors duration-300">
+        O iOS não mostra um popup automático. Você precisa adicionar manualmente à tela inicial.
       </p>
+
+      {/* Seletor de versão */}
+      <div className="flex flex-col gap-3">
+        <div className="bg-neutral-50 dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-xl p-3.5 transition-colors duration-300">
+          <div className="flex items-center gap-2 mb-1.5">
+            <DeviceMobile size={15} weight="duotone" className="text-red-500 shrink-0" />
+            <span className="text-xs font-extrabold uppercase tracking-wider text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
+              iOS 16.3 ou anterior
+            </span>
+          </div>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
+            Use obrigatoriamente o <strong className="text-neutral-700 dark:text-neutral-300 transition-colors duration-300">Safari</strong>. Outros navegadores não são suportados.
+          </p>
+        </div>
+
+        <div className="bg-neutral-50 dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-xl p-3.5 transition-colors duration-300">
+          <div className="flex items-center gap-2 mb-1.5">
+            <DeviceMobile size={15} weight="duotone" className="text-emerald-500 shrink-0" />
+            <span className="text-xs font-extrabold uppercase tracking-wider text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
+              iOS 16.4 ou posterior
+            </span>
+          </div>
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
+            Safari, Chrome, Edge, Firefox e Orion são compatíveis. Abra o site no navegador desejado.
+          </p>
+        </div>
+      </div>
 
       <div className="space-y-5">
         <div className="flex items-start gap-4">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 text-sm font-extrabold shrink-0">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 text-sm font-extrabold shrink-0 transition-colors duration-300">
             1
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-neutral-900">
+            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
               Toque no botão Compartilhar
             </p>
-            <p className="text-sm text-neutral-600 leading-relaxed">
-              Na barra de ferramentas do Safari (embaixo da tela), toque no ícone <Export size={18} weight="bold" className="inline align-text-bottom text-neutral-800" /> <strong className="text-neutral-800">Compartilhar</strong>.
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
+              Na barra de ferramentas do navegador (geralmente embaixo da tela), toque no ícone <Export size={18} weight="bold" className="inline align-text-bottom text-neutral-800 dark:text-neutral-200 transition-colors duration-300" /> <strong className="text-neutral-800 dark:text-neutral-200 transition-colors duration-300">Compartilhar</strong>.
             </p>
           </div>
         </div>
 
         <div className="flex items-start gap-4">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 text-sm font-extrabold shrink-0">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 text-sm font-extrabold shrink-0 transition-colors duration-300">
             2
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-neutral-900">
+            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
               Role para baixo na lista
             </p>
-            <p className="text-sm text-neutral-600 leading-relaxed">
-              A lista de opções aparecerá. Deslize o dedo para cima <ArrowDown size={18} weight="bold" className="inline align-text-bottom text-neutral-800" /> até encontrar mais opções.
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
+              A lista de opções aparecerá. Deslize o dedo para cima <ArrowDown size={18} weight="bold" className="inline align-text-bottom text-neutral-800 dark:text-neutral-200 transition-colors duration-300" /> até encontrar mais opções.
             </p>
           </div>
         </div>
 
         <div className="flex items-start gap-4">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 text-sm font-extrabold shrink-0">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 text-sm font-extrabold shrink-0 transition-colors duration-300">
             3
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-neutral-900">
+            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
               Toque em &ldquo;Adicionar à Tela de Início&rdquo;
             </p>
-            <p className="text-sm text-neutral-600 leading-relaxed">
-              Procure o ícone <Plus size={18} weight="bold" className="inline align-text-bottom text-neutral-800" /> <strong className="text-neutral-800">&ldquo;Adicionar à Tela de Início&rdquo;</strong> e toque nele.
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
+              Procure o ícone <Plus size={18} weight="bold" className="inline align-text-bottom text-neutral-800 dark:text-neutral-200 transition-colors duration-300" /> <strong className="text-neutral-800 dark:text-neutral-200 transition-colors duration-300">&ldquo;Adicionar à Tela de Início&rdquo;</strong> e toque nele.
             </p>
           </div>
         </div>
 
         <div className="flex items-start gap-4">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 text-sm font-extrabold shrink-0">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 text-sm font-extrabold shrink-0 transition-colors duration-300">
             4
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-neutral-900">
+            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
               Confirme no canto superior direito
             </p>
-            <p className="text-sm text-neutral-600 leading-relaxed">
-              Uma tela de pré-visualização aparecerá. Toque em <strong className="text-neutral-800">&ldquo;Adicionar&rdquo;</strong> no canto superior direito.
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
+              Uma tela de pré-visualização aparecerá. Toque em <strong className="text-neutral-800 dark:text-neutral-200 transition-colors duration-300">&ldquo;Adicionar&rdquo;</strong> no canto superior direito.
             </p>
           </div>
         </div>
 
         <div className="flex items-start gap-4">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 text-sm font-extrabold shrink-0">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-sm font-extrabold shrink-0 transition-colors duration-300">
             <Check size={16} weight="bold" />
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-neutral-900">
+            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
               Pronto!
             </p>
-            <p className="text-sm text-neutral-600 leading-relaxed">
-              O Strawby aparecerá na sua tela inicial como um app nativo, sem barra de endereço do Safari.
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
+              O Strawby aparecerá na sua tela inicial como um app nativo, sem barra de endereço do navegador.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
-        <p className="text-xs text-amber-800 leading-relaxed">
-          <strong>Importante:</strong> Isso só funciona no Safari. Chrome ou outros navegadores no iOS não permitem adicionar à tela inicial com ícone próprio. Se estiver em outro navegador, abra o link no Safari primeiro.
-        </p>
+      <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/50 rounded-xl p-4 transition-colors duration-300">
+        <div className="flex items-start gap-2.5">
+          <Warning size={16} weight="bold" className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 transition-colors duration-300" />
+          <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed transition-colors duration-300">
+            <strong>Importante:</strong> PWAs no iOS têm algumas limitações em relação a apps nativos, como armazenamento offline limitado (geralmente até 50 MB) e sem sincronização em segundo plano. Além disso, o Strawby não está disponível na Apple App Store — ele é distribuído diretamente pela web.
+          </p>
+        </div>
       </div>
     </div>
   )
@@ -188,23 +218,23 @@ export default function InstallPromptModal({ isOpen, onClose, platform }: Instal
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
           <motion.div
-            className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden max-h-[85vh] flex flex-col"
+            className="relative bg-white dark:bg-neutral-900 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden max-h-[85vh] flex flex-col transition-colors duration-300"
             initial={{ opacity: 0, scale: 0.96, y: 14 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 14 }}
             transition={{ duration: 0.24, ease: [0.34, 1.05, 0.64, 1] }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 pt-6 pb-4 shrink-0 bg-white z-10">
-              <h2 className="text-lg font-extrabold text-neutral-950 tracking-tight">
+            <div className="flex items-center justify-between px-6 pt-6 pb-4 shrink-0 bg-white dark:bg-neutral-900 z-10 transition-colors duration-300">
+              <h2 className="text-lg font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight transition-colors duration-300">
                 {platform === 'android' ? 'Instalar no Android' : 'Instalar no iPhone/iPad'}
               </h2>
               <button
                 type="button"
                 onClick={onClose}
-                className="w-9 h-9 flex items-center justify-center rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors cursor-pointer"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
               >
-                <X size={15} weight="bold" className="text-neutral-600" />
+                <X size={15} weight="bold" className="text-neutral-600 dark:text-neutral-300 transition-colors duration-300" />
               </button>
             </div>
 
@@ -213,7 +243,7 @@ export default function InstallPromptModal({ isOpen, onClose, platform }: Instal
             </div>
 
             {/* Footer */}
-            <div className="px-6 pb-6 shrink-0 bg-white">
+            <div className="px-6 pb-6 shrink-0 bg-white dark:bg-neutral-900 transition-colors duration-300">
               <button
                 type="button"
                 onClick={onClose}

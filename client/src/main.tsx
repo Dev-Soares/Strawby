@@ -6,12 +6,15 @@ import { Toaster } from 'react-hot-toast'
 import './index.css'
 import App from './App'
 import { queryClient } from './api/queryClient'
+import ThemeProvider from './shared/contexts/ThemeProvider'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <App />
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
         <Toaster position="top-right" />
       </BrowserRouter>
     </QueryClientProvider>

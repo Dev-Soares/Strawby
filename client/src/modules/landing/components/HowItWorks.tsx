@@ -39,7 +39,7 @@ const steps: Step[] = [
 
 export default function HowItWorks() {
   return (
-    <section id="como-funciona" className="py-24 bg-neutral-50">
+    <section id="como-funciona" className="py-24 bg-neutral-50 dark:bg-neutral-950 transition-colors duration-300">
       <div className="max-w-6xl mx-auto px-6">
 
         <motion.div
@@ -49,26 +49,26 @@ export default function HowItWorks() {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.6, ease: [0.34, 1.05, 0.64, 1] }}
         >
-          <p className="text-[10px] text-neutral-400 font-black uppercase tracking-widest mb-3">
+          <p className="text-[10px] text-neutral-400 dark:text-neutral-500 font-black uppercase tracking-widest mb-3 transition-colors duration-300">
             Como funciona
           </p>
-          <h2 className="font-display text-[40px] md:text-[56px] font-black tracking-tighter text-neutral-950 leading-none">
+          <h2 className="font-display text-[40px] md:text-[56px] font-black tracking-tighter text-neutral-950 dark:text-neutral-100 leading-none transition-colors duration-300">
             Simples assim.
           </h2>
         </motion.div>
 
-        <div className="border-t border-neutral-200">
+        <div className="border-t border-neutral-200 dark:border-neutral-800 transition-colors duration-300">
           {steps.map(({ time, icon: StepIcon, title, description, tag }, i) => (
             <motion.div
               key={time}
-              className="flex flex-col md:flex-row md:items-center gap-6 md:gap-16 py-10 border-b border-neutral-200"
+              className="flex flex-col md:flex-row md:items-center gap-6 md:gap-16 py-10 border-b border-neutral-200 dark:border-neutral-800 transition-colors duration-300"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.3 }}
               transition={{ duration: 0.5, ease: [0.34, 1.05, 0.64, 1], delay: i * 0.1 }}
             >
               <div className="shrink-0 flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-2 w-full md:w-52">
-                <StepIcon size={28} weight="duotone" className="text-neutral-400" />
+                <StepIcon size={28} weight="duotone" className="text-neutral-400 dark:text-neutral-500 transition-colors duration-300" />
                 <span className="font-display font-black text-[52px] md:text-[64px] leading-none tracking-tighter text-red-600 tabular-nums">
                   {time}
                 </span>
@@ -76,12 +76,12 @@ export default function HowItWorks() {
 
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-3 mb-3">
-                  <h3 className="font-display text-xl font-black text-neutral-950 tracking-tight">{title}</h3>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400 border border-neutral-200 rounded-full px-3 py-1 leading-none">
+                  <h3 className="font-display text-xl font-black text-neutral-950 dark:text-neutral-100 tracking-tight transition-colors duration-300">{title}</h3>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400 dark:text-neutral-500 border border-neutral-200 dark:border-neutral-700 rounded-full px-3 py-1 leading-none transition-colors duration-300">
                     {tag}
                   </span>
                 </div>
-                <p className="text-sm text-neutral-500 leading-relaxed max-w-lg">{description}</p>
+                <p className="text-sm text-neutral-500 dark:text-neutral-400 leading-relaxed max-w-lg transition-colors duration-300">{description}</p>
               </div>
             </motion.div>
           ))}

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 
 export default function CTA() {
   return (
-    <section className="relative bg-white pt-20 lg:pt-24 pb-28 lg:pb-32 overflow-hidden">
+    <section className="relative bg-white dark:bg-neutral-950 pt-20 lg:pt-24 pb-28 lg:pb-32 overflow-hidden transition-colors duration-300">
       <motion.div
         aria-hidden
         className="pointer-events-none absolute -right-20 sm:-right-32 lg:-right-40 bottom-[-10%] flex select-none"
@@ -23,7 +23,7 @@ export default function CTA() {
       <div className="relative max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
         <div className="mb-10">
           <motion.h2
-            className="font-display text-[56px] sm:text-[80px] lg:text-[120px] font-black tracking-[-0.04em] text-neutral-950 leading-[0.88]"
+            className="font-display text-[56px] sm:text-[80px] lg:text-[120px] font-black tracking-[-0.04em] text-neutral-950 dark:text-neutral-100 leading-[0.88] transition-colors duration-300"
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
@@ -40,7 +40,7 @@ export default function CTA() {
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.65, ease: [0.34, 1.05, 0.64, 1], delay: 0.18 }}
           >
-            <span className="text-neutral-950">Comece a </span>
+            <span className="text-neutral-950 dark:text-neutral-100 transition-colors duration-300">Comece a </span>
             <span className="relative inline-block">
               <span className="relative z-10 text-white px-4">saber.</span>
               <motion.span
@@ -61,7 +61,7 @@ export default function CTA() {
           viewport={{ once: true, amount: 0.4 }}
           transition={{ duration: 0.55, ease: 'easeOut', delay: 0.35 }}
         >
-          <p className="text-neutral-600 text-[20px] sm:text-[22px] leading-relaxed mb-10">
+          <p className="text-neutral-600 dark:text-neutral-400 text-[20px] sm:text-[22px] leading-relaxed mb-10 transition-colors duration-300">
             Entenda o que você come, veja seus macros em tempo real e tome decisões reais sobre a sua alimentação.
           </p>
 
