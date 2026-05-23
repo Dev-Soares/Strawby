@@ -1,19 +1,68 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
-export function useTheme() {
-  useEffect(() => {
-    const media = window.matchMedia('(prefers-color-scheme: dark)')
+export type ThemePreference = 'dark' | 'light' | 'system'
 
-    const apply = () => {
-      if (media.matches) {
-        document.documentElement.classList.add('dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-      }
+export type ThemeState = {
+  theme: ThemePreference
+  resolvedTheme: 'dark' | 'light'
+  toggleTheme: () => void
+  setTheme: (t: ThemePreference) => void
+}
+
+const STORAGE_KEY = 'strawby-theme-preference'
+
+function getSystemTheme(): 'dark' | 'light' {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
+function getInitialPreference(): ThemePreference {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY) as ThemePreference | null
+    if (stored === 'dark' || stored === 'light' || stored === 'system') return stored
+  } catch { /* ignore */ }
+  return 'system'
+}
+
+export function useTheme(): ThemeState {
+  const [theme, setThemeState] = useState<ThemePreference>(getInitialPreference)
+  const [resolvedTheme, setResolvedTheme] = useState<'dark' | 'light'>(getSystemTheme())
+
+  const apply = useCallback((pref: ThemePreference) => {
+    const resolved = pref === 'system' ? getSystemTheme() : pref
+    setResolvedTheme(resolved)
+    if (resolved === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
     }
-
-    apply()
-    media.addEventListener('change', apply)
-    return () => media.removeEventListener('change', apply)
   }, [])
+
+  useEffect(() => {
+    apply(theme)
+  }, [theme, apply])
+
+  useEffect(() => {
+    if (theme !== 'system') return
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = () => apply('system')
+    media.addEventListener('change', handler)
+    return () => media.removeEventListener('change', handler)
+  }, [theme, apply])
+
+  const setTheme = useCallback((t: ThemePreference) => {
+    try {
+      if (t === 'system') {
+        localStorage.removeItem(STORAGE_KEY)
+      } else {
+        localStorage.setItem(STORAGE_KEY, t)
+      }
+    } catch { /* ignore */ }
+    setThemeState(t)
+  }, [])
+
+  const toggleTheme = useCallback(() => {
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
+  }, [resolvedTheme, setTheme])
+
+  return { theme, resolvedTheme, toggleTheme, setTheme }
 }

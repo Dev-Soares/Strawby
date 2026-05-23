@@ -38,16 +38,25 @@ html, body {
   overflow-x: clip;
   max-width: 100%;
   scroll-behavior: smooth;
+  background: none;
+}
+
+.dark html,
+.dark body {
+  background: #0a0a0a;
 }
 
 /* Custom scrollbar — minimal red bar */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 12px;
+  height: 12px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-button {
-  display: none;
-  height: 0;
+  display: flex;
+  height: 0 !important;
+  width: 0 !important;
 }
 
 ::-webkit-scrollbar-corner {
@@ -56,16 +65,24 @@ html, body {
 
 ::-webkit-scrollbar-track {
   background: transparent;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track-piece {
+  background: transparent;
+  background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #dc2626;
   border-radius: 999px;
   min-height: 48px;
+  transition: background-color 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #b91c1c;
+  background: #cb0b0b;
+  transition: all 0.2s ease;
 }
 
 .dark ::-webkit-scrollbar-thumb {
@@ -78,7 +95,7 @@ html, body {
 
 /* Firefox */
 * {
-  scrollbar-width: thin;
+  scrollbar-width: auto;
   scrollbar-color: #dc2626 transparent;
 }
 

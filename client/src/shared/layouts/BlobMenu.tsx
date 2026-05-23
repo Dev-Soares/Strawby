@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight } from '@phosphor-icons/react'
+import { ArrowRight, Sun, Moon } from '@phosphor-icons/react'
 import { Link, useLocation } from 'react-router-dom'
 import { useSignOut } from '@/modules/auth/hooks/useSignOut'
+import { useThemeContext } from '@/shared/contexts/ThemeProvider'
 
 interface BlobMenuProps {
   isOpen: boolean
@@ -20,6 +21,7 @@ const navItems = [
 export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
   const { pathname } = useLocation()
   const { mutate: signOut, isPending: isSigningOut } = useSignOut()
+  const { resolvedTheme, toggleTheme } = useThemeContext()
 
   return (
     <AnimatePresence>
@@ -47,7 +49,7 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
 
           {/* Content — positioned inside red zone */}
           <div
-            className="absolute inset-0 flex flex-col justify-center pl-[24%] sm:pl-[20%] md:pl-[22%] pr-8 sm:pr-10 md:pr-16 pointer-events-none"
+            className="absolute inset-0 flex flex-col justify-start pt-28 sm:justify-center sm:pt-0 pl-[28%] sm:pl-[24%] md:pl-[28%] lg:pl-[32%] pr-8 sm:pr-10 md:pr-16 pointer-events-none"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Nav items */}
@@ -86,9 +88,9 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
               })}
             </nav>
 
-            {/* Bottom CTA */}
+            {/* Bottom actions */}
             <motion.div
-              className="flex justify-end mt-6 md:mt-10 pointer-events-auto"
+              className="flex flex-col sm:flex-row items-end sm:items-center justify-start sm:justify-end gap-3 mt-6 md:mt-10 pointer-events-auto"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
@@ -96,9 +98,27 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
             >
               <button
                 type="button"
+                onClick={toggleTheme}
+                className="group bg-white/95 backdrop-blur-sm border border-white/20 text-red-600 hover:bg-white hover:border-white/40 text-sm sm:text-base font-extrabold px-10 sm:px-9 py-4 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-lg hover:shadow-2xl hover:-translate-y-1 tracking-tight cursor-pointer"
+              >
+                {resolvedTheme === 'dark' ? (
+                  <>
+                    Modo claro
+                    <Sun size={17} weight="bold" className="group-hover:rotate-90 transition-transform duration-300" />
+                  </>
+                ) : (
+                  <>
+                    Modo escuro
+                    <Moon size={17} weight="bold" className="group-hover:-rotate-12 transition-transform duration-300" />
+                  </>
+                )}
+              </button>
+
+              <button
+                type="button"
                 onClick={() => signOut()}
                 disabled={isSigningOut}
-                className="group bg-white dark:bg-neutral-950 text-red-600 dark:text-red-400 hover:bg-neutral-950 hover:text-white dark:hover:bg-neutral-100 dark:hover:text-neutral-950 text-sm sm:text-base font-extrabold px-7 sm:px-9 py-3.5 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-[0_10px_30px_-8px_rgba(0,0,0,0.35)] hover:shadow-[0_18px_40px_-10px_rgba(0,0,0,0.6)] hover:-translate-y-0.5 hover:scale-[1.03] tracking-tight disabled:opacity-50 cursor-pointer"
+                className="group bg-white/95 backdrop-blur-sm border border-white/20 text-red-600 hover:bg-white hover:border-white/40 text-sm sm:text-base font-extrabold px-10 sm:px-9 py-4 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-lg hover:shadow-2xl hover:-translate-y-1 tracking-tight disabled:opacity-50 cursor-pointer"
               >
                 {isSigningOut ? 'Saindo…' : 'Sair da conta'}
                 <ArrowRight size={17} weight="bold" className="group-hover:translate-x-1.5 transition-transform duration-300" />
