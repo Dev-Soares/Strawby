@@ -1,21 +1,19 @@
-import { ArrowUpRight, InstagramLogo, XLogo, GithubLogo } from '@phosphor-icons/react'
+import { Link } from 'react-router-dom'
+import { ArrowUpRight, InstagramLogo, XLogo } from '@phosphor-icons/react'
 
 const productLinks = [
   { label: 'Funcionalidades', href: '#funcionalidades' },
-  { label: 'Preços', href: '#precos' },
-  { label: 'Mudanças', href: '/changelog' },
+  { label: 'FAQ', href: '/faq' },
 ]
 
 const legalLinks = [
-  { label: 'Privacidade', href: '/privacidade' },
-  { label: 'Termos', href: '/termos' },
-  { label: 'Cookies', href: '/cookies' },
+  { label: 'Privacidade', href: '/privacy' },
+  { label: 'Termos', href: '/terms' },
 ]
 
 const socials = [
   { icon: InstagramLogo, href: 'https://instagram.com', label: 'Instagram' },
   { icon: XLogo, href: 'https://x.com', label: 'X' },
-  { icon: GithubLogo, href: 'https://github.com', label: 'GitHub' },
 ]
 
 export default function Footer() {
@@ -40,7 +38,7 @@ export default function Footer() {
 
             <a
               href="/app/create-account"
-              className="group inline-flex hover:translate-y-[-2px] items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3.5 rounded-full transition-all duration-200 text-sm"
+              className="group inline-flex hover:-translate-y-0.5 items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3.5 rounded-full transition-all duration-200 text-sm"
             >
               Começar grátis
               <ArrowUpRight size={16} weight="bold" className="group-hover:rotate-45 transition-transform duration-200" />
@@ -54,12 +52,21 @@ export default function Footer() {
             <ul className="flex flex-col gap-3.5">
               {productLinks.map(({ label, href }) => (
                 <li key={label}>
-                  <a
-                    href={href}
-                    className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-100 transition-colors duration-150 text-[15px] font-medium"
-                  >
-                    {label}
-                  </a>
+                  {href.startsWith('/') ? (
+                    <Link
+                      to={href}
+                      className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-100 transition-colors duration-150 text-[15px] font-medium"
+                    >
+                      {label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={href}
+                      className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-100 transition-colors duration-150 text-[15px] font-medium"
+                    >
+                      {label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
@@ -109,9 +116,7 @@ export default function Footer() {
           <p className="text-xs text-neutral-500 dark:text-neutral-400 tracking-wide transition-colors duration-300">
             © {new Date().getFullYear()} Strawby. Todos os direitos reservados.
           </p>
-          <p className="text-[11px] text-neutral-500 dark:text-neutral-400 uppercase tracking-[0.2em] font-bold transition-colors duration-300">
-            Feito para quem leva saúde a sério
-          </p>
+        
         </div>
       </div>
 

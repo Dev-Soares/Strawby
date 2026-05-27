@@ -11,6 +11,9 @@ import SelectFoodPage from './pages/SelectFoodPage'
 import ScorePage from './pages/ScorePage'
 import CreateRecipePage from './pages/CreateRecipePage'
 import RecipeDetailPage from './pages/RecipeDetailPage'
+import PrivacyPage from './pages/PrivacyPage'
+import TermsPage from './pages/TermsPage'
+import FaqPage from './pages/FaqPage.tsx'
 import ProtectedRoute from './shared/components/ProtectedRoute'
 import PublicOnlyRoute from './shared/components/PublicOnlyRoute'
 import ScrollToTop from './shared/components/ScrollToTop'
@@ -21,6 +24,9 @@ export default function App() {
       <ScrollToTop />
       <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/faq" element={<FaqPage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/terms" element={<TermsPage />} />
       <Route path="/app/login" element={<PublicOnlyRoute><LoginPage /></PublicOnlyRoute>} />
       <Route path="/app/create-account" element={<PublicOnlyRoute><SignUpPage /></PublicOnlyRoute>} />
       <Route path="/app/home" element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
