@@ -7,6 +7,12 @@ export type PlanMacros = {
   fat: number;
 };
 
+export type MacroDistribution = {
+  protein: number;
+  carbs: number;
+  fat: number;
+};
+
 export type PlanPublic = Pick<Plan, 'id' | 'calories' | 'protein' | 'carbs' | 'fat' | 'userId'>;
 
 export const planSelect = {
