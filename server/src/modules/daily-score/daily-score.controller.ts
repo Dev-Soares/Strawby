@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
 import { DailyScoreService } from './daily-score.service';
 import { CreateDailyScoreDto } from './dto/create-daily-score.dto';
-import { UpdateDailyScoreDto } from './dto/update-daily-score.dto';
+import { QueryDailyScoreDto } from './dto/query-daily-score.dto';
 
 @ApiTags('daily-score')
 @UseGuards(AuthGuard)
@@ -21,10 +21,9 @@ export class DailyScoreController {
   findAll(
     @Req() req: AuthenticatedRequest,
     @Param('patientId') patientId: string,
-    @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string,
+    @Query() query: QueryDailyScoreDto,
   ) {
-    return this.dailyScoreService.findAllByPatient(req.user.sub, patientId, startDate, endDate);
+    return this.dailyScoreService.findAllByPatient(req.user.sub, patientId, query.startDate, query.endDate);
   }
 
   @Get(':patientId/day/:day')

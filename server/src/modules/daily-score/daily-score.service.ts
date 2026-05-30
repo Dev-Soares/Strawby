@@ -85,14 +85,13 @@ export class DailyScoreService {
     return this.computeLiveScore(patientId, day);
   }
 
-  // Internal — sem access check (chamado por create e getLiveScore após verificação)
   private async computeLiveScore(patientId: string, day: string): Promise<number> {
     const start = new Date(day + 'T00:00:00.000Z');
     if (isNaN(start.getTime())) throw new BadRequestException('Data inválida');
     try {
       const [meals, plan] = await Promise.all([
-        this.mealService.findAllByPatientAndDay(patientId, patientId, day, undefined),
-        this.planService.findByPatient(patientId, patientId),
+        this.mealService.queryMealsByDay(patientId, day),
+        this.planService.queryPlanByPatient(patientId),
       ]);
       if (!plan) return 0;
       return this.calculateDailyScore(this.reduceDayMacros(meals), plan);

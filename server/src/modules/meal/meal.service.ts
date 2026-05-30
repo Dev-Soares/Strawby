@@ -81,6 +81,10 @@ export class MealService {
 
   async findAllByPatientAndDay(callerId: string, patientId: string, day: string, kind?: MealKind): Promise<MealPublic[]> {
     await this.patientAccess.resolve(callerId, patientId);
+    return this.queryMealsByDay(patientId, day, kind);
+  }
+
+  async queryMealsByDay(patientId: string, day: string, kind?: MealKind): Promise<MealPublic[]> {
     try {
       const start = new Date(day + 'T00:00:00.000Z');
       if (isNaN(start.getTime())) throw new BadRequestException('Data inválida');
@@ -133,14 +137,14 @@ export class MealService {
       const food = await this.prisma.food.findUnique({ where: { id: dto.foodId }, select: { id: true, name: true, calories: true, protein: true, carbs: true, fat: true } });
       if (!food) throw new NotFoundException('Alimento não encontrado');
       const ratio = dto.quantity / 100;
-      const updated = await this.prisma.meal.update({
-        where: { id: mealId, patientId },
-        data: { items: { create: { foodId: food.id, quantity: dto.quantity, calories: food.calories * ratio, protein: food.protein * ratio, carbs: food.carbs * ratio, fat: food.fat * ratio } } },
-        select: { items: { select: foodItemSelect, orderBy: { createdAt: 'desc' }, take: 1 } },
+      const meal = await this.prisma.meal.findFirst({ where: { id: mealId, patientId }, select: { id: true } });
+      if (!meal) throw new NotFoundException('Refeição não encontrada');
+      return await this.prisma.foodItem.create({
+        data: { mealId, foodId: food.id, quantity: dto.quantity, calories: food.calories * ratio, protein: food.protein * ratio, carbs: food.carbs * ratio, fat: food.fat * ratio },
+        select: foodItemSelect,
       });
-      return updated.items[0];
     } catch (error) {
-      mapPrismaError(error, 'Erro ao adicionar item à refeição', { p2025: 'Refeição não encontrada' });
+      mapPrismaError(error, 'Erro ao adicionar item à refeição');
     }
   }
 
@@ -151,14 +155,14 @@ export class MealService {
       if (!privateFood) throw new NotFoundException('Alimento privado não encontrado');
       const servingSize = privateFood.servingSize ? Number(privateFood.servingSize) : 100;
       const ratio = dto.quantity / servingSize;
-      const updated = await this.prisma.meal.update({
-        where: { id: mealId, patientId },
-        data: { items: { create: { privateFoodId: privateFood.id, quantity: dto.quantity, calories: privateFood.calories * ratio, protein: privateFood.protein * ratio, carbs: privateFood.carbs * ratio, fat: privateFood.fat * ratio } } },
-        select: { items: { select: foodItemSelect, orderBy: { createdAt: 'desc' }, take: 1 } },
+      const meal = await this.prisma.meal.findFirst({ where: { id: mealId, patientId }, select: { id: true } });
+      if (!meal) throw new NotFoundException('Refeição não encontrada');
+      return await this.prisma.foodItem.create({
+        data: { mealId, privateFoodId: privateFood.id, quantity: dto.quantity, calories: privateFood.calories * ratio, protein: privateFood.protein * ratio, carbs: privateFood.carbs * ratio, fat: privateFood.fat * ratio },
+        select: foodItemSelect,
       });
-      return updated.items[0];
     } catch (error) {
-      mapPrismaError(error, 'Erro ao adicionar alimento privado à refeição', { p2025: 'Refeição não encontrada' });
+      mapPrismaError(error, 'Erro ao adicionar alimento privado à refeição');
     }
   }
 

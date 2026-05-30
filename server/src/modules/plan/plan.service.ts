@@ -37,6 +37,10 @@ export class PlanService {
 
   async findByPatient(callerId: string, patientId: string): Promise<PlanPublic | null> {
     await this.patientAccess.resolve(callerId, patientId);
+    return this.queryPlanByPatient(patientId);
+  }
+
+  async queryPlanByPatient(patientId: string): Promise<PlanPublic | null> {
     try {
       return await this.prisma.plan.findUnique({ where: { patientId }, select: planSelect }) ?? null;
     } catch (error) {

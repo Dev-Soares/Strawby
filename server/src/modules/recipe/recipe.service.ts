@@ -78,14 +78,14 @@ export class RecipeService {
       const food = await this.prisma.food.findUnique({ where: { id: dto.foodId }, select: { id: true, name: true, calories: true, protein: true, carbs: true, fat: true } });
       if (!food) throw new NotFoundException('Alimento não encontrado');
       const ratio = dto.quantity / 100;
-      const updated = await this.prisma.recipe.update({
-        where: { id: recipeId, patientId },
-        data: { items: { create: { foodId: food.id, quantity: dto.quantity, calories: food.calories * ratio, protein: food.protein * ratio, carbs: food.carbs * ratio, fat: food.fat * ratio } } },
-        select: { items: { select: foodItemSelect, orderBy: { createdAt: 'desc' }, take: 1 } },
+      const recipe = await this.prisma.recipe.findFirst({ where: { id: recipeId, patientId }, select: { id: true } });
+      if (!recipe) throw new NotFoundException('Receita não encontrada');
+      return await this.prisma.foodItem.create({
+        data: { recipeId, foodId: food.id, quantity: dto.quantity, calories: food.calories * ratio, protein: food.protein * ratio, carbs: food.carbs * ratio, fat: food.fat * ratio },
+        select: foodItemSelect,
       });
-      return updated.items[0];
     } catch (error) {
-      mapPrismaError(error, 'Erro ao adicionar item à receita', { p2025: 'Receita não encontrada' });
+      mapPrismaError(error, 'Erro ao adicionar item à receita');
     }
   }
 
@@ -97,14 +97,14 @@ export class RecipeService {
       const rawServing = privateFood.servingSize ? Number(privateFood.servingSize) : NaN;
       const servingSize = Number.isFinite(rawServing) && rawServing > 0 ? rawServing : 100;
       const ratio = dto.quantity / servingSize;
-      const updated = await this.prisma.recipe.update({
-        where: { id: recipeId, patientId },
-        data: { items: { create: { privateFoodId: privateFood.id, quantity: dto.quantity, calories: privateFood.calories * ratio, protein: privateFood.protein * ratio, carbs: privateFood.carbs * ratio, fat: privateFood.fat * ratio } } },
-        select: { items: { select: foodItemSelect, orderBy: { createdAt: 'desc' }, take: 1 } },
+      const recipe = await this.prisma.recipe.findFirst({ where: { id: recipeId, patientId }, select: { id: true } });
+      if (!recipe) throw new NotFoundException('Receita não encontrada');
+      return await this.prisma.foodItem.create({
+        data: { recipeId, privateFoodId: privateFood.id, quantity: dto.quantity, calories: privateFood.calories * ratio, protein: privateFood.protein * ratio, carbs: privateFood.carbs * ratio, fat: privateFood.fat * ratio },
+        select: foodItemSelect,
       });
-      return updated.items[0];
     } catch (error) {
-      mapPrismaError(error, 'Erro ao adicionar alimento privado à receita', { p2025: 'Receita não encontrada' });
+      mapPrismaError(error, 'Erro ao adicionar alimento privado à receita');
     }
   }
 
