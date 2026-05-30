@@ -5,9 +5,9 @@ import { ArrowLeft, Plus, Fire, CookingPot } from '@phosphor-icons/react'
 import AppLayout from '../shared/layouts/AppLayout'
 import FoodSearch from '../modules/food/components/FoodSearch'
 import FoodSkeleton from '../modules/food/skeletons/FoodSkeleton'
-import PrivateFoodSkeleton from '../modules/privateFood/skeletons/PrivateFoodSkeleton'
+import PrivateFoodSkeleton from '../modules/private-food/skeletons/PrivateFoodSkeleton'
 import { useSearchFood } from '../modules/food/hooks/useSearchFood'
-import { useGetPrivateFoods } from '../modules/privateFood/hooks/useGetPrivateFoods'
+import { useGetPrivateFoods } from '../modules/private-food/hooks/useGetPrivateFoods'
 import { useGetRecipes } from '../modules/recipe/hooks/useGetRecipes'
 import { useAddMealItem } from '../modules/meal/hooks/useAddMealItem'
 import { useAddMealPrivateFoodItem } from '../modules/meal/hooks/useAddMealPrivateFoodItem'
@@ -123,7 +123,7 @@ export default function SelectFoodPage() {
   } = useSearchFood(tab === 'public' ? search : '')
 
   const {
-    data: privateFoods,
+    data: private-foods,
     isPending: isPrivatePending,
     isError: isPrivateError,
   } = useGetPrivateFoods()
@@ -135,9 +135,9 @@ export default function SelectFoodPage() {
   } = useGetRecipes()
 
   const filteredPrivateFoods = useMemo(() => {
-    if (!privateFoods) return []
-    return privateFoods
-  }, [privateFoods])
+    if (!private-foods) return []
+    return private-foods
+  }, [private-foods])
 
   const filteredRecipes = useMemo(() => {
     if (!recipes) return []
@@ -198,7 +198,7 @@ export default function SelectFoodPage() {
         )
       } else {
         addRecipePrivateFoodItem.mutate(
-          { recipeId: targetId, dto: { privateFoodId: selectedFood.id, quantity: q } },
+          { recipeId: targetId, dto: { private-foodId: selectedFood.id, quantity: q } },
           {
             onSuccess: async () => {
               await queryClient.refetchQueries({ queryKey: ['recipe', targetId], type: 'all' })
@@ -220,7 +220,7 @@ export default function SelectFoodPage() {
         )
       } else {
         addMealPrivateFoodItem.mutate(
-          { mealId: targetId, dto: { privateFoodId: selectedFood.id, quantity: q } },
+          { mealId: targetId, dto: { private-foodId: selectedFood.id, quantity: q } },
           {
             onSuccess: async () => {
               await queryClient.refetchQueries({ queryKey: ['meal', targetId], type: 'all' })
