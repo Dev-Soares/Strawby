@@ -173,10 +173,6 @@ model FoodItem {
 model Recipe {
   id        String     @id @default(uuid())
   name      String
-  calories  Float
-  protein   Float
-  carbs     Float
-  fat       Float
   patientId String
   patient   Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
   items     FoodItem[]

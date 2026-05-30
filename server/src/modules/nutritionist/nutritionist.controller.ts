@@ -6,29 +6,24 @@ import { NutritionistService } from './nutritionist.service';
 import { CreateCodeDto } from './dto/create-code.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/common/guards/auth/roles.guard';
-import { OwnershipGuard } from 'src/common/guards/auth/ownership.guard';
 
 @ApiTags('nutritionist')
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
+@Roles('nutritionist')
 @Controller('nutritionist')
 export class NutritionistController {
   constructor(private readonly nutritionistService: NutritionistService) {}
 
-  @UseGuards(AuthGuard, RolesGuard, OwnershipGuard)
-  @Roles('nutritionist')
   @Get('me')
   findMe(@Req() req: AuthenticatedRequest) {
     return this.nutritionistService.findOne(req.user.sub);
   }
-  @UseGuards(AuthGuard, RolesGuard, OwnershipGuard)
-  @Roles('nutritionist')
+
   @Get('me/patients')
   findMyPatients(@Req() req: AuthenticatedRequest) {
     return this.nutritionistService.findPatients(req.user.sub);
   }
 
-  @UseGuards(AuthGuard, RolesGuard, OwnershipGuard)
-  @Roles('nutritionist')
   @Post('me/code')
   updateCode(
     @Req() req: AuthenticatedRequest,

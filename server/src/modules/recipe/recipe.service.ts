@@ -25,7 +25,7 @@ export class RecipeService {
   async create(callerId: string, patientId: string, dto: CreateRecipeDto): Promise<RecipePublic> {
     await this.patientAccess.resolve(callerId, patientId);
     try {
-      const recipe = await this.prisma.recipe.create({ data: { name: dto.name, calories: 0, protein: 0, carbs: 0, fat: 0, patientId }, select: recipeSelect });
+      const recipe = await this.prisma.recipe.create({ data: { name: dto.name, patientId }, select: recipeSelect });
       return { ...recipe, totals: this.computeTotals(recipe.items) };
     } catch (error) {
       mapPrismaError(error, 'Erro ao criar receita');
