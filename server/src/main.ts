@@ -52,10 +52,9 @@ async function bootstrap() {
   });
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Fullstack Template API')
-    .setDescription('Fullstack Template API documentation')
-    .setVersion('0.1')
-    .addTag('template')
+    .setTitle('Strawby API')
+    .setDescription('Strawby API documentation')
+    .setVersion('1.0')
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
