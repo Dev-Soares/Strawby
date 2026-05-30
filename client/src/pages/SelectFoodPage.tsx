@@ -123,7 +123,7 @@ export default function SelectFoodPage() {
   } = useSearchFood(tab === 'public' ? search : '')
 
   const {
-    data: private-foods,
+    data: privateFoods,
     isPending: isPrivatePending,
     isError: isPrivateError,
   } = useGetPrivateFoods()
@@ -135,9 +135,9 @@ export default function SelectFoodPage() {
   } = useGetRecipes()
 
   const filteredPrivateFoods = useMemo(() => {
-    if (!private-foods) return []
-    return private-foods
-  }, [private-foods])
+    if (!privateFoods) return []
+    return privateFoods
+  }, [privateFoods])
 
   const filteredRecipes = useMemo(() => {
     if (!recipes) return []
@@ -198,7 +198,7 @@ export default function SelectFoodPage() {
         )
       } else {
         addRecipePrivateFoodItem.mutate(
-          { recipeId: targetId, dto: { private-foodId: selectedFood.id, quantity: q } },
+          { recipeId: targetId, dto: { privateFoodId: selectedFood.id, quantity: q } },
           {
             onSuccess: async () => {
               await queryClient.refetchQueries({ queryKey: ['recipe', targetId], type: 'all' })
@@ -220,7 +220,7 @@ export default function SelectFoodPage() {
         )
       } else {
         addMealPrivateFoodItem.mutate(
-          { mealId: targetId, dto: { private-foodId: selectedFood.id, quantity: q } },
+          { mealId: targetId, dto: { privateFoodId: selectedFood.id, quantity: q } },
           {
             onSuccess: async () => {
               await queryClient.refetchQueries({ queryKey: ['meal', targetId], type: 'all' })

@@ -3,6 +3,7 @@ import { ArrowRight, Sun, Moon } from '@phosphor-icons/react'
 import { Link, useLocation } from 'react-router-dom'
 import { useSignOut } from '@/modules/auth/hooks/useSignOut'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
+import { useAuth } from '@/modules/auth/hooks/useAuth'
 
 interface BlobMenuProps {
   isOpen: boolean
@@ -11,17 +12,25 @@ interface BlobMenuProps {
 
 const blobPath = 'M 24 0 C 8 8, 0 22, 2 38 C 4 54, 22 58, 20 70 C 16 82, 6 86, 10 94 C 12 98, 16 100, 22 100 L 100 100 L 100 0 Z'
 
-const navItems = [
+const patientNavItems = [
   { label: 'Início', href: '/app/home' },
   { label: 'Pontuação', href: '/app/score' },
   { label: 'Alimentos', href: '/app/foods' },
   { label: 'Plano', href: '/app/plan' },
 ]
 
+const nutritionistNavItems = [
+  { label: 'Pacientes', href: '/app/home' },
+  { label: 'Perfil', href: '/app/profile' },
+]
+
 export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
   const { pathname } = useLocation()
   const { mutate: signOut, isPending: isSigningOut } = useSignOut()
   const { resolvedTheme, toggleTheme } = useThemeContext()
+  const { data: user } = useAuth()
+
+  const navItems = user?.role === 'nutritionist' ? nutritionistNavItems : patientNavItems
 
   return (
     <AnimatePresence>
@@ -35,7 +44,6 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
           style={{ willChange: 'transform', touchAction: 'none' }}
           onClick={onClose}
         >
-          {/* Red blob — fills right area, organic left edge, transparent outside */}
           <div className="absolute inset-0 pointer-events-none" style={{ transform: 'translateZ(0)' }}>
             <svg
               className="w-full h-full"
@@ -47,12 +55,10 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
             </svg>
           </div>
 
-          {/* Content — positioned inside red zone */}
           <div
             className="absolute inset-0 flex flex-col justify-start pt-28 sm:justify-center sm:pt-0 pl-[28%] sm:pl-[24%] md:pl-[28%] lg:pl-[32%] pr-8 sm:pr-10 md:pr-16 pointer-events-none"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Nav items */}
             <nav className="flex flex-col pointer-events-auto">
               {navItems.map((item, i) => {
                 const isActive = pathname === item.href
@@ -88,7 +94,6 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
               })}
             </nav>
 
-            {/* Bottom actions */}
             <motion.div
               className="flex flex-col sm:flex-row items-end sm:items-center justify-start sm:justify-end gap-3 mt-6 md:mt-10 pointer-events-auto"
               initial={{ opacity: 0, y: 10 }}
@@ -102,15 +107,9 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
                 className="group bg-white/95 backdrop-blur-sm border border-white/20 text-red-600 hover:bg-white hover:border-white/40 text-sm sm:text-base font-extrabold px-10 sm:px-9 py-4 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-lg hover:shadow-2xl hover:-translate-y-1 tracking-tight cursor-pointer"
               >
                 {resolvedTheme === 'dark' ? (
-                  <>
-                    Modo claro
-                    <Sun size={17} weight="bold" className="group-hover:rotate-90 transition-transform duration-300" />
-                  </>
+                  <>Modo claro <Sun size={17} weight="bold" className="group-hover:rotate-90 transition-transform duration-300" /></>
                 ) : (
-                  <>
-                    Modo escuro
-                    <Moon size={17} weight="bold" className="group-hover:-rotate-12 transition-transform duration-300" />
-                  </>
+                  <>Modo escuro <Moon size={17} weight="bold" className="group-hover:-rotate-12 transition-transform duration-300" /></>
                 )}
               </button>
 

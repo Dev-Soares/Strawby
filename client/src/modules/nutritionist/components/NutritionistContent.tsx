@@ -3,32 +3,21 @@ import AppLayout from '../../../shared/layouts/AppLayout'
 import NutritionistHeader from './NutritionistHeader'
 import PatientList from './PatientList'
 import PatientDetailModal from './PatientDetailModal'
-import UpdateCodeModal from './UpdateCodeModal'
 import PatientListSkeleton from '../skeletons/PatientListSkeleton'
-import { useGetNutritionist } from '../hooks/useGetNutritionist'
 import { useGetPatients } from '../hooks/useGetPatients'
-import { useUpdateCode } from '../hooks/useUpdateCode'
 import { useAuth } from '../../auth/hooks/useAuth'
 import type { NutritionistPatient } from '../types/patient'
 
 export default function NutritionistContent() {
   const { data: user } = useAuth()
-  const { data: nutritionist } = useGetNutritionist()
   const { data: patients, isPending: patientsPending, isError: patientsError } = useGetPatients()
-  const updateCodeMutation = useUpdateCode()
-
   const [selectedPatient, setSelectedPatient] = useState<NutritionistPatient | null>(null)
-  const [codeModalOpen, setCodeModalOpen] = useState(false)
 
   return (
     <AppLayout>
       <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-16 sm:py-10 lg:py-12 bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-red-50/40 dark:from-red-950/20 via-neutral-50 dark:via-neutral-950 to-neutral-50 dark:to-neutral-950 min-h-screen transition-colors duration-300">
 
-        <NutritionistHeader
-          name={user?.name ?? 'Nutricionista'}
-          code={nutritionist?.code ?? null}
-          onEditCode={() => setCodeModalOpen(true)}
-        />
+        <NutritionistHeader name={user?.name ?? 'Nutricionista'} />
 
         <div className="mb-5 flex items-center justify-between">
           <div>
@@ -52,10 +41,7 @@ export default function NutritionistContent() {
         {patientsPending ? (
           <PatientListSkeleton />
         ) : (
-          <PatientList
-            patients={patients ?? []}
-            onSelectPatient={setSelectedPatient}
-          />
+          <PatientList patients={patients ?? []} onSelectPatient={setSelectedPatient} />
         )}
       </div>
 
@@ -63,14 +49,6 @@ export default function NutritionistContent() {
         patient={selectedPatient}
         isOpen={!!selectedPatient}
         onClose={() => setSelectedPatient(null)}
-      />
-
-      <UpdateCodeModal
-        isOpen={codeModalOpen}
-        currentCode={nutritionist?.code ?? null}
-        isPending={updateCodeMutation.isPending}
-        onClose={() => setCodeModalOpen(false)}
-        onSave={(data) => updateCodeMutation.mutate(data, { onSuccess: () => setCodeModalOpen(false) })}
       />
     </AppLayout>
   )

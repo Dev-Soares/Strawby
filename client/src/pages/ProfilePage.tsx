@@ -17,6 +17,7 @@ import {
   GenderMale,
   GenderFemale,
   PlusCircle,
+  Password,
 } from '@phosphor-icons/react'
 import AppLayout from '@/shared/layouts/AppLayout'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
@@ -25,6 +26,9 @@ import { useUpdateUser } from '@/modules/auth/hooks/useUpdateUser'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
 import type { ThemePreference } from '@/shared/hooks/useTheme'
 import PatientBodyEditModal from '@/modules/auth/components/PatientBodyEditModal'
+import { useGetNutritionist } from '@/modules/nutritionist/hooks/useGetNutritionist'
+import { useUpdateCode } from '@/modules/nutritionist/hooks/useUpdateCode'
+import UpdateCodeModal from '@/modules/nutritionist/components/UpdateCodeModal'
 
 function getInitials(name: string) {
   const parts = name.trim().split(' ')
@@ -50,9 +54,15 @@ export default function ProfilePage() {
   const { theme, setTheme } = useThemeContext()
   const navigate = useNavigate()
   const [bodyEditOpen, setBodyEditOpen] = useState(false)
+  const [codeModalOpen, setCodeModalOpen] = useState(false)
+
+  const isNutritionist = user?.role === 'nutritionist'
+  const isPatient = user?.role === 'patient'
+
+  const { data: nutritionist } = useGetNutritionist()
+  const updateCodeMutation = useUpdateCode()
 
   const initials = user?.name ? getInitials(user.name) : '?'
-  const isPatient = user?.role === 'patient'
   const patient = user?.patient ?? null
 
   const hasBodyData = patient && (patient.weight !== null || patient.height !== null || patient.age !== null || patient.gender !== null)
@@ -105,6 +115,43 @@ export default function ProfilePage() {
             </div>
           </div>
         </section>
+
+        {/* Código de convite (nutritionist only) */}
+        {isNutritionist && (
+          <section className="mb-5">
+            <div className="flex items-center justify-between mb-2 px-1">
+              <p className="text-xs font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest">
+                Código de convite
+              </p>
+              <button
+                type="button"
+                onClick={() => setCodeModalOpen(true)}
+                className="flex items-center gap-1.5 text-[11px] font-bold text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors cursor-pointer"
+              >
+                <PencilSimple size={12} weight="bold" />
+                Editar
+              </button>
+            </div>
+            <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden transition-colors duration-300">
+              <button
+                type="button"
+                onClick={() => setCodeModalOpen(true)}
+                className="w-full flex items-center gap-3 px-5 py-4 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 transition-colors duration-200 cursor-pointer"
+              >
+                <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
+                  <Password size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
+                </div>
+                <div className="flex-1 min-w-0 text-left">
+                  <p className="text-[11px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">Código atual</p>
+                  <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100 truncate">
+                    {nutritionist?.code ?? 'Não definido'}
+                  </p>
+                </div>
+                <CaretRight size={14} weight="bold" className="text-neutral-400 dark:text-neutral-600 shrink-0" />
+              </button>
+            </div>
+          </section>
+        )}
 
         {/* Dados corporais (patient only) */}
         {isPatient && (
@@ -289,6 +336,14 @@ export default function ProfilePage() {
         }}
         onClose={() => setBodyEditOpen(false)}
         onSave={(data) => updateUser.mutate(data, { onSuccess: () => setBodyEditOpen(false) })}
+      />
+
+      <UpdateCodeModal
+        isOpen={codeModalOpen}
+        currentCode={nutritionist?.code ?? null}
+        isPending={updateCodeMutation.isPending}
+        onClose={() => setCodeModalOpen(false)}
+        onSave={(data) => updateCodeMutation.mutate(data, { onSuccess: () => setCodeModalOpen(false) })}
       />
     </AppLayout>
   )

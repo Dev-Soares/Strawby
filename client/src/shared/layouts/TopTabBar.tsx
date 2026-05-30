@@ -5,13 +5,20 @@ import {
   TargetIcon,
   CarrotIcon,
   UserCircleIcon,
+  UsersIcon,
 } from '@phosphor-icons/react'
+import { useAuth } from '@/modules/auth/hooks/useAuth'
 
-const tabs = [
+const patientTabs = [
   { label: 'Início', href: '/app/home', icon: HouseSimpleIcon },
   { label: 'Pontuação', href: '/app/score', icon: TrophyIcon },
   { label: 'Alimentos', href: '/app/foods', icon: CarrotIcon },
   { label: 'Plano', href: '/app/plan', icon: TargetIcon },
+  { label: 'Perfil', href: '/app/profile', icon: UserCircleIcon },
+]
+
+const nutritionistTabs = [
+  { label: 'Pacientes', href: '/app/home', icon: UsersIcon },
   { label: 'Perfil', href: '/app/profile', icon: UserCircleIcon },
 ]
 
@@ -21,6 +28,10 @@ interface TopTabBarProps {
 
 export default function TopTabBar({ hidden = false }: TopTabBarProps) {
   const { pathname } = useLocation()
+  const { data: user } = useAuth()
+
+  const tabs = user?.role === 'nutritionist' ? nutritionistTabs : patientTabs
+  const cols = tabs.length === 2 ? 'grid-cols-2' : 'grid-cols-5'
 
   return (
     <nav
@@ -29,7 +40,7 @@ export default function TopTabBar({ hidden = false }: TopTabBarProps) {
       }`}
     >
       <div className="px-4 sm:px-10 lg:px-16">
-        <div className="grid grid-cols-5 sm:flex sm:items-center sm:gap-2">
+        <div className={`grid ${cols} sm:flex sm:items-center sm:gap-2`}>
           {tabs.map((tab) => {
             const Icon = tab.icon
             const active = pathname === tab.href
