@@ -14,6 +14,7 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 import { DailyScoreModule } from './modules/daily-score/daily-score.module';
 import { NutritionistModule } from './modules/nutritionist/nutritionist.module';
+import { ConnectionRequestModule } from './modules/connection-request/connection-request.module';
 
 @Module({
 	imports: [
@@ -60,6 +61,7 @@ import { NutritionistModule } from './modules/nutritionist/nutritionist.module';
 				limit: 100,
 			},
 		]),
+		ConnectionRequestModule,
 		
 	],
 	providers: [

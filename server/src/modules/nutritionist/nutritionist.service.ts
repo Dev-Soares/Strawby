@@ -23,6 +23,36 @@ export class NutritionistService {
     }
   }
 
+  async findByCode(code: string): Promise<NutritionistPublic> {
+    try {
+      const nutritionist = await this.prisma.nutritionist.findUnique({
+        where: { code },
+        select: nutritionistSelect,
+      });
+
+      if (!nutritionist) throw new NotFoundException('Nutricionista não encontrado');
+
+      return nutritionist;
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar nutricionista por código');
+    }
+  }
+
+  async connectPatient(nutritionistId: string, patientId: string) {
+    try {
+      await this.prisma.nutritionist.update({
+        where: { id: nutritionistId },
+        data: {
+          patients: {
+            connect: { id: patientId },
+          },
+        },
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao conectar paciente ao nutricionista');
+    }
+  }
+
   async findPatients(id: string) {
     try {
       const nutritionist = await this.prisma.nutritionist.findUnique({

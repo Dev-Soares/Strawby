@@ -22,6 +22,13 @@ enum MealKind {
   PLAN
 }
 
+enum ConnectionRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
 enum Role {
   patient
   nutritionist
@@ -40,30 +47,32 @@ model User {
 }
 
 model Patient {
-  id             String        @id
-  user           User          @relation(fields: [id], references: [id], onDelete: Cascade)
-  nutritionistId String?
-  nutritionist   Nutritionist? @relation(fields: [nutritionistId], references: [id])
-  plans          Plan[]
-  meals          Meal[]
-  recipes        Recipe[]
-  privateFoods   PrivateFood[]
-  dailyScores    DailyScore[]
-  weight         Float?
-  height         Float?
-  age            Int?
-  gender         String?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  id                 String              @id
+  user               User                @relation(fields: [id], references: [id], onDelete: Cascade)
+  nutritionistId     String?
+  nutritionist       Nutritionist?       @relation(fields: [nutritionistId], references: [id])
+  plans              Plan[]
+  meals              Meal[]
+  recipes            Recipe[]
+  privateFoods       PrivateFood[]
+  dailyScores        DailyScore[]
+  connectionRequests ConnectionRequest[]
+  weight             Float?
+  height             Float?
+  age                Int?
+  gender             String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
 }
 
 model Nutritionist {
-  id        String    @id
-  user      User      @relation(fields: [id], references: [id], onDelete: Cascade)
-  patients  Patient[]
-  code      String?   @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id                 String              @id
+  user               User                @relation(fields: [id], references: [id], onDelete: Cascade)
+  patients           Patient[]
+  code               String?             @unique
+  connectionRequests ConnectionRequest[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
 }
 
 model DailyScore {
@@ -184,5 +193,18 @@ model Recipe {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
+  @@index([patientId])
+}
+
+model ConnectionRequest {
+  id             String                  @id @default(uuid())
+  status         ConnectionRequestStatus @default(PENDING)
+  nutritionistId String
+  nutritionist   Nutritionist            @relation(fields: [nutritionistId], references: [id], onDelete: Cascade)
+  patientId      String
+  patient        Patient                 @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  createdAt      DateTime                @default(now())
+
+  @@index([nutritionistId])
   @@index([patientId])
 }

@@ -1,6 +1,7 @@
 export type RequestTokenPayload = {
   sub: string;
   name: string;
+  role: string;
 }
 
 export type AuthenticatedRequest = {
