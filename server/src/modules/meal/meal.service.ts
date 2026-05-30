@@ -9,6 +9,7 @@ import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
 import { AddMealRecipeDto } from './dto/add-meal-recipe.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
+import { NutritionistCreateMealDto } from './dto/nutritionist-create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 import {
   FoodItemPublic,
@@ -124,6 +125,19 @@ export class MealService {
       return this.toMealPublic(meal);
     } catch (error) {
       mapPrismaError(error, 'Erro ao criar refeição');
+    }
+  }
+
+  async createForPatient(nutritionistId: string, dto: NutritionistCreateMealDto): Promise<MealPublic> {
+    try {
+      const patient = await this.prisma.patient.findFirst({
+        where: { id: dto.patientId, nutritionistId },
+      });
+      if (!patient) throw new NotFoundException('Paciente não encontrado ou não atendido por este nutricionista');
+
+      return await this.create(dto.patientId, dto);
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao criar refeição para paciente');
     }
   }
 

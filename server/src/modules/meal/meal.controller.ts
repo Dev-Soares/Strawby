@@ -17,6 +17,9 @@ import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
 import { AddMealRecipeDto } from './dto/add-meal-recipe.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
+import { NutritionistCreateMealDto } from './dto/nutritionist-create-meal.dto';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { RolesGuard } from 'src/common/guards/auth/roles.guard';
 import { QueryMealDto } from './dto/query-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 import { MealService } from './meal.service';
@@ -30,6 +33,13 @@ export class MealController {
   @Post()
   create(@Req() req: AuthenticatedRequest, @Body() dto: CreateMealDto) {
     return this.mealService.create(req.user.sub, dto);
+  }
+
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('nutritionist')
+  @Post('patient')
+  createForPatient(@Req() req: AuthenticatedRequest, @Body() dto: NutritionistCreateMealDto) {
+    return this.mealService.createForPatient(req.user.sub, dto);
   }
 
   @Get()

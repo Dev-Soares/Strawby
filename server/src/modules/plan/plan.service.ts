@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
+import { NutritionistCreatePlanDto } from './dto/nutritionist-create-plan.dto';
+import { NutritionistUpdatePlanDto } from './dto/nutritionist-update-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { MacroDistribution, PlanMacros, PlanPublic, planSelect } from './types';
@@ -73,6 +75,19 @@ export class PlanService {
 
   }
 
+  async createForPatient(nutritionistId: string, dto: NutritionistCreatePlanDto): Promise<PlanPublic> {
+    try {
+      // Verifica se o paciente existe e é atendido pelo nutricionista
+      await this.verifyPatientOwnership(dto.patientId, nutritionistId);
+
+      return await this.create(dto.patientId, dto);
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao criar plano para paciente', {
+        p2002: 'Paciente já possui um plano',
+      });
+    }
+  }
+
   async findByPatient(patientId: string): Promise<PlanPublic | null> {
     try {
       const plan = await this.prisma.plan.findUnique({
@@ -83,6 +98,26 @@ export class PlanService {
       return plan ?? null;
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar plano');
+    }
+  }
+
+  async updateForPatient(nutritionistId: string, dto: NutritionistUpdatePlanDto): Promise<PlanPublic> {
+    try {      
+      await this.verifyPatientOwnership(dto.patientId, nutritionistId);
+      return await this.update(dto.patientId, dto);
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao atualizar plano para paciente', {
+        p2025: 'Plano não encontrado para este paciente',
+      });
+    }
+  }
+
+  private async verifyPatientOwnership(patientId: string, nutritionistId: string): Promise<void> {
+    const patient = await this.prisma.patient.findFirst({
+      where: { id: patientId, nutritionistId },
+    });
+    if (!patient) {
+      throw new BadRequestException('Paciente não encontrado ou não atendido por este nutricionista');
     }
   }
 
