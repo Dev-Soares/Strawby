@@ -4,6 +4,7 @@ import {
   TrophyIcon,
   TargetIcon,
   CarrotIcon,
+  UserCircleIcon,
 } from '@phosphor-icons/react'
 
 const tabs = [
@@ -11,6 +12,7 @@ const tabs = [
   { label: 'Pontuação', href: '/app/score', icon: TrophyIcon },
   { label: 'Alimentos', href: '/app/foods', icon: CarrotIcon },
   { label: 'Plano', href: '/app/plan', icon: TargetIcon },
+  { label: 'Perfil', href: '/app/profile', icon: UserCircleIcon },
 ]
 
 interface TopTabBarProps {
@@ -27,7 +29,7 @@ export default function TopTabBar({ hidden = false }: TopTabBarProps) {
       }`}
     >
       <div className="px-4 sm:px-10 lg:px-16">
-        <div className="grid grid-cols-4 sm:flex sm:items-center sm:gap-2">
+        <div className="grid grid-cols-5 sm:flex sm:items-center sm:gap-2">
           {tabs.map((tab) => {
             const Icon = tab.icon
             const active = pathname === tab.href

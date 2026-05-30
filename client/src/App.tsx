@@ -14,6 +14,7 @@ import RecipeDetailPage from './pages/RecipeDetailPage'
 import PrivacyPage from './pages/PrivacyPage'
 import TermsPage from './pages/TermsPage'
 import FaqPage from './pages/FaqPage.tsx'
+import ProfilePage from './pages/ProfilePage'
 import ProtectedRoute from './shared/components/ProtectedRoute'
 import PublicOnlyRoute from './shared/components/PublicOnlyRoute'
 import ScrollToTop from './shared/components/ScrollToTop'
@@ -38,6 +39,7 @@ export default function App() {
       <Route path="/app/foods/select" element={<ProtectedRoute><SelectFoodPage /></ProtectedRoute>} />
       <Route path="/app/recipes/new" element={<ProtectedRoute><CreateRecipePage /></ProtectedRoute>} />
       <Route path="/app/recipes/:id" element={<ProtectedRoute><RecipeDetailPage /></ProtectedRoute>} />
+      <Route path="/app/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
     </Routes>
     </>
   )
