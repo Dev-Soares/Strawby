@@ -13,7 +13,7 @@ export type MacroDistribution = {
   fat: number;
 };
 
-export type PlanPublic = Pick<Plan, 'id' | 'calories' | 'protein' | 'carbs' | 'fat' | 'userId'>;
+export type PlanPublic = Pick<Plan, 'id' | 'calories' | 'protein' | 'carbs' | 'fat' | 'patientId'>;
 
 export const planSelect = {
   id: true,
@@ -21,5 +21,5 @@ export const planSelect = {
   protein: true,
   carbs: true,
   fat: true,
-  userId: true,
+  patientId: true,
 } as const;

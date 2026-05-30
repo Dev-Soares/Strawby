@@ -19,7 +19,7 @@ export class PlanController {
 
   @Get()
   findMine(@Req() req: AuthenticatedRequest) {
-    return this.planService.findByUser(req.user.sub);
+    return this.planService.findByPatient(req.user.sub);
   }
 
   @Patch()

@@ -28,8 +28,8 @@ export class PrivateFoodController {
   }
 
   @Get()
-  findAllByUser(@Req() req: AuthenticatedRequest) {
-    return this.privateFoodService.findAllByUser(req.user.sub);
+  findAll(@Req() req: AuthenticatedRequest) {
+    return this.privateFoodService.findAllByPatient(req.user.sub);
   }
 
   @Patch(':id')

@@ -12,10 +12,10 @@ import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 export class PrivateFoodService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(userId: string, dto: CreatePrivateFoodDto): Promise<PrivateFoodPublic> {
+  async create(patientId: string, dto: CreatePrivateFoodDto): Promise<PrivateFoodPublic> {
     try {
       return await this.prisma.privateFood.create({
-        data: { ...dto, userId },
+        data: { ...dto, patientId },
         select: privateFoodSelect,
       });
     } catch (error) {
@@ -23,10 +23,10 @@ export class PrivateFoodService {
     }
   }
 
-  async findAllByUser(userId: string): Promise<PrivateFoodPublic[]> {
+  async findAllByPatient(patientId: string): Promise<PrivateFoodPublic[]> {
     try {
       return await this.prisma.privateFood.findMany({
-        where: { userId },
+        where: { patientId },
         select: privateFoodSelect,
         orderBy: { name: 'asc' },
       });
@@ -37,12 +37,12 @@ export class PrivateFoodService {
 
   async update(
     id: string,
-    userId: string,
+    patientId: string,
     dto: UpdatePrivateFoodDto,
   ): Promise<PrivateFoodPublic> {
     try {
       return await this.prisma.privateFood.update({
-        where: { id, userId },
+        where: { id, patientId },
         data: dto,
         select: privateFoodSelect,
       });
@@ -53,10 +53,10 @@ export class PrivateFoodService {
     }
   }
 
-  async remove(id: string, userId: string): Promise<PrivateFoodPublic> {
+  async remove(id: string, patientId: string): Promise<PrivateFoodPublic> {
     try {
       return await this.prisma.privateFood.delete({
-        where: { id, userId },
+        where: { id, patientId },
         select: privateFoodSelect,
       });
     } catch (error) {

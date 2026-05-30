@@ -9,7 +9,7 @@ import { MacroDistribution, PlanMacros, PlanPublic, planSelect } from './types';
 export class PlanService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(userId: string, dto: CreatePlanDto): Promise<PlanPublic> {
+  async create(patientId: string, dto: CreatePlanDto): Promise<PlanPublic> {
     let planData: PlanMacros;
 
     if (dto.goal && dto.movementLevel && dto.age && dto.height && dto.weight && dto.gender) {
@@ -22,12 +22,12 @@ export class PlanService {
 
     try {
       return await this.prisma.plan.create({
-        data: { ...planData, userId },
+        data: { ...planData, patientId },
         select: planSelect,
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao criar plano', {
-        p2002: 'Usuário já possui um plano',
+        p2002: 'Paciente já possui um plano',
       });
     }
   }
@@ -73,10 +73,10 @@ export class PlanService {
 
   }
 
-  async findByUser(userId: string): Promise<PlanPublic | null> {
+  async findByPatient(patientId: string): Promise<PlanPublic | null> {
     try {
       const plan = await this.prisma.plan.findUnique({
-        where: { userId },
+        where: { patientId },
         select: planSelect,
       });
 
@@ -86,10 +86,10 @@ export class PlanService {
     }
   }
 
-  async update(userId: string, dto: UpdatePlanDto): Promise<PlanPublic> {
+  async update(patientId: string, dto: UpdatePlanDto): Promise<PlanPublic> {
     try {
       return await this.prisma.plan.update({
-        where: { userId },
+        where: { patientId },
         data: {
           ...(dto.calories !== undefined && { calories: dto.calories }),
           ...(dto.protein !== undefined && { protein: dto.protein }),
@@ -105,10 +105,10 @@ export class PlanService {
     }
   }
 
-  async remove(userId: string): Promise<{ id: string }> {
+  async remove(patientId: string): Promise<{ id: string }> {
     try {
       return await this.prisma.plan.delete({
-        where: { userId },
+        where: { patientId },
         select: { id: true },
       });
     } catch (error) {

@@ -34,7 +34,7 @@ export class MealController {
 
   @Get()
   findAll(@Req() req: AuthenticatedRequest, @Query() query: QueryMealDto) {
-    return this.mealService.findAllByUser(req.user.sub, query.kind);
+    return this.mealService.findAllByPatient(req.user.sub, query.kind);
   }
 
   @Get('day/:day')
@@ -43,7 +43,7 @@ export class MealController {
     @Param('day') day: string,
     @Query() query: QueryMealDto,
   ) {
-    return this.mealService.findAllByUserAndDay(req.user.sub, day, query.kind);
+    return this.mealService.findAllByPatientAndDay(req.user.sub, day, query.kind);
   }
 
   @Get(':id')

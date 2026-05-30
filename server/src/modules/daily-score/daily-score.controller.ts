@@ -23,7 +23,7 @@ export class DailyScoreController {
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
   ) {
-    return this.dailyScoreService.findAllByUser(req.user.sub, startDate, endDate);
+    return this.dailyScoreService.findAllByPatient(req.user.sub, startDate, endDate);
   }
 
   @Get('day/:day')

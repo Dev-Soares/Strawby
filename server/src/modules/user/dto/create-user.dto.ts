@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, MinLength, MaxLength } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { Role } from '@prisma/client';
 
 export class CreateUserDto {
     @ApiProperty({ example: 'user@email.com' })
@@ -18,4 +19,9 @@ export class CreateUserDto {
     @IsNotEmpty()
     @MaxLength(100)
     name: string;
+
+    @ApiProperty({ example: 'patient', enum: Role })
+    @IsEnum(Role)
+    @IsNotEmpty()
+    role: Role;
 }

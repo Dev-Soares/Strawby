@@ -29,13 +29,13 @@ export type RecipeInMeal = {
   items: FoodItemPublic[];
 };
 
-export type MealPublic = Pick<Meal, 'id' | 'name' | 'kind' | 'mealType' | 'time' | 'date' | 'userId'> & {
+export type MealPublic = Pick<Meal, 'id' | 'name' | 'kind' | 'mealType' | 'time' | 'date' | 'patientId'> & {
   items: FoodItemPublic[];
   recipes: RecipeInMeal[];
   totals: MealTotals;
 };
 
-export type MealSummary = Pick<Meal, 'id' | 'name' | 'kind' | 'mealType' | 'time' | 'date' | 'userId'> & {
+export type MealSummary = Pick<Meal, 'id' | 'name' | 'kind' | 'mealType' | 'time' | 'date' | 'patientId'> & {
   totals: MealTotals;
 };
 
@@ -67,7 +67,7 @@ export const mealSelect = {
   mealType: true,
   time: true,
   date: true,
-  userId: true,
+  patientId: true,
   items: { select: foodItemSelect },
   recipes: {
     select: {

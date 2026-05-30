@@ -31,7 +31,7 @@ export class RecipeController {
 
   @Get()
   findAll(@Req() req: AuthenticatedRequest) {
-    return this.recipeService.findAllByUser(req.user.sub);
+    return this.recipeService.findAllByPatient(req.user.sub);
   }
 
   @Get(':id')

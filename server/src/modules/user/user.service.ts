@@ -5,9 +5,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { HashService } from '../../common/hash/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
-import { UserPublic, userSelect } from './types';
+import { UserPublic, userSelect, UserCredentials } from './types';
 
-type UserCredentials = Pick<User, 'id' | 'name' | 'password'>;
+
 
 @Injectable()
 export class UserService {
@@ -24,6 +24,10 @@ export class UserService {
           name: data.name,
           email: data.email,
           password: hashedPassword,
+          role: data.role,
+          ...(data.role === 'patient' //isso se chama nested write, faz mais de uma acao em apenas uma chamada. aqui, verifica a role e cria o patient ou nutritionist correspondente
+            ? { patient: { create: {} } }
+            : { nutritionist: { create: {} } }),
         },
         select: userSelect,
       });
@@ -40,7 +44,7 @@ export class UserService {
     try {
       return await this.prisma.user.findUnique({
         where: { email },
-        select: { id: true, name: true, password: true },
+        select: { id: true, name: true, password: true, role: true },
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar usuário');

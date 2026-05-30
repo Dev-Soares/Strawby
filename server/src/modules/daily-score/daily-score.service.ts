@@ -31,16 +31,16 @@ export class DailyScoreService {
   }
 
   async create(
-    userId: string,
+    patientId: string,
     dto: CreateDailyScoreDto,
   ): Promise<DailyScorePublic> {
     try {
       const date = this.parseDay(dto.date);
-      const score = await this.generateLiveScore(userId, dto.date);
+      const score = await this.generateLiveScore(patientId, dto.date);
 
       return await this.prisma.dailyScore.upsert({
-        where: { userId_date: { userId, date } },
-        create: { date, score, userId },
+        where: { patientId_date: { patientId, date } },
+        create: { date, score, patientId },
         update: { score },
         select: dailyScoreSelect,
       });
@@ -49,14 +49,14 @@ export class DailyScoreService {
     }
   }
 
-  async findAllByUser(
-    userId: string,
+  async findAllByPatient(
+    patientId: string,
     startDate?: string,
     endDate?: string,
   ): Promise<DailyScorePublic[]> {
     try {
-      const where: { userId: string; date?: { gte?: Date; lte?: Date } } = {
-        userId,
+      const where: { patientId: string; date?: { gte?: Date; lte?: Date } } = {
+        patientId,
       };
 
       if (startDate) where.date = { gte: new Date(startDate) };
@@ -72,7 +72,7 @@ export class DailyScoreService {
     }
   }
 
-  async findByDay(userId: string, day: string): Promise<DailyScorePublic> {
+  async findByDay(patientId: string, day: string): Promise<DailyScorePublic> {
     try {
       const start = new Date(day + 'T00:00:00.000Z');
       if (isNaN(start.getTime())) {
@@ -83,7 +83,7 @@ export class DailyScoreService {
 
       const score = await this.prisma.dailyScore.findFirst({
         where: {
-          userId,
+          patientId,
           date: {
             gte: start,
             lt: end,
@@ -101,17 +101,17 @@ export class DailyScoreService {
     }
   }
 
-  async getAverageScoreByUser(userId: string): Promise<number> {
+  async getAverageScoreByUser(patientId: string): Promise<number> {
     try {
       const scores = await this.prisma.dailyScore.aggregate({
-        where: { userId },
+        where: { patientId },
         _avg: { score: true },
         _count: { score: true },
       });
 
       if (scores._count.score === 0) {
         return this.generateLiveScore(
-          userId,
+          patientId,
           new Date().toISOString().split('T')[0],
         );
       }
@@ -121,15 +121,15 @@ export class DailyScoreService {
     }
   }
 
-  async generateLiveScore(userId: string, day: string): Promise<number> {
+  async generateLiveScore(patientId: string, day: string): Promise<number> {
     const start = new Date(day + 'T00:00:00.000Z');
     if (isNaN(start.getTime())) {
       throw new BadRequestException('Data inválida');
     }
     try {
       const [meals, plan] = await Promise.all([
-        this.mealService.findAllByUserAndDay(userId, day, undefined),
-        this.planService.findByUser(userId),
+        this.mealService.findAllByPatientAndDay(patientId, day, undefined),
+        this.planService.findByPatient(patientId),
       ]);
       if (!plan) return 0; // se não tiver plano, a pontuação é 0
       const dayMacros = this.reduceDayMacros(meals);
@@ -196,10 +196,10 @@ export class DailyScoreService {
     return macroScore?.score || 0;
   }
 
-  async remove(id: string, userId: string): Promise<DailyScorePublic> {
+  async remove(id: string, patientId: string): Promise<DailyScorePublic> {
     try {
       const existing = await this.prisma.dailyScore.findFirst({
-        where: { id, userId },
+        where: { id, patientId },
         select: dailyScoreSelect,
       });
       if (!existing) throw new NotFoundException('Pontuação não encontrada');
@@ -215,12 +215,12 @@ export class DailyScoreService {
 
   async update(
     id: string,
-    userId: string,
+    patientId: string,
     dto: UpdateDailyScoreDto,
   ): Promise<DailyScorePublic> {
     try {
       const existing = await this.prisma.dailyScore.findFirst({
-        where: { id, userId },
+        where: { id, patientId },
         select: { id: true },
       });
       if (!existing) throw new NotFoundException('Pontuação não encontrada');

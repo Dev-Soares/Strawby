@@ -108,7 +108,7 @@ export class MealService {
     } as MealPublic;
   }
 
-  async create(userId: string, dto: CreateMealDto): Promise<MealPublic> {
+  async create(patientId: string, dto: CreateMealDto): Promise<MealPublic> {
     try {
       const meal = await this.prisma.meal.create({
         data: {
@@ -117,7 +117,7 @@ export class MealService {
           mealType: dto.mealType,
           time: dto.time,
           date: dto.date ? new Date(dto.date) : undefined,
-          userId,
+          patientId,
         },
         select: mealSelect,
       });
@@ -127,10 +127,10 @@ export class MealService {
     }
   }
 
-  async findAllByUser(userId: string, kind?: MealKind): Promise<MealPublic[]> {
+  async findAllByPatient(patientId: string, kind?: MealKind): Promise<MealPublic[]> {
     try {
       const meals = await this.prisma.meal.findMany({
-        where: { userId, ...(kind && { kind }) },
+        where: { patientId, ...(kind && { kind }) },
         select: mealSelect,
         orderBy: { date: 'desc' },
       });
@@ -140,8 +140,8 @@ export class MealService {
     }
   }
 
-  async findAllByUserAndDay(
-    userId: string,
+  async findAllByPatientAndDay(
+    patientId: string,
     day: string,
     kind?: MealKind,
   ): Promise<MealPublic[]> {
@@ -155,7 +155,7 @@ export class MealService {
 
       const meals = await this.prisma.meal.findMany({
         where: {
-          userId,
+          patientId,
           ...(kind && { kind }),
           date: {
             gte: start,
@@ -171,10 +171,10 @@ export class MealService {
     }
   }
 
-  async findOne(id: string, userId: string): Promise<MealPublic> {
+  async findOne(id: string, patientId: string): Promise<MealPublic> {
     try {
       const meal = await this.prisma.meal.findFirst({
-        where: { id, userId },
+        where: { id, patientId },
         select: mealSelect,
       });
 
@@ -186,10 +186,10 @@ export class MealService {
     }
   }
 
-  async update(id: string, userId: string, dto: UpdateMealDto): Promise<MealPublic> {
+  async update(id: string, patientId: string, dto: UpdateMealDto): Promise<MealPublic> {
     try {
       const meal = await this.prisma.meal.update({
-        where: { id, userId },
+        where: { id, patientId },
         data: {
           ...(dto.name !== undefined && { name: dto.name }),
           ...(dto.mealType !== undefined && { mealType: dto.mealType }),
@@ -206,10 +206,10 @@ export class MealService {
     }
   }
 
-  async remove(id: string, userId: string): Promise<{ id: string }> {
+  async remove(id: string, patientId: string): Promise<{ id: string }> {
     try {
       return await this.prisma.meal.delete({
-        where: { id, userId },
+        where: { id, patientId },
         select: { id: true },
       });
     } catch (error) {
@@ -219,7 +219,7 @@ export class MealService {
     }
   }
 
-  async addFoodItem(mealId: string, userId: string, dto: AddFoodItemDto): Promise<FoodItemPublic> {
+  async addFoodItem(mealId: string, patientId: string, dto: AddFoodItemDto): Promise<FoodItemPublic> {
     try {
       const food = await this.prisma.food.findUnique({
         where: { id: dto.foodId },
@@ -229,7 +229,7 @@ export class MealService {
 
       const ratio = dto.quantity / 100;
       const updated = await this.prisma.meal.update({
-        where: { id: mealId, userId },
+        where: { id: mealId, patientId },
         data: {
           items: {
             create: {
@@ -255,10 +255,10 @@ export class MealService {
     }
   }
 
-  async addPrivateFoodItem(mealId: string, userId: string, dto: AddMealPrivateFoodItemDto): Promise<FoodItemPublic> {
+  async addPrivateFoodItem(mealId: string, patientId: string, dto: AddMealPrivateFoodItemDto): Promise<FoodItemPublic> {
     try {
       const privateFood = await this.prisma.privateFood.findFirst({
-        where: { id: dto.privateFoodId, userId },
+        where: { id: dto.privateFoodId, patientId },
         select: { id: true, calories: true, protein: true, carbs: true, fat: true, servingSize: true },
       });
       if (!privateFood) throw new NotFoundException('Alimento privado não encontrado');
@@ -266,7 +266,7 @@ export class MealService {
       const servingSize = privateFood.servingSize ? Number(privateFood.servingSize) : 100;
       const ratio = dto.quantity / servingSize;
       const updated = await this.prisma.meal.update({
-        where: { id: mealId, userId },
+        where: { id: mealId, patientId },
         data: {
           items: {
             create: {
@@ -292,10 +292,10 @@ export class MealService {
     }
   }
 
-  async removeItem(mealId: string, itemId: string, userId: string): Promise<{ id: string }> {
+  async removeItem(mealId: string, itemId: string, patientId: string): Promise<{ id: string }> {
     try {
       const { count } = await this.prisma.foodItem.deleteMany({
-        where: { id: itemId, meal: { id: mealId, userId } },
+        where: { id: itemId, meal: { id: mealId, patientId } },
       });
 
       if (count === 0) throw new NotFoundException('Item não encontrado na refeição');
@@ -306,16 +306,16 @@ export class MealService {
     }
   }
 
-  async addRecipe(mealId: string, userId: string, dto: AddMealRecipeDto): Promise<MealPublic> {
+  async addRecipe(mealId: string, patientId: string, dto: AddMealRecipeDto): Promise<MealPublic> {
     try {
       const recipe = await this.prisma.recipe.findFirst({
-        where: { id: dto.recipeId, userId },
+        where: { id: dto.recipeId, patientId },
         select: { id: true },
       });
       if (!recipe) throw new NotFoundException('Receita não encontrada');
 
       const meal = await this.prisma.meal.update({
-        where: { id: mealId, userId },
+        where: { id: mealId, patientId },
         data: {
           recipes: {
             connect: { id: recipe.id },
@@ -332,10 +332,10 @@ export class MealService {
     }
   }
 
-  async removeRecipe(mealId: string, recipeId: string, userId: string): Promise<MealPublic> {
+  async removeRecipe(mealId: string, recipeId: string, patientId: string): Promise<MealPublic> {
     try {
       const meal = await this.prisma.meal.update({
-        where: { id: mealId, userId },
+        where: { id: mealId, patientId },
         data: {
           recipes: {
             disconnect: { id: recipeId },

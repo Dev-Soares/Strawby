@@ -29,7 +29,7 @@ export class RecipeService {
     );
   }
 
-  async create(userId: string, dto: CreateRecipeDto): Promise<RecipePublic> {
+  async create(patientId: string, dto: CreateRecipeDto): Promise<RecipePublic> {
     try {
       const recipe = await this.prisma.recipe.create({
         data: {
@@ -38,7 +38,7 @@ export class RecipeService {
           protein: 0,
           carbs: 0,
           fat: 0,
-          userId,
+          patientId,
         },
         select: recipeSelect,
       });
@@ -48,10 +48,10 @@ export class RecipeService {
     }
   }
 
-  async findAllByUser(userId: string): Promise<RecipePublic[]> {
+  async findAllByPatient(patientId: string): Promise<RecipePublic[]> {
     try {
       const recipes = await this.prisma.recipe.findMany({
-        where: { userId },
+        where: { patientId },
         select: recipeSelect,
         orderBy: { createdAt: 'desc' },
       });
@@ -64,10 +64,10 @@ export class RecipeService {
     }
   }
 
-  async findOne(id: string, userId: string): Promise<RecipePublic> {
+  async findOne(id: string, patientId: string): Promise<RecipePublic> {
     try {
       const recipe = await this.prisma.recipe.findFirst({
-        where: { id, userId },
+        where: { id, patientId },
         select: recipeSelect,
       });
 
@@ -81,12 +81,12 @@ export class RecipeService {
 
   async update(
     id: string,
-    userId: string,
+    patientId: string,
     dto: UpdateRecipeDto,
   ): Promise<RecipePublic> {
     try {
       const recipe = await this.prisma.recipe.update({
-        where: { id, userId },
+        where: { id, patientId },
         data: {
           ...(dto.name !== undefined && { name: dto.name }),
         },
@@ -100,10 +100,10 @@ export class RecipeService {
     }
   }
 
-  async remove(id: string, userId: string): Promise<{ id: string }> {
+  async remove(id: string, patientId: string): Promise<{ id: string }> {
     try {
       return await this.prisma.recipe.delete({
-        where: { id, userId },
+        where: { id, patientId },
         select: { id: true },
       });
     } catch (error) {
@@ -115,7 +115,7 @@ export class RecipeService {
 
   async addFoodItem(
     recipeId: string,
-    userId: string,
+    patientId: string,
     dto: AddFoodItemDto,
   ): Promise<FoodItemPublic> {
     try {
@@ -134,7 +134,7 @@ export class RecipeService {
 
       const ratio = dto.quantity / 100;
       const updated = await this.prisma.recipe.update({
-        where: { id: recipeId, userId },
+        where: { id: recipeId, patientId },
         data: {
           items: {
             create: {
@@ -166,12 +166,12 @@ export class RecipeService {
 
   async addPrivateFoodItem(
     recipeId: string,
-    userId: string,
+    patientId: string,
     dto: AddRecipePrivateFoodItemDto,
   ): Promise<FoodItemPublic> {
     try {
       const privateFood = await this.prisma.privateFood.findFirst({
-        where: { id: dto.privateFoodId, userId },
+        where: { id: dto.privateFoodId, patientId },
         select: {
           id: true,
           calories: true,
@@ -191,7 +191,7 @@ export class RecipeService {
         Number.isFinite(rawServing) && rawServing > 0 ? rawServing : 100;
       const ratio = dto.quantity / servingSize;
       const updated = await this.prisma.recipe.update({
-        where: { id: recipeId, userId },
+        where: { id: recipeId, patientId },
         data: {
           items: {
             create: {
@@ -224,11 +224,11 @@ export class RecipeService {
   async removeItem(
     recipeId: string,
     itemId: string,
-    userId: string,
+    patientId: string,
   ): Promise<{ id: string }> {
     try {
       const result = await this.prisma.foodItem.deleteMany({
-        where: { id: itemId, recipeId, recipe: { userId } },
+        where: { id: itemId, recipeId, recipe: { patientId } },
       });
 
       if (result.count === 0) {
