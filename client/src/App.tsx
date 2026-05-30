@@ -1,46 +1,30 @@
-import { Routes, Route } from 'react-router-dom'
-import LandingPage from './pages/LandingPage'
-import LoginPage from './pages/LoginPage'
-import SignUpPage from './pages/SignUpPage'
-import MainPage from './pages/MainPage'
-import FoodsPage from './pages/FoodsPage'
-import PlanPage from './pages/PlanPage'
-import CreateMealPage from './pages/CreateMealPage'
-import MealDetailPage from './pages/MealDetailPage'
-import SelectFoodPage from './pages/SelectFoodPage'
-import ScorePage from './pages/ScorePage'
-import CreateRecipePage from './pages/CreateRecipePage'
-import RecipeDetailPage from './pages/RecipeDetailPage'
-import PrivacyPage from './pages/PrivacyPage'
-import TermsPage from './pages/TermsPage'
-import FaqPage from './pages/FaqPage.tsx'
-import ProfilePage from './pages/ProfilePage'
-import ProtectedRoute from './shared/components/ProtectedRoute'
-import PublicOnlyRoute from './shared/components/PublicOnlyRoute'
+import { Routes } from 'react-router-dom'
 import ScrollToTop from './shared/components/ScrollToTop'
+import { publicRoutes } from './routes/publicRoutes'
+import { authRoutes } from './routes/authRoutes'
+import { homeRoutes } from './routes/homeRoutes'
+import { mealRoutes } from './routes/mealRoutes'
+import { foodRoutes } from './routes/foodRoutes'
+import { recipeRoutes } from './routes/recipeRoutes'
+import { planRoutes } from './routes/planRoutes'
+import { scoreRoutes } from './routes/scoreRoutes'
+import { profileRoutes } from './routes/profileRoutes'
 
 export default function App() {
   return (
     <>
       <ScrollToTop />
       <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/faq" element={<FaqPage />} />
-      <Route path="/privacy" element={<PrivacyPage />} />
-      <Route path="/terms" element={<TermsPage />} />
-      <Route path="/app/login" element={<PublicOnlyRoute><LoginPage /></PublicOnlyRoute>} />
-      <Route path="/app/create-account" element={<PublicOnlyRoute><SignUpPage /></PublicOnlyRoute>} />
-      <Route path="/app/home" element={<ProtectedRoute><MainPage /></ProtectedRoute>} />
-      <Route path="/app/score" element={<ProtectedRoute><ScorePage /></ProtectedRoute>} />
-      <Route path="/app/foods" element={<ProtectedRoute><FoodsPage /></ProtectedRoute>} />
-      <Route path="/app/plan" element={<ProtectedRoute><PlanPage /></ProtectedRoute>} />
-      <Route path="/app/meals/new" element={<ProtectedRoute><CreateMealPage /></ProtectedRoute>} />
-      <Route path="/app/meals/:id" element={<ProtectedRoute><MealDetailPage /></ProtectedRoute>} />
-      <Route path="/app/foods/select" element={<ProtectedRoute><SelectFoodPage /></ProtectedRoute>} />
-      <Route path="/app/recipes/new" element={<ProtectedRoute><CreateRecipePage /></ProtectedRoute>} />
-      <Route path="/app/recipes/:id" element={<ProtectedRoute><RecipeDetailPage /></ProtectedRoute>} />
-      <Route path="/app/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-    </Routes>
+        {publicRoutes}
+        {authRoutes}
+        {homeRoutes}
+        {mealRoutes}
+        {foodRoutes}
+        {recipeRoutes}
+        {planRoutes}
+        {scoreRoutes}
+        {profileRoutes}
+      </Routes>
     </>
   )
 }
