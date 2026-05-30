@@ -3,7 +3,7 @@ import { FireIcon } from '@phosphor-icons/react'
 import type { DailySummary, MacroRing } from '../types/dailySummary'
 
 function MacroBar({ label, value, max, unit, color, trackColor }: MacroRing) {
-  const progress = Math.min(value / max, 1)
+  const progress = max > 0 ? Math.min(value / max, 1) : 0
   const displayValue = unit === 'kcal' ? value.toLocaleString('pt-BR') : value
 
   return (

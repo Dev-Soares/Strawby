@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
@@ -13,23 +10,19 @@ export class PlanService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(userId: string, dto: CreatePlanDto): Promise<PlanPublic> {
-    let recomendedPlan: PlanMacros | null = null;
+    let planData: PlanMacros;
 
     if (dto.goal && dto.movementLevel && dto.age && dto.height && dto.weight && dto.gender) {
-      recomendedPlan = this.generateRecomendedPlan(dto);
+      planData = this.generateRecomendedPlan(dto);
+    } else if (dto.calories !== undefined && dto.protein !== undefined && dto.carbs !== undefined && dto.fat !== undefined) {
+      planData = { calories: dto.calories, protein: dto.protein, carbs: dto.carbs, fat: dto.fat };
+    } else {
+      throw new BadRequestException('Informe as macros manualmente ou os dados para cálculo automático');
     }
-
-    const planData = recomendedPlan ? recomendedPlan : dto;
 
     try {
       return await this.prisma.plan.create({
-        data: {
-          calories: planData.calories,
-          protein: planData.protein,
-          carbs: planData.carbs,
-          fat: planData.fat,
-          userId,
-        },
+        data: { ...planData, userId },
         select: planSelect,
       });
     } catch (error) {
@@ -41,53 +34,36 @@ export class PlanService {
 
   private generateRecomendedPlan(dto: CreatePlanDto): PlanMacros {
 
-    const userTmb =  this.getUserTmb(dto.weight, dto.height, dto.age, dto.gender);
+    const userTmb = this.getUserTmb(dto.weight!, dto.height!, dto.age!, dto.gender!);
 
-    const userDailyCalories = userTmb * (dto.movementLevel ?? 1);
+    const userDailyCalories = userTmb * dto.movementLevel!;
 
-    let caloriesForPlan: number; 
-    if(dto.goal === 'lose') caloriesForPlan = userDailyCalories - 400;
+    let caloriesForPlan: number;
+    if (dto.goal === 'lose') caloriesForPlan = userDailyCalories - 400;
     else caloriesForPlan = userDailyCalories + 400;
 
-    const macrosNumbers = this.generateMacrosNumbers(caloriesForPlan, dto.goal  ?? 'lose');
+    const macrosNumbers = this.generateMacrosNumbers(caloriesForPlan, dto.goal!, dto.weight!);
 
     return {
-      calories: caloriesForPlan,
+      calories: Math.round(caloriesForPlan),
       protein: macrosNumbers.protein,
       carbs: macrosNumbers.carbs,
       fat: macrosNumbers.fat
     }
   }
 
-  private generateMacrosNumbers (calories:number, goal: string): MacroDistribution {
-    
-    let proteinPercentage: number, carbsPercentage: number, fatPercentage: number;
+  private generateMacrosNumbers(calories: number, goal: string, weight: number): MacroDistribution {
+    const proteinPerKg = goal === 'lose' ? 2.0 : 1.8;
+    const fatPerKg = goal === 'lose' ? 0.8 : 1.0;
 
-    if (goal === 'lose') {
-      proteinPercentage = 0.35;
-      carbsPercentage = 0.4;
-      fatPercentage = 0.25;
-    } else if (goal === 'gain') {
-      proteinPercentage = 0.3;
-      carbsPercentage = 0.45;
-      fatPercentage = 0.25;
-    } else {
-      proteinPercentage = 0.3;
-      carbsPercentage = 0.4;
-      fatPercentage = 0.3;
-    }
-    const proteinGrams = (calories * proteinPercentage) / 4;
-    const carbsGrams = (calories * carbsPercentage) / 4;
-    const fatGrams = (calories * fatPercentage) / 9;
+    const protein = Math.round(weight * proteinPerKg);
+    const fat = Math.round(weight * fatPerKg);
+    const remaining = calories - (protein * 4) - (fat * 9);
+    const carbs = Math.round(Math.max(remaining, 0) / 4);
 
-    return {
-      protein: Math.round(proteinGrams),
-      carbs: Math.round(carbsGrams),
-      fat: Math.round(fatGrams)
-    }
-
+    return { protein, carbs, fat };
   }
-//metodo privado para calcular a Taxa Metabólica Basal (TMB) usando a fórmula de Harris-Benedict
+  // Mifflin-St Jeor (1990) — fórmula mais precisa para TMB
   private getUserTmb (weight: number, height: number, age: number, gender: string) {
     
     const basicTmb = (10 * weight) + (6.25 * height) - (5 * age)
@@ -97,16 +73,14 @@ export class PlanService {
 
   }
 
-  async findByUser(userId: string): Promise<PlanPublic> {
+  async findByUser(userId: string): Promise<PlanPublic | null> {
     try {
       const plan = await this.prisma.plan.findUnique({
         where: { userId },
         select: planSelect,
       });
 
-      if (!plan) throw new NotFoundException('Plano não encontrado');
-
-      return plan;
+      return plan ?? null;
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar plano');
     }

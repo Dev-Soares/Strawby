@@ -24,14 +24,6 @@ export class UserService {
           name: data.name,
           email: data.email,
           password: hashedPassword,
-          plan: {
-            create: {
-              calories: 0,
-              protein: 0,
-              carbs: 0,
-              fat: 0,
-            },
-          },
         },
         select: userSelect,
       });

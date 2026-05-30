@@ -1,12 +1,17 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { PencilSimple, Fire } from '@phosphor-icons/react'
+import { PencilSimple, Fire, Sparkle } from '@phosphor-icons/react'
 import AppLayout from '../shared/layouts/AppLayout'
 import PlanEditModal from '../modules/plan/components/PlanEditModal'
+import PlanEmptyState from '../modules/plan/components/PlanEmptyState'
+import CreatePlanModal from '../modules/plan/components/CreatePlanModal'
+import ConfirmDeletePlanModal from '../modules/plan/components/ConfirmDeletePlanModal'
 import PlanMealsSection from '../modules/plan/components/PlanMealsSection'
 import PlanSkeleton from '../modules/plan/skeletons/PlanSkeleton'
 import { useGetPlan } from '../modules/plan/hooks/useGetPlan'
 import { useEditPlan } from '../modules/plan/hooks/useEditPlan'
+import { useCreatePlan } from '../modules/plan/hooks/useCreatePlan'
+import { useDeletePlan } from '../modules/plan/hooks/useDeletePlan'
 
 const macros = [
   { label: 'Proteína', field: 'protein' as const, color: '#f59e0b', trackColor: '#fef3c7', max: 500 },
@@ -17,7 +22,26 @@ const macros = [
 export default function PlanPage() {
   const { data: plan, isPending, isError } = useGetPlan()
   const editMutation = useEditPlan()
+  const createMutation = useCreatePlan()
+  const deleteMutation = useDeletePlan()
   const [modalOpen, setModalOpen] = useState(false)
+  const [createModalOpen, setCreateModalOpen] = useState(false)
+  const [createInitialMode, setCreateInitialMode] = useState<'select' | 'manual' | 'generate'>('select')
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+
+  const openCreate = (mode: 'select' | 'manual' | 'generate' = 'select') => {
+    setCreateInitialMode(mode)
+    setCreateModalOpen(true)
+  }
+
+  const handleDeleteConfirm = () => {
+    deleteMutation.mutate(undefined, {
+      onSuccess: () => {
+        setConfirmDeleteOpen(false)
+        openCreate('generate')
+      },
+    })
+  }
 
   return (
     <AppLayout>
@@ -28,6 +52,14 @@ export default function PlanPage() {
           <p className="text-red-500 font-medium">Erro ao carregar plano</p>
         </div>
       )}
+
+      {!isPending && !isError && !plan && (
+        <PlanEmptyState
+          onManual={() => openCreate('manual')}
+          onGenerate={() => openCreate('generate')}
+        />
+      )}
+
 
       {plan && (
         <>
@@ -46,13 +78,22 @@ export default function PlanPage() {
                 <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-3 transition-colors duration-300">Seus objetivos nutricionais diários</p>
               </div>
 
-              <button
-                onClick={() => setModalOpen(true)}
-                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-3 rounded-2xl transition-colors duration-200 cursor-pointer shrink-0"
-              >
-                <PencilSimple size={16} weight="bold" />
-                Editar plano
-              </button>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={() => setConfirmDeleteOpen(true)}
+                  className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-3 rounded-2xl transition-colors duration-200 cursor-pointer"
+                >
+                  <Sparkle size={16} weight="fill" />
+                  Gerar plano recomendado
+                </button>
+                <button
+                  onClick={() => setModalOpen(true)}
+                  className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-3 rounded-2xl transition-colors duration-200 cursor-pointer"
+                >
+                  <PencilSimple size={16} weight="bold" />
+                  Editar plano
+                </button>
+              </div>
             </motion.div>
 
             {/* Two-column layout */}
@@ -137,6 +178,21 @@ export default function PlanPage() {
           />
         </>
       )}
+
+      <CreatePlanModal
+        isOpen={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onSubmit={(data) => createMutation.mutate(data, { onSuccess: () => setCreateModalOpen(false) })}
+        isPending={createMutation.isPending}
+        initialMode={createInitialMode}
+      />
+
+      <ConfirmDeletePlanModal
+        isOpen={confirmDeleteOpen}
+        onClose={() => setConfirmDeleteOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        isPending={deleteMutation.isPending}
+      />
     </AppLayout>
   )
 }

@@ -24,17 +24,17 @@ function MainPageContent() {
   } = useGetMealsByDay(selectedDay)
 
   const summary: DailySummaryType | null = useMemo(() => {
-    if (!plan || !meals) return null
+    if (!meals) return null
     const consumed = meals.reduce((s, m) => s + m.totals.calories, 0)
     const protein = meals.reduce((s, m) => s + m.totals.protein, 0)
     const carbs = meals.reduce((s, m) => s + m.totals.carbs, 0)
     const fat = meals.reduce((s, m) => s + m.totals.fat, 0)
     return {
       macros: [
-        { label: 'CALORIAS', value: Math.round(consumed), max: Math.round(plan.calories), unit: 'kcal', color: 'var(--macro-calories)', trackColor: 'var(--macro-calories-light)' },
-        { label: 'PROTEÍNA', value: Math.round(protein), max: Math.round(plan.protein), unit: 'g', color: 'var(--macro-protein)', trackColor: 'var(--macro-protein-light)' },
-        { label: 'CARBOIDRATOS', value: Math.round(carbs), max: Math.round(plan.carbs), unit: 'g', color: 'var(--macro-carbs)', trackColor: 'var(--macro-carbs-light)' },
-        { label: 'GORDURA', value: Math.round(fat), max: Math.round(plan.fat), unit: 'g', color: 'var(--macro-fat)', trackColor: 'var(--macro-fat-light)' },
+        { label: 'CALORIAS', value: Math.round(consumed), max: plan ? Math.round(plan.calories) : 0, unit: 'kcal', color: 'var(--macro-calories)', trackColor: 'var(--macro-calories-light)' },
+        { label: 'PROTEÍNA', value: Math.round(protein), max: plan ? Math.round(plan.protein) : 0, unit: 'g', color: 'var(--macro-protein)', trackColor: 'var(--macro-protein-light)' },
+        { label: 'CARBOIDRATOS', value: Math.round(carbs), max: plan ? Math.round(plan.carbs) : 0, unit: 'g', color: 'var(--macro-carbs)', trackColor: 'var(--macro-carbs-light)' },
+        { label: 'GORDURA', value: Math.round(fat), max: plan ? Math.round(plan.fat) : 0, unit: 'g', color: 'var(--macro-fat)', trackColor: 'var(--macro-fat-light)' },
       ],
     }
   }, [meals, plan])
@@ -78,12 +78,12 @@ function MainPageContent() {
               <DailySummarySkeleton />
               <MealListSkeleton />
             </>
-          ) : summary && meals ? (
+          ) : (
             <>
-              <DailySummary data={summary} />
-              <MealList meals={meals} />
+              {summary ? <DailySummary data={summary} /> : <DailySummarySkeleton />}
+              {meals ? <MealList meals={meals} /> : null}
             </>
-          ) : null}
+          )}
         </div>
       </div>
     </AppLayout>
