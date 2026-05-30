@@ -1,12 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
+import { useAuth } from '../../auth/hooks/useAuth'
 import { removeMealRecipeService } from '../service/removeMealRecipeService'
 
-export const useRemoveMealRecipe = () => {
+export const useRemoveMealRecipe = (patientId?: string) => {
   const queryClient = useQueryClient()
+  const { data: user } = useAuth()
+  const effectivePatientId = patientId ?? user?.id
   return useMutation({
     mutationFn: ({ mealId, recipeId }: { mealId: string; recipeId: string }) =>
-      removeMealRecipeService(mealId, recipeId),
+      removeMealRecipeService(effectivePatientId!, mealId, recipeId),
     onSuccess: async (_, variables) => {
       await queryClient.refetchQueries({ queryKey: ['meal', variables.mealId], type: 'all' })
       await queryClient.refetchQueries({ queryKey: ['meals'], type: 'all' })

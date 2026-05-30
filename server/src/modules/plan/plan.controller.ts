@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
@@ -12,23 +12,37 @@ import { PlanService } from './plan.service';
 export class PlanController {
   constructor(private readonly planService: PlanService) {}
 
-  @Post()
-  create(@Req() req: AuthenticatedRequest, @Body() dto: CreatePlanDto) {
-    return this.planService.create(req.user.sub, dto);
+  @Post(':patientId')
+  create(
+    @Req() req: AuthenticatedRequest,
+    @Param('patientId') patientId: string,
+    @Body() dto: CreatePlanDto,
+  ) {
+    return this.planService.create(req.user.sub, patientId, dto);
   }
 
-  @Get()
-  findMine(@Req() req: AuthenticatedRequest) {
-    return this.planService.findByUser(req.user.sub);
+  @Get(':patientId')
+  findOne(
+    @Req() req: AuthenticatedRequest,
+    @Param('patientId') patientId: string,
+  ) {
+    return this.planService.findByPatient(req.user.sub, patientId);
   }
 
-  @Patch()
-  update(@Req() req: AuthenticatedRequest, @Body() dto: UpdatePlanDto) {
-    return this.planService.update(req.user.sub, dto);
+  @Patch(':patientId')
+  update(
+    @Req() req: AuthenticatedRequest,
+    @Param('patientId') patientId: string,
+    @Body() dto: UpdatePlanDto,
+  ) {
+    return this.planService.update(req.user.sub, patientId, dto);
   }
 
-  @Delete()
-  remove(@Req() req: AuthenticatedRequest) {
-    return this.planService.remove(req.user.sub);
+  @Delete(':patientId')
+  remove(
+    @Req() req: AuthenticatedRequest,
+    @Param('patientId') patientId: string,
+  ) {
+    return this.planService.remove(req.user.sub, patientId);
   }
 }

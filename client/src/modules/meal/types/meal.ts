@@ -40,7 +40,7 @@ export type Meal = {
   mealType: string | null
   time: string | null
   date: string
-  userId: string
+  patientId: string
   items: FoodItem[]
   recipes: RecipeInMeal[]
   totals: MealTotals

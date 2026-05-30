@@ -1,55 +1,85 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
-import { PlanPublic, planSelect } from './types';
+import { PatientAccessService } from '../../common/patient-access/patient-access.service';
+import { MacroDistribution, PlanMacros, PlanPublic, planSelect } from './types';
+
+type GenerateParams = {
+  weight: number;
+  height: number;
+  age: number;
+  gender: string;
+  movementLevel: number;
+  goal: string;
+};
 
 @Injectable()
 export class PlanService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly patientAccess: PatientAccessService,
+  ) {}
 
-  async create(userId: string, dto: CreatePlanDto): Promise<PlanPublic> {
+  async create(callerId: string, patientId: string, dto: CreatePlanDto): Promise<PlanPublic> {
+    await this.patientAccess.resolve(callerId, patientId);
+
+    let planData: PlanMacros;
+
+    if (dto.goal && dto.movementLevel) {
+      const patient = await this.prisma.patient.findUnique({
+        where: { id: patientId },
+        select: { weight: true, height: true, age: true, gender: true },
+      });
+
+      planData = this.generateRecomendedPlan({
+        weight: patient!.weight!,
+        height: patient!.height!,
+        age: patient!.age!,
+        gender: patient!.gender!,
+        movementLevel: dto.movementLevel,
+        goal: dto.goal,
+      });
+    } else if (
+      dto.calories !== undefined &&
+      dto.protein !== undefined &&
+      dto.carbs !== undefined &&
+      dto.fat !== undefined
+    ) {
+      planData = { calories: dto.calories, protein: dto.protein, carbs: dto.carbs, fat: dto.fat };
+    } else {
+      throw new BadRequestException('Informe as macros manualmente ou os dados para cálculo automático');
+    }
+
     try {
       return await this.prisma.plan.create({
-        data: {
-          calories: dto.calories,
-          protein: dto.protein,
-          carbs: dto.carbs,
-          fat: dto.fat,
-          userId,
-        },
+        data: { ...planData, patientId },
         select: planSelect,
       });
     } catch (error) {
-      mapPrismaError(error, 'Erro ao criar plano', {
-        p2002: 'Usuário já possui um plano',
-      });
+      mapPrismaError(error, 'Erro ao criar plano', { p2002: 'Paciente já possui um plano' });
     }
   }
 
-  async findByUser(userId: string): Promise<PlanPublic> {
+  async findByPatient(callerId: string, patientId: string): Promise<PlanPublic | null> {
+    await this.patientAccess.resolve(callerId, patientId);
+    return this.queryPlanByPatient(patientId);
+  }
+
+  async queryPlanByPatient(patientId: string): Promise<PlanPublic | null> {
     try {
-      const plan = await this.prisma.plan.findUnique({
-        where: { userId },
-        select: planSelect,
-      });
-
-      if (!plan) throw new NotFoundException('Plano não encontrado');
-
-      return plan;
+      return await this.prisma.plan.findUnique({ where: { patientId }, select: planSelect }) ?? null;
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar plano');
     }
   }
 
-  async update(userId: string, dto: UpdatePlanDto): Promise<PlanPublic> {
+  async update(callerId: string, patientId: string, dto: UpdatePlanDto): Promise<PlanPublic> {
+    await this.patientAccess.resolve(callerId, patientId);
     try {
       return await this.prisma.plan.update({
-        where: { userId },
+        where: { patientId },
         data: {
           ...(dto.calories !== undefined && { calories: dto.calories }),
           ...(dto.protein !== undefined && { protein: dto.protein }),
@@ -59,22 +89,39 @@ export class PlanService {
         select: planSelect,
       });
     } catch (error) {
-      mapPrismaError(error, 'Erro ao atualizar plano', {
-        p2025: 'Plano não encontrado',
-      });
+      mapPrismaError(error, 'Erro ao atualizar plano', { p2025: 'Plano não encontrado' });
     }
   }
 
-  async remove(userId: string): Promise<{ id: string }> {
+  async remove(callerId: string, patientId: string): Promise<{ id: string }> {
+    await this.patientAccess.resolve(callerId, patientId);
     try {
-      return await this.prisma.plan.delete({
-        where: { userId },
-        select: { id: true },
-      });
+      return await this.prisma.plan.delete({ where: { patientId }, select: { id: true } });
     } catch (error) {
-      mapPrismaError(error, 'Erro ao deletar plano', {
-        p2025: 'Plano não encontrado',
-      });
+      mapPrismaError(error, 'Erro ao deletar plano', { p2025: 'Plano não encontrado' });
     }
+  }
+
+  private generateRecomendedPlan(params: GenerateParams): PlanMacros {
+    const userTmb = this.getUserTmb(params.weight, params.height, params.age, params.gender);
+    const userDailyCalories = userTmb * params.movementLevel;
+    const caloriesForPlan = params.goal === 'lose' ? userDailyCalories - 400 : userDailyCalories + 400;
+    const macros = this.generateMacrosNumbers(caloriesForPlan, params.goal, params.weight);
+    return { calories: Math.round(caloriesForPlan), ...macros };
+  }
+
+  private generateMacrosNumbers(calories: number, goal: string, weight: number): MacroDistribution {
+    const protein = Math.round(weight * (goal === 'lose' ? 2.0 : 1.8));
+    const fat = Math.round(weight * (goal === 'lose' ? 0.8 : 1.0));
+    const carbs = Math.round(Math.max(calories - protein * 4 - fat * 9, 0) / 4);
+    return { protein, carbs, fat };
+  }
+
+  // Mifflin-St Jeor (1990)
+  private getUserTmb(weight: number, height: number, age: number, gender: string) {
+    const base = 10 * weight + 6.25 * height - 5 * age;
+    if (gender === 'male') return base + 5;
+    if (gender === 'female') return base - 161;
+    return base;
   }
 }

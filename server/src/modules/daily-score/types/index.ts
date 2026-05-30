@@ -2,14 +2,14 @@ import { DailyScore } from '@prisma/client';
 
 export type DailyScorePublic = Pick<
   DailyScore,
-  'id' | 'date' | 'score' | 'userId' | 'createdAt' | 'updatedAt'
+  'id' | 'date' | 'score' | 'patientId' | 'createdAt' | 'updatedAt'
 >;
 
 export const dailyScoreSelect = {
   id: true,
   date: true,
   score: true,
-  userId: true,
+  patientId: true,
   createdAt: true,
   updatedAt: true,
 } as const;

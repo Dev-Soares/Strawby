@@ -2,10 +2,7 @@ import { api } from '@/api/axios'
 import type { AddMealPrivateFoodItemData } from '../types/addMealPrivateFoodItem'
 import type { FoodItem } from '../types/meal'
 
-export const addMealPrivateFoodItemService = async (
-  mealId: string,
-  dto: AddMealPrivateFoodItemData,
-): Promise<FoodItem> => {
-  const { data } = await api.post(`/meal/${mealId}/private-items`, dto)
+export const addMealPrivateFoodItemService = async (patientId: string, mealId: string, dto: AddMealPrivateFoodItemData): Promise<FoodItem> => {
+  const { data } = await api.post(`/meal/${patientId}/${mealId}/private-items`, dto)
   return data
 }

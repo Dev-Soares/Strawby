@@ -1,28 +1,44 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, Min } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsNumber, Min, IsEnum, IsOptional } from 'class-validator';
+
+export enum Goal {
+  Lose = 'lose',
+  Gain = 'gain',
+}
 
 export class CreatePlanDto {
-  @ApiProperty({ example: 2000 })
+  @ApiPropertyOptional({ example: 2000 })
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   @Min(0)
-  calories: number;
+  calories?: number;
 
-  @ApiProperty({ example: 150 })
+  @ApiPropertyOptional({ example: 150 })
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   @Min(0)
-  protein: number;
+  protein?: number;
 
-  @ApiProperty({ example: 250 })
+  @ApiPropertyOptional({ example: 250 })
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   @Min(0)
-  carbs: number;
+  carbs?: number;
 
-  @ApiProperty({ example: 70 })
+  @ApiPropertyOptional({ example: 70 })
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   @Min(0)
-  fat: number;
+  fat?: number;
+
+  @ApiPropertyOptional({ example: 1.2 })
+  @IsNumber()
+  @IsOptional()
+  @Min(1.2)
+  movementLevel?: number;
+
+  @ApiPropertyOptional({ example: Goal.Lose, enum: Goal })
+  @IsEnum(Goal)
+  @IsOptional()
+  goal?: Goal;
 }

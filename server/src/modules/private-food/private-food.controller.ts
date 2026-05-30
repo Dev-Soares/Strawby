@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
@@ -22,27 +12,23 @@ import { PrivateFoodService } from './private-food.service';
 export class PrivateFoodController {
   constructor(private readonly privateFoodService: PrivateFoodService) {}
 
-  @Post()
-  create(@Req() req: AuthenticatedRequest, @Body() dto: CreatePrivateFoodDto) {
-    return this.privateFoodService.create(req.user.sub, dto);
+  @Post(':patientId')
+  create(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Body() dto: CreatePrivateFoodDto) {
+    return this.privateFoodService.create(req.user.sub, patientId, dto);
   }
 
-  @Get()
-  findAllByUser(@Req() req: AuthenticatedRequest) {
-    return this.privateFoodService.findAllByUser(req.user.sub);
+  @Get(':patientId')
+  findAll(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string) {
+    return this.privateFoodService.findAllByPatient(req.user.sub, patientId);
   }
 
-  @Patch(':id')
-  update(
-    @Req() req: AuthenticatedRequest,
-    @Param('id') id: string,
-    @Body() dto: UpdatePrivateFoodDto,
-  ) {
-    return this.privateFoodService.update(id, req.user.sub, dto);
+  @Patch(':patientId/:id')
+  update(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Param('id') id: string, @Body() dto: UpdatePrivateFoodDto) {
+    return this.privateFoodService.update(req.user.sub, patientId, id, dto);
   }
 
-  @Delete(':id')
-  remove(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
-    return this.privateFoodService.remove(id, req.user.sub);
+  @Delete(':patientId/:id')
+  remove(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Param('id') id: string) {
+    return this.privateFoodService.remove(req.user.sub, patientId, id);
   }
 }

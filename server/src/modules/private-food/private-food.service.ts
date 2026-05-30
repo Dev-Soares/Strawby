@@ -1,8 +1,6 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
+import { PatientAccessService } from '../../common/patient-access/patient-access.service';
 import { CreatePrivateFoodDto } from './dto/create-private-food.dto';
 import { UpdatePrivateFoodDto } from './dto/update-private-food.dto';
 import { PrivateFoodPublic, privateFoodSelect } from './types';
@@ -10,59 +8,44 @@ import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 
 @Injectable()
 export class PrivateFoodService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly patientAccess: PatientAccessService,
+  ) {}
 
-  async create(userId: string, dto: CreatePrivateFoodDto): Promise<PrivateFoodPublic> {
+  async create(callerId: string, patientId: string, dto: CreatePrivateFoodDto): Promise<PrivateFoodPublic> {
+    await this.patientAccess.resolve(callerId, patientId);
     try {
-      return await this.prisma.privateFood.create({
-        data: { ...dto, userId },
-        select: privateFoodSelect,
-      });
+      return await this.prisma.privateFood.create({ data: { ...dto, patientId }, select: privateFoodSelect });
     } catch (error) {
       mapPrismaError(error, 'Erro ao criar alimento privado');
     }
   }
 
-  async findAllByUser(userId: string): Promise<PrivateFoodPublic[]> {
+  async findAllByPatient(callerId: string, patientId: string): Promise<PrivateFoodPublic[]> {
+    await this.patientAccess.resolve(callerId, patientId);
     try {
-      return await this.prisma.privateFood.findMany({
-        where: { userId },
-        select: privateFoodSelect,
-        orderBy: { name: 'asc' },
-      });
+      return await this.prisma.privateFood.findMany({ where: { patientId }, select: privateFoodSelect, orderBy: { name: 'asc' } });
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar alimentos privados');
     }
   }
 
-  async update(
-    id: string,
-    userId: string,
-    dto: UpdatePrivateFoodDto,
-  ): Promise<PrivateFoodPublic> {
+  async update(callerId: string, patientId: string, id: string, dto: UpdatePrivateFoodDto): Promise<PrivateFoodPublic> {
+    await this.patientAccess.resolve(callerId, patientId);
     try {
-      return await this.prisma.privateFood.update({
-        where: { id, userId },
-        data: dto,
-        select: privateFoodSelect,
-      });
+      return await this.prisma.privateFood.update({ where: { id, patientId }, data: dto, select: privateFoodSelect });
     } catch (error) {
-      mapPrismaError(error, 'Erro ao atualizar alimento privado', {
-        p2025: 'Alimento privado não encontrado',
-      });
+      mapPrismaError(error, 'Erro ao atualizar alimento privado', { p2025: 'Alimento privado não encontrado' });
     }
   }
 
-  async remove(id: string, userId: string): Promise<PrivateFoodPublic> {
+  async remove(callerId: string, patientId: string, id: string): Promise<PrivateFoodPublic> {
+    await this.patientAccess.resolve(callerId, patientId);
     try {
-      return await this.prisma.privateFood.delete({
-        where: { id, userId },
-        select: privateFoodSelect,
-      });
+      return await this.prisma.privateFood.delete({ where: { id, patientId }, select: privateFoodSelect });
     } catch (error) {
-      mapPrismaError(error, 'Erro ao deletar alimento privado', {
-        p2025: 'Alimento privado não encontrado',
-      });
+      mapPrismaError(error, 'Erro ao deletar alimento privado', { p2025: 'Alimento privado não encontrado' });
     }
   }
 }

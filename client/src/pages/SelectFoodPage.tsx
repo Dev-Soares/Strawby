@@ -5,9 +5,9 @@ import { ArrowLeft, Plus, Fire, CookingPot } from '@phosphor-icons/react'
 import AppLayout from '../shared/layouts/AppLayout'
 import FoodSearch from '../modules/food/components/FoodSearch'
 import FoodSkeleton from '../modules/food/skeletons/FoodSkeleton'
-import PrivateFoodSkeleton from '../modules/privateFood/skeletons/PrivateFoodSkeleton'
+import PrivateFoodSkeleton from '../modules/private-food/skeletons/PrivateFoodSkeleton'
 import { useSearchFood } from '../modules/food/hooks/useSearchFood'
-import { useGetPrivateFoods } from '../modules/privateFood/hooks/useGetPrivateFoods'
+import { useGetPrivateFoods } from '../modules/private-food/hooks/useGetPrivateFoods'
 import { useGetRecipes } from '../modules/recipe/hooks/useGetRecipes'
 import { useAddMealItem } from '../modules/meal/hooks/useAddMealItem'
 import { useAddMealPrivateFoodItem } from '../modules/meal/hooks/useAddMealPrivateFoodItem'
@@ -99,14 +99,15 @@ export default function SelectFoodPage() {
   const mealId = searchParams.get('mealId')
   const recipeId = searchParams.get('recipeId')
   const type = searchParams.get('type') ?? 'meal'
+  const patientId = searchParams.get('patientId') ?? undefined
 
   const isRecipe = !!recipeId
   const targetId = mealId ?? recipeId ?? ''
   const isPlan = type === 'plan-meal'
 
-  const addMealItem = useAddMealItem()
-  const addMealPrivateFoodItem = useAddMealPrivateFoodItem()
-  const addMealRecipe = useAddMealRecipe()
+  const addMealItem = useAddMealItem(patientId)
+  const addMealPrivateFoodItem = useAddMealPrivateFoodItem(patientId)
+  const addMealRecipe = useAddMealRecipe(patientId)
   const addRecipeItem = useAddRecipeItem()
   const addRecipePrivateFoodItem = useAddRecipePrivateFoodItem()
 
@@ -214,7 +215,7 @@ export default function SelectFoodPage() {
           {
             onSuccess: async () => {
               await queryClient.refetchQueries({ queryKey: ['meal', targetId], type: 'all' })
-              navigate(`/app/meals/${targetId}`)
+              navigate(`/app/meals/${targetId}${patientId ? `?patientId=${patientId}` : ''}`)
             },
           },
         )
@@ -224,7 +225,7 @@ export default function SelectFoodPage() {
           {
             onSuccess: async () => {
               await queryClient.refetchQueries({ queryKey: ['meal', targetId], type: 'all' })
-              navigate(`/app/meals/${targetId}`)
+              navigate(`/app/meals/${targetId}${patientId ? `?patientId=${patientId}` : ''}`)
             },
           },
         )

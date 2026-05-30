@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
@@ -24,59 +14,43 @@ import { RecipeService } from './recipe.service';
 export class RecipeController {
   constructor(private readonly recipeService: RecipeService) {}
 
-  @Post()
-  create(@Req() req: AuthenticatedRequest, @Body() dto: CreateRecipeDto) {
-    return this.recipeService.create(req.user.sub, dto);
+  @Post(':patientId')
+  create(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Body() dto: CreateRecipeDto) {
+    return this.recipeService.create(req.user.sub, patientId, dto);
   }
 
-  @Get()
-  findAll(@Req() req: AuthenticatedRequest) {
-    return this.recipeService.findAllByUser(req.user.sub);
+  @Get(':patientId')
+  findAll(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string) {
+    return this.recipeService.findAllByPatient(req.user.sub, patientId);
   }
 
-  @Get(':id')
-  findOne(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
-    return this.recipeService.findOne(id, req.user.sub);
+  @Get(':patientId/:id')
+  findOne(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Param('id') id: string) {
+    return this.recipeService.findOne(req.user.sub, patientId, id);
   }
 
-  @Patch(':id')
-  update(
-    @Req() req: AuthenticatedRequest,
-    @Param('id') id: string,
-    @Body() dto: UpdateRecipeDto,
-  ) {
-    return this.recipeService.update(id, req.user.sub, dto);
+  @Patch(':patientId/:id')
+  update(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Param('id') id: string, @Body() dto: UpdateRecipeDto) {
+    return this.recipeService.update(req.user.sub, patientId, id, dto);
   }
 
-  @Delete(':id')
-  remove(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
-    return this.recipeService.remove(id, req.user.sub);
+  @Delete(':patientId/:id')
+  remove(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Param('id') id: string) {
+    return this.recipeService.remove(req.user.sub, patientId, id);
   }
 
-  @Post(':id/items')
-  addFoodItem(
-    @Req() req: AuthenticatedRequest,
-    @Param('id') id: string,
-    @Body() dto: AddFoodItemDto,
-  ) {
-    return this.recipeService.addFoodItem(id, req.user.sub, dto);
+  @Post(':patientId/:id/items')
+  addFoodItem(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Param('id') id: string, @Body() dto: AddFoodItemDto) {
+    return this.recipeService.addFoodItem(req.user.sub, patientId, id, dto);
   }
 
-  @Post(':id/private-items')
-  addPrivateFoodItem(
-    @Req() req: AuthenticatedRequest,
-    @Param('id') id: string,
-    @Body() dto: AddRecipePrivateFoodItemDto,
-  ) {
-    return this.recipeService.addPrivateFoodItem(id, req.user.sub, dto);
+  @Post(':patientId/:id/private-items')
+  addPrivateFoodItem(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Param('id') id: string, @Body() dto: AddRecipePrivateFoodItemDto) {
+    return this.recipeService.addPrivateFoodItem(req.user.sub, patientId, id, dto);
   }
 
-  @Delete(':id/items/:itemId')
-  removeItem(
-    @Req() req: AuthenticatedRequest,
-    @Param('id') id: string,
-    @Param('itemId') itemId: string,
-  ) {
-    return this.recipeService.removeItem(id, itemId, req.user.sub);
+  @Delete(':patientId/:id/items/:itemId')
+  removeItem(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Param('id') id: string, @Param('itemId') itemId: string) {
+    return this.recipeService.removeItem(req.user.sub, patientId, id, itemId);
   }
 }

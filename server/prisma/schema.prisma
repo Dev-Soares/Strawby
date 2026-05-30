@@ -6,6 +6,27 @@ datasource db {
   provider = "postgresql"
 }
 
+
+enum FoodSource {
+  TACO
+  USDA_FOUNDATION
+  USDA_SR_LEGACY
+  CNF
+  LIVS
+  OFF
+  MANUAL
+}
+
+enum MealKind {
+  DAILY
+  PLAN
+}
+
+enum Role {
+  patient
+  nutritionist
+}
+
 model User {
   id           String        @id @default(uuid())
   name         String
@@ -13,24 +34,49 @@ model User {
   password     String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  plan         Plan?
-  meals        Meal[]
-  privateFoods PrivateFood[]
-  recipes      Recipe[]
-  dailyScores  DailyScore[]
+  role         Role
+  patient      Patient?
+  nutritionist Nutritionist?
+}
+
+model Patient {
+  id             String        @id
+  user           User          @relation(fields: [id], references: [id], onDelete: Cascade)
+  nutritionistId String?
+  nutritionist   Nutritionist? @relation(fields: [nutritionistId], references: [id])
+  plans          Plan[]
+  meals          Meal[]
+  recipes        Recipe[]
+  privateFoods   PrivateFood[]
+  dailyScores    DailyScore[]
+  weight         Float?
+  height         Float?
+  age            Int?
+  gender         String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model Nutritionist {
+  id        String    @id
+  user      User      @relation(fields: [id], references: [id], onDelete: Cascade)
+  patients  Patient[]
+  code      String?   @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model DailyScore {
   id        String   @id @default(uuid())
   date      DateTime @db.Date
   score     Float
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patientId String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, date])
-  @@index([userId, date])
+  @@unique([patientId, date])
+  @@index([patientId, date])
 }
 
 model Plan {
@@ -39,8 +85,8 @@ model Plan {
   protein   Float
   carbs     Float
   fat       Float
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patientId String   @unique
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -80,28 +126,13 @@ model PrivateFood {
   fiber       Float?
   sodium      Float?
   servingSize String?
-  userId      String
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patientId   String
+  patient     Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
   foodItems   FoodItem[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
-  @@index([userId])
-}
-
-enum FoodSource {
-  TACO
-  USDA_FOUNDATION
-  USDA_SR_LEGACY
-  CNF
-  LIVS
-  OFF
-  MANUAL
-}
-
-enum MealKind {
-  DAILY
-  PLAN
+  @@index([patientId])
 }
 
 model Meal {
@@ -111,14 +142,14 @@ model Meal {
   mealType  String?
   time      String?
   date      DateTime   @default(now())
-  userId    String
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patientId String
+  patient   Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
   items     FoodItem[]
   recipes   Recipe[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
-  @@index([userId, kind, date])
+  @@index([patientId, kind, date])
 }
 
 model FoodItem {
@@ -146,16 +177,12 @@ model FoodItem {
 model Recipe {
   id        String     @id @default(uuid())
   name      String
-  calories  Float
-  protein   Float
-  carbs     Float
-  fat       Float
-  userId    String
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patientId String
+  patient   Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
   items     FoodItem[]
   meals     Meal[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
-  @@index([userId])
+  @@index([patientId])
 }

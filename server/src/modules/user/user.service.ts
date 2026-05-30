@@ -1,13 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
-import { User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashService } from '../../common/hash/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
-import { UserPublic, userSelect } from './types';
+import { UserPublic, userSelect, UserCredentials } from './types';
 
-type UserCredentials = Pick<User, 'id' | 'name' | 'password'>;
+
 
 @Injectable()
 export class UserService {
@@ -24,14 +23,19 @@ export class UserService {
           name: data.name,
           email: data.email,
           password: hashedPassword,
-          plan: {
-            create: {
-              calories: 0,
-              protein: 0,
-              carbs: 0,
-              fat: 0,
-            },
-          },
+          role: data.role,
+          ...(data.role === 'patient'
+            ? {
+                patient: {
+                  create: {
+                    ...(data.weight !== undefined && { weight: data.weight }),
+                    ...(data.height !== undefined && { height: data.height }),
+                    ...(data.age !== undefined && { age: data.age }),
+                    ...(data.gender !== undefined && { gender: data.gender }),
+                  },
+                },
+              }
+            : { nutritionist: { create: {} } }),
         },
         select: userSelect,
       });
@@ -48,7 +52,7 @@ export class UserService {
     try {
       return await this.prisma.user.findUnique({
         where: { email },
-        select: { id: true, name: true, password: true },
+        select: { id: true, name: true, password: true, role: true },
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar usuário');
@@ -73,7 +77,21 @@ export class UserService {
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<UserPublic> {
+    const hasPatientFields =
+      dto.weight !== undefined || dto.age !== undefined || dto.gender !== undefined;
+
     try {
+      if (hasPatientFields) {
+        await this.prisma.patient.updateMany({
+          where: { id },
+          data: {
+            ...(dto.weight !== undefined && { weight: dto.weight }),
+            ...(dto.age !== undefined && { age: dto.age }),
+            ...(dto.gender !== undefined && { gender: dto.gender }),
+          },
+        });
+      }
+
       return await this.prisma.user.update({
         where: { id },
         data: {

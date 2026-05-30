@@ -5,7 +5,7 @@ import AppLayout from '../shared/layouts/AppLayout'
 import FoodSearch from '../modules/food/components/FoodSearch'
 import FoodGrid from '../modules/food/components/FoodGrid'
 import FoodSkeleton from '../modules/food/skeletons/FoodSkeleton'
-import PrivateFoodManager from '../modules/privateFood/components/PrivateFoodManager'
+import PrivateFoodManager from '../modules/private-food/components/PrivateFoodManager'
 import RecipeList from '../modules/recipe/components/RecipeList'
 import { useSearchFood } from '../modules/food/hooks/useSearchFood'
 

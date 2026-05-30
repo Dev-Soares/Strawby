@@ -12,12 +12,12 @@ export type RecipeTotals = {
   fat: number;
 };
 
-export type RecipePublic = Pick<Recipe, 'id' | 'name' | 'calories' | 'protein' | 'carbs' | 'fat' | 'userId' | 'createdAt' | 'updatedAt'> & {
+export type RecipePublic = Pick<Recipe, 'id' | 'name' | 'patientId' | 'createdAt' | 'updatedAt'> & {
   items: FoodItemPublic[];
   totals: RecipeTotals;
 };
 
-export type RecipeSummary = Pick<Recipe, 'id' | 'name' | 'calories' | 'protein' | 'carbs' | 'fat' | 'userId'> & {
+export type RecipeSummary = Pick<Recipe, 'id' | 'name' | 'patientId'> & {
   totals: RecipeTotals;
 };
 
@@ -45,11 +45,7 @@ export const foodItemSelect = {
 export const recipeSelect = {
   id: true,
   name: true,
-  calories: true,
-  protein: true,
-  carbs: true,
-  fat: true,
-  userId: true,
+  patientId: true,
   createdAt: true,
   updatedAt: true,
   items: { select: foodItemSelect },

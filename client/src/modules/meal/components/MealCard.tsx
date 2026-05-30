@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { CoffeeIcon, ForkKnifeIcon, LeafIcon, MoonIcon, CookieIcon, CaretDown, PencilSimple } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
 import type { Meal } from '../types/meal'
+import { useThemeContext } from '@/shared/contexts/ThemeProvider'
 
 export interface MealTypeConfig {
   icon: Icon
@@ -36,6 +37,8 @@ export interface MealCardProps {
 
 export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
   const navigate = useNavigate()
+  const { resolvedTheme } = useThemeContext()
+  const isDark = resolvedTheme === 'dark'
   const config = mealTypeConfig[meal.mealType ?? ''] || fallbackConfig
   const MealIcon = config.icon
   const totalKcal = Math.round(meal.totals.calories)
@@ -48,13 +51,13 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
         <div className="flex items-center gap-3 min-w-0 mb-3">
           <div
             className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
-            style={{ backgroundColor: config.accentLight }}
+            style={{ backgroundColor: isDark ? `${config.accent}26` : config.accentLight }}
           >
-            <MealIcon size={20} weight="bold" style={{ color: config.accentText }} />
+            <MealIcon size={20} weight="bold" style={{ color: isDark ? config.accentLight : config.accentText }} />
           </div>
           <span
             className="text-lg font-extrabold truncate"
-            style={{ color: config.accentText }}
+            style={{ color: isDark ? config.accentLight : config.accentText }}
           >
             {meal.name}
           </span>
@@ -81,7 +84,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
             <span
               key={l}
               className="text-sm font-bold px-3.5 py-1.5 rounded-full tabular-nums"
-              style={{ backgroundColor: config.accentLight, color: config.accentText }}
+              style={{ backgroundColor: isDark ? `${config.accent}26` : config.accentLight, color: isDark ? config.accentLight : config.accentText }}
             >
               {v}g {l}
             </span>
@@ -95,7 +98,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
           type="button"
           onClick={onToggle}
           className="w-full flex items-center justify-between px-5 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-300 cursor-pointer"
-          style={{ color: config.accentText }}
+          style={{ color: isDark ? config.accentLight : config.accentText }}
         >
           <span className="text-sm font-bold">
             Ver detalhes
