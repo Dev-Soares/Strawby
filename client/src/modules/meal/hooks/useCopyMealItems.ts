@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useAuth } from '../../auth/hooks/useAuth'
 import { addMealItemService } from '../service/addMealItemService'
 import { addMealPrivateFoodItemService } from '../service/addMealPrivateFoodItemService'
 import { addMealRecipeService } from '../service/addMealRecipeService'
@@ -6,17 +7,19 @@ import type { Meal } from '../types/meal'
 
 export const useCopyMealItems = () => {
   const queryClient = useQueryClient()
+  const { data: user } = useAuth()
   return useMutation({
     mutationFn: async ({ targetId, sourceMeal }: { targetId: string; sourceMeal: Meal }) => {
+      const patientId = user!.id
       for (const item of sourceMeal.items) {
         if (item.food) {
-          await addMealItemService(targetId, { foodId: item.food.id, quantity: item.quantity })
+          await addMealItemService(patientId, targetId, { foodId: item.food.id, quantity: item.quantity })
         } else if (item.privateFood) {
-          await addMealPrivateFoodItemService(targetId, { privateFoodId: item.privateFood.id, quantity: item.quantity })
+          await addMealPrivateFoodItemService(patientId, targetId, { privateFoodId: item.privateFood.id, quantity: item.quantity })
         }
       }
       for (const recipe of sourceMeal.recipes) {
-        await addMealRecipeService(targetId, { recipeId: recipe.id })
+        await addMealRecipeService(patientId, targetId, { recipeId: recipe.id })
       }
     },
     onSuccess: (_, variables) => {
