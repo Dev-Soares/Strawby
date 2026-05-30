@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 export const signUpSchema = z.object({
+  role: z.enum(['patient', 'nutritionist'], { error: 'Selecione um perfil' }),
   name: z.string().min(2, 'Nome deve ter no mínimo 2 caracteres'),
   email: z.string().email('E-mail inválido'),
   password: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres'),

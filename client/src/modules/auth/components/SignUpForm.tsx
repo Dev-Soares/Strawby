@@ -11,13 +11,17 @@ export default function SignUpForm() {
   const {
     register,
     trigger,
+    watch,
+    setValue,
     onSubmit,
     formState: { errors },
     isPending,
   } = useSignUp()
 
+  const role = watch('role')
+
   const handleNext = async () => {
-    const valid = await trigger(['name', 'email'])
+    const valid = await trigger(['role', 'name', 'email'])
     if (valid) setStep(2)
   }
 
@@ -43,6 +47,31 @@ export default function SignUpForm() {
 
           {step === 1 && (
             <>
+              <div>
+                <label className="block text-[11px] font-semibold text-white mb-3 uppercase tracking-widest">
+                  Perfil
+                </label>
+                <div className="flex gap-3">
+                  {(['patient', 'nutritionist'] as const).map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setValue('role', r, { shouldValidate: true })}
+                      className={`flex-1 py-2.5 rounded-full text-[13px] font-semibold transition-colors duration-150 border-2 cursor-pointer ${
+                        role === r
+                          ? 'bg-white text-red-600 border-white'
+                          : 'bg-transparent text-white border-white/50 hover:border-white'
+                      }`}
+                    >
+                      {r === 'patient' ? 'Paciente' : 'Nutricionista'}
+                    </button>
+                  ))}
+                </div>
+                {errors.role && (
+                  <p className="text-yellow-200 text-[11px] mt-2">{errors.role.message}</p>
+                )}
+              </div>
+
               <div>
                 <label className="block text-[11px] font-semibold text-white mb-3 uppercase tracking-widest">
                   Nome
