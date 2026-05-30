@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
 import { useQueryClient } from '@tanstack/react-query'
 import {
@@ -76,12 +76,14 @@ const fallbackConfig = {
 export default function MealDetailPage() {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
+  const [searchParams] = useSearchParams()
+  const patientId = searchParams.get('patientId') ?? undefined
   const queryClient = useQueryClient()
 
-  const { data: meal, isLoading, isError } = useGetMeal(id ?? '')
-  const deleteMutation = useDeleteMeal()
-  const removeItem = useRemoveMealItem()
-  const removeRecipe = useRemoveMealRecipe()
+  const { data: meal, isLoading, isError } = useGetMeal(id ?? '', patientId)
+  const deleteMutation = useDeleteMeal(patientId)
+  const removeItem = useRemoveMealItem(patientId)
+  const removeRecipe = useRemoveMealRecipe(patientId)
   const [confirm, setConfirm] = useState<ConfirmState>(null)
 
   const handleConfirm = () => {
@@ -157,7 +159,9 @@ export default function MealDetailPage() {
     ?? new Date(meal.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
 
   const isPlan = meal.kind === 'PLAN'
-  const backPath = isPlan ? '/app/plan' : '/app/home'
+  const backPath = patientId
+    ? `/app/nutritionist/patient/${patientId}`
+    : isPlan ? '/app/plan' : '/app/home'
 
   const totals = [
     { label: 'Calorias', value: Math.round(meal.totals.calories), unit: 'kcal', color: 'bg-red-500', track: 'bg-red-50 dark:bg-red-950/40' },
@@ -416,7 +420,7 @@ export default function MealDetailPage() {
         <div className="flex gap-3 mt-6">
           <button
             type="button"
-            onClick={() => navigate(`/app/foods/select?mealId=${meal.id}&type=${isPlan ? 'plan-meal' : 'meal'}`)}
+            onClick={() => navigate(`/app/foods/select?mealId=${meal.id}&type=${isPlan ? 'plan-meal' : 'meal'}${patientId ? `&patientId=${patientId}` : ''}`)}
             className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white shadow-md transition-colors duration-300 cursor-pointer hover:brightness-110"
             style={{ backgroundColor: cfg.theme }}
           >

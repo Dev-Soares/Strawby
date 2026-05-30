@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import { User, CheckCircle, XCircle, ArrowRight } from '@phosphor-icons/react'
 import type { NutritionistPatient } from '../types/patient'
 
@@ -6,10 +7,11 @@ interface Props {
   patient: NutritionistPatient
   hasPlan: boolean | null
   index: number
-  onClick: () => void
 }
 
-export default function PatientCard({ patient, hasPlan, index, onClick }: Props) {
+export default function PatientCard({ patient, hasPlan, index }: Props) {
+  const navigate = useNavigate()
+
   const initials = patient.user.name
     .split(' ')
     .slice(0, 2)
@@ -23,7 +25,7 @@ export default function PatientCard({ patient, hasPlan, index, onClick }: Props)
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.06 }}
-      onClick={onClick}
+      onClick={() => navigate(`/app/nutritionist/patient/${patient.id}`)}
     >
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/30 flex items-center justify-center shrink-0 transition-colors duration-300">

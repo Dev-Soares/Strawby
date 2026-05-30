@@ -3,25 +3,18 @@ import PatientCard from './PatientCard'
 import type { NutritionistPatient } from '../types/patient'
 import { useGetPatientPlan } from '../hooks/useGetPatientPlan'
 
-interface PatientCardWithStatusProps {
-  patient: NutritionistPatient
-  index: number
-  onClick: () => void
-}
-
-function PatientCardWithStatus({ patient, index, onClick }: PatientCardWithStatusProps) {
+function PatientCardWithStatus({ patient, index }: { patient: NutritionistPatient; index: number }) {
   const { data: plan, isPending } = useGetPatientPlan(patient.id)
   const hasPlan = isPending ? null : plan !== null && plan !== undefined
 
-  return <PatientCard patient={patient} hasPlan={hasPlan} index={index} onClick={onClick} />
+  return <PatientCard patient={patient} hasPlan={hasPlan} index={index} />
 }
 
 interface Props {
   patients: NutritionistPatient[]
-  onSelectPatient: (patient: NutritionistPatient) => void
 }
 
-export default function PatientList({ patients, onSelectPatient }: Props) {
+export default function PatientList({ patients }: Props) {
   if (patients.length === 0) {
     return (
       <div className="flex flex-col items-center text-center py-16 px-4">
@@ -41,12 +34,7 @@ export default function PatientList({ patients, onSelectPatient }: Props) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {patients.map((patient, index) => (
-        <PatientCardWithStatus
-          key={patient.id}
-          patient={patient}
-          index={index}
-          onClick={() => onSelectPatient(patient)}
-        />
+        <PatientCardWithStatus key={patient.id} patient={patient} index={index} />
       ))}
     </div>
   )

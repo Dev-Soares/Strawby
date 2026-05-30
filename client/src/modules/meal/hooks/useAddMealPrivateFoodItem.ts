@@ -4,12 +4,13 @@ import { useAuth } from '../../auth/hooks/useAuth'
 import { addMealPrivateFoodItemService } from '../service/addMealPrivateFoodItemService'
 import type { AddMealPrivateFoodItemData } from '../types/addMealPrivateFoodItem'
 
-export const useAddMealPrivateFoodItem = () => {
+export const useAddMealPrivateFoodItem = (patientId?: string) => {
   const queryClient = useQueryClient()
   const { data: user } = useAuth()
+  const effectivePatientId = patientId ?? user?.id
   return useMutation({
     mutationFn: ({ mealId, dto }: { mealId: string; dto: AddMealPrivateFoodItemData }) =>
-      addMealPrivateFoodItemService(user!.id, mealId, dto),
+      addMealPrivateFoodItemService(effectivePatientId!, mealId, dto),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['meal', variables.mealId] })
       queryClient.invalidateQueries({ queryKey: ['meals'] })

@@ -9,6 +9,7 @@ import { recipeRoutes } from './routes/recipeRoutes'
 import { planRoutes } from './routes/planRoutes'
 import { scoreRoutes } from './routes/scoreRoutes'
 import { profileRoutes } from './routes/profileRoutes'
+import { nutritionistRoutes } from './routes/nutritionistRoutes'
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         {planRoutes}
         {scoreRoutes}
         {profileRoutes}
+        {nutritionistRoutes}
       </Routes>
     </>
   )

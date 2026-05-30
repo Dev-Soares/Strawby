@@ -1,17 +1,13 @@
-import { useState } from 'react'
 import AppLayout from '../../../shared/layouts/AppLayout'
 import NutritionistHeader from './NutritionistHeader'
 import PatientList from './PatientList'
-import PatientDetailModal from './PatientDetailModal'
 import PatientListSkeleton from '../skeletons/PatientListSkeleton'
 import { useGetPatients } from '../hooks/useGetPatients'
 import { useAuth } from '../../auth/hooks/useAuth'
-import type { NutritionistPatient } from '../types/patient'
 
 export default function NutritionistContent() {
   const { data: user } = useAuth()
   const { data: patients, isPending: patientsPending, isError: patientsError } = useGetPatients()
-  const [selectedPatient, setSelectedPatient] = useState<NutritionistPatient | null>(null)
 
   return (
     <AppLayout>
@@ -19,17 +15,15 @@ export default function NutritionistContent() {
 
         <NutritionistHeader name={user?.name ?? 'Nutricionista'} />
 
-        <div className="mb-5 flex items-center justify-between">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight transition-colors duration-300">
-              Meus pacientes
-            </h2>
-            {!patientsPending && patients && (
-              <p className="text-sm text-neutral-400 dark:text-neutral-500 mt-0.5 transition-colors duration-300">
-                {patients.length} {patients.length === 1 ? 'paciente vinculado' : 'pacientes vinculados'}
-              </p>
-            )}
-          </div>
+        <div className="mb-5">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight transition-colors duration-300">
+            Meus pacientes
+          </h2>
+          {!patientsPending && patients && (
+            <p className="text-sm text-neutral-400 dark:text-neutral-500 mt-0.5 transition-colors duration-300">
+              {patients.length} {patients.length === 1 ? 'paciente vinculado' : 'pacientes vinculados'}
+            </p>
+          )}
         </div>
 
         {patientsError && (
@@ -41,15 +35,9 @@ export default function NutritionistContent() {
         {patientsPending ? (
           <PatientListSkeleton />
         ) : (
-          <PatientList patients={patients ?? []} onSelectPatient={setSelectedPatient} />
+          <PatientList patients={patients ?? []} />
         )}
       </div>
-
-      <PatientDetailModal
-        patient={selectedPatient}
-        isOpen={!!selectedPatient}
-        onClose={() => setSelectedPatient(null)}
-      />
     </AppLayout>
   )
 }

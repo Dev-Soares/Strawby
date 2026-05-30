@@ -55,6 +55,8 @@ export default function ProfilePage() {
   const navigate = useNavigate()
   const [bodyEditOpen, setBodyEditOpen] = useState(false)
   const [codeModalOpen, setCodeModalOpen] = useState(false)
+  const [editingName, setEditingName] = useState(false)
+  const [nameValue, setNameValue] = useState('')
 
   const isNutritionist = user?.role === 'nutritionist'
   const isPatient = user?.role === 'patient'
@@ -78,12 +80,10 @@ export default function ProfilePage() {
               {initials}
             </span>
           </div>
-          <h1 className="font-display text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight">
+
+          <h1 className="font-display text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight mt-1">
             {user?.name ?? '—'}
           </h1>
-          <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
-            {user?.email ?? '—'}
-          </p>
         </div>
 
         {/* Conta */}
@@ -92,6 +92,61 @@ export default function ProfilePage() {
             Conta
           </p>
           <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden transition-colors duration-300">
+
+            {/* Nome editável */}
+            <div className="flex items-center gap-3 px-5 py-4 border-b border-neutral-100 dark:border-neutral-800">
+              <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
+                <PencilSimple size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider mb-0.5">Nome</p>
+                {editingName ? (
+                  <div className="flex items-center gap-2">
+                    <input
+                      autoFocus
+                      value={nameValue}
+                      onChange={(e) => setNameValue(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && nameValue.trim().length >= 2)
+                          updateUser.mutate({ name: nameValue.trim() }, { onSuccess: () => setEditingName(false) })
+                        if (e.key === 'Escape') setEditingName(false)
+                      }}
+                      className="flex-1 min-w-0 text-sm font-semibold text-neutral-800 dark:text-neutral-100 bg-transparent border-b border-red-500 outline-none pb-0.5"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (nameValue.trim().length >= 2)
+                          updateUser.mutate({ name: nameValue.trim() }, { onSuccess: () => setEditingName(false) })
+                      }}
+                      disabled={updateUser.isPending || nameValue.trim().length < 2}
+                      className="text-[11px] font-bold text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-lg disabled:opacity-40 transition-colors cursor-pointer shrink-0"
+                    >
+                      {updateUser.isPending ? '…' : 'Salvar'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingName(false)}
+                      className="text-[11px] font-bold text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 transition-colors cursor-pointer shrink-0"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => { setNameValue(user?.name ?? ''); setEditingName(true) }}
+                    className="group flex items-center gap-2 w-full cursor-pointer text-left"
+                  >
+                    <span className="text-sm font-semibold text-neutral-800 dark:text-neutral-100 flex-1 min-w-0 truncate">
+                      {user?.name ?? '—'}
+                    </span>
+                    <PencilSimple size={12} weight="bold" className="text-neutral-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                  </button>
+                )}
+              </div>
+            </div>
+
             <div className="flex items-center gap-3 px-5 py-4 border-b border-neutral-100 dark:border-neutral-800">
               <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
                 <EnvelopeSimple size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />

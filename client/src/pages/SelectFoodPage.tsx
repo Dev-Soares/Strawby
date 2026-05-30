@@ -99,14 +99,15 @@ export default function SelectFoodPage() {
   const mealId = searchParams.get('mealId')
   const recipeId = searchParams.get('recipeId')
   const type = searchParams.get('type') ?? 'meal'
+  const patientId = searchParams.get('patientId') ?? undefined
 
   const isRecipe = !!recipeId
   const targetId = mealId ?? recipeId ?? ''
   const isPlan = type === 'plan-meal'
 
-  const addMealItem = useAddMealItem()
-  const addMealPrivateFoodItem = useAddMealPrivateFoodItem()
-  const addMealRecipe = useAddMealRecipe()
+  const addMealItem = useAddMealItem(patientId)
+  const addMealPrivateFoodItem = useAddMealPrivateFoodItem(patientId)
+  const addMealRecipe = useAddMealRecipe(patientId)
   const addRecipeItem = useAddRecipeItem()
   const addRecipePrivateFoodItem = useAddRecipePrivateFoodItem()
 
@@ -214,7 +215,7 @@ export default function SelectFoodPage() {
           {
             onSuccess: async () => {
               await queryClient.refetchQueries({ queryKey: ['meal', targetId], type: 'all' })
-              navigate(`/app/meals/${targetId}`)
+              navigate(`/app/meals/${targetId}${patientId ? `?patientId=${patientId}` : ''}`)
             },
           },
         )
@@ -224,7 +225,7 @@ export default function SelectFoodPage() {
           {
             onSuccess: async () => {
               await queryClient.refetchQueries({ queryKey: ['meal', targetId], type: 'all' })
-              navigate(`/app/meals/${targetId}`)
+              navigate(`/app/meals/${targetId}${patientId ? `?patientId=${patientId}` : ''}`)
             },
           },
         )
