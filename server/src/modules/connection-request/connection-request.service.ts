@@ -10,12 +10,21 @@ type ConnectionRequestPublic = Pick<
   'id' | 'status' | 'nutritionistId' | 'patientId' | 'createdAt'
 >;
 
+type ConnectionRequestWithPatient = ConnectionRequestPublic & {
+  patient: { user: { name: string; email: string } };
+};
+
 const connectionRequestSelect = {
   id: true,
   status: true,
   nutritionistId: true,
   patientId: true,
   createdAt: true,
+} as const;
+
+const connectionRequestWithPatientSelect = {
+  ...connectionRequestSelect,
+  patient: { select: { user: { select: { name: true, email: true } } } },
 } as const;
 
 @Injectable()
@@ -81,11 +90,11 @@ export class ConnectionRequestService {
 
   async findAllPendingByNutritionist(
     nutritionistId: string,
-  ): Promise<ConnectionRequestPublic[]> {
+  ): Promise<ConnectionRequestWithPatient[]> {
     try {
       return await this.prisma.connectionRequest.findMany({
         where: { nutritionistId, status: 'PENDING' },
-        select: connectionRequestSelect,
+        select: connectionRequestWithPatientSelect,
         orderBy: { createdAt: 'desc' },
       });
     } catch (error) {

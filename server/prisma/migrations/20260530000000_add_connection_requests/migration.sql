@@ -1,8 +1,11 @@
 -- CreateEnum
-CREATE TYPE "ConnectionRequestStatus" AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED', 'EXPIRED');
+DO $$ BEGIN
+  CREATE TYPE "ConnectionRequestStatus" AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED', 'EXPIRED');
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- CreateTable
-CREATE TABLE "ConnectionRequest" (
+CREATE TABLE IF NOT EXISTS "ConnectionRequest" (
     "id" TEXT NOT NULL,
     "status" "ConnectionRequestStatus" NOT NULL DEFAULT 'PENDING',
     "nutritionistId" TEXT NOT NULL,
