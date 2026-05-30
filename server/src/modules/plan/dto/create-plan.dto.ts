@@ -6,11 +6,6 @@ export enum Goal {
   Gain = 'gain',
 }
 
-export enum Gender {
-  Male = 'male',
-  Female = 'female',
-}
-
 export class CreatePlanDto {
   @ApiPropertyOptional({ example: 2000 })
   @IsNumber()
@@ -36,24 +31,6 @@ export class CreatePlanDto {
   @Min(0)
   fat?: number;
 
-  @ApiPropertyOptional({ example: 75 })
-  @IsNumber()
-  @IsOptional()
-  @Min(0)
-  weight?: number;
-
-  @ApiPropertyOptional({ example: 30 })
-  @IsNumber()
-  @IsOptional()
-  @Min(0)
-  age?: number;
-
-  @ApiPropertyOptional({ example: 175 })
-  @IsNumber()
-  @IsOptional()
-  @Min(0)
-  height?: number;
-
   @ApiPropertyOptional({ example: 1.2 })
   @IsNumber()
   @IsOptional()
@@ -64,9 +41,4 @@ export class CreatePlanDto {
   @IsEnum(Goal)
   @IsOptional()
   goal?: Goal;
-
-  @ApiPropertyOptional({ example: Gender.Male, enum: Gender })
-  @IsEnum(Gender)
-  @IsOptional()
-  gender?: Gender;
 }

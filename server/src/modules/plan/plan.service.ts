@@ -6,6 +6,15 @@ import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { PatientAccessService } from '../../common/patient-access/patient-access.service';
 import { MacroDistribution, PlanMacros, PlanPublic, planSelect } from './types';
 
+type GenerateParams = {
+  weight: number;
+  height: number;
+  age: number;
+  gender: string;
+  movementLevel: number;
+  goal: string;
+};
+
 @Injectable()
 export class PlanService {
   constructor(
@@ -17,9 +26,27 @@ export class PlanService {
     await this.patientAccess.resolve(callerId, patientId);
 
     let planData: PlanMacros;
-    if (dto.goal && dto.movementLevel && dto.age && dto.height && dto.weight && dto.gender) {
-      planData = this.generateRecomendedPlan(dto);
-    } else if (dto.calories !== undefined && dto.protein !== undefined && dto.carbs !== undefined && dto.fat !== undefined) {
+
+    if (dto.goal && dto.movementLevel) {
+      const patient = await this.prisma.patient.findUnique({
+        where: { id: patientId },
+        select: { weight: true, height: true, age: true, gender: true },
+      });
+
+      planData = this.generateRecomendedPlan({
+        weight: patient!.weight!,
+        height: patient!.height!,
+        age: patient!.age!,
+        gender: patient!.gender!,
+        movementLevel: dto.movementLevel,
+        goal: dto.goal,
+      });
+    } else if (
+      dto.calories !== undefined &&
+      dto.protein !== undefined &&
+      dto.carbs !== undefined &&
+      dto.fat !== undefined
+    ) {
       planData = { calories: dto.calories, protein: dto.protein, carbs: dto.carbs, fat: dto.fat };
     } else {
       throw new BadRequestException('Informe as macros manualmente ou os dados para cálculo automático');
@@ -75,11 +102,11 @@ export class PlanService {
     }
   }
 
-  private generateRecomendedPlan(dto: CreatePlanDto): PlanMacros {
-    const userTmb = this.getUserTmb(dto.weight!, dto.height!, dto.age!, dto.gender!);
-    const userDailyCalories = userTmb * dto.movementLevel!;
-    const caloriesForPlan = dto.goal === 'lose' ? userDailyCalories - 400 : userDailyCalories + 400;
-    const macros = this.generateMacrosNumbers(caloriesForPlan, dto.goal!, dto.weight!);
+  private generateRecomendedPlan(params: GenerateParams): PlanMacros {
+    const userTmb = this.getUserTmb(params.weight, params.height, params.age, params.gender);
+    const userDailyCalories = userTmb * params.movementLevel;
+    const caloriesForPlan = params.goal === 'lose' ? userDailyCalories - 400 : userDailyCalories + 400;
+    const macros = this.generateMacrosNumbers(caloriesForPlan, params.goal, params.weight);
     return { calories: Math.round(caloriesForPlan), ...macros };
   }
 

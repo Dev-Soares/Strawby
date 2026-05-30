@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Eye, EyeSlash, ArrowLeft } from '@phosphor-icons/react'
+import { Eye, EyeSlash, ArrowLeft, GenderMale, GenderFemale } from '@phosphor-icons/react'
 import { useSignUp } from '../hooks/useSignUp'
 
 export default function SignUpForm() {
@@ -19,10 +19,26 @@ export default function SignUpForm() {
   } = useSignUp()
 
   const role = watch('role')
+  const gender = watch('gender')
+  const isPatient = role === 'patient'
+  const totalSteps = isPatient ? 3 : 2
+
+  const stepLabel = (s: number) => {
+    if (s === 1) return 'Cadastrar.'
+    if (s === 2) return 'Sua senha.'
+    return 'Seu perfil.'
+  }
 
   const handleNext = async () => {
     const valid = await trigger(['role', 'name', 'email'])
     if (valid) setStep(2)
+  }
+
+  const handleNextStep2 = async () => {
+    const valid = await trigger(['password', 'confirmPassword'])
+    if (!valid) return
+    if (isPatient) setStep(3)
+    else onSubmit()
   }
 
   return (
@@ -30,21 +46,23 @@ export default function SignUpForm() {
 
       <div className="flex-1 min-w-0 bg-red-600 rounded-2xl p-6 md:p-8 lg:p-10 flex flex-col">
 
+        {/* Progress dots */}
         <div className="flex items-center gap-2 mb-8">
-          <div className="h-[3px] w-10 rounded-full bg-white" />
-          <div
-            className={`h-[3px] w-10 rounded-full transition-colors duration-300 ${
-              step === 2 ? 'bg-white' : 'bg-white/30'
-            }`}
-          />
+          {Array.from({ length: totalSteps }).map((_, i) => (
+            <div
+              key={i}
+              className={`h-0.75 w-10 rounded-full transition-colors duration-300 ${i < step ? 'bg-white' : 'bg-white/30'}`}
+            />
+          ))}
         </div>
 
         <h1 className="text-4xl md:text-[52px] font-black tracking-tight text-white leading-none mb-10 md:mb-14">
-          {step === 1 ? 'Cadastrar.' : 'Sua senha.'}
+          {stepLabel(step)}
         </h1>
 
         <form onSubmit={onSubmit} className="flex flex-col gap-8 md:gap-10 flex-1">
 
+          {/* ── Step 1 ── */}
           {step === 1 && (
             <>
               <div>
@@ -110,13 +128,9 @@ export default function SignUpForm() {
                 >
                   Continuar
                 </button>
-
                 <p className="text-[13px] text-white">
                   Já tem conta?{' '}
-                  <Link
-                    to="/app/login"
-                    className="font-semibold text-white underline underline-offset-2 hover:text-white transition-colors"
-                  >
+                  <Link to="/app/login" className="font-semibold text-white underline underline-offset-2 hover:text-white transition-colors">
                     Entrar agora
                   </Link>
                 </p>
@@ -124,6 +138,7 @@ export default function SignUpForm() {
             </>
           )}
 
+          {/* ── Step 2 ── */}
           {step === 2 && (
             <>
               <div>
@@ -137,15 +152,8 @@ export default function SignUpForm() {
                     autoComplete="new-password"
                     className="w-full border-0 border-b-2 border-white/50 bg-transparent pb-3 text-[15px] text-white placeholder-white/30 focus:outline-none focus:border-white transition-colors duration-200 pr-8"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((v) => !v)}
-                    className="absolute right-0 bottom-3 text-white hover:text-white/70 transition-colors cursor-pointer"
-                  >
-                    {showPassword
-                      ? <EyeSlash size={15} weight="bold" />
-                      : <Eye size={15} weight="bold" />
-                    }
+                  <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-0 bottom-3 text-white hover:text-white/70 transition-colors cursor-pointer">
+                    {showPassword ? <EyeSlash size={15} weight="bold" /> : <Eye size={15} weight="bold" />}
                   </button>
                 </div>
                 {errors.password && (
@@ -164,15 +172,8 @@ export default function SignUpForm() {
                     autoComplete="new-password"
                     className="w-full border-0 border-b-2 border-white/50 bg-transparent pb-3 text-[15px] text-white placeholder-white/30 focus:outline-none focus:border-white transition-colors duration-200 pr-8"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword((v) => !v)}
-                    className="absolute right-0 bottom-3 text-white hover:text-white/70 transition-colors cursor-pointer"
-                  >
-                    {showConfirmPassword
-                      ? <EyeSlash size={15} weight="bold" />
-                      : <Eye size={15} weight="bold" />
-                    }
+                  <button type="button" onClick={() => setShowConfirmPassword((v) => !v)} className="absolute right-0 bottom-3 text-white hover:text-white/70 transition-colors cursor-pointer">
+                    {showConfirmPassword ? <EyeSlash size={15} weight="bold" /> : <Eye size={15} weight="bold" />}
                   </button>
                 </div>
                 {errors.confirmPassword && (
@@ -182,14 +183,109 @@ export default function SignUpForm() {
 
               <div className="flex flex-col gap-5 pt-2 mt-auto">
                 <div className="flex items-center gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setStep(1)}
-                    className="flex items-center justify-center w-11 h-11 rounded-full border-2 border-white/50 text-white hover:border-white transition-colors duration-150 cursor-pointer shrink-0"
-                  >
+                  <button type="button" onClick={() => setStep(1)} className="flex items-center justify-center w-11 h-11 rounded-full border-2 border-white/50 text-white hover:border-white transition-colors duration-150 cursor-pointer shrink-0">
                     <ArrowLeft size={16} weight="bold" />
                   </button>
+                  <button
+                    type="button"
+                    onClick={handleNextStep2}
+                    disabled={isPending}
+                    className="flex-1 rounded-full bg-white text-red-600 font-bold py-3.5 px-12 text-[14px] hover:bg-neutral-100 active:bg-neutral-200 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
+                  >
+                    {isPending && !isPatient ? 'Criando conta…' : isPatient ? 'Continuar' : 'Criar conta'}
+                  </button>
+                </div>
+                <p className="text-[13px] text-white">
+                  Já tem conta?{' '}
+                  <Link to="/app/login" className="font-semibold text-white underline underline-offset-2 hover:text-white transition-colors">
+                    Entrar agora
+                  </Link>
+                </p>
+              </div>
+            </>
+          )}
 
+          {/* ── Step 3 (patient only) ── */}
+          {step === 3 && (
+            <>
+              <div>
+                <label className="block text-[11px] font-semibold text-white mb-4 uppercase tracking-widest">
+                  Sexo biológico <span className="text-white/50 normal-case">(opcional)</span>
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {([
+                    { value: 'male' as const, label: 'Masculino', Icon: GenderMale },
+                    { value: 'female' as const, label: 'Feminino', Icon: GenderFemale },
+                  ]).map(({ value, label, Icon }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setValue('gender', gender === value ? undefined : value)}
+                      className={`flex flex-col items-center gap-2 py-4 rounded-2xl border-2 transition-all duration-150 cursor-pointer ${
+                        gender === value
+                          ? 'bg-white border-white text-red-600'
+                          : 'bg-transparent border-white/50 hover:border-white text-white'
+                      }`}
+                    >
+                      <Icon size={22} weight="bold" />
+                      <span className="text-[13px] font-semibold">{label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-[11px] font-semibold text-white mb-3 uppercase tracking-widest">
+                    Peso <span className="text-white/50 normal-case">(kg)</span>
+                  </label>
+                  <input
+                    {...register('weight', { valueAsNumber: true })}
+                    type="number"
+                    placeholder="70"
+                    className="w-full border-0 border-b-2 border-white/50 bg-transparent pb-3 text-[15px] text-white placeholder-white/30 focus:outline-none focus:border-white transition-colors duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  {errors.weight && (
+                    <p className="text-yellow-200 text-[11px] mt-2">{errors.weight.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-white mb-3 uppercase tracking-widest">
+                    Altura <span className="text-white/50 normal-case">(cm)</span>
+                  </label>
+                  <input
+                    {...register('height', { valueAsNumber: true })}
+                    type="number"
+                    placeholder="175"
+                    className="w-full border-0 border-b-2 border-white/50 bg-transparent pb-3 text-[15px] text-white placeholder-white/30 focus:outline-none focus:border-white transition-colors duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  {errors.height && (
+                    <p className="text-yellow-200 text-[11px] mt-2">{errors.height.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-white mb-3 uppercase tracking-widest">
+                    Idade <span className="text-white/50 normal-case">(anos)</span>
+                  </label>
+                  <input
+                    {...register('age', { valueAsNumber: true })}
+                    type="number"
+                    placeholder="25"
+                    className="w-full border-0 border-b-2 border-white/50 bg-transparent pb-3 text-[15px] text-white placeholder-white/30 focus:outline-none focus:border-white transition-colors duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  {errors.age && (
+                    <p className="text-yellow-200 text-[11px] mt-2">{errors.age.message}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-5 pt-2 mt-auto">
+                <div className="flex items-center gap-4">
+                  <button type="button" onClick={() => setStep(2)} className="flex items-center justify-center w-11 h-11 rounded-full border-2 border-white/50 text-white hover:border-white transition-colors duration-150 cursor-pointer shrink-0">
+                    <ArrowLeft size={16} weight="bold" />
+                  </button>
                   <button
                     type="submit"
                     disabled={isPending}
@@ -198,16 +294,6 @@ export default function SignUpForm() {
                     {isPending ? 'Criando conta…' : 'Criar conta'}
                   </button>
                 </div>
-
-                <p className="text-[13px] text-white">
-                  Já tem conta?{' '}
-                  <Link
-                    to="/app/login"
-                    className="font-semibold text-white underline underline-offset-2 hover:text-white transition-colors"
-                  >
-                    Entrar agora
-                  </Link>
-                </p>
               </div>
             </>
           )}

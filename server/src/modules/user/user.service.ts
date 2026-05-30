@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
-import { User } from '@prisma/client';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashService } from '../../common/hash/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -25,8 +24,17 @@ export class UserService {
           email: data.email,
           password: hashedPassword,
           role: data.role,
-          ...(data.role === 'patient' //isso se chama nested write, faz mais de uma acao em apenas uma chamada. aqui, verifica a role e cria o patient ou nutritionist correspondente
-            ? { patient: { create: {} } }
+          ...(data.role === 'patient'
+            ? {
+                patient: {
+                  create: {
+                    ...(data.weight !== undefined && { weight: data.weight }),
+                    ...(data.height !== undefined && { height: data.height }),
+                    ...(data.age !== undefined && { age: data.age }),
+                    ...(data.gender !== undefined && { gender: data.gender }),
+                  },
+                },
+              }
             : { nutritionist: { create: {} } }),
         },
         select: userSelect,
@@ -69,7 +77,21 @@ export class UserService {
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<UserPublic> {
+    const hasPatientFields =
+      dto.weight !== undefined || dto.age !== undefined || dto.gender !== undefined;
+
     try {
+      if (hasPatientFields) {
+        await this.prisma.patient.updateMany({
+          where: { id },
+          data: {
+            ...(dto.weight !== undefined && { weight: dto.weight }),
+            ...(dto.age !== undefined && { age: dto.age }),
+            ...(dto.gender !== undefined && { gender: dto.gender }),
+          },
+        });
+      }
+
       return await this.prisma.user.update({
         where: { id },
         data: {

@@ -49,6 +49,10 @@ model Patient {
   recipes        Recipe[]
   privateFoods   PrivateFood[]
   dailyScores    DailyScore[]
+  weight         Float?
+  height         Float?
+  age            Int?
+  gender         String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 }

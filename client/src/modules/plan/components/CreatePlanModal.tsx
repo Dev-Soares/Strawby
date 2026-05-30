@@ -12,8 +12,6 @@ import {
   ArrowLeft,
   ArrowRight,
   FloppyDisk,
-  GenderMale,
-  GenderFemale,
 } from '@phosphor-icons/react'
 import {
   manualPlanSchema,
@@ -24,7 +22,7 @@ import {
 } from '../types/createPlan'
 
 type Mode = 'select' | 'manual' | 'generate'
-type Step = 1 | 2 | 3
+type GenerateStep = 1 | 2
 
 interface CreatePlanModalProps {
   isOpen: boolean
@@ -42,15 +40,9 @@ const ACTIVITY_OPTIONS = [
   { value: 1.9, label: 'Extremamente ativo', description: 'Treino diário intenso ou trabalho físico' },
 ]
 
-const STEP_FIELDS: Record<Step, (keyof GeneratePlanData)[]> = {
-  1: ['goal'],
-  2: ['age', 'weight', 'height', 'gender'],
-  3: ['movementLevel'],
-}
-
 export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, initialMode = 'select' }: CreatePlanModalProps) {
   const [mode, setMode] = useState<Mode>(initialMode)
-  const [step, setStep] = useState<Step>(1)
+  const [step, setStep] = useState<GenerateStep>(1)
 
   const manualForm = useForm<ManualPlanData>({
     resolver: zodResolver(manualPlanSchema),
@@ -81,7 +73,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
 
   const handleBack = () => {
     if (mode === 'generate' && step > 1) {
-      setStep((s) => (s - 1) as Step)
+      setStep(1)
     } else {
       setMode('select')
       setStep(1)
@@ -89,8 +81,8 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
   }
 
   const handleGenerateNext = async () => {
-    const valid = await generateForm.trigger(STEP_FIELDS[step])
-    if (valid) setStep((s) => (s + 1) as Step)
+    const valid = await generateForm.trigger(['goal'])
+    if (valid) setStep(2)
   }
 
   const handleManualSubmit = manualForm.handleSubmit((data) => onSubmit(data))
@@ -128,7 +120,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                 )}
                 <div>
                   <h2 className="text-lg font-extrabold text-neutral-950 tracking-tight">{title}</h2>
-                  {mode === 'generate' && <p className="text-xs text-neutral-400 mt-0.5">Etapa {step} de 3</p>}
+                  {mode === 'generate' && <p className="text-xs text-neutral-400 mt-0.5">Etapa {step} de 2</p>}
                 </div>
               </div>
               <button type="button" onClick={handleClose} className="w-9 h-9 flex items-center justify-center rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors cursor-pointer">
@@ -139,7 +131,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
             {/* Progress bar (generate only) */}
             {mode === 'generate' && (
               <div className="mx-8 mb-6 h-1 bg-neutral-100 rounded-full overflow-hidden">
-                <motion.div className="h-full bg-red-500 rounded-full" animate={{ width: `${(step / 3) * 100}%` }} transition={{ duration: 0.3, ease: 'easeInOut' }} />
+                <motion.div className="h-full bg-red-500 rounded-full" animate={{ width: `${(step / 2) * 100}%` }} transition={{ duration: 0.3, ease: 'easeInOut' }} />
               </div>
             )}
 
@@ -167,7 +159,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                     </div>
                     <div>
                       <p className="text-sm font-bold text-white">Gerar plano recomendado</p>
-                      <p className="text-xs text-red-200 mt-0.5">Receba metas baseadas no seu perfil</p>
+                      <p className="text-xs text-red-200 mt-0.5">Calculado com base no seu perfil</p>
                     </div>
                     <ArrowRight size={16} weight="bold" className="text-red-300 ml-auto shrink-0" />
                   </button>
@@ -255,57 +247,8 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                     </div>
                   )}
 
-                  {/* Step 2 — Personal data */}
+                  {/* Step 2 — Activity */}
                   {step === 2 && (
-                    <div className="flex flex-col gap-5">
-                      <p className="text-sm font-semibold text-neutral-700">Dados pessoais</p>
-
-                      <div>
-                        <label className="text-xs font-bold text-neutral-500 uppercase tracking-wide block mb-3">Sexo biológico</label>
-                        <Controller control={generateForm.control} name="gender" render={({ field }) => (
-                          <div className="grid grid-cols-2 gap-3">
-                            {([
-                              { value: 'male' as const, label: 'Masculino', description: 'Metabolismo tipicamente mais acelerado', Icon: GenderMale, activeColor: 'bg-blue-500', activeBorder: 'border-blue-500 bg-blue-50', activeText: 'text-blue-700', activeDesc: 'text-blue-400' },
-                              { value: 'female' as const, label: 'Feminino', description: 'Necessidades nutricionais específicas', Icon: GenderFemale, activeColor: 'bg-pink-500', activeBorder: 'border-pink-500 bg-pink-50', activeText: 'text-pink-700', activeDesc: 'text-pink-400' },
-                            ]).map((g) => (
-                              <button key={g.value} type="button" onClick={() => field.onChange(g.value)}
-                                className={`flex flex-col items-center gap-3 p-5 border-2 rounded-2xl transition-all duration-200 cursor-pointer text-center ${field.value === g.value ? g.activeBorder : 'border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50'}`}>
-                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${field.value === g.value ? g.activeColor : 'bg-neutral-100'}`}>
-                                  <g.Icon size={24} weight="bold" className={field.value === g.value ? 'text-white' : 'text-neutral-500'} />
-                                </div>
-                                <div>
-                                  <p className={`text-sm font-bold ${field.value === g.value ? g.activeText : 'text-neutral-900'}`}>{g.label}</p>
-                                  <p className={`text-[10px] mt-0.5 leading-snug ${field.value === g.value ? g.activeDesc : 'text-neutral-400'}`}>{g.description}</p>
-                                </div>
-                              </button>
-                            ))}
-                          </div>
-                        )} />
-                        {generateForm.formState.errors.gender && <p className="text-xs text-red-500 mt-1">{generateForm.formState.errors.gender.message}</p>}
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-3">
-                        {([
-                          { field: 'age' as const, label: 'Idade', unit: 'anos', placeholder: '25' },
-                          { field: 'weight' as const, label: 'Peso', unit: 'kg', placeholder: '70' },
-                          { field: 'height' as const, label: 'Altura', unit: 'cm', placeholder: '175' },
-                        ]).map((item) => (
-                          <div key={item.field}>
-                            <label className="text-[10px] font-bold text-neutral-500 uppercase tracking-wide block mb-1.5">{item.label}</label>
-                            <div className="relative">
-                              <input {...generateForm.register(item.field, { valueAsNumber: true })} type="number" placeholder={item.placeholder}
-                                className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-3 py-2.5 text-sm font-bold text-neutral-900 outline-none focus:border-neutral-400 focus:bg-white transition-all duration-150 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
-                              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-neutral-400 font-medium">{item.unit}</span>
-                            </div>
-                            {generateForm.formState.errors[item.field] && <p className="text-[9px] text-red-500 mt-1">{generateForm.formState.errors[item.field]?.message}</p>}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Step 3 — Activity */}
-                  {step === 3 && (
                     <div className="flex flex-col gap-2">
                       <p className="text-sm font-semibold text-neutral-700 mb-1">Nível de atividade física</p>
                       <Controller control={generateForm.control} name="movementLevel" render={({ field }) => (
@@ -327,7 +270,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
 
                   {/* Nav */}
                   <div className="mt-6">
-                    {step < 3 ? (
+                    {step < 2 ? (
                       <button type="button" onClick={handleGenerateNext}
                         className="w-full flex items-center justify-center gap-2 bg-neutral-950 hover:bg-neutral-800 text-white text-sm font-bold py-3.5 rounded-xl transition-colors duration-200 cursor-pointer">
                         Continuar <ArrowRight size={15} weight="bold" />
