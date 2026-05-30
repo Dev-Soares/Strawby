@@ -1,3 +1,5 @@
+import PageSEO from '@/shared/components/PageSEO'
+
 export default function PrivacyPage() {
   const dataItems = [
     'Nome',
@@ -26,6 +28,13 @@ export default function PrivacyPage() {
   ]
 
   return (
+    <>
+      <PageSEO
+        title="Política de Privacidade — Strawby"
+        description="Saiba como o Strawby coleta, usa e protege seus dados pessoais. Sua privacidade é nossa prioridade."
+        path="/privacy"
+        noIndex={false}
+      />
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(244,63,94,0.1),transparent_28%),linear-gradient(180deg,rgba(250,250,250,1),rgba(245,245,245,1))] text-neutral-900 transition-colors duration-300 dark:bg-[radial-gradient(circle_at_top_right,rgba(127,29,29,0.28),transparent_24%),linear-gradient(180deg,#09090b_0%,#09090b_100%)] dark:text-neutral-100">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8 lg:py-14">
         <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
@@ -215,5 +224,6 @@ export default function PrivacyPage() {
         </div>
       </div>
     </main>
+    </>
   )
 }

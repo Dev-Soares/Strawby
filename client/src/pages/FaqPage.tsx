@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, ArrowRight, CaretDown } from '@phosphor-icons/react'
+import PageSEO from '@/shared/components/PageSEO'
 
 type FaqItem = {
   question: string
@@ -125,8 +126,30 @@ function FaqAccordionItem({ question, answer }: FaqItem) {
   )
 }
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqGroups.flatMap((group) =>
+    group.items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  ),
+}
+
 export default function FaqPage() {
   return (
+    <>
+      <PageSEO
+        title="Perguntas Frequentes — Strawby"
+        description="Tire suas dúvidas sobre o Strawby: como criar conta, registrar refeições, buscar alimentos, criar receitas e acompanhar metas de calorias e macros."
+        path="/faq"
+        jsonLd={faqSchema}
+      />
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(244,63,94,0.12),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.9),transparent_35%)] text-neutral-900 transition-colors duration-300 dark:bg-[radial-gradient(circle_at_top_right,rgba(127,29,29,0.35),transparent_24%),linear-gradient(180deg,#09090b_0%,#09090b_100%)] dark:text-neutral-100">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8 lg:py-14">
         <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
@@ -209,5 +232,6 @@ export default function FaqPage() {
         </div>
       </div>
     </main>
+    </>
   )
 }
