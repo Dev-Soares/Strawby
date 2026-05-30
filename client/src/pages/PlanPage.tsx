@@ -160,7 +160,7 @@ export default function PlanPage() {
           </div>
 
           {/* Divider */}
-          <div className="mx-4 sm:mx-10 lg:mx-16 border-t border-neutral-100 dark:border-neutral-800 my-2 transition-colors duration-300" />
+          <div className="mx-4 sm:mx-10 lg:mx-16 border-t border-neutral-100 dark:border-neutral-800 my-8 transition-colors duration-300" />
 
           <PlanMealsSection />
 

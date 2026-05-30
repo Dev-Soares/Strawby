@@ -15,7 +15,7 @@ export default function PlanMealsSection() {
   const totalKcal = meals?.reduce((a, m) => a + m.totals.calories, 0) ?? 0
 
   return (
-    <div className="px-4 sm:px-10 lg:px-16 pb-32">
+    <div className="px-4 sm:px-10 lg:px-16 pt-2 pb-32">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
         <div>
           <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight leading-none transition-colors duration-300">
