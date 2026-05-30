@@ -61,6 +61,10 @@ export class NutritionistService {
           patients: {
             select: {
               id: true,
+              weight: true,
+              height: true,
+              age: true,
+              gender: true,
               user: { select: { id: true, name: true, email: true } },
             },
           },
@@ -72,6 +76,17 @@ export class NutritionistService {
       return nutritionist.patients;
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar pacientes');
+    }
+  }
+
+  async disconnectPatient(patientId: string): Promise<void> {
+    try {
+      await this.prisma.patient.update({
+        where: { id: patientId },
+        data: { nutritionistId: null },
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao desconectar nutricionista');
     }
   }
 
