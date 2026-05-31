@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Eye, EyeSlash, ArrowLeft, GenderMale, GenderFemale, Heartbeat, Stethoscope, ArrowRight } from '@phosphor-icons/react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useSignUp } from '../hooks/useSignUp'
 
 const ROLES = [

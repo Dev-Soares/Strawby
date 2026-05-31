@@ -1,10 +1,9 @@
 import { z } from 'zod'
 
 const requiredNumber = (min: number, max: number, msg: string) =>
-  z.preprocess(
-    (val) => (typeof val === 'number' && isNaN(val) ? undefined : val),
-    z.number({ error: msg }).min(min).max(max),
-  )
+  z.number().optional()
+    .transform(val => (val !== undefined && isNaN(val) ? undefined : val))
+    .pipe(z.number({ error: msg }).min(min).max(max))
 
 export const signUpSchema = z
   .object({
