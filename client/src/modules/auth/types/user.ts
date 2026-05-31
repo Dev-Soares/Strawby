@@ -8,5 +8,7 @@ export type UserPublic = {
     height: number | null
     age: number | null
     gender: string | null
+    nutritionistId: string | null
+    nutritionist: { user: { name: string } } | null
   } | null
 }

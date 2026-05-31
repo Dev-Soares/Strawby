@@ -21,6 +21,7 @@ const patientNavItems = [
 
 const nutritionistNavItems = [
   { label: 'Pacientes', href: '/app/home' },
+  { label: 'Relatórios', href: '/app/nutritionist/reports' },
   { label: 'Perfil', href: '/app/profile' },
 ]
 
