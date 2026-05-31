@@ -6,6 +6,7 @@ import {
   CarrotIcon,
   UserCircleIcon,
   UsersIcon,
+  ChartBarIcon,
 } from '@phosphor-icons/react'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
 
@@ -19,6 +20,7 @@ const patientTabs = [
 
 const nutritionistTabs = [
   { label: 'Pacientes', href: '/app/home', icon: UsersIcon },
+  { label: 'Relatórios', href: '/app/nutritionist/reports', icon: ChartBarIcon },
   { label: 'Perfil', href: '/app/profile', icon: UserCircleIcon },
 ]
 
@@ -31,7 +33,7 @@ export default function TopTabBar({ hidden = false }: TopTabBarProps) {
   const { data: user } = useAuth()
 
   const tabs = user?.role === 'nutritionist' ? nutritionistTabs : patientTabs
-  const cols = tabs.length === 2 ? 'grid-cols-2' : 'grid-cols-5'
+  const cols = tabs.length === 2 ? 'grid-cols-2' : tabs.length === 3 ? 'grid-cols-3' : 'grid-cols-5'
 
   return (
     <nav

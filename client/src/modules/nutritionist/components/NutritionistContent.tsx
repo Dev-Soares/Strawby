@@ -84,7 +84,7 @@ export default function NutritionistContent() {
           </>
         )}
 
-        {activeTab === 'requests' && (
+{activeTab === 'requests' && (
           <>
             <div className="mb-5">
               <h2 className="text-xl sm:text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight transition-colors duration-300">
