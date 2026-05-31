@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { PlusIcon } from '@phosphor-icons/react'
+import { PlusIcon, ForkKnifeIcon } from '@phosphor-icons/react'
 import type { Meal } from '../../meal/types/meal'
 import MealCard from '../../meal/components/MealCard'
 import { useDay } from '../contexts/DayContext'
@@ -45,34 +45,65 @@ export default function MealList({ meals }: MealListProps) {
         </span>
       </div>
 
-      <motion.div
-        className="flex flex-col gap-2.5 sm:gap-3"
-        variants={container}
-        initial="hidden"
-        animate="show"
-      >
-        {meals.map((meal) => (
-          <motion.div key={meal.id} variants={item}>
-            <MealCard
-              meal={meal}
-              isOpen={openId === meal.id}
-              onToggle={() => toggle(meal.id)}
-            />
-          </motion.div>
-        ))}
+      {meals.length === 0 ? (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+          className="flex flex-col items-center text-center py-10 px-4 bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 transition-colors duration-300"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 transition-colors duration-300">
+            <ForkKnifeIcon size={24} weight="duotone" className="text-neutral-400 dark:text-neutral-500" />
+          </div>
+          <p className="text-sm font-bold text-neutral-700 dark:text-neutral-300 mb-1 transition-colors duration-300">
+            {isToday ? 'Nenhuma refeição hoje' : 'Sem refeições neste dia'}
+          </p>
+          <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-5 max-w-50 leading-relaxed transition-colors duration-300">
+            {isToday
+              ? 'Registre o que você comeu para acompanhar seus macros'
+              : 'Nenhuma refeição foi registrada neste dia'}
+          </p>
+          {isToday && (
+            <button
+              type="button"
+              onClick={() => navigate('/app/meals/new?type=meal')}
+              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer"
+            >
+              <PlusIcon size={15} weight="bold" />
+              Adicionar refeição
+            </button>
+          )}
+        </motion.div>
+      ) : (
+        <motion.div
+          className="flex flex-col gap-2.5 sm:gap-3"
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
+          {meals.map((meal) => (
+            <motion.div key={meal.id} variants={item}>
+              <MealCard
+                meal={meal}
+                isOpen={openId === meal.id}
+                onToggle={() => toggle(meal.id)}
+              />
+            </motion.div>
+          ))}
 
-        {isToday && (
-          <motion.button
-            type="button"
-            onClick={() => navigate('/app/meals/new?type=meal')}
-            className="flex items-center justify-center gap-2 py-3.5 sm:py-4 rounded-2xl sm:rounded-3xl bg-red-600 text-white text-sm sm:text-base font-bold hover:bg-red-700 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mt-1"
-            variants={item}
-          >
-            <PlusIcon size={18} weight="bold" />
-            Adicionar refeição
-          </motion.button>
-        )}
-      </motion.div>
+          {isToday && (
+            <motion.button
+              type="button"
+              onClick={() => navigate('/app/meals/new?type=meal')}
+              className="flex items-center justify-center gap-2 py-3.5 sm:py-4 rounded-2xl sm:rounded-3xl bg-red-600 text-white text-sm sm:text-base font-bold hover:bg-red-700 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mt-1"
+              variants={item}
+            >
+              <PlusIcon size={18} weight="bold" />
+              Adicionar refeição
+            </motion.button>
+          )}
+        </motion.div>
+      )}
     </div>
   )
 }
