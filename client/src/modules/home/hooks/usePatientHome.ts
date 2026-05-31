@@ -10,7 +10,7 @@ export const usePatientHome = () => {
   const { data: plan, isPending: planPending } = useGetPlan()
   const { selectedDay } = useDay()
 
-  const { data: meals, isPending: mealsPending, isError: mealsError } = useGetMealsByDay(selectedDay)
+  const { data: meals, isPending: mealsPending, isFetching: mealsFetching, isError: mealsError } = useGetMealsByDay(selectedDay)
 
   const summary: DailySummary | null = useMemo(() => {
     if (!meals) return null
@@ -28,5 +28,5 @@ export const usePatientHome = () => {
     }
   }, [meals, plan])
 
-  return { user, meals, summary, planPending, mealsPending, mealsError }
+  return { user, meals, summary, planPending, mealsPending, mealsFetching, mealsError }
 }

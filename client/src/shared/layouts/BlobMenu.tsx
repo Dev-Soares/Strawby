@@ -15,8 +15,8 @@ const blobPath = 'M 24 0 C 8 8, 0 22, 2 38 C 4 54, 22 58, 20 70 C 16 82, 6 86, 1
 const patientNavItems = [
   { label: 'Início', href: '/app/home' },
   { label: 'Pontuação', href: '/app/score' },
-  { label: 'Alimentos', href: '/app/foods' },
   { label: 'Plano', href: '/app/plan' },
+  { label: 'Perfil', href: '/app/profile' },
 ]
 
 const nutritionistNavItems = [

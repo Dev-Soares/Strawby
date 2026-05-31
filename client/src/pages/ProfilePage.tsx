@@ -35,6 +35,7 @@ import UpdateCodeModal from '@/modules/nutritionist/components/UpdateCodeModal'
 import AddNutritionistModal from '@/modules/connection-request/components/AddNutritionistModal'
 import { useMakeConnectionRequest } from '@/modules/connection-request/hooks/useMakeConnectionRequest'
 import { useDisconnectNutritionist } from '@/modules/nutritionist/hooks/useDisconnectNutritionist'
+import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 
 function getInitials(name: string) {
   const parts = name.trim().split(' ')
@@ -62,6 +63,7 @@ export default function ProfilePage() {
   const [bodyEditOpen, setBodyEditOpen] = useState(false)
   const [codeModalOpen, setCodeModalOpen] = useState(false)
   const [addNutritionistOpen, setAddNutritionistOpen] = useState(false)
+  const [confirmDisconnectOpen, setConfirmDisconnectOpen] = useState(false)
   const [editingName, setEditingName] = useState(false)
   const [nameValue, setNameValue] = useState('')
 
@@ -241,7 +243,7 @@ export default function ProfilePage() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => disconnectMutation.mutate()}
+                    onClick={() => setConfirmDisconnectOpen(true)}
                     disabled={disconnectMutation.isPending}
                     className="w-full flex items-center gap-3 px-5 py-4 hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group"
                   >
@@ -470,6 +472,16 @@ export default function ProfilePage() {
         isPending={makeRequestMutation.isPending}
         onClose={() => setAddNutritionistOpen(false)}
         onSend={(code) => makeRequestMutation.mutate(code, { onSuccess: () => setAddNutritionistOpen(false) })}
+      />
+
+      <ConfirmDeleteModal
+        isOpen={confirmDisconnectOpen}
+        onClose={() => setConfirmDisconnectOpen(false)}
+        onConfirm={() => disconnectMutation.mutate(undefined, { onSuccess: () => setConfirmDisconnectOpen(false) })}
+        isPending={disconnectMutation.isPending}
+        title="Remover nutricionista?"
+        description="Você perderá acesso ao plano alimentar atual. Esta ação não pode ser desfeita."
+        confirmLabel="Remover"
       />
     </AppLayout>
   )

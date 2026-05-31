@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { useAuth } from '../../auth/hooks/useAuth'
 import { getDailyScoresService } from '../service/getDailyScoresService'
 
@@ -8,5 +8,6 @@ export const useGetDailyScores = (startDate: string, endDate: string) => {
     queryKey: ['daily-scores', startDate, endDate],
     queryFn: () => getDailyScoresService(user!.id, { startDate, endDate }),
     enabled: !!user?.id,
+    placeholderData: keepPreviousData,
   })
 }

@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import {
   HouseSimpleIcon,
   TrophyIcon,
@@ -24,16 +25,72 @@ const nutritionistTabs = [
   { label: 'Perfil', href: '/app/profile', icon: UserCircleIcon },
 ]
 
+const INDICATOR_INSET = 12 // px margin on each side of the indicator within a tab
+
 interface TopTabBarProps {
   hidden?: boolean
+  variant?: 'top' | 'bottom'
 }
 
-export default function TopTabBar({ hidden = false }: TopTabBarProps) {
+export default function TopTabBar({ hidden = false, variant = 'top' }: TopTabBarProps) {
   const { pathname } = useLocation()
   const { data: user } = useAuth()
 
   const tabs = user?.role === 'nutritionist' ? nutritionistTabs : patientTabs
   const cols = tabs.length === 2 ? 'grid-cols-2' : tabs.length === 3 ? 'grid-cols-3' : 'grid-cols-5'
+
+  const activeIndex = tabs.findIndex((tab) => pathname === tab.href)
+  const tabWidthPct = 100 / tabs.length
+
+  if (variant === 'bottom') {
+    return (
+      <nav
+        className={`fixed bottom-0 inset-x-0 sm:hidden z-50 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 transition-opacity duration-200 ${
+          hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        }`}
+      >
+        <div className={`grid ${cols} pb-4 relative`}>
+          {activeIndex >= 0 && (
+            <motion.span
+              className="absolute top-0 h-0.5 bg-red-600 rounded-full pointer-events-none"
+              initial={false}
+              animate={{
+                left: `calc(${activeIndex * tabWidthPct}% + ${INDICATOR_INSET}px)`,
+                width: `calc(${tabWidthPct}% - ${INDICATOR_INSET * 2}px)`,
+              }}
+              transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+            />
+          )}
+          {tabs.map((tab) => {
+            const Icon = tab.icon
+            const active = pathname === tab.href
+            return (
+              <Link
+                key={tab.href}
+                to={tab.href}
+                className="flex flex-col items-center justify-center gap-1 pt-3 pb-1 min-w-0"
+              >
+                <Icon
+                  size={22}
+                  weight={active ? 'fill' : 'regular'}
+                  className={`shrink-0 transition-colors ${
+                    active ? 'text-red-600' : 'text-neutral-400 dark:text-neutral-500'
+                  }`}
+                />
+                <span
+                  className={`text-[10px] font-bold tracking-tight transition-colors ${
+                    active ? 'text-red-600' : 'text-neutral-400 dark:text-neutral-500'
+                  }`}
+                >
+                  {tab.label}
+                </span>
+              </Link>
+            )
+          })}
+        </div>
+      </nav>
+    )
+  }
 
   return (
     <nav
@@ -67,7 +124,11 @@ export default function TopTabBar({ hidden = false }: TopTabBarProps) {
                   {tab.label}
                 </span>
                 {active && (
-                  <span className="absolute left-3 right-3 sm:left-2 sm:right-2 -bottom-px h-0.5 bg-red-600 rounded-full" />
+                  <motion.span
+                    layoutId="tab-indicator-top"
+                    transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                    className="absolute left-3 right-3 sm:left-2 sm:right-2 -bottom-px h-0.5 bg-red-600 rounded-full"
+                  />
                 )}
               </Link>
             )

@@ -8,7 +8,9 @@ import PatientHomeHeader from './PatientHomeHeader'
 import { usePatientHome } from '../hooks/usePatientHome'
 
 export default function PatientHomeContent() {
-  const { user, meals, summary, planPending, mealsPending, mealsError } = usePatientHome()
+  const { user, meals, summary, planPending, mealsPending, mealsFetching, mealsError } = usePatientHome()
+
+  const firstLoad = planPending || mealsPending
 
   return (
     <AppLayout>
@@ -23,19 +25,17 @@ export default function PatientHomeContent() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start">
-          {planPending || mealsPending ? (
-            <>
-              <DailySummarySkeleton />
-              <MealListSkeleton />
-            </>
-          ) : (
-            <>
-              {summary ? <DailySummary data={summary} /> : <DailySummarySkeleton />}
-              {meals ? <MealList meals={meals} /> : null}
-            </>
-          )}
-        </div>
+        {firstLoad ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start">
+            <DailySummarySkeleton />
+            <MealListSkeleton />
+          </div>
+        ) : (
+          <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start transition-opacity duration-200 ${mealsFetching ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+            {summary ? <DailySummary data={summary} /> : <DailySummarySkeleton />}
+            {meals ? <MealList meals={meals} /> : null}
+          </div>
+        )}
       </div>
     </AppLayout>
   )
