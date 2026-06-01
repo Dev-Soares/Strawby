@@ -46,7 +46,7 @@ export class DailyScoreService {
     await this.patientAccess.resolve(callerId, patientId);
     try {
       const where: { patientId: string; date?: { gte?: Date; lte?: Date } } = { patientId };
-      
+
       if (startDate) where.date = { gte: this.parseDay(startDate) };
       if (endDate) where.date = { ...where.date, lte: this.parseDay(endDate) };
 
@@ -128,25 +128,22 @@ export class DailyScoreService {
   async closeDayScoreForEachUser(day: string): Promise<void> {
     const date = this.parseDay(day);
     const patients = await this.userService.findMany({ where: { role: 'patient' }, select: { id: true } });
-    const patientIds = patients.map(p => p.id);
+
+    const patientIds = patients.map(patient => patient.id);
 
     const [mealsMap, plansMap] = await Promise.all([
       this.mealService.queryMealsByDayBulk(patientIds, day),
       this.planService.queryPlansByPatientsBulk(patientIds),
     ]);
 
-    await this.prisma.$transaction(
-      patientIds.map(patientId => {
+    await this.prisma.dailyScore.createMany({
+      data: patientIds.map(patientId => {
         const meals = mealsMap.get(patientId) ?? [];
         const plan = plansMap.get(patientId);
         const score = plan ? this.calculateDailyScore(this.reduceDayMacros(meals), plan) : 0;
-        return this.prisma.dailyScore.upsert({
-          where: { patientId_date: { patientId, date } },
-          create: { date, score, patientId },
-          update: { score },
-          select: { id: true },
-        });
+        return { date, score, patientId };
       }),
-    );
+      skipDuplicates: true,
+    });
   }
 }
