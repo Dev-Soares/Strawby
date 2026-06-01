@@ -23,7 +23,7 @@ export default function SignUpPage() {
           </Link>
 
           <Link to="/" className="flex items-center gap-3 w-fit">
-            <img src="/logo.png" alt="Strawby" className="w-14 h-14 object-contain" />
+            <img src="/logo.webp" alt="Strawby" className="w-14 h-14 object-contain" />
             <span className="text-neutral-900 dark:text-neutral-100 text-[28px] font-black tracking-tighter transition-colors duration-300">
               Strawby
             </span>

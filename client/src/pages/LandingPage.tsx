@@ -39,7 +39,7 @@ const organizationSchema = {
   '@type': 'Organization',
   name: 'Strawby',
   url: 'https://strawby.com',
-  logo: 'https://strawby.com/logo.png',
+  logo: 'https://strawby.com/logo.webp',
   description: 'App de nutrição para acompanhar calorias, macros e refeições do dia a dia.',
   sameAs: [],
 }
