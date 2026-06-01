@@ -198,14 +198,29 @@ export default function TermsPage() {
                 </div>
             </section>
 
+            <section id="lgpd" className="scroll-mt-8 rounded-4xl border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
+                <h2 className="text-2xl font-bold tracking-[-0.03em]">Proteção de dados pessoais</h2>
+                <div className="mt-4 space-y-4 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
+                  <p>
+                    O tratamento de dados pessoais realizado pelo Strawby obedece à Lei Geral de Proteção de Dados (Lei 13.709/2018 — LGPD) e às demais normas aplicáveis de proteção à privacidade.
+                  </p>
+                  <p>
+                    As regras sobre coleta, uso, armazenamento e direitos do usuário em relação aos seus dados pessoais estão descritas na <span className="font-semibold text-neutral-950 dark:text-neutral-50">Política de Privacidade</span>, que integra estes Termos de Uso.
+                  </p>
+                </div>
+            </section>
+
             <section id="sobre" className="scroll-mt-8 rounded-4xl border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
                 <h2 className="text-2xl font-bold tracking-[-0.03em]">Sobre estes termos</h2>
                 <div className="mt-4 space-y-4 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
                   <p>
-                    Estes Termos de Uso serão regidos pelas leis da República Federativa do Brasil.
+                    Estes Termos de Uso são regidos pelas leis da República Federativa do Brasil.
                   </p>
                   <p>
-                    Os termos podem ser alterados periodicamente para refletir melhorias, alterações legais ou mudanças na plataforma. O uso contínuo do Strawby após alterações representa concordância com a versão atualizada.
+                    Os termos podem ser alterados periodicamente para refletir melhorias, alterações legais ou mudanças na plataforma. Alterações que não afetem o tratamento de dados pessoais entram em vigor com o uso contínuo da plataforma. Alterações que impactem o tratamento de dados pessoais serão comunicadas previamente e poderão exigir novo consentimento expresso do usuário, conforme a LGPD.
+                  </p>
+                  <p>
+                    Para resolução de disputas decorrentes destes termos, fica eleito o foro da comarca de <strong>Barra Mansa – RJ</strong>, com renúncia a qualquer outro, por mais privilegiado que seja.
                   </p>
                   <p>
                     Em caso de dúvidas, entre em contato pelo e-mail <span className="font-semibold text-neutral-950 dark:text-neutral-50">strawbyapp@gmail.com</span>.

@@ -9,7 +9,7 @@ export default function PrivacyPage() {
     'Informações de uso da plataforma',
   ]
 
-  const technicalItems = ['Tipo de dispositivo', 'Navegador utilizado', 'Endereço IP', 'Dados de acesso e utilização']
+  const technicalItems = ['Tipo de dispositivo', 'Navegador utilizado', 'Dados de acesso e utilização']
 
   const purposeItems = [
     'Permitir o funcionamento da plataforma',
@@ -20,11 +20,20 @@ export default function PrivacyPage() {
     'Enviar notificações relacionadas ao uso do aplicativo, caso o usuário permita',
   ]
 
+  const legalBasisItems = [
+    { basis: 'Consentimento', description: 'Cadastro, uso de dados pessoais e envio de notificações — com base no Art. 7, I da LGPD.' },
+    { basis: 'Execução de contrato', description: 'Operação das funcionalidades contratadas (registros, metas, planos) — Art. 7, V da LGPD.' },
+    { basis: 'Legítimo interesse', description: 'Melhoria da plataforma, segurança e prevenção de abusos — Art. 7, IX da LGPD.' },
+  ]
+
   const privacyControls = [
+    'Confirmação da existência de tratamento',
     'Acesso aos seus dados pessoais',
-    'Correção de informações incorretas',
-    'Exclusão de dados pessoais',
-    'Revogação de consentimentos eventualmente concedidos',
+    'Correção de informações incorretas ou incompletas',
+    'Portabilidade dos dados a outro serviço ou fornecedor',
+    'Exclusão de dados pessoais tratados com base em consentimento',
+    'Revogação do consentimento a qualquer momento',
+    'Informação sobre terceiros com quem os dados são compartilhados',
   ]
 
   return (
@@ -38,7 +47,7 @@ export default function PrivacyPage() {
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(244,63,94,0.1),transparent_28%),linear-gradient(180deg,rgba(250,250,250,1),rgba(245,245,245,1))] text-neutral-900 transition-colors duration-300 dark:bg-[radial-gradient(circle_at_top_right,rgba(127,29,29,0.28),transparent_24%),linear-gradient(180deg,#09090b_0%,#09090b_100%)] dark:text-neutral-100">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8 lg:py-14">
         <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
-          <aside className="rounded-[2rem] border border-neutral-200 bg-white/90 p-6 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.28)] backdrop-blur dark:border-neutral-800 dark:bg-neutral-900/90 sm:p-8 lg:sticky lg:top-8">
+          <aside className="rounded-4xl border border-neutral-200 bg-white/90 p-6 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.28)] backdrop-blur dark:border-neutral-800 dark:bg-neutral-900/90 sm:p-8 lg:sticky lg:top-8">
             <button
               type="button"
               onClick={() => window.history.back()}
@@ -81,7 +90,7 @@ export default function PrivacyPage() {
           </aside>
 
           <article className="space-y-4 sm:space-y-5">
-            <section id="introducao" className="scroll-mt-8 rounded-[2rem] border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
+            <section id="introducao" className="scroll-mt-8 rounded-4xl border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
               <h2 className="text-2xl font-bold tracking-[-0.03em]">Introdução</h2>
               <div className="mt-4 space-y-4 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
                   <p>
@@ -95,7 +104,7 @@ export default function PrivacyPage() {
                 </div>
             </section>
 
-            <section id="informacoes-coletadas" className="scroll-mt-8 rounded-[2rem] border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
+            <section id="informacoes-coletadas" className="scroll-mt-8 rounded-4xl border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
                 <h2 className="text-2xl font-bold tracking-[-0.03em]">Informações coletadas</h2>
                 <p className="mt-4 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
                   O Strawby pode coletar informações fornecidas diretamente pelo usuário e dados técnicos gerados durante o uso da plataforma.
@@ -128,7 +137,7 @@ export default function PrivacyPage() {
                 </div>
             </section>
 
-            <section id="por-que-coletamos" className="scroll-mt-8 rounded-[2rem] border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
+            <section id="por-que-coletamos" className="scroll-mt-8 rounded-4xl border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
                 <h2 className="text-2xl font-bold tracking-[-0.03em]">Por que coletamos dados</h2>
                 <ul className="mt-4 space-y-3 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
                   {purposeItems.map((item) => (
@@ -140,7 +149,22 @@ export default function PrivacyPage() {
                 </ul>
             </section>
 
-            <section id="controles" className="scroll-mt-8 rounded-[2rem] border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
+            <section id="base-legal" className="scroll-mt-8 rounded-4xl border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
+                <h2 className="text-2xl font-bold tracking-[-0.03em]">Base legal do tratamento</h2>
+                <p className="mt-4 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
+                  Todo tratamento de dados pessoais realizado pelo Strawby possui fundamento legal expresso na Lei Geral de Proteção de Dados (Lei 13.709/2018 — LGPD):
+                </p>
+                <div className="mt-5 flex flex-col gap-3">
+                  {legalBasisItems.map((item) => (
+                    <div key={item.basis} className="rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-4 dark:border-neutral-800 dark:bg-neutral-950">
+                      <p className="text-[11px] font-black uppercase tracking-[0.2em] text-neutral-500 dark:text-neutral-400">{item.basis}</p>
+                      <p className="mt-1 text-[14px] leading-6 text-neutral-700 dark:text-neutral-300">{item.description}</p>
+                    </div>
+                  ))}
+                </div>
+            </section>
+
+            <section id="controles" className="scroll-mt-8 rounded-4xl border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
                 <h2 className="text-2xl font-bold tracking-[-0.03em]">Seus controles de privacidade</h2>
                 <p className="mt-4 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
                   Nos termos da legislação aplicável, incluindo a Lei Geral de Proteção de Dados (LGPD), o usuário pode solicitar o seguinte:
@@ -157,7 +181,7 @@ export default function PrivacyPage() {
                 </p>
             </section>
 
-            <section id="compartilhamento" className="scroll-mt-8 rounded-[2rem] border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
+            <section id="compartilhamento" className="scroll-mt-8 rounded-4xl border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
                 <h2 className="text-2xl font-bold tracking-[-0.03em]">Compartilhamento de informações</h2>
                 <div className="mt-4 space-y-4 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
                   <p>O Strawby não vende dados pessoais dos usuários.</p>
@@ -170,7 +194,7 @@ export default function PrivacyPage() {
                 </div>
             </section>
 
-            <section id="seguranca" className="scroll-mt-8 rounded-[2rem] border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
+            <section id="seguranca" className="scroll-mt-8 rounded-4xl border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
                 <h2 className="text-2xl font-bold tracking-[-0.03em]">Manter suas informações seguras</h2>
                 <div className="mt-4 space-y-4 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
                   <p>
@@ -182,7 +206,7 @@ export default function PrivacyPage() {
                 </div>
             </section>
 
-            <section id="exportar-excluir" className="scroll-mt-8 rounded-[2rem] border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
+            <section id="exportar-excluir" className="scroll-mt-8 rounded-4xl border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
                 <h2 className="text-2xl font-bold tracking-[-0.03em]">Exportar e excluir informações</h2>
                 <div className="mt-4 space-y-4 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
                   <p>
@@ -194,26 +218,44 @@ export default function PrivacyPage() {
                 </div>
             </section>
 
-            <section id="retencao" className="scroll-mt-8 rounded-[2rem] border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
+            <section id="retencao" className="scroll-mt-8 rounded-4xl border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
                 <h2 className="text-2xl font-bold tracking-[-0.03em]">Retenção das informações</h2>
                 <div className="mt-4 space-y-4 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
                   <p>
-                    Os dados coletados podem ser mantidos pelo período necessário para operar a plataforma, cumprir obrigações legais, prevenir abusos e preservar a segurança.
+                    Os dados pessoais são mantidos enquanto a conta do usuário estiver ativa. Após a exclusão da conta, os dados são removidos em até <strong>30 dias</strong>, salvo quando a retenção for exigida por obrigação legal (ex: registros fiscais ou judiciais), situação em que podem ser mantidos por até <strong>5 anos</strong> conforme a legislação aplicável.
                   </p>
                   <p>
-                    Após a exclusão, o Strawby busca remover as informações de forma segura, podendo manter cópias residuais apenas pelo tempo necessário em backups ou obrigações legais.
+                    Cópias residuais em sistemas de backup podem persistir por até <strong>90 dias</strong> adicionais antes da eliminação definitiva.
                   </p>
                 </div>
             </section>
 
-            <section id="sobre" className="scroll-mt-8 rounded-[2rem] border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
+            <section id="controlador" className="scroll-mt-8 rounded-4xl border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
+                <h2 className="text-2xl font-bold tracking-[-0.03em]">Controlador e encarregado</h2>
+                <div className="mt-4 space-y-4 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
+                  <p>
+                    O controlador responsável pelo tratamento dos dados pessoais coletados pelo Strawby é:
+                  </p>
+                  <div className="rounded-2xl border border-neutral-200 bg-neutral-50 px-5 py-4 dark:border-neutral-800 dark:bg-neutral-950 space-y-1">
+                    <p><strong className="text-neutral-900 dark:text-neutral-100">Strawby</strong></p>
+                    <p>CNPJ: 63.935.687/0001-77</p>
+                    <p>Barra Mansa – RJ, Brasil</p>
+                    <p>E-mail: <span className="font-semibold text-neutral-950 dark:text-neutral-50">strawbyapp@gmail.com</span></p>
+                  </div>
+                  <p>
+                    O encarregado pelo tratamento de dados (DPO), nos termos do Art. 41 da LGPD, pode ser contatado pelo mesmo endereço de e-mail acima para quaisquer solicitações relacionadas a dados pessoais.
+                  </p>
+                </div>
+            </section>
+
+            <section id="sobre" className="scroll-mt-8 rounded-4xl border border-neutral-200 bg-white p-5 shadow-[0_18px_50px_-36px_rgba(0,0,0,0.3)] dark:border-neutral-800 dark:bg-neutral-900 sm:p-6 lg:p-7">
                 <h2 className="text-2xl font-bold tracking-[-0.03em]">Sobre esta política</h2>
                 <div className="mt-4 space-y-4 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
                   <p>
-                    Esta política pode ser alterada periodicamente para refletir melhorias, mudanças legais ou ajustes na plataforma.
+                    Esta política é regida pela Lei Geral de Proteção de Dados (Lei 13.709/2018 — LGPD) e demais normas aplicáveis da República Federativa do Brasil.
                   </p>
                   <p>
-                    Recomendamos revisar esta página regularmente. Se as alterações forem relevantes, o Strawby poderá destacar a mudança com antecedência razoável.
+                    Esta política pode ser alterada periodicamente. Alterações que impactem o tratamento de dados pessoais serão comunicadas com antecedência razoável por e-mail ou aviso na plataforma, e poderão exigir novo consentimento do usuário.
                   </p>
                   <p>
                     Em caso de dúvidas, entre em contato pelo e-mail <span className="font-semibold text-neutral-950 dark:text-neutral-50">strawbyapp@gmail.com</span>.

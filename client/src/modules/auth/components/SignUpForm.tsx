@@ -57,7 +57,7 @@ export default function SignUpForm() {
   }
 
   const handleStep3 = async () => {
-    const valid = await trigger(['password', 'confirmPassword'])
+    const valid = await trigger(['password', 'confirmPassword', 'acceptTerms'])
     if (!valid) return
     if (isPatient) setStep(4)
     else onSubmit()
@@ -229,6 +229,35 @@ export default function SignUpForm() {
               </div>
 
               <div className="flex flex-col gap-5 pt-2 mt-auto">
+                {/* Terms checkbox */}
+                <label className="flex items-start gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    {...register('acceptTerms')}
+                    className="sr-only"
+                  />
+                  <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all duration-150 ${
+                    watch('acceptTerms')
+                      ? 'bg-white border-white'
+                      : 'border-white/50 group-hover:border-white/80'
+                  }`}>
+                    {watch('acceptTerms') && (
+                      <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6l3 3 5-5" stroke="#dc2626" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </div>
+                  <span className="text-[12px] text-white/80 leading-relaxed">
+                    Li e aceito os{' '}
+                    <Link to="/termos" target="_blank" className="text-white font-semibold underline underline-offset-2">Termos de Uso</Link>
+                    {' '}e a{' '}
+                    <Link to="/privacidade" target="_blank" className="text-white font-semibold underline underline-offset-2">Política de Privacidade</Link>
+                  </span>
+                </label>
+                {errors.acceptTerms && (
+                  <p className="text-yellow-200 text-[11px] -mt-3">{errors.acceptTerms.message}</p>
+                )}
+
                 <div className="flex items-center gap-4">
                   <button type="button" onClick={() => setStep(2)} className="flex items-center justify-center w-11 h-11 rounded-full border-2 border-white/50 text-white hover:border-white transition-colors cursor-pointer shrink-0">
                     <ArrowLeft size={16} weight="bold" />

@@ -24,6 +24,8 @@ export class UserService {
           email: data.email,
           password: hashedPassword,
           role: data.role,
+          termsAcceptedAt: new Date(),
+          termsVersion: data.termsVersion,
           ...(data.role === 'patient'
             ? {
                 patient: {

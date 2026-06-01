@@ -12,6 +12,7 @@ export const signUpSchema = z
     email: z.string().email('E-mail inválido'),
     password: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres'),
     confirmPassword: z.string().min(1, 'Confirme a senha'),
+    acceptTerms: z.literal(true, { error: 'Você deve aceitar os termos para continuar' }),
     weight: requiredNumber(30, 300, 'Informe o peso').optional(),
     height: requiredNumber(100, 250, 'Informe a altura').optional(),
     age: requiredNumber(10, 120, 'Informe a idade').optional(),
