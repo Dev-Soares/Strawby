@@ -6,10 +6,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { X, FloppyDisk, GenderMale, GenderFemale, Heartbeat } from '@phosphor-icons/react'
 
 const optionalNumber = (min: number, max: number) =>
-  z.preprocess(
-    (val) => (typeof val === 'number' && isNaN(val) ? undefined : val),
-    z.number().min(min).max(max).optional(),
-  )
+  z.number().optional()
+    .transform(val => (val !== undefined && isNaN(val) ? undefined : val))
+    .pipe(z.number().min(min).max(max).optional())
 
 const bodySchema = z.object({
   weight: optionalNumber(30, 300),

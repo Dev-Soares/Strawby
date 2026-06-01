@@ -1,8 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, Sun, Moon } from '@phosphor-icons/react'
+import { ArrowRight } from '@phosphor-icons/react'
 import { Link, useLocation } from 'react-router-dom'
 import { useSignOut } from '@/modules/auth/hooks/useSignOut'
-import { useThemeContext } from '@/shared/contexts/ThemeProvider'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
 
 interface BlobMenuProps {
@@ -15,8 +14,8 @@ const blobPath = 'M 24 0 C 8 8, 0 22, 2 38 C 4 54, 22 58, 20 70 C 16 82, 6 86, 1
 const patientNavItems = [
   { label: 'Início', href: '/app/home' },
   { label: 'Pontuação', href: '/app/score' },
-  { label: 'Alimentos', href: '/app/foods' },
   { label: 'Plano', href: '/app/plan' },
+  { label: 'Perfil', href: '/app/profile' },
 ]
 
 const nutritionistNavItems = [
@@ -28,7 +27,6 @@ const nutritionistNavItems = [
 export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
   const { pathname } = useLocation()
   const { mutate: signOut, isPending: isSigningOut } = useSignOut()
-  const { resolvedTheme, toggleTheme } = useThemeContext()
   const { data: user } = useAuth()
 
   const navItems = user?.role === 'nutritionist' ? nutritionistNavItems : patientNavItems
@@ -102,18 +100,6 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3, delay: 0.5 }}
             >
-              <button
-                type="button"
-                onClick={toggleTheme}
-                className="group bg-white/95 backdrop-blur-sm border border-white/20 text-red-600 hover:bg-white hover:border-white/40 text-sm sm:text-base font-extrabold px-10 sm:px-9 py-4 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-lg hover:shadow-2xl hover:-translate-y-1 tracking-tight cursor-pointer"
-              >
-                {resolvedTheme === 'dark' ? (
-                  <>Modo claro <Sun size={17} weight="bold" className="group-hover:rotate-90 transition-transform duration-300" /></>
-                ) : (
-                  <>Modo escuro <Moon size={17} weight="bold" className="group-hover:-rotate-12 transition-transform duration-300" /></>
-                )}
-              </button>
-
               <button
                 type="button"
                 onClick={() => signOut()}

@@ -36,8 +36,12 @@ export default function AppLayout({ children }: AppLayoutProps) {
           </div>
         </header>
 
-        <TopTabBar hidden={menuOpen} />
+        <div className="hidden sm:block">
+          <TopTabBar hidden={menuOpen} />
+        </div>
       </div>
+
+      <TopTabBar variant="bottom" hidden={menuOpen} />
 
       <BlobMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
@@ -51,7 +55,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
         <span className={`block h-0.75 transition-all duration-300 origin-center rounded-full ${menuOpen ? 'w-7 sm:w-8 bg-white -rotate-45 -translate-y-2.5 sm:-translate-y-3' : 'w-6 sm:w-7 bg-neutral-950 dark:bg-neutral-100'}`} />
       </button>
 
-      <main>{children}</main>
+      <main className="pb-24 sm:pb-0">{children}</main>
     </div>
   )
 }

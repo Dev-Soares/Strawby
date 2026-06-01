@@ -8,7 +8,7 @@ export const useDisconnectNutritionist = () => {
   return useMutation({
     mutationFn: disconnectNutritionistService,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['me'] })
+      queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
       toast.success('Nutricionista removido')
     },
     onError: () => {

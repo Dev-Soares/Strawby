@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Play } from '@phosphor-icons/react'
 import AppLayout from '../../../shared/layouts/AppLayout'
 import NutritionistHeader from './NutritionistHeader'
 import PatientList from './PatientList'
@@ -10,12 +11,15 @@ import { useGetConnectionRequests } from '../../connection-request/hooks/useGetC
 import { useAcceptConnectionRequest } from '../../connection-request/hooks/useAcceptConnectionRequest'
 import { useRejectConnectionRequest } from '../../connection-request/hooks/useRejectConnectionRequest'
 import { useAuth } from '../../auth/hooks/useAuth'
+import { useAutoTutorial, useTriggerTutorial } from '../../onboarding/hooks/useTutorial'
 
 type Tab = 'patients' | 'requests'
 
 export default function NutritionistContent() {
   const [activeTab, setActiveTab] = useState<Tab>('patients')
   const { data: user } = useAuth()
+  const triggerTutorial = useTriggerTutorial()
+  useAutoTutorial()
   const { data: patients, isPending: patientsPending, isError: patientsError } = useGetPatients()
   const { data: requests, isPending: requestsPending } = useGetConnectionRequests()
   const { mutate: accept, isPending: accepting } = useAcceptConnectionRequest()
@@ -28,9 +32,19 @@ export default function NutritionistContent() {
     <AppLayout>
       <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-16 sm:py-10 lg:py-12 bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-red-50/40 dark:from-red-950/20 via-neutral-50 dark:via-neutral-950 to-neutral-50 dark:to-neutral-950 min-h-screen transition-colors duration-300">
 
-        <NutritionistHeader name={user?.name ?? 'Nutricionista'} />
+        <div className="flex items-start justify-between">
+          <NutritionistHeader name={user?.name ?? 'Nutricionista'} />
+          <button
+            type="button"
+            onClick={triggerTutorial}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-neutral-400 dark:text-neutral-500 hover:text-red-600 dark:hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all duration-200 mt-1"
+          >
+            <Play size={11} weight="fill" />
+            Tour
+          </button>
+        </div>
 
-        <div className="flex gap-1 p-1 bg-neutral-100 dark:bg-neutral-800/60 rounded-xl w-fit mb-6 transition-colors duration-300">
+        <div data-tutorial="patient-tabs" className="flex gap-1 p-1 bg-neutral-100 dark:bg-neutral-800/60 rounded-xl w-fit mb-6 transition-colors duration-300">
           <button
             onClick={() => setActiveTab('patients')}
             className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
@@ -63,7 +77,7 @@ export default function NutritionistContent() {
 
         {activeTab === 'patients' && (
           <>
-            <div className="mb-5">
+            <div data-tutorial="patient-list" className="mb-5">
               <h2 className="text-xl sm:text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight transition-colors duration-300">
                 Meus pacientes
               </h2>
