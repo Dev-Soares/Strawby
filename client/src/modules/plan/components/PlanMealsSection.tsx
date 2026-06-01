@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus } from '@phosphor-icons/react'
+import { Plus, CalendarBlank } from '@phosphor-icons/react'
 import { useGetPlanMeals } from '../../meal/hooks/useGetPlanMeals'
 import MealCard from '../../meal/components/MealCard'
 import PlanMealsSectionSkeleton from '../skeletons/PlanMealsSectionSkeleton'
@@ -52,9 +52,23 @@ export default function PlanMealsSection() {
       )}
 
       {meals && meals.length === 0 && (
-        <div className="text-center py-16">
-          <p className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 mb-1 transition-colors duration-300">Nenhuma refeição planejada</p>
-          <p className="text-xs text-neutral-400 dark:text-neutral-500 transition-colors duration-300">Clique em "Nova refeição" para começar</p>
+        <div className="flex flex-col items-center text-center py-16 px-4 bg-white dark:bg-neutral-900 rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 transition-colors duration-300">
+          <div className="w-14 h-14 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 transition-colors duration-300">
+            <CalendarBlank size={24} weight="duotone" className="text-neutral-400 dark:text-neutral-500" />
+          </div>
+          <p className="text-sm font-bold text-neutral-700 dark:text-neutral-300 mb-1 transition-colors duration-300">
+            Nenhuma refeição planejada
+          </p>
+          <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-5 max-w-xs leading-relaxed transition-colors duration-300">
+            Organize seu plano alimentar adicionando as refeições do dia
+          </p>
+          <button
+            onClick={() => navigate('/app/meals/new?type=plan-meal')}
+            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer"
+          >
+            <Plus size={15} weight="bold" />
+            Adicionar refeição
+          </button>
         </div>
       )}
 

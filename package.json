@@ -32,7 +32,6 @@
   },
   "dependencies": {
     "framer-motion": "^12.38.0",
-    "react-helmet-async": "^3.0.0",
-    "sharp": "^0.34.5"
+    "shepherd.js": "^15.2.2"
   }
 }

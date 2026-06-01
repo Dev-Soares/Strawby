@@ -239,9 +239,20 @@ export default function MealDetailPage() {
         </div>
 
         {meal.items.length === 0 ? (
-          <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-8 text-center mb-6 transition-colors duration-300">
-            <p className="text-sm font-semibold text-neutral-400 dark:text-neutral-500 mb-1">Nenhum alimento</p>
-            <p className="text-xs text-neutral-300 dark:text-neutral-600 mb-4">Adicione alimentos para compor esta refeição</p>
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 p-8 text-center mb-6 transition-colors duration-300">
+            <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mx-auto mb-3 transition-colors duration-300">
+              <ForkKnifeIcon size={20} weight="duotone" className="text-neutral-400 dark:text-neutral-500" />
+            </div>
+            <p className="text-sm font-bold text-neutral-600 dark:text-neutral-400 mb-1">Nenhum alimento</p>
+            <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-4">Adicione alimentos para compor esta refeição</p>
+            <button
+              type="button"
+              onClick={() => navigate(`/app/foods/select?mealId=${meal.id}&type=${isPlan ? 'plan-meal' : 'meal'}${patientId ? `&patientId=${patientId}` : ''}`)}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-700 transition-colors cursor-pointer"
+            >
+              <Plus size={13} weight="bold" />
+              Adicionar agora
+            </button>
           </div>
         ) : (
           <div className="flex flex-col gap-3 mb-6">
@@ -410,9 +421,20 @@ export default function MealDetailPage() {
         )}
 
         {isEmpty && (
-          <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-8 text-center mb-6 transition-colors duration-300">
-            <p className="text-sm font-semibold text-neutral-400 dark:text-neutral-500 mb-1">Nenhum item</p>
-            <p className="text-xs text-neutral-300 dark:text-neutral-600 mb-4">Adicione alimentos ou receitas para compor esta refeição</p>
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 p-8 text-center mb-6 transition-colors duration-300">
+            <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mx-auto mb-3 transition-colors duration-300">
+              <ForkKnifeIcon size={20} weight="duotone" className="text-neutral-400 dark:text-neutral-500" />
+            </div>
+            <p className="text-sm font-bold text-neutral-600 dark:text-neutral-400 mb-1">Refeição vazia</p>
+            <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-4">Adicione alimentos ou receitas para compor esta refeição</p>
+            <button
+              type="button"
+              onClick={() => navigate(`/app/foods/select?mealId=${meal.id}&type=${isPlan ? 'plan-meal' : 'meal'}${patientId ? `&patientId=${patientId}` : ''}`)}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-700 transition-colors cursor-pointer"
+            >
+              <Plus size={13} weight="bold" />
+              Adicionar agora
+            </button>
           </div>
         )}
 

@@ -66,7 +66,7 @@ export default function SignUpForm() {
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:gap-28 items-stretch w-full">
 
-      <div className="flex-1 min-w-0 bg-red-600 rounded-2xl p-6 md:p-8 lg:p-10 flex flex-col">
+      <div className="flex-1 min-w-0 bg-red-600 rounded-2xl p-6 md:p-8 lg:p-10 flex flex-col autofill-red">
 
         {/* Progress */}
         <div className="flex items-center gap-2 mb-8">

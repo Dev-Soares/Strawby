@@ -106,7 +106,7 @@ export default function DailyScoreDashboard() {
   const weekly = buildWeekData(scores, weekStart)
 
   return (
-    <div className="space-y-4 sm:space-y-5">
+    <div data-tutorial="score-dashboard" className="space-y-4 sm:space-y-5">
       <DailyScoreCard />
 
       <div className="flex items-center justify-between">
@@ -119,9 +119,7 @@ export default function DailyScoreDashboard() {
           Anterior
         </button>
         <span className="text-xs font-bold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
-          {startDate === endDate
-            ? startDate
-            : `${startDate.slice(8)} / ${startDate.slice(5, 7)} — ${endDate.slice(8)} / ${endDate.slice(5, 7)}`}
+          {`${startDate.slice(8)}/${startDate.slice(5, 7)} — ${endDate.slice(8)}/${endDate.slice(5, 7)}`}
         </span>
         <button
           type="button"
