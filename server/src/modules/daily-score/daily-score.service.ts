@@ -124,7 +124,8 @@ export class DailyScoreService {
     return ratioTable.find(r => ratio >= r.min && ratio <= r.max)?.score ?? 0;
   }
 
-  async findScoresByDate(date: Date): Promise<DailyScoreEntry[]> {
+  async findScoresByDate(day: string): Promise<DailyScoreEntry[]> {
+    const date = this.parseDay(day);
     try {
       return await this.prisma.dailyScore.findMany({
         where: { date },

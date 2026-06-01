@@ -20,7 +20,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "seed:foods": "tsx prisma/scripts/seed-foods.ts",
     "seed:foods:fresh": "tsx prisma/scripts/seed-foods.ts --fresh",
-    "seed:foods:dry": "tsx prisma/scripts/seed-foods.ts --dry-run"
+    "seed:foods:dry": "tsx prisma/scripts/seed-foods.ts --dry-run",
+    "clean:foods": "tsx prisma/scripts/clean-foods.ts",
+    "clean:foods:fix": "tsx prisma/scripts/clean-foods.ts --fix"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

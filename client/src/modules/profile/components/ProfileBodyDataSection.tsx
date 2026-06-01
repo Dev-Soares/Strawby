@@ -34,9 +34,9 @@ export default function ProfileBodyDataSection({ patient }: Props) {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="flex items-center gap-1.5 text-[11px] font-bold text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 text-sm font-bold text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors cursor-pointer"
         >
-          <PencilSimple size={12} weight="bold" />
+          <PencilSimple size={15} weight="bold" />
           Editar
         </button>
       </div>

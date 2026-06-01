@@ -85,6 +85,7 @@ export default function MealDetailPage() {
   const removeItem = useRemoveMealItem(patientId)
   const removeRecipe = useRemoveMealRecipe(patientId)
   const [confirm, setConfirm] = useState<ConfirmState>(null)
+  const { resolvedTheme } = useThemeContext()
 
   const handleConfirm = () => {
     if (!confirm) return
@@ -150,7 +151,6 @@ export default function MealDetailPage() {
     )
   }
 
-  const { resolvedTheme } = useThemeContext()
   const isDark = resolvedTheme === 'dark'
   const cfg = mealConfig[meal.mealType ?? ''] || fallbackConfig
   const MealIcon = cfg.icon

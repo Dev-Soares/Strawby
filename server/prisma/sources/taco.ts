@@ -29,6 +29,9 @@ export function loadTaco(): FoodEntry[] {
     const fiber = round2(safeNum(item.fiber_g))
     const sodium = round2(safeNum(item.sodium_mg))
 
+    // Pula alimentos sem macros — outras fontes preenchem com dados completos
+    if (calories === 0 && protein === 0 && carbs === 0 && fat === 0) continue
+
     foods.push({
       name,
       nameOriginal: null,

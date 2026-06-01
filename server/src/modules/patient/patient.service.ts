@@ -15,12 +15,11 @@ export class PatientService {
 
    async generateStreakForEachUser(): Promise<void> {
     const yesterdayDate = this.getYesterdayDate();
-    const yesterday = new Date(yesterdayDate + 'T00:00:00.000Z');
 
     try {
       const [patientIds, scores] = await Promise.all([
         this.prisma.patient.findMany({ select: { id: true } }),
-        this.dailyScoreService.findScoresByDate(yesterday),
+        this.dailyScoreService.findScoresByDate(yesterdayDate),
       ]);
 
       const scoreMap = new Map(scores.map(s => [s.patientId, s.score])); //mapeia os scores por patientId para acesso rápido

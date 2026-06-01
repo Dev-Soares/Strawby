@@ -17,10 +17,7 @@ export class JobsService {
         yesterday.setDate(yesterday.getDate() - 1);
         const date = yesterday.toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
         await this.dailyScoreService.closeDayScoreForEachUser(date);
+        await this.patientService.generateStreakForEachUser();
     }
 
-    @Cron('0 3 * * *', { timeZone: 'America/Sao_Paulo' })
-    async generateStreaks() {     
-        await this.patientService.generateStreakForEachUser(date);
-    }
 }

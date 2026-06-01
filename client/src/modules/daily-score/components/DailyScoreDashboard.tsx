@@ -5,6 +5,7 @@ import DailyScoreSkeleton from '../skeletons/DailyScoreSkeleton'
 import DailyScoreCard from './DailyScoreCard'
 import TotalScoreCard from './TotalScoreCard'
 import WeeklyReport from '../../home/components/WeeklyReport'
+import PatientStreakCard from '../../patient/components/PatientStreakCard'
 import type { WeeklyReportData, WeekDayStatus } from '../../home/types/weeklyReport'
 import type { DailyScore } from '../types/dailyScore'
 
@@ -136,7 +137,10 @@ export default function DailyScoreDashboard() {
       </div>
 
       {activeView === 'hoje' ? (
-        <DailyScoreCard />
+        <>
+          <PatientStreakCard />
+          <DailyScoreCard />
+        </>
       ) : (
         <>
           <div className="flex items-center justify-between">
