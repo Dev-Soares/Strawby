@@ -12,10 +12,6 @@ import { QueryDailyScoreDto } from './dto/query-daily-score.dto';
 export class DailyScoreController {
   constructor(private readonly dailyScoreService: DailyScoreService) {}
 
-  @Post(':patientId')
-  create(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Body() dto: CreateDailyScoreDto) {
-    return this.dailyScoreService.create(req.user.sub, patientId, dto);
-  }
 
   @Get(':patientId')
   findAll(
