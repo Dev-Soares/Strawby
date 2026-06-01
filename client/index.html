@@ -5,18 +5,50 @@
     <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Strawby" />
-    <meta name="description" content="Strawby — controle suas refeições e acompanhe sua nutrição diária com facilidade." />
     <meta name="theme-color" content="#ffffff" />
-
     <link rel="manifest" href="/manifest.json" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <title>Strawby</title>
+
+    <!-- Base SEO (overridden per-page by react-helmet-async) -->
+    <title>Strawby — Controle de Refeições e Nutrição Diária</title>
+    <meta name="description" content="Strawby é o app de nutrição para acompanhar calorias, macros e refeições do dia a dia. Simples, visual e consistente." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://strawby.com/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Strawby" />
+    <meta property="og:title" content="Strawby — Controle de Refeições e Nutrição Diária" />
+    <meta property="og:description" content="Strawby é o app de nutrição para acompanhar calorias, macros e refeições do dia a dia. Simples, visual e consistente." />
+    <meta property="og:url" content="https://strawby.com/" />
+    <meta property="og:image" content="https://strawby.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="pt_BR" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Strawby — Controle de Refeições e Nutrição Diária" />
+    <meta name="twitter:description" content="Strawby é o app de nutrição para acompanhar calorias, macros e refeições do dia a dia. Simples, visual e consistente." />
+    <meta name="twitter:image" content="https://strawby.com/og-image.png" />
+
+    <!-- JSON-LD Organization (global) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Strawby",
+      "url": "https://strawby.com",
+      "logo": "https://strawby.com/logo.png",
+      "description": "App de nutrição para acompanhar calorias, macros e refeições do dia a dia.",
+      "sameAs": []
+    }
+    </script>
+
     <link rel="preconnect" href="https://api.fontshare.com" />
     <link
       href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&f[]=cabinet-grotesk@400,500,700,800,900&display=swap"

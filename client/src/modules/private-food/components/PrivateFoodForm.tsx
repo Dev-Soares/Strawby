@@ -197,7 +197,7 @@ export default function PrivateFoodForm({
           <button
             type="submit"
             disabled={isPending}
-            className="w-full py-4 rounded-2xl text-sm font-extrabold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2.5 shadow-md shadow-red-200"
+            className="w-full py-4 rounded-2xl text-sm font-extrabold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2.5 shadow-md shadow-red-200 dark:shadow-red-900"
           >
             {isPending ? (
               <span className="inline-block w-5 h-5 border-[2.5px] border-white/30 border-t-white rounded-full animate-spin" />

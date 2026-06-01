@@ -86,6 +86,59 @@ export default function TopTabBar({ hidden = false, variant = 'top' }: TopTabBar
     )
   }
 
+  const activeIndex = tabs.findIndex((tab) => pathname === tab.href)
+  const tabWidthPct = 100 / tabs.length
+
+  if (variant === 'bottom') {
+    return (
+      <nav
+        className={`fixed bottom-0 inset-x-0 sm:hidden z-50 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 transition-opacity duration-200 ${
+          hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        }`}
+      >
+        <div className={`grid ${cols} pb-4 relative`}>
+          {activeIndex >= 0 && (
+            <motion.span
+              className="absolute top-0 h-0.5 bg-red-600 rounded-full pointer-events-none"
+              initial={false}
+              animate={{
+                left: `calc(${activeIndex * tabWidthPct}% + ${INDICATOR_INSET}px)`,
+                width: `calc(${tabWidthPct}% - ${INDICATOR_INSET * 2}px)`,
+              }}
+              transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+            />
+          )}
+          {tabs.map((tab) => {
+            const Icon = tab.icon
+            const active = pathname === tab.href
+            return (
+              <Link
+                key={tab.href}
+                to={tab.href}
+                className="flex flex-col items-center justify-center gap-1 pt-3 pb-1 min-w-0"
+              >
+                <Icon
+                  size={22}
+                  weight={active ? 'fill' : 'regular'}
+                  className={`shrink-0 transition-colors ${
+                    active ? 'text-red-600' : 'text-neutral-400 dark:text-neutral-500'
+                  }`}
+                />
+                <span
+                  className={`text-[10px] font-bold tracking-tight transition-colors ${
+                    active ? 'text-red-600' : 'text-neutral-400 dark:text-neutral-500'
+                  }`}
+                >
+                  {tab.label}
+                </span>
+              </Link>
+            )
+          })}
+        </div>
+      </nav>
+    )
+  }
+
   return (
     <nav
       className={`transition-opacity duration-200 ${hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
