@@ -1,9 +1,20 @@
 import { readFileSync } from 'fs'
-import { join } from 'path'
+import { join, dirname } from 'path'
+import { fileURLToPath } from 'url'
 import { FoodEntry, round2, safeNum } from './common.js'
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname  = dirname(__filename)
+
 export function loadTaco(): FoodEntry[] {
-  const raw = readFileSync(join(__dirname, '..', 'taco.json'), 'utf-8')
+  // taco.json pode estar em scripts/ ou na raiz de prisma/ — tenta os dois
+  const candidates = [
+    join(__dirname, '..', 'scripts', 'taco.json'),
+    join(__dirname, '..', 'taco.json'),
+  ]
+  const tacoPath = candidates.find(p => { try { readFileSync(p); return true } catch { return false } })
+  if (!tacoPath) throw new Error(`taco.json não encontrado em: ${candidates.join(', ')}`)
+  const raw = readFileSync(tacoPath, 'utf-8')
   const items: any[] = JSON.parse(raw)
   const foods: FoodEntry[] = []
 

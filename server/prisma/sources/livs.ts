@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { FoodEntry, isNutritionPlausible, isValidFoodNameLoose, round2, sleep } from './common.js'
-import { translateName } from '../translations.js'
+import { translateName } from '../scripts/translations.js'
 
 // Livsmedelsverket (Swedish Food Agency) — CC BY 4.0, comercial OK
 const API_BASE = 'https://dataportal.livsmedelsverket.se/livsmedel/api/v1'

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import AdmZip from 'adm-zip'
 import { cleanUsdaJunk, FoodEntry, isNutritionPlausible, isValidFoodNameLoose, round2, safeNum } from './common.js'
-import { translateName } from '../translations.js'
+import { translateName } from '../scripts/translations.js'
 
 // Nutrient IDs USDA FDC
 const N_ENERGY_1     = '1008'  // SR Legacy + Foundation legacy
@@ -48,14 +48,10 @@ const SR_LEGACY: UsdaSource = {
   label: 'SR Legacy',
 }
 
-// Survey = FNDDS: alimentos consumidos em pesquisas nacionais — alta qualidade, muito práticos
-const SURVEY: UsdaSource = {
-  url: 'https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_survey_food_csv_2024-10-31.zip',
-  source: 'USDA_SR_LEGACY', // mesma enum, priority diferente
-  priority: 65,
-  dataType: 'survey_fndds_food',
-  label: 'Survey FNDDS',
-}
+// Survey FNDDS usa formato diferente (sem descrições próprias no zip — mapeado via SR Legacy codes)
+// Parsing requer abordagem completamente diferente — desativado por enquanto
+// Para reativar: implementar joiná com food_attribute.csv ou wweia_food_category.csv
+
 
 function parseCsvLine(line: string): string[] {
   const result: string[] = []
@@ -198,6 +194,7 @@ export function loadUsdaSrLegacy(): Promise<FoodEntry[]> {
   return loadUsdaSource(SR_LEGACY)
 }
 
-export function loadUsdaSurvey(): Promise<FoodEntry[]> {
-  return loadUsdaSource(SURVEY)
+export async function loadUsdaSurvey(): Promise<FoodEntry[]> {
+  console.log('[USDA Survey] Desativado — formato incompatível, requer parsing próprio')
+  return []
 }

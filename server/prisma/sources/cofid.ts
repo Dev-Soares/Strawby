@@ -1,7 +1,7 @@
 import axios from 'axios'
 import XLSX from 'xlsx'
 import { cleanUsdaJunk, FoodEntry, isNutritionPlausible, isValidFoodNameLoose, round2 } from './common.js'
-import { translateName } from '../translations.js'
+import { translateName } from '../scripts/translations.js'
 
 // McCance & Widdowson's CoFID 2021 — Open Government Licence v3
 // Banco de dados britânico de referência mundial, ~3.200 alimentos

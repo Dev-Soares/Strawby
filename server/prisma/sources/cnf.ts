@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { cleanUsdaJunk, FoodEntry, isNutritionPlausible, isValidFoodNameLoose, round2 } from './common.js'
-import { translateName } from '../translations.js'
+import { translateName } from '../scripts/translations.js'
 
 // CNF REST API — Health Canada (Open Government Licence Canada, comercial OK)
 const API_BASE = 'https://food-nutrition.canada.ca/api/canadian-nutrient-file'

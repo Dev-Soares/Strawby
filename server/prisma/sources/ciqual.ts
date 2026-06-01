@@ -1,7 +1,7 @@
 import axios from 'axios'
 import XLSX from 'xlsx'
 import { cleanUsdaJunk, FoodEntry, isNutritionPlausible, isValidFoodNameLoose, round2 } from './common.js'
-import { translateName } from '../translations.js'
+import { translateName } from '../scripts/translations.js'
 
 // ANSES-Ciqual 2020 — Open Data ANSES, usage libre
 // Tabela francesa com nomes em inglês disponíveis
