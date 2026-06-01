@@ -1,101 +1,79 @@
-import { CheckIcon, XIcon, WarningIcon, FireIcon, ForkKnifeIcon, MagnifyingGlassIcon } from '@phosphor-icons/react'
+import { CheckIcon, XIcon, WarningIcon, ArrowUpIcon, ArrowDownIcon } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
-import type { ReactNode } from 'react'
 
-const weekDays = [
-  { day: 'SEG', date: 5, status: 'good' as const },
-  { day: 'TER', date: 6, status: 'warn' as const },
-  { day: 'QUA', date: 7, status: 'bad' as const },
-  { day: 'QUI', date: 8, status: 'good' as const, today: true },
-  { day: 'SEX', date: 9, status: 'neutral' as const },
-  { day: 'SÁB', date: 10, status: 'neutral' as const },
-  { day: 'DOM', date: 11, status: 'neutral' as const },
-]
+// ─── Shared ───────────────────────────────────────────────────────────────────
 
-const macros = [
-  { label: 'PROTEÍNA', value: 82, max: 150, color: '#f59e0b', bg: '#fef3c7' },
-  { label: 'CARBOS', value: 145, max: 280, color: '#3b82f6', bg: '#dbeafe' },
-  { label: 'GORDURA', value: 48, max: 73, color: '#a855f7', bg: '#f3e8ff' },
-]
-
-const searchResults = [
-  { name: 'Arroz, integral, cozido', meta: 'TACO · 100g', kcal: 124, macros: { p: 2.6, c: 25.8, g: 1 }, tag: 'TACO' },
-  { name: 'Arroz, tipo 1, cozido', meta: 'TACO · 100g', kcal: 128, macros: { p: 2.5, c: 28.1, g: 0.2 } },
-  { name: 'Arroz, tipo 2, cozido', meta: 'TACO · 100g', kcal: 130, macros: { p: 2.5, c: 28.6, g: 0.3 } },
-  { name: 'Arroz, parboilizado, cozido', meta: 'TACO · 100g', kcal: 124, macros: { p: 2.5, c: 25.9, g: 1 } },
-]
-
-function StatusMark({ status }: { status: 'good' | 'warn' | 'bad' | 'neutral' }) {
-  if (status === 'good') return <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center"><CheckIcon size={9} weight="bold" className="text-white" /></div>
-  if (status === 'warn') return <div className="w-4 h-4 rounded-full bg-amber-500 flex items-center justify-center"><WarningIcon size={9} weight="bold" className="text-white" /></div>
-  if (status === 'bad') return <div className="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center"><XIcon size={9} weight="bold" className="text-white" /></div>
-  return <div className="w-1 h-1 rounded-full bg-neutral-300" />
-}
-
-function WeeklyPreview() {
-  return (
-    <div className="grid grid-cols-7 gap-1.5 sm:gap-2">
-      {weekDays.map((d, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 + i * 0.04 }}
-          className={`relative flex flex-col items-center justify-between rounded-xl px-1 py-3 aspect-3/5 ${
-            d.today ? 'bg-red-600 shadow-[0_10px_22px_-10px_rgba(220,38,38,0.5)]' : 'bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800'
-          }`}
-        >
-          <span className={`text-[8px] font-bold tracking-[0.18em] ${d.today ? 'text-white/70' : d.status === 'neutral' ? 'text-neutral-300' : 'text-neutral-400'}`}>
-            {d.day}
-          </span>
-          <span className={`font-display text-lg sm:text-2xl font-black tabular-nums ${d.today ? 'text-white' : d.status === 'neutral' ? 'text-neutral-300 dark:text-neutral-600' : 'text-neutral-900 dark:text-neutral-100'} transition-colors duration-300`}>
-            {d.date}
-          </span>
-          <StatusMark status={d.status} />
-        </motion.div>
-      ))}
+function Dot({ status }: { status: 'good' | 'warn' | 'bad' | 'empty' }) {
+  if (status === 'good') return (
+    <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center">
+      <CheckIcon size={8} weight="bold" className="text-white" />
     </div>
   )
+  if (status === 'warn') return (
+    <div className="w-4 h-4 rounded-full bg-amber-400 flex items-center justify-center">
+      <WarningIcon size={8} weight="bold" className="text-white" />
+    </div>
+  )
+  if (status === 'bad') return (
+    <div className="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center">
+      <XIcon size={8} weight="bold" className="text-white" />
+    </div>
+  )
+  return <div className="w-1.5 h-1.5 rounded-full bg-neutral-200 dark:bg-neutral-700 transition-colors duration-300" />
 }
 
-function MacrosPreview() {
+// ─── Patient preview ──────────────────────────────────────────────────────────
+
+const week = ['good', 'warn', 'bad', 'good', 'empty', 'empty', 'empty'] as const
+const days = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']
+const macros = [
+  { label: 'Proteína', value: 82,  max: 150, color: '#f59e0b' },
+  { label: 'Carbos',   value: 200, max: 280, color: '#3b82f6' },
+  { label: 'Gordura',  value: 48,  max: 73,  color: '#a855f7' },
+]
+
+function PatientPreview() {
   return (
-    <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-[0_20px_45px_-25px_rgba(0,0,0,0.15)] p-5 sm:p-6 transition-colors duration-300">
-      <div className="flex items-center gap-2 mb-4">
-        <FireIcon size={13} weight="fill" className="text-red-500" />
-        <span className="text-[9px] font-black uppercase tracking-[0.22em] text-neutral-500">Hoje</span>
+    <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-5 space-y-5 transition-colors duration-300">
+      <div className="grid grid-cols-7 gap-1.5">
+        {week.map((status, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.3, delay: 0.05 + i * 0.04 }}
+            className={`flex flex-col items-center gap-2 rounded-xl py-3 ${
+              i === 3 ? 'bg-red-600' : 'bg-neutral-50 dark:bg-neutral-800/50'
+            } transition-colors duration-300`}
+          >
+            <span className={`text-[9px] font-bold tracking-wider ${i === 3 ? 'text-white/60' : 'text-neutral-400'}`}>
+              {days[i]}
+            </span>
+            <Dot status={status} />
+          </motion.div>
+        ))}
       </div>
-      <div className="mb-1">
-        <span className="font-display text-4xl sm:text-5xl font-black text-neutral-950 dark:text-neutral-100 tabular-nums leading-none transition-colors duration-300">1.310</span>
-        <span className="text-neutral-400 dark:text-neutral-500 font-bold text-xs sm:text-sm ml-2 transition-colors duration-300">/ 2.200 kcal</span>
-      </div>
-      <div className="h-1.5 rounded-full bg-red-50 dark:bg-red-950/40 overflow-hidden mt-4 mb-5 transition-colors duration-300">
-        <motion.div
-          className="h-full rounded-full bg-red-600"
-          initial={{ width: 0 }}
-          whileInView={{ width: '59%' }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 1, ease: [0.34, 1.05, 0.64, 1], delay: 0.2 }}
-        />
-      </div>
+
       <div className="flex flex-col gap-3">
+        <div className="flex items-baseline gap-1.5">
+          <span className="font-display text-3xl font-black text-neutral-900 dark:text-neutral-100 tabular-nums transition-colors duration-300">1.310</span>
+          <span className="text-xs font-bold text-neutral-400">/ 2.200 kcal</span>
+        </div>
         {macros.map((m, i) => (
-          <div key={m.label} className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
-              <span className="text-[9px] font-black uppercase tracking-[0.18em] text-neutral-500 dark:text-neutral-400 transition-colors duration-300">{m.label}</span>
-              <span className="font-display text-xs font-black tabular-nums" style={{ color: m.color }}>
-                {m.value}<span className="text-neutral-400 dark:text-neutral-500 font-bold transition-colors duration-300">/{m.max}g</span>
-              </span>
+          <div key={m.label}>
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 transition-colors duration-300">{m.label}</span>
+              <span className="text-[10px] font-black tabular-nums" style={{ color: m.color }}>{m.value}g</span>
             </div>
-            <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: m.bg }}>
+            <div className="h-1.5 rounded-full bg-neutral-100 dark:bg-neutral-800 overflow-hidden transition-colors duration-300">
               <motion.div
                 className="h-full rounded-full"
                 style={{ backgroundColor: m.color }}
                 initial={{ width: 0 }}
                 whileInView={{ width: `${(m.value / m.max) * 100}%` }}
                 viewport={{ once: true, amount: 0.5 }}
-                transition={{ duration: 0.9, ease: [0.34, 1.05, 0.64, 1], delay: 0.35 + i * 0.1 }}
+                transition={{ duration: 0.8, ease: [0.34, 1.05, 0.64, 1], delay: 0.2 + i * 0.1 }}
               />
             </div>
           </div>
@@ -105,154 +83,135 @@ function MacrosPreview() {
   )
 }
 
-function SearchPreview() {
+// ─── Nutritionist preview ─────────────────────────────────────────────────────
+
+const patients = [
+  { initials: 'AL', name: 'Ana Lima',    score: 87,  trend: 'up',   label: 'em dia',    scores: [72, 58, 91, 87, 0, 0, 0] },
+  { initials: 'JM', name: 'João Mendes', score: 62,  trend: 'down', label: 'irregular', scores: [80, 40, 60, 50, 0, 0, 0] },
+  { initials: 'CS', name: 'Carla Souza', score: 100, trend: 'up',   label: 'perfeito',  scores: [95, 100, 90, 100, 0, 0, 0] },
+  { initials: 'PC', name: 'Pedro Costa', score: 24,  trend: 'down', label: 'ausente',   scores: [30, 20, 0, 24, 0, 0, 0] },
+]
+
+function NutritionistPreview() {
   return (
-    <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-[0_20px_45px_-25px_rgba(0,0,0,0.15)] p-4 sm:p-5 transition-colors duration-300">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-1.5">
-          <MagnifyingGlassIcon size={12} weight="bold" className="text-neutral-400" />
-          <span className="text-[9px] font-black uppercase tracking-[0.22em] text-neutral-500">Buscar</span>
-        </div>
-        <span className="text-[9px] font-black text-emerald-600 tabular-nums tracking-[0.18em]">4 / 10.247</span>
-      </div>
+    <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-5 space-y-2 transition-colors duration-300">
+      {patients.map((p, i) => (
+        <motion.div
+          key={p.name}
+          initial={{ opacity: 0, x: 12 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.35, delay: 0.08 + i * 0.07 }}
+          className="flex items-center gap-3 rounded-xl px-3 py-2.5 bg-neutral-50 dark:bg-neutral-800/50 transition-colors duration-300"
+        >
+          <div className="w-7 h-7 rounded-full bg-red-600 flex items-center justify-center shrink-0">
+            <span className="text-[8px] font-black text-white">{p.initials}</span>
+          </div>
 
-      <div className="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl px-3 py-2.5 mb-3 transition-colors duration-300">
-        <span className="font-display text-sm sm:text-base font-bold text-neutral-900 dark:text-neutral-100 flex-1 transition-colors duration-300">
-          arroz
-          <motion.span
-            className="inline-block w-0.5 h-4 bg-red-600 align-middle ml-0.5"
-            animate={{ opacity: [1, 1, 0, 0] }}
-            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-          />
-        </span>
-        <kbd className="text-[9px] font-bold text-neutral-500 dark:text-neutral-400 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded px-1 py-0.5 transition-colors duration-300">⌘K</kbd>
-      </div>
+          <span className="text-[12px] font-bold text-neutral-900 dark:text-neutral-100 flex-1 truncate transition-colors duration-300">{p.name}</span>
 
-      <div className="flex flex-col gap-1.5">
-        {searchResults.map((r, i) => (
-          <motion.div
-            key={r.name}
-            className={`group flex items-center gap-2.5 sm:gap-3 rounded-xl px-3 py-2.5 transition-all cursor-pointer ${
-              i === 0
-                ? 'bg-red-50/60 dark:bg-red-950/40 border border-red-200 dark:border-red-900'
-                : 'bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700'
-            }`}
-            initial={{ opacity: 0, x: -16 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.4, ease: 'easeOut', delay: 0.15 + i * 0.08 }}
-          >
-            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${i === 0 ? 'bg-red-600' : 'bg-neutral-100 dark:bg-neutral-800'} transition-colors duration-300`}>
-              <ForkKnifeIcon size={13} weight="duotone" className={i === 0 ? 'text-white' : 'text-neutral-500 dark:text-neutral-400'} />
-            </div>
+          <div className="flex items-end gap-0.5 h-5 shrink-0">
+            {p.scores.map((s, si) => (
+              <div
+                key={si}
+                className={`w-1.5 rounded-sm ${s === 0 ? 'bg-neutral-200 dark:bg-neutral-700' : s >= 80 ? 'bg-emerald-400' : s >= 60 ? 'bg-amber-400' : 'bg-red-400'} transition-colors duration-300`}
+                style={{ height: s > 0 ? `${Math.max(20, s)}%` : '20%' }}
+              />
+            ))}
+          </div>
 
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1.5 mb-0.5">
-                <p className="text-[12px] font-bold text-neutral-900 dark:text-neutral-100 truncate transition-colors duration-300">{r.name}</p>
-                {r.tag && (
-                  <span className="text-[7px] font-black tracking-[0.15em] text-red-600 bg-white dark:bg-neutral-900 border border-red-200 dark:border-red-900 rounded-full px-1 py-0.5 leading-none shrink-0 transition-colors duration-300">
-                    {r.tag}
-                  </span>
-                )}
-              </div>
-              <p className="text-[10px] text-neutral-500 dark:text-neutral-400 truncate transition-colors duration-300">{r.meta}</p>
-            </div>
-
-            <div className="text-right shrink-0">
-              <p className="font-display text-sm font-black text-neutral-900 dark:text-neutral-100 tabular-nums leading-none transition-colors duration-300">{r.kcal}</p>
-              <p className="text-[9px] text-neutral-400 dark:text-neutral-500 font-bold mt-0.5 transition-colors duration-300">kcal</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+          <div className={`flex items-center gap-0.5 shrink-0 ${p.trend === 'up' ? 'text-emerald-600' : 'text-red-500'}`}>
+            {p.trend === 'up' ? <ArrowUpIcon size={9} weight="bold" /> : <ArrowDownIcon size={9} weight="bold" />}
+            <span className="text-[9px] font-black">{p.label}</span>
+          </div>
+        </motion.div>
+      ))}
     </div>
   )
 }
 
-interface Course {
-  course: string
-  number: string
-  title: ReactNode
-  description: string
-  preview: ReactNode
-}
+// ─── Section ──────────────────────────────────────────────────────────────────
 
-const menu: Course[] = [
-  {
-    course: 'Entrada',
-    number: 'I.',
-    title: <>Sete dias em uma <span className="text-red-600">batida visual.</span></>,
-    description:
-      'Cada quadradinho conta como foi o dia. Verde, amarelo, vermelho — você sabe na hora se o padrão está bom ou se algo precisa mudar.',
-    preview: <WeeklyPreview />,
-  },
-  {
-    course: 'Prato Principal',
-    number: 'II.',
-    title: <>Macros que <span className="text-red-600">enchem na sua frente.</span></>,
-    description:
-      'Proteína, carbo, gordura e calorias em barras que sobem em tempo real. Você não interpreta — você vê o quanto falta no copo.',
-    preview: <MacrosPreview />,
-  },
-  {
-    course: 'Sobremesa',
-    number: 'III.',
-    title: <>Cada variação. <span className="text-red-600">Cada grama.</span></>,
-    description:
-      'Base oficial TACO da Unicamp + alimentos catalogados pela comunidade. É a sua comida, com os números certos.',
-    preview: <SearchPreview />,
-  },
+const patientBullets = [
+  'Registre refeições em segundos',
+  'Macros em tempo real, dia a dia',
+  'Sequência semanal sempre visível',
+]
+
+const nutritionistBullets = [
+  'Todos os pacientes em uma tela',
+  'Progresso semanal de cada um',
+  'Planos alimentares personalizados',
 ]
 
 export default function Features() {
   return (
-    <section className="relative bg-stone-50 dark:bg-neutral-950 pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 lg:pb-24 overflow-hidden transition-colors duration-300">
-      <div className="max-w-4xl mx-auto px-5 sm:px-8 lg:px-12">
+    <section className="bg-stone-50 dark:bg-neutral-950 pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 lg:pb-24 transition-colors duration-300">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 lg:px-12">
 
-        <motion.div
-          className="text-center mb-12 sm:mb-16"
+        <motion.h2
+          className="font-display text-[32px] sm:text-[44px] lg:text-[56px] font-black tracking-[-0.04em] text-neutral-950 dark:text-neutral-100 leading-[0.92] mb-20 sm:mb-24 transition-colors duration-300"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.6, ease: [0.34, 1.05, 0.64, 1] }}
         >
-          <h2 className="font-display text-[32px] sm:text-[44px] lg:text-[56px] font-black tracking-[-0.04em] text-neutral-950 dark:text-neutral-100 leading-[0.92] transition-colors duration-300">
-            O que está sendo<br />
-            <span className="italic text-red-600">servido hoje.</span>
-          </h2>
+          O que está sendo<br />
+          <span className="italic text-red-600">servido hoje.</span>
+        </motion.h2>
+
+        {/* Patient */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center mb-20 sm:mb-28"
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6, ease: [0.34, 1.05, 0.64, 1] }}
+        >
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-red-600 mb-3">Para pacientes</p>
+            <h3 className="font-display text-[26px] sm:text-[32px] font-black tracking-[-0.02em] text-neutral-950 dark:text-neutral-100 leading-tight mb-4 transition-colors duration-300">
+              Coma bem.<br />Veja a diferença.
+            </h3>
+            <ul className="flex flex-col gap-2.5">
+              {patientBullets.map((b) => (
+                <li key={b} className="flex items-center gap-2.5 text-[13px] sm:text-[14px] text-neutral-600 dark:text-neutral-400 transition-colors duration-300">
+                  <div className="w-1 h-1 rounded-full bg-red-600 shrink-0" />
+                  {b}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <PatientPreview />
         </motion.div>
 
-        <div className="relative">
-          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-neutral-200 dark:bg-neutral-800 hidden md:block transition-colors duration-300" />
+        {/* Divider */}
+        <div className="w-full h-px bg-neutral-200 dark:bg-neutral-800 mb-20 sm:mb-28 transition-colors duration-300" />
 
-          <div className="flex flex-col gap-20 sm:gap-16">
-            {menu.map((c, i) => (
-              <motion.article
-                key={c.course}
-                className="relative"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.6, ease: [0.34, 1.05, 0.64, 1], delay: i * 0.08 }}
-              >
-                <div className="flex flex-col md:flex-row md:items-start gap-6 md:gap-10">
-                  <div className="md:w-1/2 order-2 md:order-1">
-                    <h3 className="font-display text-[24px] sm:text-[28px] lg:text-[32px] font-black tracking-[-0.02em] text-neutral-950 dark:text-neutral-100 leading-[1.05] mb-3 transition-colors duration-300">
-                      {c.title}
-                    </h3>
-                    <p className="text-[14px] sm:text-[15px] text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
-                      {c.description}
-                    </p>
-                  </div>
-
-                  <div className="md:w-1/2 order-1 md:order-2">
-                    {c.preview}
-                  </div>
-                </div>
-              </motion.article>
-            ))}
+        {/* Nutritionist */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center"
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.6, ease: [0.34, 1.05, 0.64, 1] }}
+        >
+          <NutritionistPreview />
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-red-600 mb-3">Para nutricionistas</p>
+            <h3 className="font-display text-[26px] sm:text-[32px] font-black tracking-[-0.02em] text-neutral-950 dark:text-neutral-100 leading-tight mb-4 transition-colors duration-300">
+              Prescreva.<br />Acompanhe de perto.
+            </h3>
+            <ul className="flex flex-col gap-2.5">
+              {nutritionistBullets.map((b) => (
+                <li key={b} className="flex items-center gap-2.5 text-[13px] sm:text-[14px] text-neutral-600 dark:text-neutral-400 transition-colors duration-300">
+                  <div className="w-1 h-1 rounded-full bg-red-600 shrink-0" />
+                  {b}
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </section>
