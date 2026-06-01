@@ -126,11 +126,27 @@ export class DailyScoreService {
   }
 
   async closeDayScoreForEachUser(day: string): Promise<void> {
-    this.parseDay(day);
+    const date = this.parseDay(day);
     const patients = await this.userService.findMany({ where: { role: 'patient' }, select: { id: true } });
+    const patientIds = patients.map(p => p.id);
 
-    await Promise.all(patients.map(async (patient) => {
-      await this.createScore(patient.id, day);
-    }));
+    const [mealsMap, plansMap] = await Promise.all([
+      this.mealService.queryMealsByDayBulk(patientIds, day),
+      this.planService.queryPlansByPatientsBulk(patientIds),
+    ]);
+
+    await this.prisma.$transaction(
+      patientIds.map(patientId => {
+        const meals = mealsMap.get(patientId) ?? [];
+        const plan = plansMap.get(patientId);
+        const score = plan ? this.calculateDailyScore(this.reduceDayMacros(meals), plan) : 0;
+        return this.prisma.dailyScore.upsert({
+          where: { patientId_date: { patientId, date } },
+          create: { date, score, patientId },
+          update: { score },
+          select: { id: true },
+        });
+      }),
+    );
   }
 }
