@@ -50,7 +50,7 @@ model Patient {
   id                 String              @id
   user               User                @relation(fields: [id], references: [id], onDelete: Cascade)
   nutritionistId     String?
-  nutritionist       Nutritionist?       @relation(fields: [nutritionistId], references: [id])
+  nutritionist       Nutritionist?       @relation(fields: [nutritionistId], references: [id], onDelete: SetNull)
   plans              Plan[]
   meals              Meal[]
   recipes            Recipe[]

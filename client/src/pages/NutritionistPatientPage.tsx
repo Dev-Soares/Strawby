@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft, Fire, Plus, PencilSimple, Trash, Sparkle,
   CoffeeIcon, ForkKnifeIcon, LeafIcon, MoonIcon, CookieIcon, Warning,
+  Scales, ArrowsVertical, Calendar, GenderMale, GenderFemale,
 } from '@phosphor-icons/react'
 import AppLayout from '@/shared/layouts/AppLayout'
 import CreatePlanModal from '@/modules/plan/components/CreatePlanModal'
@@ -38,6 +39,16 @@ export default function NutritionistPatientPage() {
 
   const { data: patients } = useGetPatients()
   const patient = patients?.find((p) => p.id === id)
+
+  const hasBodyData = !!(patient?.weight && patient?.height && patient?.age && patient?.gender)
+
+  const bodyStats: { Icon: typeof Scales; label: string }[] = []
+  if (patient) {
+    if (patient.weight !== null) bodyStats.push({ Icon: Scales, label: `${patient.weight} kg` })
+    if (patient.height !== null) bodyStats.push({ Icon: ArrowsVertical, label: `${patient.height} cm` })
+    if (patient.age !== null) bodyStats.push({ Icon: Calendar, label: `${patient.age} anos` })
+    if (patient.gender !== null) bodyStats.push({ Icon: patient.gender === 'male' ? GenderMale : GenderFemale, label: patient.gender === 'male' ? 'Masculino' : 'Feminino' })
+  }
 
   const { data: plan, isPending: planPending } = useGetPatientPlan(id)
   const createPlanMutation = useCreatePatientPlan(id)
@@ -89,6 +100,16 @@ export default function NutritionistPatientPage() {
             {patient?.user.name ?? '—'}
           </h1>
           <p className="text-sm text-neutral-400 dark:text-neutral-500 mt-1">{patient?.user.email}</p>
+          {bodyStats.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-3">
+              {bodyStats.map(({ Icon, label }) => (
+                <div key={label} className="flex items-center gap-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-xl px-3 py-1.5">
+                  <Icon size={13} weight="bold" className="text-neutral-400 dark:text-neutral-500 shrink-0" />
+                  <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">{label}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </motion.div>
 
         {/* ── PLAN SECTION ── */}
@@ -125,19 +146,31 @@ export default function NutritionistPatientPage() {
           )}
 
           {!planPending && !plan && (
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={() => { setCreatePlanMode('manual'); setCreatePlanOpen(true) }}
-                className="flex items-center justify-center gap-2 flex-1 border-2 border-dashed border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 rounded-2xl py-6 text-sm font-bold text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-all cursor-pointer"
-              >
-                <PencilSimple size={15} weight="bold" /> Inserir manualmente
-              </button>
-              <button
-                onClick={() => { setCreatePlanMode('generate'); setCreatePlanOpen(true) }}
-                className="flex items-center justify-center gap-2 flex-1 bg-red-600 hover:bg-red-700 text-white rounded-2xl py-6 text-sm font-bold transition-all cursor-pointer"
-              >
-                <Sparkle size={15} weight="fill" /> Gerar automaticamente
-              </button>
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => { setCreatePlanMode('manual'); setCreatePlanOpen(true) }}
+                  className="flex items-center justify-center gap-2 flex-1 border-2 border-dashed border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 rounded-2xl py-6 text-sm font-bold text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-all cursor-pointer"
+                >
+                  <PencilSimple size={15} weight="bold" /> Inserir manualmente
+                </button>
+                <button
+                  onClick={() => { setCreatePlanMode('generate'); setCreatePlanOpen(true) }}
+                  disabled={!hasBodyData}
+                  className={`flex items-center justify-center gap-2 flex-1 rounded-2xl py-6 text-sm font-bold transition-all ${
+                    hasBodyData
+                      ? 'bg-red-600 hover:bg-red-700 text-white cursor-pointer'
+                      : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-300 dark:text-neutral-600 cursor-not-allowed'
+                  }`}
+                >
+                  <Sparkle size={15} weight="fill" /> Gerar automaticamente
+                </button>
+              </div>
+              {!hasBodyData && (
+                <p className="text-xs text-neutral-400 dark:text-neutral-500 text-center">
+                  Paciente precisa preencher os dados corporais para geração automática
+                </p>
+              )}
             </div>
           )}
 
@@ -308,6 +341,7 @@ export default function NutritionistPatientPage() {
         onSubmit={(data) => createPlanMutation.mutate(data, { onSuccess: () => setCreatePlanOpen(false) })}
         isPending={createPlanMutation.isPending}
         initialMode={createPlanMode}
+        isNutritionist
       />
 
       {plan && (

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Shepherd from 'shepherd.js'
+import { useNavigate, type NavigateFunction } from 'react-router-dom'
+import Shepherd, { type Tour } from 'shepherd.js'
 import 'shepherd.js/dist/css/shepherd.css'
 import { useAuth } from '../../auth/hooks/useAuth'
 import { createPatientSteps } from '../config/patientTour'
@@ -163,7 +163,7 @@ function removeStyles() {
 function buildTour(
   navigate: NavigateFunction,
   role: 'patient' | 'nutritionist',
-): Shepherd.Tour {
+): Tour {
   const tour = new Shepherd.Tour({
     useModalOverlay: true,
     exitOnEsc: true,
@@ -173,11 +173,6 @@ function buildTour(
       scrollTo: { behavior: 'smooth', block: 'center' },
       modalOverlayOpeningRadius: 12,
       modalOverlayOpeningPadding: 8,
-      popperOptions: {
-        modifiers: [
-          { name: 'offset', options: { offset: [0, 14] } },
-        ],
-      },
     },
   })
 
@@ -203,8 +198,6 @@ function buildTour(
 
   return tour
 }
-
-type NavigateFunction = (path: string) => void
 
 export function useAutoTutorial() {
   const triggerTutorial = useTriggerTutorial()

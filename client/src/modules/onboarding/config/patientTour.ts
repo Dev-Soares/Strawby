@@ -1,7 +1,5 @@
 import type { NavigateFunction } from 'react-router-dom'
-import type Shepherd from 'shepherd.js'
-
-type StepOptions = Shepherd.Step.StepOptions
+import type { StepOptions } from 'shepherd.js'
 type TourProxy = { next: () => void; back: () => void; complete: () => void }
 
 const TOTAL = 8
