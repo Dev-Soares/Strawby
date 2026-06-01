@@ -8,7 +8,7 @@ import { PlanMacros } from '../plan/types';
 import { PlanService } from '../plan/plan.service';
 import { MealService } from '../meal/meal.service';
 import { ratioTable } from './utils/ratio-table';
-import { DailyScorePublic, dailyScoreSelect } from './types';
+import { DailyScoreEntry, DailyScorePublic, dailyScoreSelect } from './types';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -56,8 +56,7 @@ export class DailyScoreService {
     }
   }
 
-  async findByDay(callerId: string, patientId: string, day: string): Promise<DailyScorePublic> {
-    await this.patientAccess.resolve(callerId, patientId);
+  async findByDay(patientId: string, day: string): Promise<DailyScorePublic> {
     try {
       const start = this.parseDay(day);
       const end = new Date(start);
@@ -123,6 +122,17 @@ export class DailyScoreService {
     if (planMacro === 0 || mealMacro === 0) return 0;
     const ratio = mealMacro / planMacro;
     return ratioTable.find(r => ratio >= r.min && ratio <= r.max)?.score ?? 0;
+  }
+
+  async findScoresByDate(date: Date): Promise<DailyScoreEntry[]> {
+    try {
+      return await this.prisma.dailyScore.findMany({
+        where: { date },
+        select: { patientId: true, score: true },
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar pontuações por data');
+    }
   }
 
   async closeDayScoreForEachUser(day: string): Promise<void> {

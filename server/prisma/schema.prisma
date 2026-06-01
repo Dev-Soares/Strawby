@@ -59,6 +59,8 @@ model Patient {
   privateFoods       PrivateFood[]
   dailyScores        DailyScore[]
   connectionRequests ConnectionRequest[]
+  currentStreak       Int                 @default(0)
+  bestStreak         Int                 @default(0)
   weight             Float?
   height             Float?
   age                Int?

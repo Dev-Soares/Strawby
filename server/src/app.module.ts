@@ -17,6 +17,7 @@ import { NutritionistModule } from './modules/nutritionist/nutritionist.module';
 import { ConnectionRequestModule } from './modules/connection-request/connection-request.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { JobsModule } from './modules/scheduled-jobs/jobs.module';
+import { PatientModule } from './modules/patient/patient.module';
 
 @Module({
 	imports: [
@@ -64,6 +65,7 @@ import { JobsModule } from './modules/scheduled-jobs/jobs.module';
 		DailyScoreModule,
 		NutritionistModule,
 		ConnectionRequestModule,
+		PatientModule,
 		JobsModule,
 		ScheduleModule.forRoot(),		
 	],
