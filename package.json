@@ -3,9 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "concurrently \"pnpm --filter client dev\" \"pnpm --filter server start:dev\"",
-    "build": "pnpm --filter client build && pnpm --filter server build",
-    "start:prod": "pnpm --filter server start:prod",
+    "dev": "concurrently \"pnpm --filter ./client dev\" \"pnpm --filter ./server start:dev\"",
+    "build": "pnpm --filter ./client build && pnpm --filter ./server build",
+    "start:prod": "pnpm --filter ./server start:prod",
     "lint": "pnpm -r lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,json}\"",
     "client": "cd client && pnpm run dev",
