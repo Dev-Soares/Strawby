@@ -41,11 +41,4 @@ export class AuthController {
     res.clearCookie('access_token', cookieConfig);
     return { message: 'Logout efetuado com sucesso' };
   }
-
-  @Post('verify-email')
-  async verifyEmail(@Body('token') token: string): Promise<{ message: string }> {
-    await this.authService.verifyEmail(token);
-    return { message: 'E-mail verificado com sucesso' };
-  }
-
 }

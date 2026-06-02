@@ -134,17 +134,4 @@ export class UserService {
       mapPrismaError(error, 'Erro ao buscar usuários');
     }
   }
-
-  async verifyEmail(userId: string): Promise<void> {
-    try {
-      await this.prisma.user.update({
-        where: { id: userId },
-        data: { emailVerified: true },
-      });
-    } catch (error) {
-      mapPrismaError(error, 'Erro ao verificar e-mail do usuário', {
-        p2025: 'Usuário não encontrado',
-      });
-    }
-  }
 }
