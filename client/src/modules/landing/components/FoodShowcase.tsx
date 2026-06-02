@@ -121,7 +121,7 @@ export default function FoodShowcase() {
             >
               <div>
                 <p className="font-display text-red-600 font-black text-[38px] leading-none tracking-tight">
-                  10K<span className="text-red-600">+</span>
+                  20K<span className="text-red-600 ml-1">+</span>
                 </p>
                 <p className="text-neutral-500 dark:text-neutral-400 text-[13px] font-semibold uppercase tracking-wider mt-2 transition-colors duration-300">
                   alimentos

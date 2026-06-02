@@ -24,7 +24,7 @@ export default function ProfilePage() {
 
         <ProfileAvatar name={user?.name ?? '—'} />
 
-        <ProfileAccountSection name={user?.name ?? '—'} email={user?.email ?? '—'} />
+        <ProfileAccountSection id={user?.id ?? ''} name={user?.name ?? '—'} email={user?.email ?? '—'} />
 
         {isNutritionist && <ProfileInviteCodeSection />}
 

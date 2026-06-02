@@ -67,6 +67,21 @@ export class PlanService {
     return this.queryPlanByPatient(patientId);
   }
 
+  async queryPlansByPatientsBulk(patientIds: string[]): Promise<Map<string, PlanPublic | null>> {
+    try {
+      const plans = await this.prisma.plan.findMany({
+        where: { patientId: { in: patientIds } },
+        select: planSelect,
+      });
+      const map = new Map<string, PlanPublic | null>();
+      for (const patientId of patientIds) map.set(patientId, null);
+      for (const plan of plans) map.set(plan.patientId, plan);
+      return map;
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar planos em lote');
+    }
+  }
+
   async queryPlanByPatient(patientId: string): Promise<PlanPublic | null> {
     try {
       return await this.prisma.plan.findUnique({ where: { patientId }, select: planSelect }) ?? null;

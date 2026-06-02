@@ -66,7 +66,7 @@ export default function PlanPage() {
           <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12">
             {/* Header */}
             <motion.div
-              className="flex items-start justify-between mb-8"
+              className="flex flex-col gap-4 mb-8 sm:flex-row sm:items-start sm:justify-between"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
@@ -78,20 +78,20 @@ export default function PlanPage() {
                 <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-3 transition-colors duration-300">Seus objetivos nutricionais diários</p>
               </div>
 
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex items-center gap-2 sm:shrink-0">
                 <button
                   onClick={() => setConfirmDeleteOpen(true)}
-                  className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-3 rounded-2xl transition-colors duration-200 cursor-pointer"
+                  className="flex flex-1 sm:flex-none items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-3 rounded-2xl transition-colors duration-200 cursor-pointer"
                 >
                   <Sparkle size={16} weight="fill" />
-                  Gerar plano recomendado
+                  Gerar plano
                 </button>
                 <button
                   onClick={() => setModalOpen(true)}
-                  className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-3 rounded-2xl transition-colors duration-200 cursor-pointer"
+                  className="flex flex-1 sm:flex-none items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-3 rounded-2xl transition-colors duration-200 cursor-pointer"
                 >
                   <PencilSimple size={16} weight="bold" />
-                  Editar plano
+                  <span>Editar</span>
                 </button>
               </div>
             </motion.div>

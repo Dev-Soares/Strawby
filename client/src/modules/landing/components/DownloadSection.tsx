@@ -32,7 +32,7 @@ export default function DownloadSection() {
 
   return (
     <>
-      <section className="relative bg-stone-50 dark:bg-neutral-950 py-20 lg:py-28 overflow-hidden transition-colors duration-300">
+      <section id="download" className="relative bg-stone-50 dark:bg-neutral-950 py-20 lg:py-28 overflow-hidden transition-colors duration-300">
         <div className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-16 text-center">
           <motion.h2
             className="font-display text-[32px] sm:text-[44px] lg:text-[56px] font-black tracking-[-0.04em] text-neutral-950 dark:text-neutral-100 leading-[0.92] mb-5 transition-colors duration-300"

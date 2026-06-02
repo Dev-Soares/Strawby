@@ -97,6 +97,24 @@ export class MealService {
     }
   }
 
+  async queryMealsByDayBulk(patientIds: string[], day: string): Promise<Map<string, MealPublic[]>> {
+    try {
+      const start = new Date(day + 'T00:00:00.000Z');
+      const end = new Date(start);
+      end.setUTCDate(end.getUTCDate() + 1);
+      const meals = await this.prisma.meal.findMany({
+        where: { patientId: { in: patientIds }, date: { gte: start, lt: end } },
+        select: mealSelect,
+      });
+      const map = new Map<string, MealPublic[]>();
+      for (const patientId of patientIds) map.set(patientId, []);
+      for (const meal of meals) map.get(meal.patientId)!.push(this.toMealPublic(meal));
+      return map;
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar refeições em lote');
+    }
+  }
+
   async findOne(callerId: string, patientId: string, id: string): Promise<MealPublic> {
     await this.patientAccess.resolve(callerId, patientId);
     try {

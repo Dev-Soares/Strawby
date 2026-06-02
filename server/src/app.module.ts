@@ -15,6 +15,9 @@ import { LoggerModule } from 'nestjs-pino';
 import { DailyScoreModule } from './modules/daily-score/daily-score.module';
 import { NutritionistModule } from './modules/nutritionist/nutritionist.module';
 import { ConnectionRequestModule } from './modules/connection-request/connection-request.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { JobsModule } from './modules/scheduled-jobs/jobs.module';
+import { PatientModule } from './modules/patient/patient.module';
 
 @Module({
 	imports: [
@@ -44,6 +47,12 @@ import { ConnectionRequestModule } from './modules/connection-request/connection
 				},
 			},
 		}),
+		ThrottlerModule.forRoot([
+			{
+				ttl: 60000,
+				limit: 100,
+			},
+		]),
 		DatabaseModule,
 		UserModule,
 		AuthModule,
@@ -55,14 +64,10 @@ import { ConnectionRequestModule } from './modules/connection-request/connection
 		PlanModule,
 		DailyScoreModule,
 		NutritionistModule,
-		ThrottlerModule.forRoot([
-			{
-				ttl: 60000,
-				limit: 100,
-			},
-		]),
 		ConnectionRequestModule,
-		
+		PatientModule,
+		JobsModule,
+		ScheduleModule.forRoot(),		
 	],
 	providers: [
 		{

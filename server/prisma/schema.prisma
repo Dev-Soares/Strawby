@@ -26,7 +26,6 @@ enum ConnectionRequestStatus {
   PENDING
   ACCEPTED
   REJECTED
-  EXPIRED
 }
 
 enum Role {
@@ -41,9 +40,12 @@ model User {
   password     String
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  role         Role
-  patient      Patient?
-  nutritionist Nutritionist?
+  emailVerified Boolean       @default(false)
+  role            Role
+  termsAcceptedAt DateTime?
+  termsVersion    String?
+  patient         Patient?
+  nutritionist    Nutritionist?
 }
 
 model Patient {
@@ -57,6 +59,8 @@ model Patient {
   privateFoods       PrivateFood[]
   dailyScores        DailyScore[]
   connectionRequests ConnectionRequest[]
+  currentStreak       Int                 @default(0)
+  bestStreak         Int                 @default(0)
   weight             Float?
   height             Float?
   age                Int?

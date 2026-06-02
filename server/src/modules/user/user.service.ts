@@ -24,6 +24,8 @@ export class UserService {
           email: data.email,
           password: hashedPassword,
           role: data.role,
+          termsAcceptedAt: new Date(),
+          termsVersion: data.termsVersion,
           ...(data.role === 'patient'
             ? {
                 patient: {
@@ -116,6 +118,31 @@ export class UserService {
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao deletar usuário', {
+        p2025: 'Usuário não encontrado',
+      });
+    }
+  }
+
+  async findMany(params: { select?: any; where?: any }): Promise<UserPublic[]> {
+    try {
+      const users = await this.prisma.user.findMany({
+        where: params.where,
+        select: userSelect,
+      });
+      return users;
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar usuários');
+    }
+  }
+
+  async verifyEmail(userId: string): Promise<void> {
+    try {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { emailVerified: true },
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao verificar e-mail do usuário', {
         p2025: 'Usuário não encontrado',
       });
     }

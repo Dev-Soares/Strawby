@@ -1,16 +1,19 @@
 import { useState } from 'react'
-import { EnvelopeSimple, Calendar, PencilSimple } from '@phosphor-icons/react'
+import { EnvelopeSimple, Calendar, PencilSimple, Trash } from '@phosphor-icons/react'
 import { useUpdateUser } from '@/modules/auth/hooks/useUpdateUser'
+import DeleteAccountModal from './DeleteAccountModal'
 
 interface Props {
+  id: string
   name: string
   email: string
 }
 
-export default function ProfileAccountSection({ name, email }: Props) {
+export default function ProfileAccountSection({ id, name, email }: Props) {
   const updateUser = useUpdateUser()
   const [editing, setEditing] = useState(false)
   const [nameValue, setNameValue] = useState('')
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   const handleSave = () => {
     if (nameValue.trim().length >= 2)
@@ -84,7 +87,7 @@ export default function ProfileAccountSection({ name, email }: Props) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 px-5 py-4">
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-neutral-100 dark:border-neutral-800">
           <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
             <Calendar size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
           </div>
@@ -95,7 +98,25 @@ export default function ProfileAccountSection({ name, email }: Props) {
             </p>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => setShowDeleteModal(true)}
+          className="flex items-center gap-3 px-5 py-4 w-full text-left hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors duration-150 cursor-pointer group"
+        >
+          <div className="w-8 h-8 rounded-xl bg-red-100 dark:bg-red-950/40 flex items-center justify-center shrink-0">
+            <Trash size={15} weight="bold" className="text-red-600" />
+          </div>
+          <span className="text-sm font-semibold text-red-600">Deletar conta</span>
+        </button>
       </div>
+
+      {showDeleteModal && (
+        <DeleteAccountModal
+          userId={id}
+          onClose={() => setShowDeleteModal(false)}
+        />
+      )}
     </section>
   )
 }

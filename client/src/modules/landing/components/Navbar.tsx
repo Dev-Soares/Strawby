@@ -11,7 +11,7 @@ export default function Navbar() {
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-20 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md border-b border-neutral-200/70 dark:border-neutral-800/70 flex items-center justify-center h-16 sm:h-18 md:h-20 px-4 sm:px-6 md:px-10 transition-colors duration-300"
+      className="fixed top-0 left-0 right-0 z-20 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-md border-b border-neutral-200/70 dark:border-neutral-800/70 flex items-center justify-center h-20 sm:h-22 md:h-24 px-4 sm:px-6 md:px-10 transition-colors duration-300"
       animate={hidden ? { y: '-100%' } : { y: 0 }}
       transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
     >
@@ -32,10 +32,10 @@ export default function Navbar() {
             Entrar
           </a>
           <a
-            href="/app/create-account"
+            href="/#download"
             className="bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold text-sm sm:text-base px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 rounded-lg sm:rounded-xl transition-all duration-150 whitespace-nowrap"
           >
-            Criar conta
+            Baixar
           </a>
         </div>
 

@@ -3,13 +3,13 @@ import { PrismaService } from '../database/prisma.service';
 import { PatientAccessService } from '../../common/patient-access/patient-access.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { CreateDailyScoreDto } from './dto/create-daily-score.dto';
-import { UpdateDailyScoreDto } from './dto/update-daily-score.dto';
 import { MealMacros, MealPublic } from '../meal/types';
 import { PlanMacros } from '../plan/types';
 import { PlanService } from '../plan/plan.service';
 import { MealService } from '../meal/meal.service';
 import { ratioTable } from './utils/ratio-table';
-import { DailyScorePublic, dailyScoreSelect } from './types';
+import { DailyScoreEntry, DailyScorePublic, dailyScoreSelect } from './types';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class DailyScoreService {
@@ -18,6 +18,7 @@ export class DailyScoreService {
     private readonly patientAccess: PatientAccessService,
     private readonly planService: PlanService,
     private readonly mealService: MealService,
+    private readonly userService: UserService,
   ) {}
 
   private parseDay(day: string): Date {
@@ -26,11 +27,10 @@ export class DailyScoreService {
     return start;
   }
 
-  async create(callerId: string, patientId: string, dto: CreateDailyScoreDto): Promise<DailyScorePublic> {
-    await this.patientAccess.resolve(callerId, patientId);
+  async createScore(patientId: string, day: string): Promise<DailyScorePublic> {
     try {
-      const date = this.parseDay(dto.date);
-      const score = await this.computeLiveScore(patientId, dto.date);
+      const date = this.parseDay(day);
+      const score = await this.computeLiveScore(patientId, day);
       return await this.prisma.dailyScore.upsert({
         where: { patientId_date: { patientId, date } },
         create: { date, score, patientId },
@@ -46,19 +46,19 @@ export class DailyScoreService {
     await this.patientAccess.resolve(callerId, patientId);
     try {
       const where: { patientId: string; date?: { gte?: Date; lte?: Date } } = { patientId };
-      if (startDate) where.date = { gte: new Date(startDate) };
-      if (endDate) where.date = { ...where.date, lte: new Date(endDate) };
+
+      if (startDate) where.date = { gte: this.parseDay(startDate) };
+      if (endDate) where.date = { ...where.date, lte: this.parseDay(endDate) };
+
       return await this.prisma.dailyScore.findMany({ where, select: dailyScoreSelect, orderBy: { date: 'desc' } });
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar pontuações');
     }
   }
 
-  async findByDay(callerId: string, patientId: string, day: string): Promise<DailyScorePublic> {
-    await this.patientAccess.resolve(callerId, patientId);
+  async findByDay(patientId: string, day: string): Promise<DailyScorePublic> {
     try {
-      const start = new Date(day + 'T00:00:00.000Z');
-      if (isNaN(start.getTime())) throw new BadRequestException('Data inválida');
+      const start = this.parseDay(day);
       const end = new Date(start);
       end.setUTCDate(end.getUTCDate() + 1);
       const score = await this.prisma.dailyScore.findFirst({ where: { patientId, date: { gte: start, lt: end } }, select: dailyScoreSelect });
@@ -86,8 +86,7 @@ export class DailyScoreService {
   }
 
   private async computeLiveScore(patientId: string, day: string): Promise<number> {
-    const start = new Date(day + 'T00:00:00.000Z');
-    if (isNaN(start.getTime())) throw new BadRequestException('Data inválida');
+    this.parseDay(day);
     try {
       const [meals, plan] = await Promise.all([
         this.mealService.queryMealsByDay(patientId, day),
@@ -123,5 +122,39 @@ export class DailyScoreService {
     if (planMacro === 0 || mealMacro === 0) return 0;
     const ratio = mealMacro / planMacro;
     return ratioTable.find(r => ratio >= r.min && ratio <= r.max)?.score ?? 0;
+  }
+
+  async findScoresByDate(day: string): Promise<DailyScoreEntry[]> {
+    const date = this.parseDay(day);
+    try {
+      return await this.prisma.dailyScore.findMany({
+        where: { date },
+        select: { patientId: true, score: true },
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar pontuações por data');
+    }
+  }
+
+  async closeDayScoreForEachUser(day: string): Promise<void> {
+    const date = this.parseDay(day);
+    const patients = await this.userService.findMany({ where: { role: 'patient' }, select: { id: true } });
+
+    const patientIds = patients.map(patient => patient.id);
+
+    const [mealsMap, plansMap] = await Promise.all([
+      this.mealService.queryMealsByDayBulk(patientIds, day),
+      this.planService.queryPlansByPatientsBulk(patientIds),
+    ]);
+
+    await this.prisma.dailyScore.createMany({
+      data: patientIds.map(patientId => {
+        const meals = mealsMap.get(patientId) ?? [];
+        const plan = plansMap.get(patientId);
+        const score = plan ? this.calculateDailyScore(this.reduceDayMacros(meals), plan) : 0;
+        return { date, score, patientId };
+      }),
+      skipDuplicates: true,
+    });
   }
 }

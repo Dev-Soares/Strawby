@@ -1,5 +1,4 @@
 ﻿import { motion } from 'framer-motion'
-import { FireIcon } from '@phosphor-icons/react'
 import { useGetDailyLiveScore } from '../hooks/useGetDailyLiveScore'
 import DailyScoreCardSkeleton from '../skeletons/DailyScoreCardSkeleton'
 
@@ -37,10 +36,7 @@ export default function DailyScoreCard() {
       <div className="relative px-4 sm:px-8 pt-5 sm:pt-7 pb-4 sm:pb-6 bg-linear-to-br from-neutral-50 to-white dark:from-neutral-900 dark:to-neutral-900 border-b border-neutral-100 dark:border-neutral-800 transition-colors duration-300">
         <div className="absolute left-0 top-5 bottom-4 sm:top-7 sm:bottom-6 w-1 bg-red-600 rounded-r-full" />
         <div className="flex items-center gap-3 sm:gap-4">
-          <div className="hidden sm:flex w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-950/40 items-center justify-center shrink-0 transition-colors duration-300">
-            <FireIcon size={22} weight="duotone" className="text-red-600" />
-          </div>
-          <div className="min-w-0">
+<div className="min-w-0">
             <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-[0.22em] sm:tracking-[0.3em] text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
               Hoje
             </span>

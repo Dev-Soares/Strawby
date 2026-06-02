@@ -45,7 +45,7 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter(logger));
 
   app.enableCors({
-    origin: parseOrigins(process.env.CORS_ORIGIN),
+    origin: parseOrigins(requireEnv('CORS_ORIGIN')),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Accept',
     credentials: true,
@@ -59,15 +59,18 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
 
-  app.use(
-    '/api-docs',
-    basicAuth({
-      users: {
-        [requireEnv('SWAGGER_USER')]: requireEnv('SWAGGER_PASSWORD'),
-      },
-      challenge: true,
-    }),
-  );
+  const swaggerUser = process.env.SWAGGER_USER;
+  const swaggerPassword = process.env.SWAGGER_PASSWORD;
+
+  if (swaggerUser && swaggerPassword) {
+    app.use(
+      '/api-docs',
+      basicAuth({
+        users: { [swaggerUser]: swaggerPassword },
+        challenge: true,
+      }),
+    );
+  }
 
   SwaggerModule.setup('api-docs', app, document);
 

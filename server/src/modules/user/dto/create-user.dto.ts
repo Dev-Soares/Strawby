@@ -51,4 +51,9 @@ export class CreateUserDto {
     @IsIn(['male', 'female'])
     @IsOptional()
     gender?: string;
+
+    @ApiProperty({ example: '1.0' })
+    @IsString()
+    @IsNotEmpty()
+    termsVersion: string;
 }

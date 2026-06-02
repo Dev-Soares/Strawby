@@ -71,11 +71,11 @@ export default function TopTabBar({ hidden = false, variant = 'top' }: TopTabBar
                 className="flex flex-col items-center justify-center gap-1 pt-3 pb-1 min-w-0"
               >
                 <Icon
-                  size={22}
+                  size={26}
                   weight={active ? 'fill' : 'regular'}
                   className={`shrink-0 transition-colors ${active ? 'text-red-600' : 'text-neutral-400 dark:text-neutral-500'}`}
                 />
-                <span className={`text-[10px] font-bold tracking-tight transition-colors ${active ? 'text-red-600' : 'text-neutral-400 dark:text-neutral-500'}`}>
+                <span className={`text-xs font-bold tracking-tight transition-colors ${active ? 'text-red-600' : 'text-neutral-400 dark:text-neutral-500'}`}>
                   {tab.label}
                 </span>
               </Link>

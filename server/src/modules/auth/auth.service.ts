@@ -34,4 +34,16 @@ export class AuthService {
 
     return { access_token: token };
   }
+
+  async verifyEmail(token: string): Promise<void> {
+    try {
+      const payload = await this.jwtService.verifyAsync(token);
+      const userId = payload.sub;
+      await this.usersService.verifyEmail(userId);
+    } catch (error) {
+      throw new UnauthorizedException(
+        'Token de verificação inválido ou expirado',
+      );
+    }
+  }
 }

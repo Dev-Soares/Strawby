@@ -5,21 +5,20 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
 import { HashModule } from '../../common/hash/hash.module';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
     UserModule,
     HashModule,
+    EmailModule,
     JwtModule.registerAsync({
       global: true,
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.getOrThrow<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn:
-            configService.get<`${number}${'s' | 'm' | 'h' | 'd'}`>(
-              'JWT_EXPIRES_IN',
-            ) ?? '15d',
+          expiresIn: '30d',
         },
       }),
     }),
