@@ -9,8 +9,8 @@ export const useCreateMeal = () => {
   const { data: user } = useAuth()
   return useMutation({
     mutationFn: (dto: CreateMealData) => createMealService(user!.id, dto),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['meals'] })
+    onSuccess: async () => {
+      await queryClient.refetchQueries({ queryKey: ['meals'], type: 'all' })
       queryClient.invalidateQueries({ queryKey: ['daily-score-live', new Date().toISOString().split('T')[0]] })
       queryClient.invalidateQueries({ queryKey: ['daily-scores'] })
       toast.success('Refeicao criada com sucesso!')

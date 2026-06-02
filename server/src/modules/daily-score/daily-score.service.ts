@@ -9,7 +9,6 @@ import { PlanService } from '../plan/plan.service';
 import { MealService } from '../meal/meal.service';
 import { ratioTable } from './utils/ratio-table';
 import { DailyScoreEntry, DailyScorePublic, dailyScoreSelect } from './types';
-import { UserService } from '../user/user.service';
 
 @Injectable()
 export class DailyScoreService {
@@ -18,7 +17,6 @@ export class DailyScoreService {
     private readonly patientAccess: PatientAccessService,
     private readonly planService: PlanService,
     private readonly mealService: MealService,
-    private readonly userService: UserService,
   ) {}
 
   private parseDay(day: string): Date {
@@ -138,22 +136,29 @@ export class DailyScoreService {
 
   async closeDayScoreForEachUser(day: string): Promise<void> {
     const date = this.parseDay(day);
-    const patients = await this.userService.findMany({ where: { role: 'patient' }, select: { id: true } });
+    const patients = await this.prisma.patient.findMany({ select: { id: true } });
 
     const patientIds = patients.map(patient => patient.id);
+    if (patientIds.length === 0) return;
 
     const [mealsMap, plansMap] = await Promise.all([
       this.mealService.queryMealsByDayBulk(patientIds, day),
       this.planService.queryPlansByPatientsBulk(patientIds),
     ]);
 
-    await this.prisma.dailyScore.createMany({
-      data: patientIds.map(patientId => {
+    const scored = patientIds
+      .filter(patientId => plansMap.get(patientId))
+      .map(patientId => {
         const meals = mealsMap.get(patientId) ?? [];
-        const plan = plansMap.get(patientId);
-        const score = plan ? this.calculateDailyScore(this.reduceDayMacros(meals), plan) : 0;
+        const plan = plansMap.get(patientId)!;
+        const score = this.calculateDailyScore(this.reduceDayMacros(meals), plan);
         return { date, score, patientId };
-      }),
+      });
+
+    if (scored.length === 0) return;
+
+    await this.prisma.dailyScore.createMany({
+      data: scored,
       skipDuplicates: true,
     });
   }

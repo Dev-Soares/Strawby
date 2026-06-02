@@ -11,9 +11,9 @@ export const useAddMealItem = (patientId?: string) => {
   return useMutation({
     mutationFn: ({ mealId, dto }: { mealId: string; dto: AddMealItemData }) =>
       addMealItemService(effectivePatientId!, mealId, dto),
-    onSuccess: (_, variables) => {
+    onSuccess: async (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['meal', variables.mealId] })
-      queryClient.invalidateQueries({ queryKey: ['meals'] })
+      await queryClient.refetchQueries({ queryKey: ['meals'], type: 'all' })
       queryClient.invalidateQueries({ queryKey: ['daily-score-live', new Date().toISOString().split('T')[0]] })
       queryClient.invalidateQueries({ queryKey: ['daily-scores'] })
       toast.success('Alimento adicionado com sucesso!')

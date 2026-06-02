@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { PatientAccessService } from '../../common/patient-access/patient-access.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
@@ -28,25 +29,28 @@ export class PatientService {
       const incrementIds = patientIds.filter(patient => (scoreMap.get(patient.id) ?? 0) >= 8).map(patient => patient.id);
       // pacientes com score >= 8 terão streak incrementado
 
-      await this.prisma.$transaction([
-        this.prisma.patient.updateMany({
-          where: { id: { in: resetIds } },
-          data: { currentStreak: 0 },
-        }),
-        this.prisma.patient.updateMany({
-          where: { id: { in: incrementIds } },
-          data: { currentStreak: { increment: 1 } },
-        }),
-        // Prisma não suporta comparação coluna-a-coluna em updateMany
+      await this.prisma.$transaction(async tx => {
+        if (resetIds.length > 0) {
+          await tx.patient.updateMany({
+            where: { id: { in: resetIds } },
+            data: { currentStreak: 0 },
+          });
+        }
 
-        this.prisma.$queryRaw`
-          UPDATE "Patient"
-          SET "bestStreak" = "currentStreak"
-          WHERE "currentStreak" > "bestStreak"
-            AND id = ANY(${incrementIds}::uuid[])
-        `,
-
-      ]);
+        if (incrementIds.length > 0) {
+          await tx.patient.updateMany({
+            where: { id: { in: incrementIds } },
+            data: { currentStreak: { increment: 1 } },
+          });
+          // Prisma não suporta comparação coluna-a-coluna em updateMany
+          await tx.$executeRaw`
+            UPDATE "Patient"
+            SET "bestStreak" = "currentStreak"
+            WHERE "currentStreak" > "bestStreak"
+              AND id IN (${Prisma.join(incrementIds)})
+          `;
+        }
+      });
     } catch (error) {
       mapPrismaError(error, 'Erro ao processar streak dos pacientes');
     }

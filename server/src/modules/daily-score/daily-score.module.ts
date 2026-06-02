@@ -6,10 +6,9 @@ import { AuthGuardModule } from '../../common/guards/auth/auth.module';
 import { PatientAccessModule } from '../../common/patient-access/patient-access.module';
 import { PlanModule } from '../plan/plan.module';
 import { MealModule } from '../meal/meal.module';
-import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [DatabaseModule, AuthGuardModule, PatientAccessModule, PlanModule, MealModule, UserModule],
+  imports: [DatabaseModule, AuthGuardModule, PatientAccessModule, PlanModule, MealModule],
   controllers: [DailyScoreController],
   providers: [DailyScoreService],
   exports: [DailyScoreService],
