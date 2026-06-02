@@ -24,7 +24,6 @@
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.10.1",
     "shepherd.js": "^15.2.2",
-    "styled-components": "^6.1.19",
     "zod": "^4.3.6"
   },
   "devDependencies": {

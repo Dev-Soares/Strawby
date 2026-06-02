@@ -26,7 +26,6 @@ enum ConnectionRequestStatus {
   PENDING
   ACCEPTED
   REJECTED
-  EXPIRED
 }
 
 enum Role {

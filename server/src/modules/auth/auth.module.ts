@@ -16,10 +16,7 @@ import { HashModule } from '../../common/hash/hash.module';
       useFactory: (configService: ConfigService) => ({
         secret: configService.getOrThrow<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn:
-            configService.get<`${number}${'s' | 'm' | 'h' | 'd'}`>(
-              'JWT_EXPIRES_IN',
-            ) ?? '15d',
+          expiresIn: '30d',
         },
       }),
     }),
