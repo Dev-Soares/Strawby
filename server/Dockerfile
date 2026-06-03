@@ -29,9 +29,12 @@ COPY server/package.json ./server/
 # Install production deps only
 RUN pnpm install --frozen-lockfile --filter server... --prod
 
-# Copy built output and prisma generated client
+# Copy built output and prisma schema/migrations
 COPY --from=build /app/server/dist ./server/dist
 COPY --from=build /app/server/prisma ./server/prisma
 
+# Regenerate Prisma client against production node_modules
+RUN pnpm --filter server exec prisma generate
+
 EXPOSE 3000
-CMD ["node", "server/dist/src/main.js"]
+CMD ["sh", "-c", "pnpm --filter server exec prisma migrate deploy && node server/dist/src/main.js"]

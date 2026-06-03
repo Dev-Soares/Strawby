@@ -27,6 +27,7 @@ import { PatientModule } from './modules/patient/patient.module';
 		LoggerModule.forRoot({
 			pinoHttp: {
 				autoLogging: true,
+				level: process.env.LOG_LEVEL ?? (process.env.NODE_ENV === 'production' ? 'info' : 'debug'),
 				serializers: {
 					req: (req) => ({
 						method: req.method,
@@ -36,15 +37,27 @@ import { PatientModule } from './modules/patient/patient.module';
 						statusCode: res.statusCode,
 					}),
 				},
-				transport: {
-					target: 'pino-pretty',
-					options: {
-						colorize: true,
-						translateTime: 'HH:MM:ss',
-						ignore: 'pid,hostname',
-						singleLine: true,
-					},
+				redact: {
+					paths: [
+						'req.headers.authorization',
+						'req.headers.cookie',
+						'req.body.password',
+						'req.body.token',
+						'res.headers["set-cookie"]',
+					],
+					censor: '[REDACTED]',
 				},
+				...(process.env.NODE_ENV !== 'production' && {
+					transport: {
+						target: 'pino-pretty',
+						options: {
+							colorize: true,
+							translateTime: 'HH:MM:ss',
+							ignore: 'pid,hostname',
+							singleLine: true,
+						},
+					},
+				}),
 			},
 		}),
 		ThrottlerModule.forRoot([

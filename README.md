@@ -152,7 +152,6 @@ CORS_ORIGIN="http://localhost:5173"
 
 # JWT — gere com: openssl rand -hex 64
 JWT_SECRET=""
-JWT_EXPIRES_IN=86400
 
 # bcrypt
 SALT_ROUNDS=10

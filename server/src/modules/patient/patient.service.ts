@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { PatientAccessService } from '../../common/patient-access/patient-access.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
+import { yesterdayInAppTz } from '../../common/utils/date.util';
 import type { PatientStreakPublic } from './types';
 import { DailyScoreService } from '../daily-score/daily-score.service';
 
@@ -15,7 +16,7 @@ export class PatientService {
   ) {}
 
    async generateStreakForEachUser(): Promise<void> {
-    const yesterdayDate = this.getYesterdayDate();
+    const yesterdayDate = yesterdayInAppTz();
 
     try {
       const [patientIds, scores] = await Promise.all([
@@ -54,14 +55,6 @@ export class PatientService {
     } catch (error) {
       mapPrismaError(error, 'Erro ao processar streak dos pacientes');
     }
-  }
-
-  private getYesterdayDate(): string {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    return yesterday.toLocaleDateString('en-CA', {
-      timeZone: 'America/Sao_Paulo',
-    });
   }
 
   async getPatientStreak(

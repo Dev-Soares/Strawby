@@ -126,16 +126,4 @@ export class UserService {
       });
     }
   }
-
-  async findMany(params: { select?: any; where?: any }): Promise<UserPublic[]> {
-    try {
-      const users = await this.prisma.user.findMany({
-        where: params.where,
-        select: userSelect,
-      });
-      return users;
-    } catch (error) {
-      mapPrismaError(error, 'Erro ao buscar usuários');
-    }
-  }
 }
