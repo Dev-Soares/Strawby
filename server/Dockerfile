@@ -34,4 +34,4 @@ COPY --from=build /app/server/dist ./server/dist
 COPY --from=build /app/server/prisma ./server/prisma
 
 EXPOSE 3000
-CMD ["node", "server/dist/main.js"]
+CMD ["node", "server/dist/src/main.js"]
