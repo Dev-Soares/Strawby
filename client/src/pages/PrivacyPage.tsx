@@ -70,7 +70,7 @@ export default function PrivacyPage() {
             </div>
 
             <div className="mt-6 flex flex-wrap gap-3 text-sm text-neutral-600 dark:text-neutral-300">
-              <span className="rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 dark:border-neutral-700 dark:bg-neutral-800">Última atualização: 25 de maio de 2026</span>
+              <span className="rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 dark:border-neutral-700 dark:bg-neutral-800">Última atualização: 3 de junho de 2026</span>
               <span className="rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 dark:border-neutral-700 dark:bg-neutral-800">Contato: strawbyapp@gmail.com</span>
               <span className="rounded-full border border-neutral-200 bg-neutral-50 px-3 py-1 dark:border-neutral-700 dark:bg-neutral-800">Strawby • Barra Mansa - RJ</span>
             </div>
@@ -222,10 +222,10 @@ export default function PrivacyPage() {
                 <h2 className="text-2xl font-bold tracking-[-0.03em]">Retenção das informações</h2>
                 <div className="mt-4 space-y-4 text-[15px] leading-7 text-neutral-700 dark:text-neutral-300">
                   <p>
-                    Os dados pessoais são mantidos enquanto a conta do usuário estiver ativa. Após a exclusão da conta, os dados são removidos em até <strong>30 dias</strong>, salvo quando a retenção for exigida por obrigação legal (ex: registros fiscais ou judiciais), situação em que podem ser mantidos por até <strong>5 anos</strong> conforme a legislação aplicável.
+                    Os dados pessoais são mantidos enquanto a conta do usuário estiver ativa. Ao solicitar a exclusão da conta, os dados pessoais associados são <strong>removidos imediatamente</strong> do banco de dados de produção, salvo quando a retenção for exigida por obrigação legal (ex: registros fiscais ou judiciais), situação em que podem ser mantidos por até <strong>5 anos</strong> conforme a legislação aplicável.
                   </p>
                   <p>
-                    Cópias residuais em sistemas de backup podem persistir por até <strong>90 dias</strong> adicionais antes da eliminação definitiva.
+                    Cópias residuais podem persistir temporariamente em <strong>backups automáticos do banco de dados</strong>, que seguem o ciclo de retenção do provedor de infraestrutura (até <strong>7 dias</strong>) e são eliminadas conforme os backups são rotacionados.
                   </p>
                 </div>
             </section>

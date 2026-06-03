@@ -24,7 +24,7 @@ export class DailyScoreController {
 
   @Get(':patientId/day/:day')
   findByDay(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Param('day') day: string) {
-    return this.dailyScoreService.findByDay( patientId, day);
+    return this.dailyScoreService.findByDay(req.user.sub, patientId, day);
   }
 
   @Get(':patientId/live/:day')

@@ -54,7 +54,8 @@ export class DailyScoreService {
     }
   }
 
-  async findByDay(patientId: string, day: string): Promise<DailyScorePublic> {
+  async findByDay(callerId: string, patientId: string, day: string): Promise<DailyScorePublic> {
+    await this.patientAccess.resolve(callerId, patientId);
     try {
       const start = this.parseDay(day);
       const end = new Date(start);
