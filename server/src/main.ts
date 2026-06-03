@@ -9,6 +9,7 @@ import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { PinoLogger } from 'nestjs-pino';
 
 const PORT = process.env.PORT || 3000;
+const isProduction = process.env.NODE_ENV === 'production';
 
 function requireEnv(name: string): string {
   const value = process.env[name];
@@ -16,6 +17,12 @@ function requireEnv(name: string): string {
     throw new Error(`Variável de ambiente obrigatória ausente: ${name}`);
   }
   return value;
+}
+
+function validateRequiredEnvs(): void {
+  requireEnv('CORS_ORIGIN');
+  requireEnv('JWT_SECRET');
+  requireEnv('DATABASE_URL');
 }
 
 function parseOrigins(raw: string | undefined): string | string[] | undefined {
@@ -28,6 +35,8 @@ function parseOrigins(raw: string | undefined): string | string[] | undefined {
 }
 
 async function bootstrap() {
+  validateRequiredEnvs();
+
   const app = await NestFactory.create(AppModule);
 
   app.use(helmet());
@@ -51,28 +60,30 @@ async function bootstrap() {
     credentials: true,
   });
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('Strawby API')
-    .setDescription('Strawby API documentation')
-    .setVersion('1.0')
-    .build();
+  if (!isProduction) {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('Strawby API')
+      .setDescription('Strawby API documentation')
+      .setVersion('1.0')
+      .build();
 
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
 
-  const swaggerUser = process.env.SWAGGER_USER;
-  const swaggerPassword = process.env.SWAGGER_PASSWORD;
+    const swaggerUser = process.env.SWAGGER_USER;
+    const swaggerPassword = process.env.SWAGGER_PASSWORD;
 
-  if (swaggerUser && swaggerPassword) {
-    app.use(
-      '/api-docs',
-      basicAuth({
-        users: { [swaggerUser]: swaggerPassword },
-        challenge: true,
-      }),
-    );
+    if (swaggerUser && swaggerPassword) {
+      app.use(
+        '/api-docs',
+        basicAuth({
+          users: { [swaggerUser]: swaggerPassword },
+          challenge: true,
+        }),
+      );
+    }
+
+    SwaggerModule.setup('api-docs', app, document);
   }
-
-  SwaggerModule.setup('api-docs', app, document);
 
   await app.listen(PORT);
 

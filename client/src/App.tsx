@@ -1,5 +1,6 @@
 import { Routes } from 'react-router-dom'
 import ScrollToTop from './shared/components/ScrollToTop'
+import UnauthorizedListener from './shared/components/UnauthorizedListener'
 import { publicRoutes } from './routes/publicRoutes'
 import { authRoutes } from './routes/authRoutes'
 import { homeRoutes } from './routes/homeRoutes'
@@ -15,6 +16,7 @@ export default function App() {
   return (
     <>
       <ScrollToTop />
+      <UnauthorizedListener />
       <Routes>
         {publicRoutes}
         {authRoutes}
