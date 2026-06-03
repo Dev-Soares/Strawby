@@ -1,72 +1,22 @@
-import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import {
-  ArrowLeft,
-  Plus,
-  Trash,
-  Fire,
-  CookingPot,
-  X,
-  PencilSimple,
-  Check,
-} from '@phosphor-icons/react'
+import { useParams } from 'react-router-dom'
+import { ArrowLeft, Plus, Trash } from '@phosphor-icons/react'
 import AppLayout from '@/shared/layouts/AppLayout'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
-import { useGetRecipe } from '@/modules/recipe/hooks/useGetRecipe'
-import { useDeleteRecipe } from '@/modules/recipe/hooks/useDeleteRecipe'
-import { useRemoveRecipeItem } from '@/modules/recipe/hooks/useRemoveRecipeItem'
-import { useUpdateRecipe } from '@/modules/recipe/hooks/useUpdateRecipe'
 import RecipeDetailSkeleton from '@/modules/recipe/skeletons/RecipeDetailSkeleton'
-
-type ConfirmState =
-  | { type: 'recipe'; id: string; name: string }
-  | { type: 'recipeItem'; recipeId: string; itemId: string; name: string }
-  | null
-
-const totalsConfig = [
-  { label: 'Calorias', valueKey: 'calories' as const, unit: 'kcal', color: 'bg-red-500', track: 'bg-red-50 dark:bg-red-950/40' },
-  { label: 'Proteína', valueKey: 'protein' as const, unit: 'g', color: 'bg-amber-500', track: 'bg-amber-50 dark:bg-amber-950/40' },
-  { label: 'Carboidrato', valueKey: 'carbs' as const, unit: 'g', color: 'bg-blue-500', track: 'bg-blue-50 dark:bg-blue-950/40' },
-  { label: 'Gordura', valueKey: 'fat' as const, unit: 'g', color: 'bg-violet-500', track: 'bg-violet-50 dark:bg-violet-950/40' },
-]
+import RecipeTotalsCard from '@/modules/recipe/components/RecipeTotalsCard'
+import RecipeItemRow from '@/modules/recipe/components/RecipeItemRow'
+import RecipeNameEditor from '@/modules/recipe/components/RecipeNameEditor'
+import { useRecipeDetailPage } from '@/modules/recipe/hooks/useRecipeDetailPage'
 
 export default function RecipeDetailPage() {
-  const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
-  const [isEditingName, setIsEditingName] = useState(false)
-  const [editName, setEditName] = useState('')
-  const [confirm, setConfirm] = useState<ConfirmState>(null)
 
-  const { data: recipe, isLoading, isError } = useGetRecipe(id ?? '')
-  const deleteMutation = useDeleteRecipe()
-  const removeItem = useRemoveRecipeItem()
-  const updateMutation = useUpdateRecipe()
-
-  const handleConfirm = () => {
-    if (!confirm) return
-    if (confirm.type === 'recipe') {
-      deleteMutation.mutate(confirm.id, {
-        onSuccess: () => {
-          setConfirm(null)
-          navigate('/app/foods')
-        },
-      })
-    } else if (confirm.type === 'recipeItem') {
-      removeItem.mutate(
-        { recipeId: confirm.recipeId, itemId: confirm.itemId },
-        {
-          onSuccess: () => setConfirm(null),
-        },
-      )
-    }
-  }
-
-  const isDeletePending =
-    confirm?.type === 'recipe'
-      ? deleteMutation.isPending
-      : confirm?.type === 'recipeItem'
-        ? removeItem.isPending
-        : false
+  const {
+    recipe, isLoading, isError, confirm, setConfirm, handleConfirm, isDeletePending,
+    deleteMutation, removeItem, updateMutation,
+    isEditingName, editName, setEditName, startEditingName, saveName, setIsEditingName,
+    navigate,
+  } = useRecipeDetailPage(id ?? '')
 
   if (isLoading) {
     return (
@@ -94,21 +44,9 @@ export default function RecipeDetailPage() {
     )
   }
 
-  const handleSaveName = () => {
-    if (!editName.trim() || editName === recipe.name) {
-      setIsEditingName(false)
-      return
-    }
-    updateMutation.mutate(
-      { id: recipe.id, name: editName.trim() },
-      { onSuccess: () => setIsEditingName(false) },
-    )
-  }
-
   return (
     <AppLayout>
       <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12 max-w-3xl mx-auto">
-        {/* Header */}
         <div className="mb-8">
           <button
             type="button"
@@ -118,86 +56,20 @@ export default function RecipeDetailPage() {
             <ArrowLeft size={18} weight="bold" />
             Voltar
           </button>
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-rose-50 dark:bg-rose-950/40 transition-colors duration-300">
-              <CookingPot size={22} weight="bold" className="text-rose-600" />
-            </div>
-            {isEditingName ? (
-              <div className="flex items-center gap-2 flex-1">
-                <input
-                  type="text"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleSaveName()
-                    if (e.key === 'Escape') setIsEditingName(false)
-                  }}
-                  autoFocus
-                  disabled={updateMutation.isPending}
-                  className="flex-1 text-2xl sm:text-3xl font-extrabold text-neutral-950 dark:text-neutral-100 bg-transparent outline-none border-b-2 border-rose-400 pb-1 disabled:opacity-50"
-                />
-                <button
-                  type="button"
-                  onClick={handleSaveName}
-                  disabled={updateMutation.isPending}
-                  className="w-9 h-9 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-950/60 flex items-center justify-center transition-colors cursor-pointer shrink-0 disabled:opacity-50"
-                >
-                  {updateMutation.isPending ? (
-                    <span className="inline-block w-4 h-4 border-2 border-rose-300 border-t-rose-600 rounded-full animate-spin" />
-                  ) : (
-                    <Check size={16} weight="bold" className="text-rose-600" />
-                  )}
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 flex-1 min-w-0">
-                <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight leading-none truncate">
-                  {recipe.name}
-                </h1>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditName(recipe.name)
-                    setIsEditingName(true)
-                  }}
-                  className="w-8 h-8 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center justify-center transition-colors duration-300 cursor-pointer shrink-0"
-                >
-                  <PencilSimple size={14} weight="bold" className="text-neutral-400 dark:text-neutral-500" />
-                </button>
-              </div>
-            )}
-          </div>
+          <RecipeNameEditor
+            name={recipe.name}
+            isEditing={isEditingName}
+            editName={editName}
+            isPending={updateMutation.isPending}
+            onChange={setEditName}
+            onStart={() => startEditingName(recipe.name)}
+            onSave={saveName}
+            onCancel={() => setIsEditingName(false)}
+          />
         </div>
 
-        {/* Totals */}
-        <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-5 sm:p-6 mb-6 transition-colors duration-300">
-          <div className="flex items-center gap-2 mb-5">
-            <Fire size={18} weight="fill" className="text-rose-500" />
-            <h2 className="text-sm font-black uppercase tracking-widest text-rose-600">
-              Totais da receita
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {totalsConfig.map((t) => (
-              <div key={t.label} className="flex flex-col min-w-0">
-                <span className="text-[10px] sm:text-xs font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest mb-1.5">
-                  {t.label}
-                </span>
-                <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-xl sm:text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tabular-nums leading-none">
-                    {Math.round(recipe.totals[t.valueKey])}
-                  </span>
-                  <span className="text-[10px] sm:text-xs font-bold text-neutral-400 dark:text-neutral-500 uppercase">{t.unit}</span>
-                </div>
-                <div className={`h-2 sm:h-2.5 rounded-full overflow-hidden ${t.track}`}>
-                  <div className={`h-full rounded-full ${t.color}`} style={{ width: '100%' }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <RecipeTotalsCard totals={recipe.totals} />
 
-        {/* Items list */}
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-black text-neutral-900 dark:text-neutral-200 uppercase tracking-widest">
             Alimentos ({recipe.items.length})
@@ -212,82 +84,23 @@ export default function RecipeDetailPage() {
         ) : (
           <div className="flex flex-col gap-3">
             {recipe.items.map((item) => (
-              <div
+              <RecipeItemRow
                 key={item.id}
-                className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-4 sm:p-5 hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors duration-150"
-              >
-                <div className="flex items-center justify-between gap-3 mb-3">
-                  <div className="min-w-0">
-                    <p className="text-sm sm:text-base font-bold text-neutral-950 dark:text-neutral-100 truncate">
-                      {(item.food ?? item.privateFood)?.name ?? 'Alimento'}
-                    </p>
-                    <p className="text-xs font-bold text-neutral-400 dark:text-neutral-500 mt-0.5">
-                      {Math.round(item.quantity)}g
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <div className="text-right">
-                      <p className="text-lg sm:text-xl font-extrabold tabular-nums leading-none text-rose-600">
-                        {Math.round(item.calories)}
-                      </p>
-                      <p className="text-[9px] sm:text-[10px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide mt-0.5">
-                        kcal
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setConfirm({
-                          type: 'recipeItem',
-                          recipeId: recipe.id,
-                          itemId: item.id,
-                          name: (item.food ?? item.privateFood)?.name ?? 'Alimento',
-                        })
-                      }
-                      disabled={removeItem.isPending}
-                      className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-150 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed bg-rose-50 dark:bg-rose-950/40 text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-950/60"
-                      aria-label={`Remover ${(item.food ?? item.privateFood)?.name ?? 'Alimento'}`}
-                    >
-                      <X size={14} weight="bold" />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-100 rounded-lg px-2 py-1.5 transition-colors duration-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                    <span className="text-[11px] font-extrabold text-amber-900 tabular-nums">
-                      {Math.round(item.protein)}<span className="text-amber-700 font-bold">g</span>
-                    </span>
-                    <span className="text-[9px] font-extrabold uppercase tracking-wider text-amber-800 ml-auto">
-                      Prot
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-950/40 border border-blue-100 rounded-lg px-2 py-1.5 transition-colors duration-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
-                    <span className="text-[11px] font-extrabold text-blue-900 tabular-nums">
-                      {Math.round(item.carbs)}<span className="text-blue-700 font-bold">g</span>
-                    </span>
-                    <span className="text-[9px] font-extrabold uppercase tracking-wider text-blue-800 ml-auto">
-                      Carb
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 bg-violet-50 dark:bg-violet-950/40 border border-violet-100 rounded-lg px-2 py-1.5 transition-colors duration-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-violet-500 shrink-0" />
-                    <span className="text-[11px] font-extrabold text-violet-900 tabular-nums">
-                      {Math.round(item.fat)}<span className="text-violet-700 font-bold">g</span>
-                    </span>
-                    <span className="text-[9px] font-extrabold uppercase tracking-wider text-violet-800 ml-auto">
-                      Gord
-                    </span>
-                  </div>
-                </div>
-              </div>
+                item={item}
+                isRemovePending={removeItem.isPending}
+                onRemove={(it) =>
+                  setConfirm({
+                    type: 'recipeItem',
+                    recipeId: recipe.id,
+                    itemId: it.id,
+                    name: (it.food ?? it.privateFood)?.name ?? 'Alimento',
+                  })
+                }
+              />
             ))}
           </div>
         )}
 
-        {/* Actions */}
         <div className="flex gap-3 mt-6">
           <button
             type="button"

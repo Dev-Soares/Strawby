@@ -1,5 +1,14 @@
 import { z } from 'zod'
 
+export type Plan = {
+  id: string
+  calories: number
+  protein: number
+  carbs: number
+  fat: number
+  patientId: string
+}
+
 export const planSchema = z.object({
   calories: z
     .number({ error: 'Informe um valor' })
