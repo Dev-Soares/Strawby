@@ -17,7 +17,7 @@ export class DailyScoreService {
     private readonly patientAccess: PatientAccessService,
     private readonly planService: PlanService,
     private readonly mealService: MealService,
-  ) {}
+  ) { }
 
   private parseDay(day: string): Date {
     const start = new Date(day + 'T00:00:00.000Z');
@@ -135,31 +135,35 @@ export class DailyScoreService {
   }
 
   async closeDayScoreForEachUser(day: string): Promise<void> {
-    const date = this.parseDay(day);
-    const patients = await this.prisma.patient.findMany({ select: { id: true } });
+    try {
+      const date = this.parseDay(day);
+      const patients = await this.prisma.patient.findMany({ select: { id: true } });
 
-    const patientIds = patients.map(patient => patient.id);
-    if (patientIds.length === 0) return;
+      const patientIds = patients.map(patient => patient.id);
+      if (patientIds.length === 0) return;
 
-    const [mealsMap, plansMap] = await Promise.all([
-      this.mealService.queryMealsByDayBulk(patientIds, day),
-      this.planService.queryPlansByPatientsBulk(patientIds),
-    ]);
+      const [mealsMap, plansMap] = await Promise.all([
+        this.mealService.queryMealsByDayBulk(patientIds, day),
+        this.planService.queryPlansByPatientsBulk(patientIds),
+      ]);
 
-    const scored = patientIds
-      .filter(patientId => plansMap.get(patientId))
-      .map(patientId => {
-        const meals = mealsMap.get(patientId) ?? [];
-        const plan = plansMap.get(patientId)!;
-        const score = this.calculateDailyScore(this.reduceDayMacros(meals), plan);
-        return { date, score, patientId };
+      const scored = patientIds
+        .filter(patientId => plansMap.get(patientId))
+        .map(patientId => {
+          const meals = mealsMap.get(patientId) ?? [];
+          const plan = plansMap.get(patientId)!;
+          const score = this.calculateDailyScore(this.reduceDayMacros(meals), plan);
+          return { date, score, patientId };
+        });
+
+      if (scored.length === 0) return;
+
+      await this.prisma.dailyScore.createMany({
+        data: scored,
+        skipDuplicates: true,
       });
-
-    if (scored.length === 0) return;
-
-    await this.prisma.dailyScore.createMany({
-      data: scored,
-      skipDuplicates: true,
-    });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao fechar pontuações')
+    }
   }
 }
