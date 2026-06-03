@@ -80,7 +80,10 @@ export class UserService {
 
   async update(id: string, dto: UpdateUserDto): Promise<UserPublic> {
     const hasPatientFields =
-      dto.weight !== undefined || dto.age !== undefined || dto.gender !== undefined;
+      dto.weight !== undefined ||
+      dto.height !== undefined ||
+      dto.age !== undefined ||
+      dto.gender !== undefined;
 
     try {
       if (hasPatientFields) {
@@ -88,6 +91,7 @@ export class UserService {
           where: { id },
           data: {
             ...(dto.weight !== undefined && { weight: dto.weight }),
+            ...(dto.height !== undefined && { height: dto.height }),
             ...(dto.age !== undefined && { age: dto.age }),
             ...(dto.gender !== undefined && { gender: dto.gender }),
           },
