@@ -52,9 +52,9 @@ function buildWeekData(scores: DailyScore[], weekStart: Date): WeeklyReportData 
     const scoreEntry = scores.find((s) => {
       const sDate = new Date(s.date)
       return (
-        sDate.getFullYear() === d.getFullYear() &&
-        sDate.getMonth() === d.getMonth() &&
-        sDate.getDate() === d.getDate()
+        sDate.getUTCFullYear() === d.getFullYear() &&
+        sDate.getUTCMonth() === d.getMonth() &&
+        sDate.getUTCDate() === d.getDate()
       )
     })
 
