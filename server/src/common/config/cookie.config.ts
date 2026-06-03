@@ -6,7 +6,7 @@ const cookieDomain = process.env.COOKIE_DOMAIN;
 export const cookieConfig: CookieOptions = {
   httpOnly: true,
   secure: isProduction,
-  sameSite: isProduction ? 'none' : 'strict',
+  sameSite: isProduction ? 'lax' : 'strict',
   path: '/',
   ...(cookieDomain && { domain: cookieDomain }),
   maxAge: 1000 * 60 * 60 * 24 * 30,
