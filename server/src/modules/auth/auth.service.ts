@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { HashService } from 'src/common/hash/hash.service';
 import { JwtService } from '@nestjs/jwt';
@@ -25,7 +25,7 @@ export class AuthService {
     }
 
     if (!user.emailVerified) {
-      throw new UnauthorizedException('E-mail não verificado');
+      throw new ForbiddenException('E-mail não verificado');
     }
 
     const passwordValid = await this.hashService.comparePassword(password, user.password);
@@ -75,13 +75,20 @@ export class AuthService {
     }
   }
 
-  async verifyEmail(token: string) {
+  async resendVerificationEmail(email: string): Promise<void> {
+    return this.usersService.resendVerificationEmail(email);
+  }
+
+  async verifyEmail(token: string): Promise<AuthTokenResponse> {
     const user = await this.usersService.findOneByVerificationToken(token);
 
     if (!user) {
       throw new UnauthorizedException('Token de verificação inválido ou expirado');
     }
 
-    return this.usersService.markEmailAsVerified(user.id);
+    const verifiedUser = await this.usersService.markEmailAsVerified(user.id);
+    const payload = { sub: verifiedUser.id, name: verifiedUser.name, role: verifiedUser.role };
+    const access_token = await this.jwtService.signAsync(payload);
+    return { access_token };
   }
 }

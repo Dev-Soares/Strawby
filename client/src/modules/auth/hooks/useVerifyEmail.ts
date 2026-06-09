@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { isAxiosError } from 'axios'
@@ -9,6 +9,7 @@ import { verifyEmailService } from '../service/verifyEmailService'
 
 export const useVerifyEmail = () => {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const form = useForm<VerifyEmailData>({
     resolver: zodResolver(verifyEmailSchema),
@@ -16,9 +17,10 @@ export const useVerifyEmail = () => {
 
   const mutation = useMutation({
     mutationFn: (data: VerifyEmailData) => verifyEmailService(data.code),
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('E-mail verificado com sucesso!')
-      navigate('/app/login')
+      await queryClient.refetchQueries({ queryKey: ['user', 'me'], exact: true })
+      navigate('/app/home')
     },
     onError: (error) => {
       if (isAxiosError(error) && error.response?.status === 401) {

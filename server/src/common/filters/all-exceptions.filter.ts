@@ -61,11 +61,21 @@ export class AllExceptionsFilter implements ExceptionFilter {
       statusCode: status,
     };
 
+    if (isServerError && req.body && Object.keys(req.body).length > 0) {
+      logPayload.requestBody = redact(req.body);
+    }
+
     if (exception instanceof HttpException) {
       logPayload.errorName = exception.name;
       logPayload.errorMessage = exception.message;
       if (isServerError) {
         logPayload.stack = exception.stack;
+        const cause = (exception as any).cause;
+        if (cause instanceof Error) {
+          logPayload.cause = { message: cause.message, stack: cause.stack };
+        } else if (cause !== undefined) {
+          logPayload.cause = cause;
+        }
       }
     } else if (exception instanceof Error) {
       logPayload.errorName = exception.name;

@@ -22,7 +22,11 @@ export const useSignIn = () => {
       await queryClient.refetchQueries({ queryKey: ['user', 'me'], exact: true })
       navigate('/app/home')
     },
-    onError: (error) => {
+    onError: (error, variables) => {
+      if (isAxiosError(error) && error.response?.status === 403) {
+        navigate('/app/verify-email', { state: { email: variables.email } })
+        return
+      }
       if (isAxiosError(error) && error.response?.status === 401) {
         toast.error('E-mail ou senha inválidos')
         return

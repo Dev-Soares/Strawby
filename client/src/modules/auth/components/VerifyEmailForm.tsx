@@ -1,6 +1,7 @@
 import { useLocation, Link } from 'react-router-dom'
 import { EnvelopeSimple } from '@phosphor-icons/react'
 import { useVerifyEmail } from '../hooks/useVerifyEmail'
+import { useResendVerification } from '../hooks/useResendVerification'
 
 export default function VerifyEmailForm() {
   const location = useLocation()
@@ -12,6 +13,8 @@ export default function VerifyEmailForm() {
     formState: { errors },
     isPending,
   } = useVerifyEmail()
+
+  const { mutate: resend, isPending: isResending } = useResendVerification(email ?? '')
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:gap-28 items-stretch w-full">
@@ -63,6 +66,17 @@ export default function VerifyEmailForm() {
             >
               {isPending ? 'Verificando…' : 'Verificar e-mail'}
             </button>
+
+            {email && (
+              <button
+                type="button"
+                onClick={() => resend()}
+                disabled={isResending}
+                className="w-full rounded-full border border-neutral-700 text-neutral-400 font-semibold py-3 px-12 text-[14px] hover:border-neutral-500 hover:text-neutral-300 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
+              >
+                {isResending ? 'Reenviando…' : 'Reenviar código'}
+              </button>
+            )}
 
             <p className="text-[14px] text-neutral-500">
               Já tem conta?{' '}

@@ -71,7 +71,18 @@ export class AuthController {
   }
 
   @Get('verify-email')
-  verifyEmail(@Query('token') token: string) {
-    return this.authService.verifyEmail(token);
+  async verifyEmail(
+    @Query('token') token: string,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<SignInResponse> {
+    const result = await this.authService.verifyEmail(token);
+    res.cookie('access_token', result.access_token, cookieConfig);
+    return { message: 'E-mail verificado com sucesso' };
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('resend-verification')
+  resendVerification(@Body('email') email: string) {
+    return this.authService.resendVerificationEmail(email);
   }
 }

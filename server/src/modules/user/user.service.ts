@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashService } from '../../common/hash/hash.service';
@@ -19,13 +19,12 @@ export class UserService {
 
   async create(data: CreateUserDto): Promise<UserPublic> {
     const hashedPassword = await this.hashService.hashPassword(data.password);
-
     const emailVerificationToken = generateVerificationCode();
-
     const expiringDate = new Date(Date.now() + 60 * 60 * 1000);
 
+    let user: UserPublic;
     try {
-      const user = await this.prisma.user.create({
+      user = await this.prisma.user.create({
         data: {
           name: data.name,
           email: data.email,
@@ -37,17 +36,14 @@ export class UserService {
         },
         select: userSelect,
       });
-
-      await this.emailService.sendVerificationEmail(
-        data.email,
-        emailVerificationToken,
-      );
-      return user;
     } catch (error) {
       mapPrismaError(error, 'Erro ao criar usuário', {
         p2002: 'E-mail já cadastrado',
       });
     }
+
+    await this.emailService.sendVerificationEmail(data.email, emailVerificationToken);
+    return user!;
   }
 
   async createFromGoogle(email: string, name: string): Promise<UserPublic> {
@@ -205,13 +201,44 @@ export class UserService {
     }
   }
 
-  async deleteUnverifiedUsers(): Promise<void> {
-    const now = new Date();
+  async resendVerificationEmail(email: string): Promise<void> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+        select: { id: true, email: true, emailVerified: true },
+      });
 
-    await this.prisma.user.deleteMany({
+      if (!user) throw new NotFoundException('Usuário não encontrado');
+      if (user.emailVerified) throw new BadRequestException('E-mail já verificado');
+
+      const verificationToken = generateVerificationCode();
+      const verificationTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000);
+
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { verificationToken, verificationTokenExpiresAt },
+      });
+
+      await this.emailService.sendVerificationEmail(email, verificationToken);
+
+    } catch (error) {
+
+      if (error instanceof NotFoundException) throw error;
+      if (error instanceof BadRequestException) throw error;
+      
+      mapPrismaError(error, 'Erro ao reenviar e-mail de verificação');
+    }
+  }
+
+  async clearExpiredVerificationTokens(): Promise<void> {
+    await this.prisma.user.updateMany({
       where: {
         emailVerified: false,
-        verificationTokenExpiresAt: { lt: now },
+        verificationTokenExpiresAt: { lt: new Date() },
+      },
+      data: {
+        verificationToken: null,
+        verificationTokenExpiresAt: null,
       },
     });
   }

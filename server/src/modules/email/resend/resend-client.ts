@@ -1,3 +1,8 @@
-import { Resend }  from 'resend';
+import { Resend } from 'resend';
 
-export const ResendClient = new Resend(process.env.RESEND_API_KEY);
+let _client: Resend | null = null;
+
+export const getResendClient = (): Resend => {
+  if (!_client) _client = new Resend(process.env.RESEND_API_KEY);
+  return _client;
+};
