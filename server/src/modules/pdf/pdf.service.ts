@@ -3,7 +3,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import puppeteer from 'puppeteer';
 import { buildPlanHtml, type PlanPdfData } from './templates/plan.template';
-import { buildWeeklyReportHtml, type WeeklyReportPdfData } from './templates/weekly-report.template';
 
 @Injectable()
 export class PdfService {
