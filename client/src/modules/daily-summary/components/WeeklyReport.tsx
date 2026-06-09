@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
-import { CheckIcon, XIcon, CalendarBlankIcon, WarningIcon } from '@phosphor-icons/react'
-import type { WeeklyReportData, WeekDay, WeekDayStatus } from '../types/weeklyReport'
+import { CalendarBlankIcon } from '@phosphor-icons/react'
+import type { WeeklyReportData, WeekDay } from '../types/weeklyReport'
 
 interface WeeklyReportProps {
   data: WeeklyReportData
@@ -11,30 +11,6 @@ interface WeeklyReportProps {
 const fullDayNames = ['SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB', 'DOM']
 const shortDayNames = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']
 
-function StatusMark({ status }: { status: WeekDayStatus }) {
-  if (status === 'good') {
-    return (
-      <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center shrink-0 bg-emerald-500">
-        <CheckIcon size={12} weight="bold" className="text-white" />
-      </div>
-    )
-  }
-  if (status === 'warn') {
-    return (
-      <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center shrink-0 bg-amber-500">
-        <WarningIcon size={12} weight="bold" className="text-white" />
-      </div>
-    )
-  }
-  if (status === 'bad') {
-    return (
-      <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-red-500 flex items-center justify-center shrink-0">
-        <XIcon size={12} weight="bold" className="text-white" />
-      </div>
-    )
-  }
-  return <div className="w-1.5 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-600 shrink-0 transition-colors duration-300" />
-}
 
 function DayCell({ day, idx, isToday }: { day: WeekDay; idx: number; isToday: boolean }) {
   const dimmed = day.status === 'neutral' && !isToday
@@ -113,9 +89,6 @@ export default function WeeklyReport({ data, todayIndex, weekStartDate }: Weekly
     .toLocaleDateString('pt-BR', { month: 'long' })
     .toUpperCase()
   const displayMonth = monthLabel.charAt(0) + monthLabel.slice(1).toLowerCase()
-  const yearLabel = weekStartDate.getFullYear()
-  const weekNumber = Math.ceil(weekStartDate.getDate() / 7)
-
   return (
     <motion.div
       className="relative bg-white dark:bg-neutral-900 rounded-2xl sm:rounded-4xl overflow-hidden border border-neutral-200/70 dark:border-neutral-800/70 shadow-[0_10px_40px_-18px_rgba(0,0,0,0.18)] transition-colors duration-300"
