@@ -4,9 +4,9 @@ import { useGetDailyScores } from '../hooks/useGetDailyScores'
 import DailyScoreSkeleton from '../skeletons/DailyScoreSkeleton'
 import DailyScoreCard from './DailyScoreCard'
 import TotalScoreCard from './TotalScoreCard'
-import WeeklyReport from '../../home/components/WeeklyReport'
+import WeeklyReport from '../../daily-summary/components/WeeklyReport'
 import PatientStreakCard from '../../patient/components/PatientStreakCard'
-import type { WeeklyReportData, WeekDayStatus } from '../../home/types/weeklyReport'
+import type { WeeklyReportData, WeekDayStatus } from '../../daily-summary/types/weeklyReport'
 import type { DailyScore } from '../types/dailyScore'
 
 function getDayStatus(score: number): WeekDayStatus {

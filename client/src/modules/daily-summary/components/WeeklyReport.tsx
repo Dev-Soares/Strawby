@@ -81,9 +81,27 @@ function DayCell({ day, idx, isToday }: { day: WeekDay; idx: number; isToday: bo
           </span>
         </div>
 
-        {/* Footer: status */}
-        <div className="flex items-center justify-center pb-2.5 sm:pb-3 pt-1 min-h-[26px] sm:min-h-7">
-          <StatusMark status={day.status} />
+        {/* Footer: score */}
+        <div className="flex items-center justify-center pb-2.5 sm:pb-3 pt-1 min-h-6.5 sm:min-h-7">
+          {day.score !== undefined ? (
+            <div
+              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${
+                isToday
+                  ? 'bg-white/20'
+                  : day.status === 'good'
+                    ? 'bg-emerald-500'
+                    : day.status === 'warn'
+                      ? 'bg-amber-500'
+                      : 'bg-red-500'
+              } transition-colors duration-300`}
+            >
+              <span className="text-[11px] sm:text-xs font-extrabold text-white tabular-nums leading-none">
+                {day.score}
+              </span>
+            </div>
+          ) : (
+            <span className="w-1.5 h-1.5 rounded-full bg-neutral-300 dark:bg-neutral-600" />
+          )}
         </div>
       </div>
     </motion.div>
