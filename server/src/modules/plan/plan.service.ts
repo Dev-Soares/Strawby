@@ -72,7 +72,7 @@ export class PlanService {
     return this.queryPlanByPatient(patientId);
   }
 
-  async getPlanPdf(callerId: string, patientId: string): Promise<Buffer> {
+  async getPlanPdf(callerId: string, patientId: string): Promise<{ buffer: Buffer; filename: string }> {
     await this.patientAccess.resolve(callerId, patientId);
 
     const plan = await this.queryPlanByPatient(patientId);
@@ -89,12 +89,16 @@ export class PlanService {
       this.mealService.findAllByPatient(callerId, patientId, MealKind.PLAN),
     ]);
 
-    return this.pdfService.generatePlanPdf({
+    const patientName = patientData?.user?.name ?? 'Paciente';
+
+    const buffer = await this.pdfService.generatePlanPdf({
       plan,
       meals,
-      patientName: patientData?.user?.name ?? 'Paciente',
+      patientName,
       nutritionistName: patientData?.nutritionist?.user?.name ?? 'Nutricionista',
     });
+
+    return { buffer, filename: `Plano de ${patientName}.pdf` };
   }
 
   async queryPlansByPatientsBulk(patientIds: string[]): Promise<Map<string, PlanPublic | null>> {

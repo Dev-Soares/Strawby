@@ -52,9 +52,9 @@ export default function PatientHeader({ patient }: Props) {
       {bodyStats.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-3">
           {bodyStats.map(({ Icon, label }) => (
-            <div key={label} className="flex items-center gap-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-xl px-3 py-1.5">
-              <Icon size={13} weight="bold" className="text-neutral-400 dark:text-neutral-500 shrink-0" />
-              <span className="text-xs font-bold text-neutral-600 dark:text-neutral-300">{label}</span>
+            <div key={label} className="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl px-4 py-2">
+              <Icon size={15} weight="bold" className="text-neutral-400 dark:text-neutral-500 shrink-0" />
+              <span className="text-sm font-bold text-neutral-600 dark:text-neutral-300">{label}</span>
             </div>
           ))}
         </div>

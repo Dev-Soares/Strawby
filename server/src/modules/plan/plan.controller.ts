@@ -52,11 +52,11 @@ export class PlanController {
     @Req() req: AuthenticatedRequest,
     @Param('patientId') patientId: string,
   ) {
-    const pdfBuffer = await this.planService.getPlanPdf(req.user.sub, patientId);
+    const { buffer, filename } = await this.planService.getPlanPdf(req.user.sub, patientId);
     return {
-      filename: `plano-${patientId}.pdf`,
+      filename,
       contentType: 'application/pdf',
-      data: pdfBuffer,
+      data: buffer,
     };
   }
 }
