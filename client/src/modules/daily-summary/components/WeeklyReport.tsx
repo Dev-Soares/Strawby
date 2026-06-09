@@ -133,15 +133,6 @@ export default function WeeklyReport({ data, todayIndex, weekStartDate }: Weekly
               <CalendarBlankIcon size={22} weight="duotone" className="text-red-600" />
             </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5 sm:gap-2 mb-1 flex-wrap">
-                <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-[0.22em] sm:tracking-[0.3em] text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
-                  {yearLabel}
-                </span>
-                <span className="w-1 h-1 rounded-full bg-neutral-300 dark:bg-neutral-700 transition-colors duration-300" />
-                <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-[0.22em] sm:tracking-[0.3em] text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
-                  Semana {weekNumber}
-                </span>
-              </div>
               <h2 className="font-display text-xl sm:text-3xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight leading-none truncate transition-colors duration-300">
                 {displayMonth}
               </h2>
