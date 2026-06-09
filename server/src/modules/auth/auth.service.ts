@@ -3,7 +3,7 @@ import { UserService } from '../user/user.service';
 import { HashService } from 'src/common/hash/hash.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthTokenResponse } from './types';
-import { client } from './google-client/client';
+import { googleClient } from './google-client/client';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +22,10 @@ export class AuthService {
 
     if (!user.password) {
       throw new UnauthorizedException('Esta conta usa login com Google');
+    }
+
+    if (!user.emailVerified) {
+      throw new UnauthorizedException('E-mail não verificado');
     }
 
     const passwordValid = await this.hashService.comparePassword(password, user.password);
@@ -45,7 +49,7 @@ export class AuthService {
 
   async googleAuth(credential: string): Promise<AuthTokenResponse> {
     try {
-      const ticket = await client.verifyIdToken({
+      const ticket = await googleClient.verifyIdToken({
         idToken: credential,
         audience: process.env.GOOGLE_CLIENT_ID,
       });
@@ -69,5 +73,15 @@ export class AuthService {
       if (error instanceof UnauthorizedException) throw error;
       throw new InternalServerErrorException('Erro ao autenticar com Google');
     }
+  }
+
+  async verifyEmail(token: string) {
+    const user = await this.usersService.findOneByVerificationToken(token);
+
+    if (!user) {
+      throw new UnauthorizedException('Token de verificação inválido ou expirado');
+    }
+
+    return this.usersService.markEmailAsVerified(user.id);
   }
 }

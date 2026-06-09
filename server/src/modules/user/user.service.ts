@@ -6,27 +6,43 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { CompleteOnboardingDto } from './dto/complete-onboarding.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { UserPublic, userSelect, UserCredentials } from './types';
+import { generateVerificationCode } from '../../common/utils/generate-verification-code';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly hashService: HashService,
+    private readonly emailService: EmailService,
   ) {}
 
   async create(data: CreateUserDto): Promise<UserPublic> {
     const hashedPassword = await this.hashService.hashPassword(data.password);
+
+    const emailVerificationToken = generateVerificationCode();
+
+    const expiringDate = new Date(Date.now() + 60 * 60 * 1000);
+
     try {
-      return await this.prisma.user.create({
+      const user = await this.prisma.user.create({
         data: {
           name: data.name,
           email: data.email,
           password: hashedPassword,
           termsAcceptedAt: new Date(),
           termsVersion: data.termsVersion,
+          verificationToken: emailVerificationToken,
+          verificationTokenExpiresAt: expiringDate,
         },
         select: userSelect,
       });
+
+      await this.emailService.sendVerificationEmail(
+        data.email,
+        emailVerificationToken,
+      );
+      return user;
     } catch (error) {
       mapPrismaError(error, 'Erro ao criar usuário', {
         p2002: 'E-mail já cadastrado',
@@ -47,7 +63,10 @@ export class UserService {
     }
   }
 
-  async completeOnboarding(userId: string, dto: CompleteOnboardingDto): Promise<UserPublic> {
+  async completeOnboarding(
+    userId: string,
+    dto: CompleteOnboardingDto,
+  ): Promise<UserPublic> {
     try {
       return await this.prisma.user.update({
         where: { id: userId },
@@ -75,11 +94,13 @@ export class UserService {
     }
   }
 
-  async findByEmailWithPassword(email: string): Promise<UserCredentials | null> {
+  async findByEmailWithPassword(
+    email: string,
+  ): Promise<UserCredentials | null> {
     try {
       return await this.prisma.user.findUnique({
         where: { email },
-        select: { id: true, name: true, password: true, role: true },
+        select: { id: true, name: true, password: true, role: true, emailVerified: true },
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar usuário');
@@ -150,5 +171,48 @@ export class UserService {
         p2025: 'Usuário não encontrado',
       });
     }
+  }
+
+  async findOneByVerificationToken(token: string): Promise<UserPublic | null> {
+    try {
+      return await this.prisma.user.findFirst({
+        where: {
+          verificationToken: token,
+          verificationTokenExpiresAt: { gt: new Date() },
+        },
+        select: userSelect,
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar usuário por token de verificação');
+    }
+  }
+
+  async markEmailAsVerified(userId: string): Promise<UserPublic> {
+    try {
+      return await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          emailVerified: true,
+          verificationToken: null,
+          verificationTokenExpiresAt: null,
+        },
+        select: userSelect,
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao verificar e-mail', {
+        p2025: 'Usuário não encontrado',
+      });
+    }
+  }
+
+  async deleteUnverifiedUsers(): Promise<void> {
+    const now = new Date();
+
+    await this.prisma.user.deleteMany({
+      where: {
+        emailVerified: false,
+        verificationTokenExpiresAt: { lt: now },
+      },
+    });
   }
 }

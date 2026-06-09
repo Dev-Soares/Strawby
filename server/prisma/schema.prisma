@@ -6,7 +6,6 @@ datasource db {
   provider = "postgresql"
 }
 
-
 enum FoodSource {
   TACO
   USDA_FOUNDATION
@@ -35,18 +34,20 @@ enum Role {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  name         String
-  email        String        @unique
-  password     String?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  emailVerified Boolean       @default(false)
-  role            Role        @default(user)
-  termsAcceptedAt DateTime?
-  termsVersion    String?
-  patient         Patient?
-  nutritionist    Nutritionist?
+  id                         String        @id @default(uuid())
+  name                       String
+  email                      String        @unique
+  password                   String?
+  createdAt                  DateTime      @default(now())
+  updatedAt                  DateTime      @updatedAt
+  emailVerified              Boolean       @default(false)
+  role                       Role          @default(user)
+  termsAcceptedAt            DateTime?
+  termsVersion               String?
+  patient                    Patient?
+  nutritionist               Nutritionist?
+  verificationToken          String?       @unique
+  verificationTokenExpiresAt DateTime?
 }
 
 model Patient {
@@ -60,7 +61,7 @@ model Patient {
   privateFoods       PrivateFood[]
   dailyScores        DailyScore[]
   connectionRequests ConnectionRequest[]
-  currentStreak       Int                 @default(0)
+  currentStreak      Int                 @default(0)
   bestStreak         Int                 @default(0)
   weight             Float?
   height             Float?
@@ -106,24 +107,24 @@ model Plan {
 }
 
 model Food {
-  id            String         @id @default(uuid())
-  name          String
-  nameOriginal  String?
-  source        FoodSource
-  sourceId      String?
-  sourceUrl     String?
-  category      String?
-  priority      Int            @default(0)
-  calories      Float
-  protein       Float
-  carbs         Float
-  fat           Float
-  fiber         Float?
-  sodium        Float?
-  servingSize   String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  foodItems     FoodItem[]
+  id           String     @id @default(uuid())
+  name         String
+  nameOriginal String?
+  source       FoodSource
+  sourceId     String?
+  sourceUrl    String?
+  category     String?
+  priority     Int        @default(0)
+  calories     Float
+  protein      Float
+  carbs        Float
+  fat          Float
+  fiber        Float?
+  sodium       Float?
+  servingSize  String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  foodItems    FoodItem[]
 
   @@unique([source, sourceId])
   @@index([priority(sort: Desc), name])

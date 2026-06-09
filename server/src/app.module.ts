@@ -18,6 +18,7 @@ import { ConnectionRequestModule } from './modules/connection-request/connection
 import { ScheduleModule } from '@nestjs/schedule';
 import { JobsModule } from './modules/jobs/jobs.module';
 import { PatientModule } from './modules/patient/patient.module';
+import { EmailModule } from './modules/email/email.module';
 
 @Module({
 	imports: [
@@ -80,7 +81,8 @@ import { PatientModule } from './modules/patient/patient.module';
 		ConnectionRequestModule,
 		PatientModule,
 		JobsModule,
-		ScheduleModule.forRoot(),		
+		EmailModule,
+		ScheduleModule.forRoot(),
 	],
 	providers: [
 		{

@@ -7,6 +7,8 @@ import {
   Res,
   Req,
   UseGuards,
+  Get,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from 'src/common/types/req-types';
@@ -30,7 +32,10 @@ export class AuthController {
     @Body() signInDto: SignInDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<SignInResponse> {
-    const result = await this.authService.signIn(signInDto.email, signInDto.password);
+    const result = await this.authService.signIn(
+      signInDto.email,
+      signInDto.password,
+    );
     res.cookie('access_token', result.access_token, cookieConfig);
     return { message: 'Login efetuado com sucesso' };
   }
@@ -59,10 +64,14 @@ export class AuthController {
     @Body('credential') credential: string,
     @Res({ passthrough: true }) res: Response,
   ): Promise<SignInResponse> {
-
     const result = await this.authService.googleAuth(credential);
-    
+
     res.cookie('access_token', result.access_token, cookieConfig);
     return { message: 'Login com Google efetuado com sucesso' };
+  }
+
+  @Get('verify-email')
+  verifyEmail(@Query('token') token: string) {
+    return this.authService.verifyEmail(token);
   }
 }
