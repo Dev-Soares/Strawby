@@ -5,11 +5,13 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
 import { HashModule } from '../../common/hash/hash.module';
+import { AuthGuardModule } from '../../common/guards/auth/auth.module';
 
 @Module({
   imports: [
     UserModule,
     HashModule,
+    AuthGuardModule,
     JwtModule.registerAsync({
       global: true,
       inject: [ConfigService],

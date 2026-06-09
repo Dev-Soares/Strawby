@@ -28,4 +28,4 @@ export const userSelect = {
   },
 } as const;
 
-export type UserCredentials = Pick<User, 'id' | 'name' | 'password' | 'role'>;
+export type UserCredentials = Pick<User, 'id' | 'name' | 'password' | 'role' | 'emailVerified'>;

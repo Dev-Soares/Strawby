@@ -5,14 +5,15 @@ import TotalScoreCardSkeleton from '../skeletons/TotalScoreCardSkeleton'
 
 function getScoreLabel(score: number) {
   if (score >= 8) return 'Excelente'
-  if (score >= 5) return 'Bom'
-  if (score >= 3) return 'Regular'
+  if (score >= 6) return 'Bom'
+  if (score >= 4) return 'Regular'
   return 'Precisa melhorar'
 }
 
 function getScoreColor(score: number) {
   if (score >= 8) return '#10b981'
-  if (score >= 5) return '#f59e0b'
+  if (score >= 6) return '#f59e0b'
+  if (score >= 4) return '#f97316'
   return '#dc2626'
 }
 
@@ -41,9 +42,6 @@ export default function TotalScoreCard() {
             <ChartBar size={22} weight="duotone" className="text-red-600" />
           </div>
           <div className="min-w-0">
-            <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-[0.22em] sm:tracking-[0.3em] text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
-              Geral
-            </span>
             <h2 className="font-display text-xl sm:text-3xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight leading-none transition-colors duration-300">
               Score total
             </h2>

@@ -4,34 +4,30 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { isAxiosError } from 'axios'
-import { signInSchema, type SignInData } from '../types/signIn'
-import { signInService } from '../service/signInService'
+import { verifyEmailSchema, type VerifyEmailData } from '../types/verifyEmail'
+import { verifyEmailService } from '../service/verifyEmailService'
 
-export const useSignIn = () => {
+export const useVerifyEmail = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const form = useForm<SignInData>({
-    resolver: zodResolver(signInSchema),
+  const form = useForm<VerifyEmailData>({
+    resolver: zodResolver(verifyEmailSchema),
   })
 
   const mutation = useMutation({
-    mutationFn: signInService,
+    mutationFn: (data: VerifyEmailData) => verifyEmailService(data.code),
     onSuccess: async () => {
-      toast.success('Bem-vindo de volta!')
+      toast.success('E-mail verificado com sucesso!')
       await queryClient.refetchQueries({ queryKey: ['user', 'me'], exact: true })
       navigate('/app/home')
     },
-    onError: (error, variables) => {
-      if (isAxiosError(error) && error.response?.status === 403) {
-        navigate('/app/verify-email', { state: { email: variables.email } })
-        return
-      }
+    onError: (error) => {
       if (isAxiosError(error) && error.response?.status === 401) {
-        toast.error('E-mail ou senha inválidos')
+        toast.error('Código inválido ou expirado')
         return
       }
-      toast.error('Erro ao entrar. Tente novamente.')
+      toast.error('Não foi possível verificar o e-mail')
     },
   })
 
