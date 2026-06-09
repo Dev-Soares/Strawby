@@ -4,10 +4,11 @@ import { Throttle } from '@nestjs/throttler';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CompleteOnboardingDto } from './dto/complete-onboarding.dto';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
-import type { OptionalAuthRequest } from 'src/common/types/req-types';
 import { OptionalAuthGuard } from 'src/common/guards/auth/optionalAuth.guard';
 import { OwnershipGuard } from 'src/common/guards/auth/ownership.guard';
+import type { AuthenticatedRequest, OptionalAuthRequest } from 'src/common/types/req-types';
 
 @ApiTags('user')
 @Controller('user')
@@ -18,6 +19,15 @@ export class UserController {
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('onboarding')
+  completeOnboarding(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: CompleteOnboardingDto,
+  ) {
+    return this.userService.completeOnboarding(req.user.sub, dto);
   }
 
   @UseGuards(OptionalAuthGuard)

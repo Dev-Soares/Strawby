@@ -25,7 +25,6 @@ export const useSignUp = () => {
     onSuccess: (user) => {
       toast.success('Conta criada com sucesso!')
       queryClient.setQueryData(['user', 'me'], user)
-      sessionStorage.setItem('strawby_show_tutorial', '1')
       navigate('/app/home')
     },
     onError: (error) => {

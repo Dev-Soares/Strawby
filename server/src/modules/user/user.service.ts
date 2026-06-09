@@ -3,10 +3,9 @@ import { PrismaService } from '../database/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashService } from '../../common/hash/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { CompleteOnboardingDto } from './dto/complete-onboarding.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { UserPublic, userSelect, UserCredentials } from './types';
-
-
 
 @Injectable()
 export class UserService {
@@ -23,21 +22,8 @@ export class UserService {
           name: data.name,
           email: data.email,
           password: hashedPassword,
-          role: data.role,
           termsAcceptedAt: new Date(),
           termsVersion: data.termsVersion,
-          ...(data.role === 'patient'
-            ? {
-                patient: {
-                  create: {
-                    ...(data.weight !== undefined && { weight: data.weight }),
-                    ...(data.height !== undefined && { height: data.height }),
-                    ...(data.age !== undefined && { age: data.age }),
-                    ...(data.gender !== undefined && { gender: data.gender }),
-                  },
-                },
-              }
-            : { nutritionist: { create: {} } }),
         },
         select: userSelect,
       });
@@ -48,9 +34,48 @@ export class UserService {
     }
   }
 
-  async findByEmailWithPassword(
-    email: string,
-  ): Promise<UserCredentials | null> {
+  async createFromGoogle(email: string, name: string): Promise<UserPublic> {
+    try {
+      return await this.prisma.user.create({
+        data: { name, email },
+        select: userSelect,
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao criar usuário', {
+        p2002: 'E-mail já cadastrado',
+      });
+    }
+  }
+
+  async completeOnboarding(userId: string, dto: CompleteOnboardingDto): Promise<UserPublic> {
+    try {
+      return await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          role: dto.role,
+          ...(dto.role === 'patient'
+            ? {
+                patient: {
+                  create: {
+                    ...(dto.weight !== undefined && { weight: dto.weight }),
+                    ...(dto.height !== undefined && { height: dto.height }),
+                    ...(dto.age !== undefined && { age: dto.age }),
+                    ...(dto.gender !== undefined && { gender: dto.gender }),
+                  },
+                },
+              }
+            : { nutritionist: { create: {} } }),
+        },
+        select: userSelect,
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao completar onboarding', {
+        p2025: 'Usuário não encontrado',
+      });
+    }
+  }
+
+  async findByEmailWithPassword(email: string): Promise<UserCredentials | null> {
     try {
       return await this.prisma.user.findUnique({
         where: { email },

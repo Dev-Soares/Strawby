@@ -1,8 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { HashService } from 'src/common/hash/hash.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthTokenResponse } from './types';
+import { client } from './google-client/client';
 
 @Injectable()
 export class AuthService {
@@ -19,19 +20,54 @@ export class AuthService {
       throw new UnauthorizedException('E-mail ou senha inválidos');
     }
 
-    const passwordValid = await this.hashService.comparePassword(
-      password,
-      user.password,
-    );
+    if (!user.password) {
+      throw new UnauthorizedException('Esta conta usa login com Google');
+    }
+
+    const passwordValid = await this.hashService.comparePassword(password, user.password);
 
     if (!passwordValid) {
       throw new UnauthorizedException('E-mail ou senha inválidos');
     }
 
     const payload = { sub: user.id, name: user.name, role: user.role };
+    const access_token = await this.jwtService.signAsync(payload);
 
-    const token = await this.jwtService.signAsync(payload);
+    return { access_token };
+  }
 
-    return { access_token: token };
+  async refresh(userId: string): Promise<AuthTokenResponse> {
+    const user = await this.usersService.findOne(userId);
+    const payload = { sub: user.id, name: user.name, role: user.role };
+    const access_token = await this.jwtService.signAsync(payload);
+    return { access_token };
+  }
+
+  async googleAuth(credential: string): Promise<AuthTokenResponse> {
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken: credential,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const googlePayload = ticket.getPayload();
+
+      if (!googlePayload?.email || !googlePayload?.name) {
+        throw new UnauthorizedException('Token Google inválido');
+      }
+
+      const { email, name } = googlePayload;
+
+      const existingUser = await this.usersService.findByEmailWithPassword(email);
+      const userForToken = existingUser ?? await this.usersService.createFromGoogle(email, name);
+
+      const tokenPayload = { sub: userForToken.id, name: userForToken.name, role: userForToken.role };
+      const access_token = await this.jwtService.signAsync(tokenPayload);
+
+      return { access_token };
+    } catch (error) {
+      if (error instanceof UnauthorizedException) throw error;
+      throw new InternalServerErrorException('Erro ao autenticar com Google');
+    }
   }
 }
