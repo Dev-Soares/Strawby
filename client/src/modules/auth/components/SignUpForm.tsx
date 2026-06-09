@@ -95,7 +95,7 @@ export default function SignUpForm() {
                     size="large"
                     shape="pill"
                     text="continue_with"
-                    width="320"
+                    width="240"
                   />
                 </div>
 
