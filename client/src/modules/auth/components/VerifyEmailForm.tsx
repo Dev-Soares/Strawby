@@ -33,10 +33,16 @@ export default function VerifyEmailForm() {
         )}
 
         {!email && (
-          <p className="text-neutral-400 text-[14px] mb-10">
+          <p className="text-neutral-400 text-[14px] mb-6">
             Insira o código de 6 dígitos enviado para seu e-mail.
           </p>
         )}
+
+        <div className="bg-amber-400/10 border border-amber-400/30 rounded-xl px-4 py-3.5 mb-8">
+          <p className="text-amber-300 text-[14px] leading-relaxed">
+            Não encontrou o e-mail? <span className="font-semibold text-amber-200">Verifique a caixa de spam ou lixo eletrônico.</span>
+          </p>
+        </div>
 
         <form onSubmit={onSubmit} className="flex flex-col gap-8 md:gap-10 flex-1">
 
