@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
+import { toLocalISODate } from '@/shared/utils/date'
 import { useGetPatients } from './useGetPatients'
 import { useGetPatientPlan } from './useGetPatientPlan'
 import { useCreatePatientPlan } from './useCreatePatientPlan'
@@ -31,6 +32,25 @@ export const useNutritionistPatientPage = (patientId: string) => {
   const [confirmDeletePlan, setConfirmDeletePlan] = useState(false)
   const [addMealOpen, setAddMealOpen] = useState(false)
   const [confirmDeleteMealId, setConfirmDeleteMealId] = useState<string | null>(null)
+
+  const todayStr = toLocalISODate()
+  const [diaryDay, setDiaryDay] = useState(todayStr)
+
+  const prevDay = useCallback(() => {
+    setDiaryDay((d) => {
+      const [year, month, day] = d.split('-').map(Number)
+      const date = new Date(year, month - 1, day - 1)
+      return toLocalISODate(date)
+    })
+  }, [])
+
+  const nextDay = useCallback(() => {
+    setDiaryDay((d) => {
+      const [year, month, day] = d.split('-').map(Number)
+      const date = new Date(year, month - 1, day + 1)
+      return toLocalISODate(date)
+    })
+  }, [])
 
   const openCreatePlan = (mode: CreatePlanMode) => {
     setCreatePlanMode(mode)
@@ -72,5 +92,9 @@ export const useNutritionistPatientPage = (patientId: string) => {
     setConfirmDeleteMealId,
     handleDeletePlan,
     handleDeleteMeal,
+    diaryDay,
+    prevDay,
+    nextDay,
+    isDiaryToday: diaryDay === todayStr,
   }
 }

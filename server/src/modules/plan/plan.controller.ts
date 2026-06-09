@@ -45,4 +45,18 @@ export class PlanController {
   ) {
     return this.planService.remove(req.user.sub, patientId);
   }
+
+  @UseGuards(AuthGuard)
+  @Get(':patientId/pdf')
+  async getPlanPdf(
+    @Req() req: AuthenticatedRequest,
+    @Param('patientId') patientId: string,
+  ) {
+    const pdfBuffer = await this.planService.getPlanPdf(req.user.sub, patientId);
+    return {
+      filename: `plano-${patientId}.pdf`,
+      contentType: 'application/pdf',
+      data: pdfBuffer,
+    };
+  }
 }
