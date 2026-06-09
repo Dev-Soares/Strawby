@@ -1,5 +1,3 @@
-import { Link } from 'react-router-dom'
-import { ArrowLeft } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 import VerifyEmailForm from '@/modules/auth/components/VerifyEmailForm'
 
@@ -13,20 +11,12 @@ export default function VerifyEmailPage() {
         className="w-full max-w-5xl flex flex-col gap-24"
       >
         <div className="flex flex-col gap-6">
-          <Link
-            to="/app/create-account"
-            className="flex items-center gap-2 bg-neutral-900 hover:bg-neutral-700 text-white font-semibold px-5 py-3 rounded-full text-[14px] transition-colors duration-200 cursor-pointer w-fit"
-          >
-            <ArrowLeft size={16} weight="bold" />
-            Voltar
-          </Link>
-
-          <Link to="/" className="flex items-center gap-3 w-fit">
+          <div className="flex items-center gap-3">
             <img src="/logo.webp" alt="Strawby" className="w-14 h-14 object-contain" />
             <span className="text-neutral-900 dark:text-neutral-100 text-[28px] font-black tracking-tighter transition-colors duration-300">
               Strawby
             </span>
-          </Link>
+          </div>
         </div>
 
         <VerifyEmailForm />
