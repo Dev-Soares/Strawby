@@ -51,16 +51,16 @@ export default function PatientPlanMealCard({ meal, index, patientId, onAskDelet
       <div className="border-t border-neutral-100 dark:border-neutral-800 flex">
         <button
           onClick={() => navigate(`/app/meals/${meal.id}?patientId=${patientId}`)}
-          className="flex-1 flex items-center justify-center gap-1.5 py-3 text-xs font-bold text-neutral-500 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+          className="flex-1 flex items-center justify-center gap-1.5 py-3.5 text-xs font-bold text-neutral-500 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
         >
-          <PencilSimple size={13} weight="bold" /> Editar alimentos
+          <PencilSimple size={15} weight="bold" /> Editar alimentos
         </button>
         <div className="w-px bg-neutral-100 dark:bg-neutral-800" />
         <button
           onClick={() => onAskDelete(meal.id)}
-          className="flex items-center justify-center gap-1.5 px-4 py-3 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
+          className="flex items-center justify-center gap-1.5 px-5 py-3.5 text-xs font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer"
         >
-          <Trash size={13} weight="bold" />
+          <Trash size={15} weight="bold" /> Remover
         </button>
       </div>
     </motion.div>
