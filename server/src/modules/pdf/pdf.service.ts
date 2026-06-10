@@ -11,7 +11,6 @@ export class PdfService implements OnModuleInit {
 
   async onModuleInit() {
     this.chromiumExecutablePath = await chromium.executablePath();
-    console.log('[PdfService] Chromium executable:', this.chromiumExecutablePath);
   }
 
   private getLogoBase64(): string | undefined {
@@ -26,7 +25,6 @@ export class PdfService implements OnModuleInit {
   async generatePlanPdf(data: PlanPdfData): Promise<Buffer> {
     const html = buildPlanHtml({ ...data, logoBase64: this.getLogoBase64() });
 
-    console.log('[PdfService] Launching browser...');
     const browser = await puppeteer.launch({
       args: chromium.args,
       executablePath: this.chromiumExecutablePath,
@@ -41,11 +39,7 @@ export class PdfService implements OnModuleInit {
         printBackground: true,
         margin: { top: '0', right: '0', bottom: '0', left: '0' },
       });
-      console.log('[PdfService] PDF generated successfully');
       return Buffer.from(pdf);
-    } catch (error) {
-      console.error('[PdfService] PDF generation failed:', error);
-      throw error;
     } finally {
       await browser.close();
     }
