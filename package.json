@@ -19,7 +19,6 @@
       "bcrypt",
       "esbuild",
       "prisma",
-      "puppeteer",
       "unrs-resolver"
     ]
   },
