@@ -24,7 +24,7 @@ export default function PatientPlanSection({
 }: Props) {
   return (
     <section className="mb-10">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col gap-3 mb-4">
         <h2 className="text-lg font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight">
           Plano alimentar
         </h2>
@@ -107,16 +107,16 @@ export default function PatientPlanSection({
 
           <div className="grid grid-cols-3 gap-3">
             {PLAN_MACROS.map((macro) => (
-              <div key={macro.field} className="bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-2xl p-4 flex flex-col gap-2 transition-colors duration-300">
+              <div key={macro.field} className="bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-2xl p-5 flex flex-col gap-3 transition-colors duration-300">
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: macro.color }} />
-                  <span className="text-[9px] font-extrabold uppercase tracking-widest text-neutral-400 dark:text-neutral-500 truncate">{macro.label}</span>
+                  <span className="text-[9px] font-extrabold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 leading-none">{macro.label}</span>
                 </div>
                 <div className="flex items-baseline gap-0.5">
-                  <span className="text-xl font-extrabold text-neutral-950 dark:text-neutral-100 tabular-nums">{plan[macro.field]}</span>
+                  <span className="text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tabular-nums">{plan[macro.field]}</span>
                   <span className="text-xs font-semibold text-neutral-400">g</span>
                 </div>
-                <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: macro.track }}>
+                <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: macro.track }}>
                   <motion.div
                     className="h-full rounded-full"
                     style={{ backgroundColor: macro.color }}

@@ -50,7 +50,7 @@ export default function PatientDiarySection({ patientId, selectedDay, plan, onPr
 
   return (
     <section className="mt-10">
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex flex-col gap-3 mb-5">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
             <BookOpen size={18} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
@@ -65,7 +65,7 @@ export default function PatientDiarySection({ patientId, selectedDay, plan, onPr
           >
             <CaretLeft size={15} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
           </button>
-          <div className="px-4 py-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 min-w-36 text-center">
+          <div className="px-4 py-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex-1 text-center">
             <span className="text-sm font-bold text-neutral-700 dark:text-neutral-300">
               {isToday ? 'Hoje' : formatDay(selectedDay).split(',')[0]}
               {' '}
@@ -132,16 +132,16 @@ export default function PatientDiarySection({ patientId, selectedDay, plan, onPr
                 </div>
               )}
 
-              <div className="grid grid-cols-3 gap-3">
+              <div className="flex flex-col gap-3">
                 {macros.map((m) => (
                   <div key={m.label} className="flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-extrabold uppercase tracking-widest" style={{ color: m.color }}>{m.label}</span>
-                      <span className="text-sm font-bold text-neutral-700 dark:text-neutral-300">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[10px] font-extrabold uppercase tracking-wide" style={{ color: m.color }}>{m.label}</span>
+                      <span className="text-xs font-bold text-neutral-700 dark:text-neutral-300 tabular-nums shrink-0">
                         {m.actual}g{m.goal ? ` / ${m.goal}g` : ''}
                       </span>
                     </div>
-                    <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: m.track }}>
+                    <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: m.track }}>
                       <motion.div
                         className="h-full rounded-full"
                         style={{ backgroundColor: m.color }}

@@ -1,5 +1,17 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+
+if ('serviceWorker' in navigator) {
+  const checkForUpdate = () => {
+    navigator.serviceWorker.getRegistration().then((registration) => {
+      registration?.update()
+    })
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') checkForUpdate()
+  })
+  window.addEventListener('focus', checkForUpdate)
+}
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
