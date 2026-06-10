@@ -11,5 +11,6 @@ import { DailyScoreModule } from '../daily-score/daily-score.module'
   controllers: [PatientController],
   providers: [PatientService],
   exports: [PatientService],
+  
 })
 export class PatientModule {}
