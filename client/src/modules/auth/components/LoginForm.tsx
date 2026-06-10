@@ -4,9 +4,11 @@ import { Eye, EyeSlash } from '@phosphor-icons/react'
 import { GoogleLogin } from '@react-oauth/google'
 import { useSignIn } from '../hooks/useSignIn'
 import { useGoogleSignIn } from '../hooks/useGoogleSignIn'
+import ForgotPasswordModal from './ForgotPasswordModal'
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
   const {
     register,
     onSubmit,
@@ -69,6 +71,16 @@ export default function LoginForm() {
             )}
           </div>
 
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={() => setShowForgotPassword(true)}
+              className="text-[12px] font-semibold text-neutral-400 hover:text-red-400 transition-colors cursor-pointer"
+            >
+              Esqueceu a senha?
+            </button>
+          </div>
+
           <div className="flex flex-col gap-5 pt-2 mt-auto">
             <button
               type="submit"
@@ -110,6 +122,10 @@ export default function LoginForm() {
 
         </form>
       </div>
+
+      {showForgotPassword && (
+        <ForgotPasswordModal onClose={() => setShowForgotPassword(false)} />
+      )}
 
       {/* Card lateral */}
       <div className="lg:w-96 shrink-0 bg-red-600 rounded-2xl p-6 md:p-8 lg:p-10 text-white flex flex-col justify-between">

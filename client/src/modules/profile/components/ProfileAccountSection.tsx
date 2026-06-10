@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { EnvelopeSimple, Calendar, PencilSimple, Trash } from '@phosphor-icons/react'
+import { EnvelopeSimple, Calendar, PencilSimple, Trash, LockKey } from '@phosphor-icons/react'
 import { useUpdateUser } from '@/modules/auth/hooks/useUpdateUser'
+import { useSendResetPasswordEmail } from '@/modules/auth/hooks/useSendResetPasswordEmail'
 import DeleteAccountModal from './DeleteAccountModal'
+import ResetPasswordConfirmModal from './ResetPasswordConfirmModal'
 
 interface Props {
   id: string
@@ -11,9 +13,11 @@ interface Props {
 
 export default function ProfileAccountSection({ id, name, email }: Props) {
   const updateUser = useUpdateUser()
+  const sendResetPasswordEmail = useSendResetPasswordEmail(email)
   const [editing, setEditing] = useState(false)
   const [nameValue, setNameValue] = useState('')
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showResetConfirm, setShowResetConfirm] = useState(false)
 
   const handleSave = () => {
     if (nameValue.trim().length >= 2)
@@ -101,6 +105,19 @@ export default function ProfileAccountSection({ id, name, email }: Props) {
 
         <button
           type="button"
+          onClick={() => setShowResetConfirm(true)}
+          className="flex items-center gap-3 px-5 py-4 w-full text-left hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-150 cursor-pointer border-b border-neutral-100 dark:border-neutral-800"
+        >
+          <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
+            <LockKey size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
+          </div>
+          <span className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
+            Redefinir senha
+          </span>
+        </button>
+
+        <button
+          type="button"
           onClick={() => setShowDeleteModal(true)}
           className="flex items-center gap-3 px-5 py-4 w-full text-left hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors duration-150 cursor-pointer group"
         >
@@ -115,6 +132,15 @@ export default function ProfileAccountSection({ id, name, email }: Props) {
         <DeleteAccountModal
           userId={id}
           onClose={() => setShowDeleteModal(false)}
+        />
+      )}
+
+      {showResetConfirm && (
+        <ResetPasswordConfirmModal
+          email={email}
+          isPending={sendResetPasswordEmail.isPending}
+          onConfirm={() => sendResetPasswordEmail.mutate()}
+          onClose={() => setShowResetConfirm(false)}
         />
       )}
     </section>
