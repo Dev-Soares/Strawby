@@ -1,10 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { MealKind } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { PatientAccessService } from '../../common/patient-access/patient-access.service';
 import { MacroDistribution, PlanMacros, PlanPublic, planSelect } from './types';
+import { PdfService } from '../pdf/pdf.service';
+import { MealService } from '../meal/meal.service';
 
 type GenerateParams = {
   weight: number;
@@ -20,6 +23,8 @@ export class PlanService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly patientAccess: PatientAccessService,
+    private readonly pdfService: PdfService,
+    private readonly mealService: MealService,
   ) {}
 
   async create(callerId: string, patientId: string, dto: CreatePlanDto): Promise<PlanPublic> {
@@ -65,6 +70,35 @@ export class PlanService {
   async findByPatient(callerId: string, patientId: string): Promise<PlanPublic | null> {
     await this.patientAccess.resolve(callerId, patientId);
     return this.queryPlanByPatient(patientId);
+  }
+
+  async getPlanPdf(callerId: string, patientId: string): Promise<{ buffer: Buffer; filename: string }> {
+    await this.patientAccess.resolve(callerId, patientId);
+
+    const plan = await this.queryPlanByPatient(patientId);
+    if (!plan) throw new BadRequestException('Plano não encontrado para o paciente');
+
+    const [patientData, meals] = await Promise.all([
+      this.prisma.patient.findUnique({
+        where: { id: patientId },
+        select: {
+          user: { select: { name: true } },
+          nutritionist: { select: { user: { select: { name: true } } } },
+        },
+      }),
+      this.mealService.findAllByPatient(callerId, patientId, MealKind.PLAN),
+    ]);
+
+    const patientName = patientData?.user?.name ?? 'Paciente';
+
+    const buffer = await this.pdfService.generatePlanPdf({
+      plan,
+      meals,
+      patientName,
+      nutritionistName: patientData?.nutritionist?.user?.name ?? 'Nutricionista',
+    });
+
+    return { buffer, filename: `Plano de ${patientName}.pdf` };
   }
 
   async queryPlansByPatientsBulk(patientIds: string[]): Promise<Map<string, PlanPublic | null>> {

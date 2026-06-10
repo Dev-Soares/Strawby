@@ -6,6 +6,7 @@ import { useNutritionistPatientPage } from '@/modules/nutritionist/hooks/useNutr
 import PatientHeader from '@/modules/nutritionist/components/PatientHeader'
 import PatientPlanSection from '@/modules/nutritionist/components/PatientPlanSection'
 import PatientPlanMealsSection from '@/modules/nutritionist/components/PatientPlanMealsSection'
+import PatientDiarySection from '@/modules/nutritionist/components/PatientDiarySection'
 import AddPatientMealModal from '@/modules/nutritionist/components/AddPatientMealModal'
 import ConfirmDeletePatientMealModal from '@/modules/nutritionist/components/ConfirmDeletePatientMealModal'
 
@@ -23,6 +24,7 @@ export default function NutritionistPatientPage() {
     addMealOpen, setAddMealOpen,
     confirmDeleteMealId, setConfirmDeleteMealId,
     handleDeletePlan, handleDeleteMeal,
+    diaryDay, prevDay, nextDay, isDiaryToday,
   } = useNutritionistPatientPage(patientId ?? '')
 
   return (
@@ -49,6 +51,15 @@ export default function NutritionistPatientPage() {
           patientId={id}
           onAddClick={() => setAddMealOpen(true)}
           onAskDelete={(mealId) => setConfirmDeleteMealId(mealId)}
+        />
+
+        <PatientDiarySection
+          patientId={id}
+          selectedDay={diaryDay}
+          plan={plan}
+          onPrevDay={prevDay}
+          onNextDay={nextDay}
+          isToday={isDiaryToday}
         />
       </div>
 

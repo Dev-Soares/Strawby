@@ -3,6 +3,7 @@ import { Fire, PencilSimple, Trash, Sparkle, Warning } from '@phosphor-icons/rea
 import type { Plan } from '../../plan/types/plan'
 import { PLAN_MACROS } from '../config/patientMealTypes'
 import type { CreatePlanMode } from '../hooks/useNutritionistPatientPage'
+import DownloadPlanPdfButton from '../../plan/components/DownloadPlanPdfButton'
 
 type Props = {
   plan: Plan | null | undefined
@@ -29,17 +30,18 @@ export default function PatientPlanSection({
         </h2>
         {plan && (
           <div className="flex items-center gap-2">
+            <DownloadPlanPdfButton patientId={plan.patientId} compact />
             <button
               onClick={onOpenEditPlan}
-              className="flex items-center gap-1.5 text-xs font-bold text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 px-3 py-2 rounded-xl transition-all cursor-pointer"
+              className="flex items-center gap-2 text-sm font-bold text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 px-4 py-2.5 rounded-xl transition-all cursor-pointer"
             >
-              <PencilSimple size={12} weight="bold" /> Editar
+              <PencilSimple size={14} weight="bold" /> Editar
             </button>
             <button
               onClick={onAskDeletePlan}
-              className="flex items-center gap-1.5 text-xs font-bold text-red-500 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-950/50 px-3 py-2 rounded-xl transition-all cursor-pointer"
+              className="flex items-center gap-2 text-sm font-bold text-red-500 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-950/50 px-4 py-2.5 rounded-xl transition-all cursor-pointer"
             >
-              <Trash size={12} weight="bold" /> Remover
+              <Trash size={14} weight="bold" /> Remover
             </button>
           </div>
         )}

@@ -12,6 +12,7 @@ import { useGetPlan } from '../modules/plan/hooks/useGetPlan'
 import { useEditPlan } from '../modules/plan/hooks/useEditPlan'
 import { useCreatePlan } from '../modules/plan/hooks/useCreatePlan'
 import { useDeletePlan } from '../modules/plan/hooks/useDeletePlan'
+import DownloadPlanPdfButton from '../modules/plan/components/DownloadPlanPdfButton'
 
 const macros = [
   { label: 'Proteína', field: 'protein' as const, color: '#f59e0b', trackColor: '#fef3c7', max: 500 },
@@ -79,6 +80,7 @@ export default function PlanPage() {
               </div>
 
               <div className="flex items-center gap-2 sm:shrink-0">
+                <DownloadPlanPdfButton patientId={plan.patientId} />
                 <button
                   onClick={() => setConfirmDeleteOpen(true)}
                   className="flex flex-1 sm:flex-none items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-3 rounded-2xl transition-colors duration-200 cursor-pointer"

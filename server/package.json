@@ -22,7 +22,8 @@
     "seed:foods:fresh": "tsx prisma/scripts/seed-foods.ts --fresh",
     "seed:foods:dry": "tsx prisma/scripts/seed-foods.ts --dry-run",
     "clean:foods": "tsx prisma/scripts/clean-foods.ts",
-    "clean:foods:fix": "tsx prisma/scripts/clean-foods.ts --fix"
+    "clean:foods:fix": "tsx prisma/scripts/clean-foods.ts --fix",
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -52,6 +53,7 @@
     "pg": "^8.20.0",
     "pino": "^10.3.1",
     "pino-pretty": "^13.1.3",
+    "puppeteer": "^25.1.0",
     "reflect-metadata": "^0.2.2",
     "resend": "^6.12.4",
     "rxjs": "^7.8.1"
