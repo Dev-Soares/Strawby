@@ -186,7 +186,7 @@ export class UserService {
         data: { passwordResetToken: resetToken, passwordResetTokenExpiresAt: resetTokenExpiresAt },
       });
 
-      await this.emailService.sendVerificationEmail(email, resetToken);
+      await this.emailService.sendPasswordResetEmail(email, resetToken);
 
     } catch (error) {
 

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { LockKey, Eye, EyeSlash } from '@phosphor-icons/react'
 import { useResetPassword } from '../hooks/useResetPassword'
+import { useResendResetPassword } from '../hooks/useResendResetPassword'
 
 export default function ResetPasswordForm() {
   const location = useLocation()
@@ -15,6 +16,8 @@ export default function ResetPasswordForm() {
     formState: { errors },
     isPending,
   } = useResetPassword()
+
+  const { mutate: resend, isPending: isResending } = useResendResetPassword(email ?? '')
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:gap-28 items-stretch w-full">
@@ -119,6 +122,17 @@ export default function ResetPasswordForm() {
             >
               {isPending ? 'Redefinindo…' : 'Redefinir senha'}
             </button>
+
+            {email && (
+              <button
+                type="button"
+                onClick={() => resend()}
+                disabled={isResending}
+                className="w-full rounded-full border border-neutral-700 text-neutral-400 font-semibold py-3 px-12 text-[14px] hover:border-neutral-500 hover:text-neutral-300 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
+              >
+                {isResending ? 'Reenviando…' : 'Reenviar código'}
+              </button>
+            )}
 
             <p className="text-[14px] text-neutral-500">
               Lembrou a senha?{' '}
