@@ -91,4 +91,25 @@ export class AuthService {
     const access_token = await this.jwtService.signAsync(payload);
     return { access_token };
   }
+
+  async resetPassword(token: string, newPassword: string): Promise<AuthTokenResponse> {
+    const user = await this.usersService.findOneByPasswordResetToken(token);
+
+    if (!user) {
+      throw new UnauthorizedException('Token de redefinição inválido ou expirado');
+    }
+
+    const hashedPassword = await this.hashService.hashPassword(newPassword);
+    const updatedUser = await this.usersService.resetPassword(user.id, hashedPassword);
+
+    const payload = { sub: updatedUser.id, name: updatedUser.name, role: updatedUser.role };
+
+    const access_token = await this.jwtService.signAsync(payload);
+
+    return { access_token };
+  }
+
+  async sendResetPasswordEmail(email: string): Promise<void> {
+    return this.usersService.sendResetPasswordEmail(email);
+  }
 }

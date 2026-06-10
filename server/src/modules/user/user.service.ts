@@ -169,6 +169,62 @@ export class UserService {
     }
   }
 
+  async sendResetPasswordEmail(email: string): Promise<void> {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+        select: { id: true, email: true },
+      });
+
+      if (!user) throw new NotFoundException('Usuário não encontrado');
+
+      const resetToken = generateVerificationCode();
+      const resetTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000);
+
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { passwordResetToken: resetToken, passwordResetTokenExpiresAt: resetTokenExpiresAt },
+      });
+
+      await this.emailService.sendVerificationEmail(email, resetToken);
+
+    } catch (error) {
+
+      if (error instanceof NotFoundException) throw error;
+      mapPrismaError(error, 'Erro ao enviar e-mail de redefinição de senha');
+
+    }
+  }
+
+  async findOneByPasswordResetToken(token: string): Promise<UserPublic | null> {
+    try {
+      return await this.prisma.user.findFirst({
+        where: {
+          passwordResetToken: token,
+          passwordResetTokenExpiresAt: { gt: new Date() },
+        },
+        select: userSelect,
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar usuário por token de redefinição de senha');
+    }
+  }
+
+  async resetPassword(userId: string, newPassword: string): Promise<UserPublic>{
+    try {
+      return await this.prisma.user.update({
+        where: { id: userId }, 
+        data: { password: newPassword, passwordResetToken: null, passwordResetTokenExpiresAt: null },
+        select: userSelect,
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao redefinir senha', {
+        p2025: 'Token de redefinição inválido ou expirado',
+      });
+    }
+  }
+
+
   async findOneByVerificationToken(token: string): Promise<UserPublic | null> {
     try {
       return await this.prisma.user.findFirst({
@@ -230,7 +286,7 @@ export class UserService {
     }
   }
 
-  async clearExpiredVerificationTokens(): Promise<void> {
+  async clearExpiredTokens(): Promise<void> {
     await this.prisma.user.updateMany({
       where: {
         emailVerified: false,
@@ -239,6 +295,14 @@ export class UserService {
       data: {
         verificationToken: null,
         verificationTokenExpiresAt: null,
+      },
+    });
+
+    await this.prisma.user.updateMany({
+      where: { passwordResetTokenExpiresAt: { lt: new Date() } },
+      data: {
+        passwordResetToken: null,
+        passwordResetTokenExpiresAt: null,
       },
     });
   }

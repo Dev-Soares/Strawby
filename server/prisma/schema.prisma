@@ -48,6 +48,8 @@ model User {
   nutritionist               Nutritionist?
   verificationToken          String?       @unique
   verificationTokenExpiresAt DateTime?
+  passwordResetToken          String?       @unique
+  passwordResetTokenExpiresAt DateTime?
 }
 
 model Patient {

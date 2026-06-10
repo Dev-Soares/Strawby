@@ -17,6 +17,8 @@ import { Throttle } from '@nestjs/throttler';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 import { cookieConfig } from 'src/common/config/cookie.config';
 import type { SignInResponse, LogoutResponse } from './types';
 
@@ -82,7 +84,26 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('resend-verification')
-  resendVerification(@Body('email') email: string) {
-    return this.authService.resendVerificationEmail(email);
+  async resendVerification(
+    @Body('email') email: string,
+  ) {
+    await this.authService.resendVerificationEmail(email);
+  }
+
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
+  @Post('forgot-password')
+  async forgotPassword(@Body() dto: ForgotPasswordDto) {
+    await this.authService.sendResetPasswordEmail(dto.email);
+  }
+
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
+  @Post('reset-password')
+  async resetPassword(
+    @Body() dto: ResetPasswordDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.resetPassword(dto.token, dto.newPassword);
+    res.cookie('access_token', result.access_token, cookieConfig);
+    return { message: 'Senha redefinida com sucesso' };
   }
 }

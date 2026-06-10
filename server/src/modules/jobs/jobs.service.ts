@@ -38,7 +38,7 @@ export class JobsService {
   @Cron(CronExpression.EVERY_HOUR)
   async clearExpiredVerificationTokens(): Promise<void> {
     try {
-      await this.userService.clearExpiredVerificationTokens();
+      await this.userService.clearExpiredTokens();
     } catch (error) {
       this.logger.error('clearExpiredVerificationTokens falhou', error);
     }
