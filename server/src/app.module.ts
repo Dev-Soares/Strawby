@@ -19,6 +19,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { JobsModule } from './modules/jobs/jobs.module';
 import { PatientModule } from './modules/patient/patient.module';
 import { EmailModule } from './modules/email/email.module';
+import { NotificationTokenModule } from './modules/notification/notification-token/notification-token.module';
+import { NotificationModule } from './modules/notification/send-notification/notification.module';
 
 @Module({
 	imports: [
@@ -83,6 +85,8 @@ import { EmailModule } from './modules/email/email.module';
 		JobsModule,
 		EmailModule,
 		ScheduleModule.forRoot(),
+		NotificationTokenModule,
+		NotificationModule,
 	],
 	providers: [
 		{

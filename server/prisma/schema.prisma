@@ -50,6 +50,7 @@ model User {
   verificationTokenExpiresAt DateTime?
   passwordResetToken          String?       @unique
   passwordResetTokenExpiresAt DateTime?
+  notificationToken           NotificationToken[]
 }
 
 model Patient {
@@ -215,4 +216,14 @@ model ConnectionRequest {
 
   @@index([nutritionistId])
   @@index([patientId])
+}
+
+model NotificationToken {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
