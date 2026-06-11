@@ -1,167 +1,298 @@
+<div align="center">
+
 # Strawby
 
-Monorepo full-stack para rastreamento de refeições e nutrição. O usuário cadastra alimentos (ou usa o catálogo pré-populado com dados da tabela TACO) e registra suas refeições diárias, acompanhando calorias, proteínas, carboidratos e gorduras.
+**Nutrition tracking platform connecting patients and nutritionists**
 
-Arquitetura **pnpm workspaces** com dois pacotes independentes:
+Patients log meals and follow a macro plan; an automated daily score and streak system keeps them engaged. Nutritionists manage their patients, set plans, and follow progress — all in one app.
 
-| Pacote | Stack |
+[![NestJS](https://img.shields.io/badge/NestJS-11-E0234E?logo=nestjs&logoColor=white)](https://nestjs.com)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org)
+[![PWA](https://img.shields.io/badge/PWA-ready-5A0FC8?logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+
+</div>
+
+> **TL;DR for reviewers** — A production-shaped full-stack monorepo (NestJS + React 19) implementing a real product: role-based auth (patient / nutritionist), a weighted daily-score algorithm, cron-driven streak processing, a multi-source food database, PDF export, and a PWA frontend. Built on a strict, documented architecture (see [`.claude/rules/`](.claude/rules)).
+
+---
+
+## Table of contents
+
+- [What is Strawby](#what-is-strawby)
+- [Highlights](#highlights)
+- [Architecture](#architecture)
+- [Tech stack](#tech-stack)
+- [The daily score algorithm](#the-daily-score-algorithm)
+- [Domain model](#domain-model)
+- [Getting started](#getting-started)
+- [Environment variables](#environment-variables)
+- [Database](#database)
+- [API reference](#api-reference)
+- [Security](#security)
+- [Scripts](#scripts)
+- [Project structure](#project-structure)
+
+---
+
+## What is Strawby
+
+Strawby is a two-sided nutrition app:
+
+- **Patients** register meals from a shared food catalog (or their own private foods), follow a macro plan defined by their nutritionist, and earn a **daily score** based on how close their intake matched the plan. Hitting the target builds a **streak**.
+- **Nutritionists** generate a connection code, accept patients, set each patient's macro plan, export it as PDF, and track adherence through scores and weekly reports.
+
+The app is a **PWA** — installable, offline-capable shell, with an interactive onboarding tour and Google sign-in.
+
+---
+
+## Highlights
+
+| | |
 |---|---|
-| `server/` | NestJS · PostgreSQL · Prisma · JWT HTTP-only cookie |
-| `client/` | React 19 · TypeScript · Tailwind CSS v4 · TanStack Query · Zod |
+| **Weighted scoring engine** | Daily score from a calories/protein/carbs/fat ratio table — not a naive sum. See [the algorithm](#the-daily-score-algorithm). |
+| **Cron jobs** | Nightly job (`0 2 * * *`, São Paulo TZ) closes the previous day's scores and processes streaks; hourly job purges expired tokens. |
+| **Role-based access** | `user → patient \| nutritionist` roles, guards, and a `PatientAccessService` that authorizes every patient-scoped resource. |
+| **Connection requests** | Patients request a nutritionist by code; nutritionist accepts/rejects — a full request lifecycle. |
+| **Multi-source food DB** | Foods sourced from TACO, USDA, CNF, LIVS, OFF, plus per-patient private foods. Trigram (`pg_trgm`) index for fuzzy search. |
+| **PDF export** | Nutrition plans rendered to PDF via headless Chromium (Puppeteer + `@sparticuz/chromium`, serverless-ready). |
+| **Hardened auth** | JWT in HTTP-only cookies, bcrypt, Helmet, per-route rate limiting, email verification, password reset, Google OAuth. |
+| **PWA frontend** | React 19 (with React Compiler), Tailwind v4, TanStack Query, offline shell, Lottie animations, Shepherd onboarding tour. |
+| **Documented architecture** | Strict layering rules for both client and server, enforced through [`.claude/rules/`](.claude/rules). |
 
 ---
 
-## Sumário
+## Architecture
 
-- [Estrutura do projeto](#estrutura-do-projeto)
-- [Tecnologias](#tecnologias)
-- [Pré-requisitos](#pré-requisitos)
-- [Instalação](#instalação)
-- [Variáveis de ambiente](#variáveis-de-ambiente)
-- [Banco de dados](#banco-de-dados)
-- [Rodando o projeto](#rodando-o-projeto)
-  - [Com Docker (recomendado)](#com-docker-recomendado)
-  - [Sem Docker (desenvolvimento local)](#sem-docker-desenvolvimento-local)
-- [Endpoints da API](#endpoints-da-api)
-  - [Auth](#auth)
-  - [User](#user)
-  - [Food (Alimentos)](#food-alimentos)
-  - [Meal (Refeições)](#meal-refeições)
-  - [Health](#health)
-- [Segurança](#segurança)
-- [Scripts disponíveis](#scripts-disponíveis)
-
----
-
-## Estrutura do projeto
+pnpm-workspaces monorepo, two independently deployable packages:
 
 ```
-Strawby/
-├── server/                          # API NestJS
-│   ├── src/
-│   │   ├── app.module.ts
-│   │   ├── main.ts
-│   │   ├── common/
-│   │   │   ├── config/cookie.config.ts
-│   │   │   ├── dto/pagination.dto.ts
-│   │   │   ├── filters/all-exceptions.filter.ts
-│   │   │   ├── guards/auth/          # AuthGuard, OptionalAuthGuard, OwnershipGuard
-│   │   │   ├── hash/                 # HashService (bcrypt)
-│   │   │   └── types/
-│   │   └── modules/
-│   │       ├── auth/                 # Login e logout
-│   │       ├── database/             # PrismaService
-│   │       ├── food/                 # Catálogo de alimentos
-│   │       ├── health/               # Health check
-│   │       ├── meal/                 # Refeições e itens de refeição
-│   │       └── user/                 # Usuários
-│   ├── prisma/
-│   │   ├── schema.prisma
-│   │   ├── seed-foods.ts             # Seed com tabela TACO de alimentos
-│   │   └── taco.json                 # Dados nutricionais TACO
-│   └── Dockerfile
-│
-├── client/                          # Frontend React
-│   └── src/
-│       ├── api/                      # Configuração axios + interceptors
-│       ├── modules/                  # Módulos por feature
-│       ├── shared/                   # Componentes, hooks e layouts globais
-│       └── pages/
-│
-├── docker-compose.yml               # Sobe PostgreSQL + server
-├── package.json                     # Workspace root
-└── pnpm-workspace.yaml
+┌─────────────────────────────┐         ┌──────────────────────────────┐
+│         client/             │         │           server/            │
+│  React 19 · Vite · PWA      │  HTTP   │  NestJS 11 · Prisma 7        │
+│  TanStack Query · Tailwind  │ ──────► │  JWT cookie · Throttler      │
+│  React Router · RHF + Zod   │ cookie  │  Pino · Swagger · Cron       │
+└─────────────────────────────┘         └──────────────┬───────────────┘
+                                                        │
+                                                        ▼
+                                              ┌───────────────────┐
+                                              │   PostgreSQL 16   │
+                                              │   (Prisma + pg)   │
+                                              └───────────────────┘
 ```
 
+### Layered request flow (server)
+
+```
+Controller  →  Service  →  PrismaService  →  PostgreSQL
+(transport)   (business)   (data access)
+```
+
+Controllers are thin (1–5 lines), all business logic lives in services, Prisma is isolated in a `DatabaseModule`, and DTOs validate every input. The same discipline applies on the frontend:
+
+```
+Page  →  Hook (TanStack Query)  →  Service  →  axios
+```
+
+Both rule sets are written down in [`.claude/rules/server/`](.claude/rules/server) and [`.claude/rules/client/`](.claude/rules/client).
+
 ---
 
-## Tecnologias
+## Tech stack
 
-### Backend (`server/`)
+### Backend — `server/`
 
-| Tecnologia | Uso |
+| Tech | Role |
 |---|---|
-| NestJS | Framework principal |
-| PostgreSQL | Banco de dados |
-| Prisma | ORM e migrations |
-| JWT + @nestjs/jwt | Autenticação via cookie HTTP-only |
-| bcrypt | Hash de senhas |
-| Helmet | Headers de segurança HTTP |
-| @nestjs/throttler | Rate limiting (100 req/min) |
-| nestjs-pino | Logging estruturado |
-| @nestjs/swagger | Documentação automática |
-| class-validator | Validação de DTOs |
+| **NestJS 11** | Application framework |
+| **Prisma 7** + `@prisma/adapter-pg` | ORM, migrations, driver adapter |
+| **PostgreSQL 16** | Database (`pg_trgm` for fuzzy food search) |
+| **@nestjs/jwt** | Auth via HTTP-only cookie (no Passport strategy) |
+| **bcrypt** | Password hashing |
+| **@nestjs/schedule** | Cron jobs (score close, streak, token cleanup) |
+| **@nestjs/throttler** | Rate limiting (global + per-route) |
+| **Helmet** | HTTP security headers |
+| **nestjs-pino** | Structured logging with secret redaction |
+| **@nestjs/swagger** | OpenAPI docs (Basic-Auth protected) |
+| **class-validator** | DTO validation (`whitelist` + `forbidNonWhitelisted`) |
+| **Puppeteer + @sparticuz/chromium** | Server-side PDF rendering |
+| **Resend** | Transactional email (verification, reset) |
+| **google-auth-library** | Google OAuth token verification |
 
-### Frontend (`client/`)
+### Frontend — `client/`
 
-| Tecnologia | Uso |
+| Tech | Role |
 |---|---|
-| React 19 | UI |
-| TypeScript | Tipagem |
-| Tailwind CSS v4 | Estilização |
-| TanStack Query v5 | Server state (cache, fetching, mutations) |
-| React Hook Form v7 + Zod v4 | Formulários tipados com validação |
-| Axios | HTTP client |
-| React Hot Toast | Notificações |
-| Phosphor Icons | Ícones |
+| **React 19** (+ React Compiler) | UI |
+| **Vite 7** + `vite-plugin-pwa` | Build tooling, installable PWA |
+| **TypeScript 5.9** | Type safety |
+| **Tailwind CSS v4** | Styling (only method) |
+| **TanStack Query v5** | Server state (cache / fetch / mutations) |
+| **React Router v7** | Routing |
+| **React Hook Form v7 + Zod v4** | Typed, validated forms |
+| **@react-oauth/google** | Google sign-in |
+| **framer-motion** + **lottie-react** | Animations |
+| **shepherd.js** | Guided onboarding tour |
+| **react-hot-toast** | Notifications |
 
 ---
 
-## Pré-requisitos
+## The daily score algorithm
 
-**Com Docker:**
-- Docker Desktop rodando
+The score is the feature that makes Strawby more than a CRUD app. Each day, a patient's total intake is compared against their plan **per macro**, and each macro contributes a weighted share of the final score (0–10).
 
-**Sem Docker:**
-- Node.js >= 20
-- pnpm
-- PostgreSQL rodando localmente ou em nuvem
+**Weights** — calories matter most, fat least:
+
+| Macro | Weight |
+|---|---|
+| Calories | 40% |
+| Protein | 30% |
+| Carbs | 20% |
+| Fat | 10% |
+
+**Per-macro scoring** — the ratio `intake / target` is graded by a tolerance band, so being slightly over or under still scores well, and being wildly off scores zero:
+
+| `intake / target` ratio | Macro score |
+|---|---|
+| 0.80 – 1.20 | 10 |
+| 0.70 – 1.30 | 8 |
+| 0.55 – 1.45 | 6 |
+| 0.40 – 1.60 | 4 |
+| 0.25 – 1.75 | 2 |
+| < 0.25 or > 1.75 | 0 |
+
+```
+score = ratio(cal)·0.4 + ratio(protein)·0.3 + ratio(carbs)·0.2 + ratio(fat)·0.1
+```
+
+**Streaks** — the nightly cron closes each patient's score for the previous day, then the streak processor runs: a day scoring **≥ 8** extends `currentStreak` (and updates `bestStreak`); a lower day resets it. The "close day" step **must** run before the streak step — the jobs service enforces that ordering.
+
+A **live score** endpoint computes the same value on demand from the current day's meals, so the UI shows progress before the day is closed.
+
+Source: [`daily-score.service.ts`](server/src/modules/daily-score/daily-score.service.ts) · [`ratio-table.ts`](server/src/modules/daily-score/utils/ratio-table.ts) · [`jobs.service.ts`](server/src/modules/jobs/jobs.service.ts)
 
 ---
 
-## Instalação
+## Domain model
+
+```
+User ──1:1── Patient ──┬── Plan (1:1)          macro targets
+  │  (role)            ├── Meal[] ── FoodItem[] ── Food | PrivateFood
+  │                    ├── Recipe[] ── FoodItem[]
+  │                    ├── DailyScore[]          one per day (@@unique patient+date)
+  │                    └── currentStreak / bestStreak
+  │
+  └──1:1── Nutritionist ──┬── Patient[]          via connection code
+                          └── ConnectionRequest[] (PENDING/ACCEPTED/REJECTED)
+```
+
+- **Meals** are typed `DAILY` (logged intake) or `PLAN` (template meals), and carry pre-computed macro totals on each `FoodItem` so scoring stays cheap.
+- **Foods** come from external nutrition databases (`FoodSource` enum: TACO, USDA, CNF, LIVS, OFF, MANUAL); **PrivateFood** is per-patient.
+- Hard cascade deletes from `User` down keep the privacy policy (immediate hard delete) consistent.
+
+Full schema: [`prisma/schema.prisma`](server/prisma/schema.prisma)
+
+---
+
+## Getting started
+
+### Prerequisites
+
+- **Node.js ≥ 20** and **pnpm**
+- **Docker Desktop** (recommended — runs Postgres + API) *or* a local/cloud PostgreSQL
+
+### 1. Install
 
 ```bash
-git clone <url-do-repositorio>
+git clone <repo-url>
 cd Strawby
 pnpm install
 ```
 
----
-
-## Variáveis de ambiente
-
-Crie `server/.env` a partir do exemplo:
+### 2. Configure env
 
 ```bash
-cp server/.env.example server/.env
+cp server/.env.example server/.env   # then fill JWT_SECRET etc. (see below)
+echo 'VITE_API_URL=http://localhost:3000' > client/.env
 ```
 
-Preencha as variáveis:
+### 3a. Run with Docker (recommended)
+
+`docker-compose.yml` brings up **PostgreSQL + API** together, with a healthcheck so the API only boots once Postgres is ready.
+
+```bash
+docker compose up -d        # Postgres + API in the background
+docker compose logs -f      # follow logs
+docker compose down         # stop everything
+```
+
+The frontend is **not** containerized — run it separately:
+
+```bash
+pnpm --filter client dev
+```
+
+### 3b. Run locally (no Docker)
+
+```bash
+pnpm dev                          # server + client in parallel
+# or individually:
+pnpm --filter server start:dev
+pnpm --filter client dev
+```
+
+| Service | URL |
+|---|---|
+| API | http://localhost:3000 |
+| Frontend | http://localhost:5173 |
+| Swagger | http://localhost:3000/api-docs |
+| Prisma Studio | http://localhost:5555 |
+
+### Demo accounts (after seeding)
+
+| Role | Email | Password |
+|---|---|---|
+| Patient | `usuario@teste.com` | `Teste123!` |
+| Nutritionist | `nutricionista@teste.com` | `Teste123!` |
+
+Nutritionist connection code: **`ANALIMA`**
+
+---
+
+## Environment variables
+
+`server/.env` (see [`.env.example`](server/.env.example)):
 
 ```env
 NODE_ENV=development
 PORT=3000
 
-# PostgreSQL — com docker compose: postgresql://postgres:postgres@localhost:5432/appdb
+# PostgreSQL — docker compose default below
 DATABASE_URL="postgresql://postgres:postgres@localhost:5432/appdb"
 DIRECT_URL="postgresql://postgres:postgres@localhost:5432/appdb"
 
-# CORS — URL do frontend
+# Frontend origin allowed by CORS (comma-separate for multiple)
 CORS_ORIGIN="http://localhost:5173"
 
-# JWT — gere com: openssl rand -hex 64
+# JWT — generate with: openssl rand -hex 64
 JWT_SECRET=""
 
-# bcrypt
+# bcrypt cost
 SALT_ROUNDS=10
 
-# Swagger (rota /api-docs protegida por Basic Auth)
-SWAGGER_USER=admin
-SWAGGER_PASSWORD=admin
+# Optional: cookie parent domain in prod (e.g. .strawby.com)
+COOKIE_DOMAIN=
+
+# Swagger Basic-Auth (dev only — disabled when NODE_ENV=production)
+SWAGGER_USER=
+SWAGGER_PASSWORD=
 ```
 
-Para o frontend, crie `client/.env`:
+> The API **fails fast on boot** if `CORS_ORIGIN`, `JWT_SECRET`, or `DATABASE_URL` is missing.
+
+`client/.env`:
 
 ```env
 VITE_API_URL=http://localhost:3000
@@ -169,203 +300,242 @@ VITE_API_URL=http://localhost:3000
 
 ---
 
-## Banco de dados
+## Database
 
 ```bash
-# Aplicar migrations
+# Apply migrations
 pnpm --filter server exec prisma migrate deploy
 
-# Gerar Prisma Client
+# Generate Prisma Client
 pnpm --filter server exec prisma generate
 
-# Popular tabela de alimentos (dados TACO)
-pnpm --filter server exec prisma db seed
+# Seed demo data (patient + nutritionist + plan + 7 days of meals/scores)
+pnpm --filter server seed
 
-# Abrir Prisma Studio
+# Seed the public food catalog from external sources
+pnpm --filter server seed:foods          # add/update
+pnpm --filter server seed:foods:fresh     # wipe + reload
+pnpm --filter server seed:foods:dry       # dry run
+
+# Inspect
 pnpm --filter server exec prisma studio
 ```
 
-### Modelos
-
-```
-User      → id, name, email, password, createdAt, updatedAt
-Food      → id, name, calories, protein, carbs, fat, createdAt, updatedAt
-Meal      → id, name, date, userId, createdAt, updatedAt
-FoodItem  → id, quantity, mealId, foodId, createdAt, updatedAt
-```
-
 ---
 
-## Rodando o projeto
+## API reference
 
-### Com Docker (recomendado)
+Base URL `http://localhost:3000`. Auth is a JWT in an HTTP-only `access_token` cookie.
+Patient-scoped routes take a `:patientId` and are authorized through `PatientAccessService` (the patient themselves **or** their nutritionist).
 
-O `docker-compose.yml` sobe **PostgreSQL + server** juntos. O banco já vem com healthcheck — o server só inicia depois que o Postgres estiver pronto.
+<details open>
+<summary><strong>Auth</strong> — <code>/auth</code></summary>
 
-```bash
-# Sobe Postgres + API em background
-docker compose up -d
-
-# Acompanhar logs
-docker compose logs -f
-
-# Parar tudo
-docker compose down
-```
-
-O frontend **não** é incluído no docker-compose. Rode separado:
-
-```bash
-pnpm --filter client dev
-```
-
-### Sem Docker (desenvolvimento local)
-
-```bash
-# Rodar tudo em paralelo (server + client)
-pnpm dev
-
-# Rodar separado
-pnpm --filter server start:dev
-pnpm --filter client dev
-```
-
-| Serviço | URL padrão |
-|---|---|
-| API | http://localhost:3000 |
-| Frontend | http://localhost:5173 |
-| Swagger | http://localhost:3000/api-docs |
-| Prisma Studio | http://localhost:5555 |
-
----
-
-## Endpoints da API
-
-### Auth
-
-| Método | Rota | Autenticação | Descrição |
+| Method | Route | Auth | Description |
 |---|---|---|---|
-| `POST` | `/auth/login` | Não | Autentica e seta cookie `access_token` |
-| `POST` | `/auth/logout` | Não | Limpa o cookie |
+| `POST` | `/auth/login` | — | Log in, set cookie (5 req/min) |
+| `POST` | `/auth/logout` | — | Clear cookie |
+| `POST` | `/auth/refresh` | yes | Rotate token |
+| `POST` | `/auth/google` | — | Sign in with Google credential |
+| `GET` | `/auth/verify-email` | — | Verify email via token, log in |
+| `POST` | `/auth/resend-verification` | — | Resend verification email |
+| `POST` | `/auth/forgot-password` | — | Send reset email (3 req/min) |
+| `POST` | `/auth/reset-password` | — | Reset password, log in (3 req/min) |
 
-```json
-// Body login
-{ "email": "user@email.com", "password": "senha123" }
-```
+</details>
 
----
+<details>
+<summary><strong>User</strong> — <code>/user</code></summary>
 
-### User
-
-| Método | Rota | Autenticação | Descrição |
+| Method | Route | Auth | Description |
 |---|---|---|---|
-| `POST` | `/user` | Não | Cria usuário |
-| `GET` | `/user/me` | Opcional | Retorna usuário logado ou `null` |
-| `GET` | `/user/:id` | Não | Busca usuário por ID |
-| `PATCH` | `/user/:id` | Obrigatória | Atualiza nome (somente o próprio) |
-| `DELETE` | `/user/:id` | Obrigatória | Remove conta (somente o próprio) |
+| `POST` | `/user` | — | Create account (3 req/min) |
+| `POST` | `/user/onboarding` | yes | Complete onboarding (set role/body data) |
+| `GET` | `/user/me` | optional | Current user or `null` |
+| `GET` | `/user/:id` | owner | Get user by id |
+| `PATCH` | `/user/:id` | owner | Update own user |
+| `DELETE` | `/user/:id` | owner | Hard-delete own account |
 
-```json
-// Body criar usuário
-{ "name": "João Silva", "email": "joao@email.com", "password": "minhasenha123" }
-```
+</details>
 
----
+<details>
+<summary><strong>Nutritionist & Connection</strong> — <code>/nutritionist</code>, <code>/connection-request</code></summary>
 
-### Food (Alimentos)
-
-Catálogo de alimentos com dados nutricionais. Pré-populado com a tabela TACO via seed.
-
-| Método | Rota | Autenticação | Descrição |
+| Method | Route | Role | Description |
 |---|---|---|---|
-| `GET` | `/food` | Não | Lista todos os alimentos |
-| `GET` | `/food/search?search=nome` | Não | Busca alimento por nome |
-| `GET` | `/food/:id` | Não | Busca alimento por ID |
-| `POST` | `/food` | Obrigatória | Cria alimento customizado |
-| `PATCH` | `/food/:id` | Obrigatória | Atualiza alimento |
-| `DELETE` | `/food/:id` | Obrigatória | Remove alimento |
+| `GET` | `/nutritionist/me` | nutritionist | Own profile |
+| `GET` | `/nutritionist/me/patients` | nutritionist | List patients |
+| `POST` | `/nutritionist/me/code` | nutritionist | Set/update connection code |
+| `DELETE` | `/nutritionist/me` | patient | Disconnect from nutritionist |
+| `POST` | `/connection-request` | patient | Request a nutritionist by code |
+| `GET` | `/connection-request/nutritionist` | nutritionist | Pending requests |
+| `PATCH` | `/connection-request/:id/accept` | nutritionist | Accept request |
+| `PATCH` | `/connection-request/:id/reject` | nutritionist | Reject request |
 
-```json
-// Body criar alimento
-{
-  "name": "Arroz cozido",
-  "calories": 128,
-  "protein": 2.5,
-  "carbs": 28.1,
-  "fat": 0.2
-}
-```
+</details>
 
----
+<details>
+<summary><strong>Food & Private food</strong> — <code>/food</code>, <code>/private-food</code></summary>
 
-### Meal (Refeições)
+| Method | Route | Auth | Description |
+|---|---|---|---|
+| `GET` | `/food/search` | — | Fuzzy search public catalog |
+| `GET` | `/food/:id` | — | Food details |
+| `POST` | `/private-food/:patientId` | yes | Create private food |
+| `GET` | `/private-food/:patientId` | yes | List private foods |
+| `PATCH` | `/private-food/:patientId/:id` | yes | Update private food |
+| `DELETE` | `/private-food/:patientId/:id` | yes | Delete private food |
 
-Todas as rotas exigem autenticação. Os dados são isolados por usuário.
+</details>
 
-| Método | Rota | Descrição |
+<details>
+<summary><strong>Meal</strong> — <code>/meal</code> (all auth)</summary>
+
+| Method | Route | Description |
 |---|---|---|
-| `POST` | `/meal` | Cria uma refeição |
-| `GET` | `/meal` | Lista todas as refeições do usuário |
-| `GET` | `/meal/:id` | Busca uma refeição por ID |
-| `PATCH` | `/meal/:id` | Atualiza nome ou data da refeição |
-| `DELETE` | `/meal/:id` | Remove a refeição |
-| `POST` | `/meal/:id/items` | Adiciona um alimento à refeição |
-| `DELETE` | `/meal/:id/items/:itemId` | Remove um alimento da refeição |
+| `POST` | `/meal/:patientId` | Create meal |
+| `GET` | `/meal/:patientId` | List meals |
+| `GET` | `/meal/:patientId/day/:day` | Meals for a day |
+| `GET` | `/meal/:patientId/:id` | Meal details |
+| `PATCH` | `/meal/:patientId/:id` | Update meal |
+| `DELETE` | `/meal/:patientId/:id` | Delete meal |
+| `POST` | `/meal/:patientId/:id/items` | Add catalog food |
+| `POST` | `/meal/:patientId/:id/private-items` | Add private food |
+| `DELETE` | `/meal/:patientId/:id/items/:itemId` | Remove item |
+| `POST` | `/meal/:patientId/:id/recipes` | Add recipe |
+| `DELETE` | `/meal/:patientId/:id/recipes/:recipeId` | Remove recipe |
 
-```json
-// Body criar refeição
-{ "name": "Almoço", "date": "2026-04-15T12:00:00.000Z" }
+</details>
 
-// Body adicionar item
-{ "foodId": "uuid-do-alimento", "quantity": 150 }
-```
+<details>
+<summary><strong>Recipe</strong> — <code>/recipe</code> (all auth)</summary>
 
-> `quantity` é em gramas. Os valores nutricionais são calculados proporcionalmente no retorno.
-
----
-
-### Health
-
-| Método | Rota | Descrição |
+| Method | Route | Description |
 |---|---|---|
-| `GET` | `/health` | Verifica se a API está no ar |
+| `POST` | `/recipe/:patientId` | Create recipe |
+| `GET` | `/recipe/:patientId` | List recipes |
+| `GET` | `/recipe/:patientId/:id` | Recipe details |
+| `PATCH` | `/recipe/:patientId/:id` | Update recipe |
+| `DELETE` | `/recipe/:patientId/:id` | Delete recipe |
+| `POST` | `/recipe/:patientId/:id/items` | Add catalog food |
+| `POST` | `/recipe/:patientId/:id/private-items` | Add private food |
+| `DELETE` | `/recipe/:patientId/:id/items/:itemId` | Remove item |
+
+</details>
+
+<details>
+<summary><strong>Plan & Daily score</strong> — <code>/plan</code>, <code>/daily-score</code> (all auth)</summary>
+
+| Method | Route | Description |
+|---|---|---|
+| `POST` | `/plan/:patientId` | Create macro plan |
+| `GET` | `/plan/:patientId` | Get plan |
+| `PATCH` | `/plan/:patientId` | Update plan |
+| `DELETE` | `/plan/:patientId` | Delete plan |
+| `GET` | `/plan/:patientId/pdf` | Export plan as PDF |
+| `GET` | `/daily-score/:patientId` | Scores (optional date range) |
+| `GET` | `/daily-score/:patientId/day/:day` | Score for a day |
+| `GET` | `/daily-score/:patientId/live/:day` | Live (uncommitted) score |
+| `GET` | `/daily-score/:patientId/average` | Average score |
+
+</details>
+
+<details>
+<summary><strong>Health</strong> — <code>/health</code></summary>
+
+| Method | Route | Description |
+|---|---|---|
+| `GET` | `/health` | Liveness check |
+
+</details>
+
+> Full request/response shapes are documented in **Swagger** at `/api-docs`.
 
 ---
 
-## Segurança
+## Security
 
-| Mecanismo | Descrição |
+| Mechanism | Detail |
 |---|---|
-| Helmet | Headers HTTP de segurança |
-| CORS | Origem restrita a `CORS_ORIGIN` |
-| Rate Limiting | 100 req/min por IP |
-| HTTP-only Cookie | JWT inacessível via JavaScript |
-| bcrypt | Senhas nunca armazenadas em texto puro |
-| ValidationPipe | Rejeita campos extras nos DTOs |
-| Swagger protegido | Basic Auth na rota `/api-docs` |
+| **HTTP-only cookie JWT** | Token never exposed to JavaScript; not stored in `localStorage` |
+| **bcrypt** | Passwords hashed with configurable salt rounds |
+| **Helmet** | Security headers on every response |
+| **CORS** | Locked to `CORS_ORIGIN` (supports multiple origins) |
+| **Rate limiting** | Global 100 req/min; tighter on login (5/min) and password reset (3/min) |
+| **ValidationPipe** | `whitelist` + `forbidNonWhitelisted` reject unknown fields |
+| **Guards** | `AuthGuard`, `OptionalAuthGuard`, `OwnershipGuard`, role guard, `PatientAccessService` |
+| **Email verification** | Accounts confirm via emailed token; expired tokens purged hourly |
+| **Log redaction** | Pino redacts auth headers, cookies, passwords, tokens |
+| **Fail-fast boot** | Missing critical env vars stop the server from starting |
+| **Swagger lockdown** | Basic-Auth protected and disabled entirely in production |
 
 ---
 
-## Scripts disponíveis
+## Scripts
 
 ```bash
-# Raiz do monorepo
-pnpm dev                          # Server + client em paralelo
-pnpm build                        # Build de tudo
-pnpm lint                         # Lint de todos os pacotes
-pnpm format                       # Prettier em todo o monorepo
+# Root
+pnpm dev                          # server + client in parallel
+pnpm build                        # build both
+pnpm lint                         # lint all packages
+pnpm format                       # Prettier across the monorepo
 
-# Filtrado por pacote
-pnpm --filter server start:dev    # Server com hot reload
-pnpm --filter server build        # Build do server
-pnpm --filter server start:prod   # Produção
-pnpm --filter client dev          # Frontend com hot reload
-pnpm --filter client build        # Build do frontend
+# Server
+pnpm --filter server start:dev    # hot reload
+pnpm --filter server start:prod   # production
+pnpm --filter server test         # Jest
+pnpm --filter server seed         # demo data
+pnpm --filter server seed:foods   # food catalog
 
-# Prisma (sempre via --filter server)
-pnpm --filter server exec prisma migrate dev --name nome
+# Client
+pnpm --filter client dev          # Vite dev server
+pnpm --filter client build        # production build (PWA)
+
+# Prisma (always via --filter server)
+pnpm --filter server exec prisma migrate dev --name <name>
 pnpm --filter server exec prisma migrate deploy
 pnpm --filter server exec prisma generate
-pnpm --filter server exec prisma db seed
 pnpm --filter server exec prisma studio
+```
+
+---
+
+## Project structure
+
+```
+Strawby/
+├── server/                       # NestJS API
+│   ├── src/
+│   │   ├── common/               # guards, filters, hash, config, patient-access, utils
+│   │   └── modules/
+│   │       ├── auth/             # login, logout, refresh, Google, verify, reset
+│   │       ├── user/             # accounts + onboarding
+│   │       ├── patient/          # patient profile + streaks
+│   │       ├── nutritionist/     # nutritionist profile + patients
+│   │       ├── connection-request/  # patient <-> nutritionist linking
+│   │       ├── plan/             # macro plans (+ PDF export)
+│   │       ├── meal/             # daily & plan meals
+│   │       ├── recipe/           # reusable food groupings
+│   │       ├── food/             # public catalog (multi-source)
+│   │       ├── private-food/     # per-patient foods
+│   │       ├── daily-score/      # scoring engine
+│   │       ├── jobs/             # cron (score close, streak, token cleanup)
+│   │       ├── email/            # Resend transactional email
+│   │       ├── pdf/              # headless-Chromium rendering
+│   │       ├── database/         # PrismaService
+│   │       └── health/
+│   ├── prisma/                   # schema, migrations, seeds
+│   └── Dockerfile
+│
+├── client/                       # React 19 PWA
+│   └── src/
+│       ├── api/                  # axios instance + interceptors
+│       ├── modules/              # feature modules (components/hooks/service/types/skeletons)
+│       ├── shared/               # reusable UI, contexts, layouts
+│       └── pages/                # route-level screens
+│
+├── .claude/rules/                # documented architecture rules (server + client)
+├── docker-compose.yml            # Postgres + API
+├── pnpm-workspace.yaml
+└── package.json                  # workspace root
 ```
