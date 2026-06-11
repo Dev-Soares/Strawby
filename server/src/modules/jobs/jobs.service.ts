@@ -3,6 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { DailyScoreService } from '../daily-score/daily-score.service';
 import { PatientService } from '../patient/patient.service';
 import { UserService } from '../user/user.service';
+import { yesterdayInAppTz } from '../../common/utils/date.util';
 
 @Injectable()
 export class JobsService {
@@ -16,11 +17,7 @@ export class JobsService {
 
   @Cron('0 2 * * *', { timeZone: 'America/Sao_Paulo' })
   async closeDayScores() {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const date = yesterday.toLocaleDateString('en-CA', {
-      timeZone: 'America/Sao_Paulo',
-    });
+    const date = yesterdayInAppTz();
 
     try {
       await this.dailyScoreService.closeDayScoreForEachUser(date);

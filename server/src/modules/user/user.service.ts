@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashService } from '../../common/hash/hash.service';
@@ -176,7 +176,9 @@ export class UserService {
         select: { id: true, email: true },
       });
 
-      if (!user) throw new NotFoundException('Usuário não encontrado');
+      // Não revela se o e-mail existe (evita enumeração de contas):
+      // retorna silenciosamente quando o usuário não é encontrado.
+      if (!user) return;
 
       const resetToken = generateVerificationCode();
       const resetTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000);
@@ -189,10 +191,7 @@ export class UserService {
       await this.emailService.sendPasswordResetEmail(email, resetToken);
 
     } catch (error) {
-
-      if (error instanceof NotFoundException) throw error;
       mapPrismaError(error, 'Erro ao enviar e-mail de redefinição de senha');
-
     }
   }
 
@@ -264,8 +263,9 @@ export class UserService {
         select: { id: true, email: true, emailVerified: true },
       });
 
-      if (!user) throw new NotFoundException('Usuário não encontrado');
-      if (user.emailVerified) throw new BadRequestException('E-mail já verificado');
+      // Não revela se o e-mail existe nem se já está verificado
+      // (evita enumeração de contas): retorna silenciosamente nesses casos.
+      if (!user || user.emailVerified) return;
 
       const verificationToken = generateVerificationCode();
       const verificationTokenExpiresAt = new Date(Date.now() + 60 * 60 * 1000);
@@ -278,10 +278,6 @@ export class UserService {
       await this.emailService.sendVerificationEmail(email, verificationToken);
 
     } catch (error) {
-
-      if (error instanceof NotFoundException) throw error;
-      if (error instanceof BadRequestException) throw error;
-      
       mapPrismaError(error, 'Erro ao reenviar e-mail de verificação');
     }
   }
