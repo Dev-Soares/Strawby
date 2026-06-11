@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { MealKind } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { PatientAccessService } from '../../common/patient-access/patient-access.service';
+import { appDayRange } from '../../common/utils/date.util';
 import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
 import { AddMealRecipeDto } from './dto/add-meal-recipe.dto';
@@ -86,10 +87,7 @@ export class MealService {
 
   async queryMealsByDay(patientId: string, day: string, kind?: MealKind): Promise<MealPublic[]> {
     try {
-      const start = new Date(day + 'T00:00:00.000Z');
-      if (isNaN(start.getTime())) throw new BadRequestException('Data inválida');
-      const end = new Date(start);
-      end.setUTCDate(end.getUTCDate() + 1);
+      const { start, end } = appDayRange(day);
       const meals = await this.prisma.meal.findMany({ where: { patientId, ...(kind && { kind }), date: { gte: start, lt: end } }, select: mealSelect, orderBy: { date: 'asc' } });
       return meals.map(m => this.toMealPublic(m));
     } catch (error) {
@@ -99,9 +97,7 @@ export class MealService {
 
   async queryMealsByDayBulk(patientIds: string[], day: string): Promise<Map<string, MealPublic[]>> {
     try {
-      const start = new Date(day + 'T00:00:00.000Z');
-      const end = new Date(start);
-      end.setUTCDate(end.getUTCDate() + 1);
+      const { start, end } = appDayRange(day);
       const meals = await this.prisma.meal.findMany({
         where: { patientId: { in: patientIds }, date: { gte: start, lt: end } },
         select: mealSelect,

@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { PatientAccessService } from '../../common/patient-access/patient-access.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
+import { parseAppDay, appDayRange } from '../../common/utils/date.util';
 import { CreateDailyScoreDto } from './dto/create-daily-score.dto';
 import { MealMacros, MealPublic } from '../meal/types';
 import { PlanMacros } from '../plan/types';
@@ -19,15 +20,9 @@ export class DailyScoreService {
     private readonly mealService: MealService,
   ) { }
 
-  private parseDay(day: string): Date {
-    const start = new Date(day + 'T00:00:00.000Z');
-    if (isNaN(start.getTime())) throw new BadRequestException('Data inválida');
-    return start;
-  }
-
   async createScore(patientId: string, day: string): Promise<DailyScorePublic> {
     try {
-      const date = this.parseDay(day);
+      const date = parseAppDay(day);
       const score = await this.computeLiveScore(patientId, day);
       return await this.prisma.dailyScore.upsert({
         where: { patientId_date: { patientId, date } },
@@ -45,8 +40,8 @@ export class DailyScoreService {
     try {
       const where: { patientId: string; date?: { gte?: Date; lte?: Date } } = { patientId };
 
-      if (startDate) where.date = { gte: this.parseDay(startDate) };
-      if (endDate) where.date = { ...where.date, lte: this.parseDay(endDate) };
+      if (startDate) where.date = { gte: parseAppDay(startDate) };
+      if (endDate) where.date = { ...where.date, lte: parseAppDay(endDate) };
 
       return await this.prisma.dailyScore.findMany({ where, select: dailyScoreSelect, orderBy: { date: 'desc' } });
     } catch (error) {
@@ -57,9 +52,7 @@ export class DailyScoreService {
   async findByDay(callerId: string, patientId: string, day: string): Promise<DailyScorePublic> {
     await this.patientAccess.resolve(callerId, patientId);
     try {
-      const start = this.parseDay(day);
-      const end = new Date(start);
-      end.setUTCDate(end.getUTCDate() + 1);
+      const { start, end } = appDayRange(day);
       const score = await this.prisma.dailyScore.findFirst({ where: { patientId, date: { gte: start, lt: end } }, select: dailyScoreSelect });
       if (!score) throw new NotFoundException('Pontuação do dia não encontrada');
       return score;
@@ -85,7 +78,7 @@ export class DailyScoreService {
   }
 
   private async computeLiveScore(patientId: string, day: string): Promise<number> {
-    this.parseDay(day);
+    parseAppDay(day);
     try {
       const [meals, plan] = await Promise.all([
         this.mealService.queryMealsByDay(patientId, day),
@@ -124,7 +117,7 @@ export class DailyScoreService {
   }
 
   async findScoresByDate(day: string): Promise<DailyScoreEntry[]> {
-    const date = this.parseDay(day);
+    const date = parseAppDay(day);
     try {
       return await this.prisma.dailyScore.findMany({
         where: { date },
@@ -137,7 +130,7 @@ export class DailyScoreService {
 
   async closeDayScoreForEachUser(day: string): Promise<void> {
     try {
-      const date = this.parseDay(day);
+      const date = parseAppDay(day);
       const patients = await this.prisma.patient.findMany({ select: { id: true } });
 
       const patientIds = patients.map(patient => patient.id);
