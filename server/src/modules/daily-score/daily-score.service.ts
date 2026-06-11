@@ -128,13 +128,13 @@ export class DailyScoreService {
     }
   }
 
-  async closeDayScoreForEachUser(day: string): Promise<void> {
+  async closeDayScoreForEachUser(day: string): Promise<String[]> {
     try {
       const date = parseAppDay(day);
       const patients = await this.prisma.patient.findMany({ select: { id: true } });
 
       const patientIds = patients.map(patient => patient.id);
-      if (patientIds.length === 0) return;
+      if (patientIds.length === 0) return [];
 
       const [mealsMap, plansMap] = await Promise.all([
         this.mealService.queryMealsByDayBulk(patientIds, day),
@@ -150,12 +150,14 @@ export class DailyScoreService {
           return { date, score, patientId };
         });
 
-      if (scored.length === 0) return;
+      if (scored.length === 0) return [];
 
       await this.prisma.dailyScore.createMany({
         data: scored,
         skipDuplicates: true,
       });
+
+      return patientIds
     } catch (error) {
       mapPrismaError(error, 'Erro ao fechar pontuações')
     }

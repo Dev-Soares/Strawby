@@ -4,7 +4,7 @@ import { PrismaService } from '../database/prisma.service';
 import { PatientAccessService } from '../../common/patient-access/patient-access.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { yesterdayInAppTz } from '../../common/utils/date.util';
-import type { PatientStreakPublic } from './types';
+import type { PatientStreakPublic, StreakProcessResult } from './types';
 import { DailyScoreService } from '../daily-score/daily-score.service';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class PatientService {
     private readonly dailyScoreService: DailyScoreService,
   ) {}
 
-   async generateStreakForEachUser(): Promise<void> {
+  async generateStreakForEachUser(): Promise<StreakProcessResult> {
     const yesterdayDate = yesterdayInAppTz();
 
     try {
@@ -24,13 +24,17 @@ export class PatientService {
         this.dailyScoreService.findScoresByDate(yesterdayDate),
       ]);
 
-      const scoreMap = new Map(scores.map(s => [s.patientId, s.score])); //mapeia os scores por patientId para acesso rápido
+      const scoreMap = new Map(scores.map((s) => [s.patientId, s.score])); //mapeia os scores por patientId para acesso rápido
 
-      const resetIds = patientIds.filter(patient => (scoreMap.get(patient.id) ?? 0) < 8).map(patient => patient.id); // pacientes com score < 8 terão streak resetado
-      const incrementIds = patientIds.filter(patient => (scoreMap.get(patient.id) ?? 0) >= 8).map(patient => patient.id);
+      const resetIds = patientIds
+        .filter((patient) => (scoreMap.get(patient.id) ?? 0) < 8)
+        .map((patient) => patient.id); // pacientes com score < 8 terão streak resetado
+      const incrementIds = patientIds
+        .filter((patient) => (scoreMap.get(patient.id) ?? 0) >= 8)
+        .map((patient) => patient.id);
       // pacientes com score >= 8 terão streak incrementado
 
-      await this.prisma.$transaction(async tx => {
+      await this.prisma.$transaction(async (tx) => {
         if (resetIds.length > 0) {
           await tx.patient.updateMany({
             where: { id: { in: resetIds } },
@@ -52,6 +56,8 @@ export class PatientService {
           `;
         }
       });
+
+      return { incremented: incrementIds, reset: resetIds }; 
     } catch (error) {
       mapPrismaError(error, 'Erro ao processar streak dos pacientes');
     }
@@ -75,6 +81,29 @@ export class PatientService {
       return patientStreak;
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar streak do paciente');
+    }
+  }
+
+  async findPatientsWithNoMeal() {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Define o início do dia
+
+    try {
+      const patientsIds = await this.prisma.patient.findMany({
+        where: {
+          meals: {
+            none: {
+              kind: 'DAILY',
+              date: { gte: today },
+            },
+          },
+        },
+        select: { id: true },
+      });
+
+      return patientsIds.map((p) => p.id);
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar pacientes sem refeições diárias');
     }
   }
 }
