@@ -128,7 +128,7 @@ export class DailyScoreService {
     }
   }
 
-  async closeDayScoreForEachUser(day: string): Promise<String[]> {
+  async closeDayScoreForEachUser(day: string): Promise<string[]> {
     try {
       const date = parseAppDay(day);
       const patients = await this.prisma.patient.findMany({ select: { id: true } });

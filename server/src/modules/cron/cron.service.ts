@@ -7,8 +7,8 @@ import { yesterdayInAppTz } from '../../common/utils/date.util';
 import { NotificationService } from '../notification/send-notification/notification.service';
 
 @Injectable()
-export class JobsService {
-  private readonly logger = new Logger(JobsService.name);
+export class CronService {
+  private readonly logger = new Logger(CronService.name);
 
   constructor(
     private readonly dailyScoreService: DailyScoreService,
@@ -17,22 +17,27 @@ export class JobsService {
     private readonly notificationService: NotificationService,
   ) {}
 
-  @Cron('0 2 * * *', { timeZone: 'America/Sao_Paulo' })
+  @Cron(CronExpression.EVERY_DAY_AT_2AM, { timeZone: 'America/Sao_Paulo' })
   async closeDayScores() {
     const date = yesterdayInAppTz();
 
     try {
       const patientIds = await this.dailyScoreService.closeDayScoreForEachUser(date);
-      
-      patientIds ?? await this.notificationService.sendMany(
-        patientIds,
-        'Seu Diário Alimentar de Ontem',
-        'Seu diário alimentar de ontem foi fechado. Acesse o aplicativo para ver suas pontuações!',
-      );
+
+      if (patientIds?.length) {
+        await this.notificationService.sendMany(
+          patientIds,
+          'Seu Diário Alimentar de Ontem',
+          'Seu diário alimentar de ontem foi fechado. Acesse o aplicativo para ver suas pontuações!',
+        );
+      }
     } catch (error) {
       this.logger.error('closeDayScoreForEachUser falhou', error);
     }
+  }
 
+  @Cron(CronExpression.EVERY_DAY_AT_3AM, { timeZone: 'America/Sao_Paulo' })
+  async updateStreaks() {
     try {
       const { incremented, reset } = await this.patientService.generateStreakForEachUser();
 
@@ -60,7 +65,7 @@ export class JobsService {
     }
   }
 
-  @Cron('0 9 * * *', { timeZone: 'America/Sao_Paulo' })
+  @Cron(CronExpression.EVERY_DAY_AT_6PM, { timeZone: 'America/Sao_Paulo' })
   async notifyPatientsWithoutDailyMeal() {
     try {
       const patientIds = await this.patientService.findPatientsWithNoMeal();
