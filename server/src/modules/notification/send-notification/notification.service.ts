@@ -16,7 +16,8 @@ export class NotificationService {
     if (tokens.length === 0) return
 
     try {
-      return await this.firebaseService.sendMulticast(tokens, { title, body })
+      const invalidTokens = await this.firebaseService.sendMulticast(tokens, { title, body })
+      await this.notificationTokenService.removeMany(invalidTokens)
     } catch (error) {
       mapPrismaError(error, 'Erro ao enviar notificação')
     }
@@ -31,7 +32,8 @@ export class NotificationService {
     if (tokens.length === 0) return
 
     try {
-      return await this.firebaseService.sendMulticast(tokens, { title, body })
+      const invalidTokens = await this.firebaseService.sendMulticast(tokens, { title, body })
+      await this.notificationTokenService.removeMany(invalidTokens)
     } catch (error) {
       mapPrismaError(error, 'Erro ao enviar notificações')
     }

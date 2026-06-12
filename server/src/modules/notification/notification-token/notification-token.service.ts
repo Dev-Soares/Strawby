@@ -21,6 +21,15 @@ export class NotificationTokenService {
     }
   }
 
+  async removeMany(tokens: string[]): Promise<void> {
+    if (tokens.length === 0) return
+    try {
+      await this.prisma.notificationToken.deleteMany({ where: { token: { in: tokens } } })
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao remover tokens de notificação')
+    }
+  }
+
   async remove(token: string): Promise<void> {
     try {
       await this.prisma.notificationToken.delete({ where: { token } })

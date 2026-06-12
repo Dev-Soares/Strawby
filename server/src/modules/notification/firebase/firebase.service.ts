@@ -9,6 +9,11 @@ interface NotificationPayload {
   data?: Record<string, string>
 }
 
+const INVALID_TOKEN_CODES = [
+  'messaging/invalid-registration-token',
+  'messaging/registration-token-not-registered',
+]
+
 @Injectable()
 export class FirebaseService implements OnModuleInit {
   private readonly logger = new Logger(FirebaseService.name)
@@ -55,8 +60,9 @@ export class FirebaseService implements OnModuleInit {
     }
   }
 
-  async sendMulticast(tokens: string[], payload: NotificationPayload): Promise<void> {
-    if (tokens.length === 0) return
+  /** Envia para todos os tokens e retorna os tokens inválidos (expirados/desregistrados) para limpeza. */
+  async sendMulticast(tokens: string[], payload: NotificationPayload): Promise<string[]> {
+    if (tokens.length === 0) return []
 
     try {
       const result = await this.messaging.sendEachForMulticast({
@@ -74,6 +80,9 @@ export class FirebaseService implements OnModuleInit {
       } else {
         this.logger.log(`Notificações enviadas: ${result.successCount}`)
       }
+      return result.responses
+        .map((r, i) => (!r.success && INVALID_TOKEN_CODES.includes(r.error?.code ?? '') ? tokens[i] : null))
+        .filter((t): t is string => t !== null)
     } catch (error) {
       this.logger.error(`Notificações não enviadas: ${(error as Error).message}`)
       throw new InternalServerErrorException('Erro ao enviar notificações', { cause: error })
