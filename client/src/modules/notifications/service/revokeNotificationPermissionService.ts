@@ -7,8 +7,9 @@ export const revokeNotificationPermissionService = async (): Promise<string | nu
 
   const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY
 
-  const allRegs = await navigator.serviceWorker.getRegistrations()
-  const swRegistration = allRegs.find((r) => r.active?.scriptURL?.includes('firebase-messaging-sw'))
+  const swRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+    scope: '/firebase-cloud-messaging-push-scope',
+  })
 
   let token: string | null = null
   try {

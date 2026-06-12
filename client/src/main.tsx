@@ -3,8 +3,9 @@ import { createRoot } from 'react-dom/client'
 
 if ('serviceWorker' in navigator) {
   const checkForUpdate = () => {
-    navigator.serviceWorker.getRegistration().then((registration) => {
-      registration?.update()
+    // getRegistrations (plural): inclui o SW de push do FCM, que vive em scope próprio
+    navigator.serviceWorker.getRegistrations().then((registrations) => {
+      registrations.forEach((registration) => registration.update().catch(() => {}))
     })
   }
   document.addEventListener('visibilitychange', () => {
