@@ -9,7 +9,6 @@ export const requestNotificationPermissionService = async (): Promise<string | n
   if (permission !== 'granted') return null
 
   const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY
-  console.log('[FCM] vapidKey:', vapidKey)
 
   const allRegs = await navigator.serviceWorker.getRegistrations()
   const swRegistration = allRegs.find(r => r.active?.scriptURL?.includes('firebase-messaging-sw'))
