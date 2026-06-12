@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, OnModuleInit } from '@nestjs/common'
+import { Injectable, InternalServerErrorException, Logger, OnModuleInit } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { cert, getApps, initializeApp } from 'firebase-admin/app'
 import { getMessaging, type Messaging } from 'firebase-admin/messaging'
@@ -11,6 +11,7 @@ interface NotificationPayload {
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
+  private readonly logger = new Logger(FirebaseService.name)
   private messaging!: Messaging
 
   constructor(private readonly configService: ConfigService) {}
@@ -34,7 +35,9 @@ export class FirebaseService implements OnModuleInit {
         webpush: { headers: { TTL: '18000' } },
         ...(payload.data && { data: payload.data }),
       })
+      this.logger.log('Notificação enviada')
     } catch (error) {
+      this.logger.error(`Notificação não enviada: ${(error as Error).message}`)
       throw new InternalServerErrorException('Erro ao enviar notificação', { cause: error })
     }
   }
@@ -43,13 +46,23 @@ export class FirebaseService implements OnModuleInit {
     if (tokens.length === 0) return
 
     try {
-      await this.messaging.sendEachForMulticast({
+      const result = await this.messaging.sendEachForMulticast({
         tokens,
         notification: { title: payload.title, body: payload.body },
         webpush: { headers: { TTL: '18000' } },
         ...(payload.data && { data: payload.data }),
       })
+      if (result.failureCount > 0) {
+        const reasons = result.responses
+          .filter((r) => !r.success)
+          .map((r) => r.error?.code)
+          .join(', ')
+        this.logger.warn(`Notificações: ${result.successCount} enviadas, ${result.failureCount} falharam (${reasons})`)
+      } else {
+        this.logger.log(`Notificações enviadas: ${result.successCount}`)
+      }
     } catch (error) {
+      this.logger.error(`Notificações não enviadas: ${(error as Error).message}`)
       throw new InternalServerErrorException('Erro ao enviar notificações', { cause: error })
     }
   }
