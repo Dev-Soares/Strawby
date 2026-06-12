@@ -11,25 +11,7 @@ firebase.initializeApp({
   measurementId: 'G-C4X3J812T0',
 })
 
-const messaging = firebase.messaging()
-
-messaging.onBackgroundMessage((payload) => {
-  const { title, body } = payload.notification ?? {}
-
-  self.registration.showNotification(title, {
-    body,
-    icon: '/logo.png',
-    data: { url: '/app/home' },
-  })
-})
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close()
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      const appClient = clientList.find((c) => c.url.includes('/app/'))
-      if (appClient) return appClient.focus()
-      return clients.openWindow('/app/home')
-    })
-  )
-})
+// Mensagens com payload `notification` são exibidas automaticamente pelo SDK
+// (ícone e link de clique vêm do campo `webpush` definido no backend).
+// Não chamar showNotification aqui — gera notificação duplicada.
+firebase.messaging()

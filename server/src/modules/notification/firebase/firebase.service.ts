@@ -13,6 +13,7 @@ interface NotificationPayload {
 export class FirebaseService implements OnModuleInit {
   private readonly logger = new Logger(FirebaseService.name)
   private messaging!: Messaging
+  private clickLink?: string
 
   constructor(private readonly configService: ConfigService) {}
 
@@ -25,6 +26,18 @@ export class FirebaseService implements OnModuleInit {
       initializeApp({ credential: cert({ projectId, clientEmail, privateKey }) })
     }
     this.messaging = getMessaging()
+
+    // FCM exige HTTPS no link de clique — em dev (localhost http) fica sem link
+    const appUrl = this.configService.get<string>('CORS_ORIGIN')?.split(',')[0]?.trim()
+    this.clickLink = appUrl?.startsWith('https') ? `${appUrl}/app/home` : undefined
+  }
+
+  private webpushConfig() {
+    return {
+      headers: { TTL: '18000' },
+      notification: { icon: '/logo.png' },
+      ...(this.clickLink && { fcmOptions: { link: this.clickLink } }),
+    }
   }
 
   async send(token: string, payload: NotificationPayload): Promise<void> {
@@ -32,7 +45,7 @@ export class FirebaseService implements OnModuleInit {
       await this.messaging.send({
         token,
         notification: { title: payload.title, body: payload.body },
-        webpush: { headers: { TTL: '18000' } },
+        webpush: this.webpushConfig(),
         ...(payload.data && { data: payload.data }),
       })
       this.logger.log('Notificação enviada')
@@ -49,7 +62,7 @@ export class FirebaseService implements OnModuleInit {
       const result = await this.messaging.sendEachForMulticast({
         tokens,
         notification: { title: payload.title, body: payload.body },
-        webpush: { headers: { TTL: '18000' } },
+        webpush: this.webpushConfig(),
         ...(payload.data && { data: payload.data }),
       })
       if (result.failureCount > 0) {
