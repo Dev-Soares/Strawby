@@ -65,7 +65,7 @@ export class CronService {
     }
   }
 
-  @Cron('0 30 12 * * *', { timeZone: 'America/Sao_Paulo' })
+  @Cron('0 40 12 * * *', { timeZone: 'America/Sao_Paulo' })
   async notifyPatientsWithoutDailyMeal() {
     try {
       const patientIds = await this.patientService.findPatientsWithNoMeal();
