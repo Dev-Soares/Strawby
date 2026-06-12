@@ -48,8 +48,8 @@ export class CronService {
       );
       await this.notificationService.sendMany(
         reset,
-        'Não desanime!',
-        'Sua sequência foi perdida, mas não desanime! Foque em manter uma alimentação saudável hoje para recuperar seu progresso amanhã!',
+        'Sequência Perdida',
+        'Sua sequência foi perdida, mas não desanime!',
       );
     } catch (error) {
       this.logger.error('generateStreakForEachUser falhou', error);
@@ -65,16 +65,15 @@ export class CronService {
     }
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_NOON, { timeZone: 'America/Sao_Paulo' })
+  @Cron(CronExpression.EVERY_DAY_AT_1PM, { timeZone: 'America/Sao_Paulo' })
   async notifyPatientsWithoutDailyMeal() {
-    this.logger.log('notifyPatientsWithoutDailyMeal disparado');
     try {
       const patientIds = await this.patientService.findPatientsWithNoMeal();
 
       await this.notificationService.sendMany(
         patientIds,
         'Lembrete de Refeição',
-        'Olá! Notamos que você ainda não registrou uma refeição hoje. Não se esqueça de manter seu diário alimentar atualizado para acompanhar seu progresso!',
+        ' Não se esqueça de manter sua consistência ',
       );
     } catch (error) {
       this.logger.error('notifyPatientsWithoutDailyMeal falhou', error);

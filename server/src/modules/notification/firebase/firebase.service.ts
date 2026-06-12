@@ -39,7 +39,8 @@ export class FirebaseService implements OnModuleInit {
 
   private webpushConfig() {
     return {
-      headers: { TTL: '18000' },
+      // Urgency high: sem isso, Android em Doze/economia de bateria segura push de urgência normal
+      headers: { TTL: '18000', Urgency: 'high' },
       notification: { icon: '/logo.png' },
       ...(this.clickLink && { fcmOptions: { link: this.clickLink } }),
     }
