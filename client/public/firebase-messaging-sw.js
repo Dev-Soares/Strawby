@@ -16,8 +16,20 @@ const messaging = firebase.messaging()
 messaging.onBackgroundMessage((payload) => {
   const { title, body } = payload.notification ?? {}
 
-  self.registration.showNotification( title , {
+  self.registration.showNotification(title, {
     body,
     icon: '/logo.png',
+    data: { url: '/app/home' },
   })
+})
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      const appClient = clientList.find((c) => c.url.includes('/app/'))
+      if (appClient) return appClient.focus()
+      return clients.openWindow('/app/home')
+    })
+  )
 })
