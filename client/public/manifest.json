@@ -3,7 +3,7 @@
   "short_name": "Strawby",
   "description": "Controle suas refeições e acompanhe sua nutrição diária com facilidade.",
   "start_url": "/app/home",
-  "scope": "/app/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
