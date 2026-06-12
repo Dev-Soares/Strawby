@@ -10,8 +10,10 @@ export class NotificationTokenService {
 
   async create(userId: string, dto: CreateNotificationTokenDto): Promise<NotificationTokenPublic> {
     try {
-      return await this.prisma.notificationToken.create({
-        data: { userId, token: dto.token },
+      return await this.prisma.notificationToken.upsert({
+        where: { token: dto.token },
+        create: { userId, token: dto.token },
+        update: {},
         select: { id: true, userId: true, token: true, createdAt: true },
       })
     } catch (error) {
