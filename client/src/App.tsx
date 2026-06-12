@@ -1,6 +1,7 @@
 import { Routes } from 'react-router-dom'
 import ScrollToTop from './shared/components/ScrollToTop'
 import UnauthorizedListener from './shared/components/UnauthorizedListener'
+import NotificationTokenRefresher from './modules/notifications/components/NotificationTokenRefresher'
 import { publicRoutes } from './routes/publicRoutes'
 import { authRoutes } from './routes/authRoutes'
 import { homeRoutes } from './routes/homeRoutes'
@@ -17,6 +18,7 @@ export default function App() {
     <>
       <ScrollToTop />
       <UnauthorizedListener />
+      <NotificationTokenRefresher />
       <Routes>
         {publicRoutes}
         {authRoutes}

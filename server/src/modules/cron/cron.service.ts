@@ -22,15 +22,7 @@ export class CronService {
     const date = yesterdayInAppTz();
 
     try {
-      const patientIds = await this.dailyScoreService.closeDayScoreForEachUser(date);
-
-      if (patientIds?.length) {
-        await this.notificationService.sendMany(
-          patientIds,
-          'Seu Diário Alimentar de Ontem',
-          'Seu diário alimentar de ontem foi fechado. Acesse o aplicativo para ver suas pontuações!',
-        );
-      }
+      await this.dailyScoreService.closeDayScoreForEachUser(date);
     } catch (error) {
       this.logger.error('closeDayScoreForEachUser falhou', error);
     }
@@ -65,15 +57,15 @@ export class CronService {
     }
   }
 
-  @Cron('0 40 12 * * *', { timeZone: 'America/Sao_Paulo' })
+  @Cron(CronExpression.EVERY_DAY_AT_6PM, { timeZone: 'America/Sao_Paulo' })
   async notifyPatientsWithoutDailyMeal() {
     try {
       const patientIds = await this.patientService.findPatientsWithNoMeal();
 
       await this.notificationService.sendMany(
         patientIds,
-        'Lembrete de Refeição',
-        ' Não se esqueça de manter sua consistência ',
+        'Registre suas Refeições',
+        ' Não se esqueça de manter sua consistência!',
       );
     } catch (error) {
       this.logger.error('notifyPatientsWithoutDailyMeal falhou', error);
