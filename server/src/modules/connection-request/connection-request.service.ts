@@ -1,37 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { ConnectionRequest } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { NutritionistService } from '../nutritionist/nutritionist.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { CreateConnectionRequestDto } from './dto/create-connection-request.dto';
-
-type ConnectionRequestPublic = Pick<
-  ConnectionRequest,
-  'id' | 'status' | 'nutritionistId' | 'patientId' | 'createdAt'
->;
-
-type ConnectionRequestWithPatient = ConnectionRequestPublic & {
-  patient: { user: { name: string; email: string } };
-};
-
-const connectionRequestSelect = {
-  id: true,
-  status: true,
-  nutritionistId: true,
-  patientId: true,
-  createdAt: true,
-} as const;
-
-const connectionRequestWithPatientSelect = {
-  ...connectionRequestSelect,
-  patient: { select: { user: { select: { name: true, email: true } } } },
-} as const;
+import {
+  type ConnectionRequestPublic,
+  type ConnectionRequestWithPatient,
+  connectionRequestSelect,
+  connectionRequestWithPatientSelect,
+} from './types';
+import { NotificationService } from '../notification/send-notification/notification.service';
 
 @Injectable()
 export class ConnectionRequestService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly nutritionistService: NutritionistService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async makeRequest(
@@ -42,7 +27,7 @@ export class ConnectionRequestService {
     const nutritionist = await this.nutritionistService.findByCode(dto.code);
 
     try {
-      return await this.prisma.connectionRequest.create({
+      const connectionRequest = await this.prisma.connectionRequest.create({
         data: {
           patientId,
           nutritionistId: nutritionist.id,
@@ -50,6 +35,15 @@ export class ConnectionRequestService {
         },
         select: connectionRequestSelect,
       });
+
+      await this.notificationService.sendOne(
+        nutritionist.id,
+        'Nova solicitação de conexão',
+        'Você recebeu uma nova solicitação de conexão de um paciente.',
+      );
+
+      return connectionRequest;
+
     } catch (error) {
       mapPrismaError(error, 'Erro ao criar solicitação de conexão');
     }
@@ -80,6 +74,12 @@ export class ConnectionRequestService {
       await this.nutritionistService.connectPatient(
         updated.nutritionistId,
         updated.patientId,
+      );
+
+      await this.notificationService.sendOne(
+        updated.patientId,
+        'Solicitação de conexão aceita',
+        'Seu nutricionista aceitou sua solicitação de conexão.',
       );
 
       return updated;

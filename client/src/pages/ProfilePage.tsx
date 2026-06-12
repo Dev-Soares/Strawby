@@ -9,6 +9,7 @@ import ProfileNutritionistSection from '@/modules/profile/components/ProfileNutr
 import ProfileBodyDataSection from '@/modules/profile/components/ProfileBodyDataSection'
 import ProfileThemeSection from '@/modules/profile/components/ProfileThemeSection'
 import ProfileSupportSection from '@/modules/profile/components/ProfileSupportSection'
+import ProfileNotificationsSection from '@/modules/notifications/components/ProfileNotificationsSection'
 
 export default function ProfilePage() {
   const { data: user } = useAuth()
@@ -33,6 +34,8 @@ export default function ProfilePage() {
         {isPatient && patient && <ProfileBodyDataSection patient={patient} />}
 
         <ProfileThemeSection />
+
+        <ProfileNotificationsSection />
 
         <ProfileSupportSection />
 

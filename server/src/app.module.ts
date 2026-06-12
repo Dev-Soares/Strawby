@@ -16,9 +16,11 @@ import { DailyScoreModule } from './modules/daily-score/daily-score.module';
 import { NutritionistModule } from './modules/nutritionist/nutritionist.module';
 import { ConnectionRequestModule } from './modules/connection-request/connection-request.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { JobsModule } from './modules/jobs/jobs.module';
+import { CronModule } from './modules/cron/cron.module';
 import { PatientModule } from './modules/patient/patient.module';
 import { EmailModule } from './modules/email/email.module';
+import { NotificationTokenModule } from './modules/notification/notification-token/notification-token.module';
+import { NotificationModule } from './modules/notification/send-notification/notification.module';
 
 @Module({
 	imports: [
@@ -80,9 +82,11 @@ import { EmailModule } from './modules/email/email.module';
 		NutritionistModule,
 		ConnectionRequestModule,
 		PatientModule,
-		JobsModule,
+		CronModule,
 		EmailModule,
 		ScheduleModule.forRoot(),
+		NotificationTokenModule,
+		NotificationModule,
 	],
 	providers: [
 		{

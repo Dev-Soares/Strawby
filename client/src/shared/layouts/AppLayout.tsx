@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import BlobMenu from './BlobMenu'
 import TopTabBar from './TopTabBar'
+import NotificationPermissionPopup from '@/modules/notifications/components/NotificationPermissionPopup'
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -56,6 +57,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <BlobMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
       <main className="pb-24 sm:pb-0">{children}</main>
+
+      <NotificationPermissionPopup />
     </div>
   )
 }
