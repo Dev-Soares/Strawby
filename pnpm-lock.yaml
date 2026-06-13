@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-patchedDependencies:
-  zod@3.25.76: 1c23dcad8a018baa4d126b1632ad754f8c08a6fa0a8534a55eb46c5b23eceefb
-
 importers:
 
   .:
@@ -10654,7 +10651,7 @@ snapshots:
     dependencies:
       devtools-protocol: 0.0.1624250
       mitt: 3.0.1
-      zod: 3.25.76(patch_hash=1c23dcad8a018baa4d126b1632ad754f8c08a6fa0a8534a55eb46c5b23eceefb)
+      zod: 3.25.76
 
   ci-info@4.4.0: {}
 
@@ -14725,6 +14722,6 @@ snapshots:
     dependencies:
       zod: 4.3.6
 
-  zod@3.25.76(patch_hash=1c23dcad8a018baa4d126b1632ad754f8c08a6fa0a8534a55eb46c5b23eceefb): {}
+  zod@3.25.76: {}
 
   zod@4.3.6: {}

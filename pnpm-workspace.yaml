@@ -14,5 +14,3 @@ allowBuilds:
   puppeteer: true
   sharp: true
   unrs-resolver: true
-patchedDependencies:
-  zod@3.25.76: patches/zod@3.25.76.patch
