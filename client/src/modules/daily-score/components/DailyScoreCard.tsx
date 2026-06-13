@@ -1,6 +1,7 @@
 ﻿import { motion } from 'framer-motion'
 import { useGetDailyLiveScore } from '../hooks/useGetDailyLiveScore'
 import DailyScoreCardSkeleton from '../skeletons/DailyScoreCardSkeleton'
+import { toLocalISODate } from '@/shared/utils/date'
 
 function getScoreLabel(score: number) {
   if (score >= 8) return 'Excelente'
@@ -16,7 +17,7 @@ function getScoreColor(score: number) {
 }
 
 export default function DailyScoreCard() {
-  const today = new Date().toISOString().split('T')[0]
+  const today = toLocalISODate()
   const { data: score, isPending, isError } = useGetDailyLiveScore(today)
 
   if (isPending) return <DailyScoreCardSkeleton />
