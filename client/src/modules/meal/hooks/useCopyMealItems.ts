@@ -3,6 +3,7 @@ import { useAuth } from '../../auth/hooks/useAuth'
 import { addMealItemService } from '../service/addMealItemService'
 import { addMealPrivateFoodItemService } from '../service/addMealPrivateFoodItemService'
 import { addMealRecipeService } from '../service/addMealRecipeService'
+import { toLocalISODate } from '@/shared/utils/date'
 import type { Meal } from '../types/meal'
 
 export const useCopyMealItems = () => {
@@ -25,7 +26,7 @@ export const useCopyMealItems = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['meal', variables.targetId] })
       queryClient.invalidateQueries({ queryKey: ['meals'] })
-      queryClient.invalidateQueries({ queryKey: ['daily-score-live', new Date().toISOString().split('T')[0]] })
+      queryClient.invalidateQueries({ queryKey: ['daily-score-live', toLocalISODate()] })
       queryClient.invalidateQueries({ queryKey: ['daily-scores'] })
     },
   })

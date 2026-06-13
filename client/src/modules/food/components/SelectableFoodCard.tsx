@@ -4,6 +4,7 @@ import type { SelectableItem } from '../types/selectableItem'
 type Props = {
   item: SelectableItem
   onSelect: (item: SelectableItem) => void
+  isPending?: boolean
 }
 
 const macros = [
@@ -12,7 +13,7 @@ const macros = [
   { key: 'fat' as const, label: 'Gord', colorClass: 'text-violet-500' },
 ]
 
-export default function SelectableFoodCard({ item, onSelect }: Props) {
+export default function SelectableFoodCard({ item, onSelect, isPending }: Props) {
   const isRecipe = item.kind === 'recipe'
   const subtitle = isRecipe
     ? 'Receita'
@@ -25,10 +26,14 @@ export default function SelectableFoodCard({ item, onSelect }: Props) {
       <button
         type="button"
         onClick={() => onSelect(item)}
-        className="absolute top-3 right-3 w-8 h-8 rounded-xl bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-500 flex items-center justify-center transition-colors duration-150 cursor-pointer z-10"
+        disabled={isPending}
+        className="absolute top-3 right-3 w-8 h-8 rounded-xl bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-500 flex items-center justify-center transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer z-10"
         aria-label={`Adicionar ${item.name}`}
       >
-        <Plus size={16} weight="bold" />
+        {isPending
+          ? <span className="w-3.5 h-3.5 border-2 border-red-300 border-t-red-500 rounded-full animate-spin" />
+          : <Plus size={16} weight="bold" />
+        }
       </button>
 
       <div className="mb-3 pr-10">

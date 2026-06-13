@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { useAuth } from '../../auth/hooks/useAuth'
 import { removeMealRecipeService } from '../service/removeMealRecipeService'
+import { toLocalISODate } from '@/shared/utils/date'
 
 export const useRemoveMealRecipe = (patientId?: string) => {
   const queryClient = useQueryClient()
@@ -13,7 +14,7 @@ export const useRemoveMealRecipe = (patientId?: string) => {
     onSuccess: async (_, variables) => {
       await queryClient.refetchQueries({ queryKey: ['meal', variables.mealId], type: 'all' })
       await queryClient.refetchQueries({ queryKey: ['meals'], type: 'all' })
-      queryClient.invalidateQueries({ queryKey: ['daily-score-live', new Date().toISOString().split('T')[0]] })
+      queryClient.invalidateQueries({ queryKey: ['daily-score-live', toLocalISODate()] })
       queryClient.invalidateQueries({ queryKey: ['daily-scores'] })
       toast.success('Receita removida com sucesso!')
     },

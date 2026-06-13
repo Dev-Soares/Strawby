@@ -56,6 +56,7 @@ export default function SelectFoodPage() {
             isError={isError}
             items={currentItems}
             onSelect={handleSelectItem}
+            anyPending={anyPending}
           />
         ) : (
           <QuantityStep

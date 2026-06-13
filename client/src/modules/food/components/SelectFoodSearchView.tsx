@@ -1,7 +1,5 @@
 import FoodSearch from './FoodSearch'
-import FoodSkeleton from '../skeletons/FoodSkeleton'
-import PrivateFoodSkeleton from '../../private-food/skeletons/PrivateFoodSkeleton'
-import RecipeCardSkeleton from '../../recipe/skeletons/RecipeCardSkeleton'
+import SelectableFoodCardSkeleton from '../skeletons/SelectableFoodCardSkeleton'
 import SelectFoodTabs from './SelectFoodTabs'
 import SelectableFoodCard from './SelectableFoodCard'
 import type { SelectFoodTab, SelectableItem } from '../types/selectableItem'
@@ -16,11 +14,12 @@ type Props = {
   isError: boolean
   items: SelectableItem[]
   onSelect: (item: SelectableItem) => void
+  anyPending?: boolean
 }
 
 export default function SelectFoodSearchView({
   tab, onTabChange, includeRecipes, search, onSearchChange,
-  isPending, isError, items, onSelect,
+  isPending, isError, items, onSelect, anyPending,
 }: Props) {
   const showInitialPrompt = tab === 'public' && search.trim().length < 2
   const isEmpty = !items || items.length === 0
@@ -46,13 +45,9 @@ export default function SelectFoodSearchView({
         </div>
       ) : isPending ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {Array.from({ length: 6 }).map((_, i) =>
-            tab === 'recipes'
-              ? <RecipeCardSkeleton key={i} />
-              : tab === 'public'
-                ? <FoodSkeleton key={i} />
-                : <PrivateFoodSkeleton key={i} />,
-          )}
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SelectableFoodCardSkeleton key={i} />
+          ))}
         </div>
       ) : isError ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -77,7 +72,7 @@ export default function SelectFoodSearchView({
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {items.map((item) => (
-            <SelectableFoodCard key={`${item.kind}-${item.id}`} item={item} onSelect={onSelect} />
+            <SelectableFoodCard key={`${item.kind}-${item.id}`} item={item} onSelect={onSelect} isPending={anyPending} />
           ))}
         </div>
       )}

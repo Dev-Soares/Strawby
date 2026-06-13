@@ -6,6 +6,8 @@ function getInitials(name: string) {
 
 interface Props {
   name: string
+  email?: string
+  role?: string
 }
 
 export default function ProfileAvatar({ name }: Props) {

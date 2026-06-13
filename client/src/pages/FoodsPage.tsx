@@ -38,7 +38,14 @@ export default function FoodsPage() {
       )
     }
 
-    if (isPending) return <FoodSkeleton />
+    if (isPending) return (
+      <div>
+        <div className="h-4 w-36 rounded-full bg-neutral-200 dark:bg-neutral-800 animate-pulse mb-4" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {Array.from({ length: 9 }).map((_, i) => <FoodSkeleton key={i} />)}
+        </div>
+      </div>
+    )
 
     if (isError) {
       return (
