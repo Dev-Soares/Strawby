@@ -79,22 +79,22 @@ export default function PlanPage() {
                 <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-3 transition-colors duration-300">Seus objetivos nutricionais diários</p>
               </div>
 
-              <div className="flex items-center gap-2 sm:shrink-0">
-                <DownloadPlanPdfButton patientId={plan.patientId} />
+              <div className="flex items-center gap-2 flex-wrap sm:shrink-0">
                 <button
                   onClick={() => setConfirmDeleteOpen(true)}
-                  className="flex flex-1 sm:flex-none items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-3 rounded-2xl transition-colors duration-200 cursor-pointer"
+                  className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer"
                 >
-                  <Sparkle size={16} weight="fill" />
+                  <Sparkle size={18} weight="fill" />
                   Gerar plano
                 </button>
                 <button
                   onClick={() => setModalOpen(true)}
-                  className="flex flex-1 sm:flex-none items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-3 rounded-2xl transition-colors duration-200 cursor-pointer"
+                  className="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-200 text-sm font-bold px-4 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer"
                 >
-                  <PencilSimple size={16} weight="bold" />
-                  <span>Editar</span>
+                  <PencilSimple size={18} weight="bold" />
+                  Editar
                 </button>
+                <DownloadPlanPdfButton patientId={plan.patientId} compact />
               </div>
             </motion.div>
 

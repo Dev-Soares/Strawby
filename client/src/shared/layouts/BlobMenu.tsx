@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight } from '@phosphor-icons/react'
+import { ArrowRight, HouseSimple, Carrot, Gear, Users, ChartBar, UserCircle } from '@phosphor-icons/react'
+import type { Icon } from '@phosphor-icons/react'
 import { Link, useLocation } from 'react-router-dom'
 import { useSignOut } from '@/modules/auth/hooks/useSignOut'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
@@ -11,17 +12,17 @@ interface BlobMenuProps {
 
 const blobPath = 'M 24 0 C 8 8, 0 22, 2 38 C 4 54, 22 58, 20 70 C 16 82, 6 86, 10 94 C 12 98, 16 100, 22 100 L 100 100 L 100 0 Z'
 
-const patientNavItems = [
-  { label: 'Início', href: '/app/home' },
-  { label: 'Pontuação', href: '/app/score' },
-  { label: 'Plano', href: '/app/plan' },
-  { label: 'Perfil', href: '/app/profile' },
+const patientNavItems: { label: string; href: string; icon: Icon }[] = [
+  { label: 'Início', href: '/app/home', icon: HouseSimple },
+  { label: 'Alimentos', href: '/app/foods', icon: Carrot },
+  { label: 'Ajustes', href: '/app/settings', icon: Gear },
 ]
 
-const nutritionistNavItems = [
-  { label: 'Pacientes', href: '/app/home' },
-  { label: 'Relatórios', href: '/app/nutritionist/reports' },
-  { label: 'Perfil', href: '/app/profile' },
+const nutritionistNavItems: { label: string; href: string; icon: Icon }[] = [
+  { label: 'Pacientes', href: '/app/home', icon: Users },
+  { label: 'Relatórios', href: '/app/nutritionist/reports', icon: ChartBar },
+  { label: 'Perfil', href: '/app/profile', icon: UserCircle },
+  { label: 'Ajustes', href: '/app/settings', icon: Gear },
 ]
 
 export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
@@ -55,7 +56,7 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
           </div>
 
           <div
-            className="absolute inset-0 flex flex-col justify-start pt-28 sm:justify-center sm:pt-0 pl-[28%] sm:pl-[24%] md:pl-[28%] lg:pl-[32%] pr-8 sm:pr-10 md:pr-16 pointer-events-none"
+            className="absolute inset-0 flex flex-col justify-between pt-28 pb-12 sm:justify-center sm:pt-0 sm:pb-0 pl-[28%] sm:pl-[24%] md:pl-[28%] lg:pl-[32%] pr-8 sm:pr-10 md:pr-16 pointer-events-none"
             onClick={(e) => e.stopPropagation()}
           >
             <nav className="flex flex-col pointer-events-auto">
@@ -75,10 +76,13 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
                       onClick={onClose}
                       className="group flex items-center gap-4 py-5 sm:py-6"
                     >
+                      <item.icon
+                        size={38}
+                        weight="fill"
+                        className="shrink-0 text-white transition-all duration-300 ease-out group-hover:translate-x-2"
+                      />
                       <span
-                        className={`font-extrabold text-[46px] sm:text-[50px] lg:text-[62px] leading-none tracking-tight text-white transition-all duration-300 ease-out group-hover:translate-x-2 ${
-                          isActive ? 'opacity-100' : 'opacity-85 group-hover:opacity-100'
-                        }`}
+                        className="font-extrabold text-[48px] sm:text-[60px] lg:text-[72px] leading-none tracking-tight text-white transition-all duration-300 ease-out group-hover:translate-x-2"
                       >
                         {item.label}
                       </span>
@@ -94,7 +98,7 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
             </nav>
 
             <motion.div
-              className="flex flex-col sm:flex-row items-end sm:items-center justify-start sm:justify-end gap-3 mt-6 md:mt-10 pointer-events-auto"
+              className="flex justify-end pointer-events-auto"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
@@ -104,7 +108,7 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
                 type="button"
                 onClick={() => signOut()}
                 disabled={isSigningOut}
-                className="group bg-white/95 backdrop-blur-sm border border-white/20 text-red-600 hover:bg-white hover:border-white/40 text-sm sm:text-base font-extrabold px-10 sm:px-9 py-4 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-lg hover:shadow-2xl hover:-translate-y-1 tracking-tight disabled:opacity-50 cursor-pointer"
+                className="group bg-white/95 backdrop-blur-sm border border-white/20 text-neutral-900 hover:bg-white hover:border-white/40 text-sm sm:text-base font-extrabold px-10 sm:px-9 py-4 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-lg hover:shadow-2xl hover:-translate-y-1 tracking-tight disabled:opacity-50 cursor-pointer"
               >
                 {isSigningOut ? 'Saindo…' : 'Sair da conta'}
                 <ArrowRight size={17} weight="bold" className="group-hover:translate-x-1.5 transition-transform duration-300" />

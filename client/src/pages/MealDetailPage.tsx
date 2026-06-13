@@ -94,13 +94,13 @@ export default function MealDetailPage() {
           </h2>
         </div>
 
-        {!hasItems ? (
+        {!hasItems && hasRecipes ? (
           <MealEmptyState
             title="Nenhum alimento"
             description="Adicione alimentos para compor esta refeição"
             onAddClick={() => navigate(selectFoodPath)}
           />
-        ) : (
+        ) : hasItems ? (
           <div className="flex flex-col gap-3 mb-6">
             {meal.items.map((item) => (
               <MealItemRow
@@ -119,7 +119,7 @@ export default function MealDetailPage() {
               />
             ))}
           </div>
-        )}
+        ) : null}
 
         {hasRecipes && (
           <>

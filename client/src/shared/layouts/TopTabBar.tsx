@@ -4,7 +4,6 @@ import {
   HouseSimpleIcon,
   TrophyIcon,
   TargetIcon,
-  CarrotIcon,
   UserCircleIcon,
   UsersIcon,
   ChartBarIcon,
@@ -14,7 +13,6 @@ import { useAuth } from '@/modules/auth/hooks/useAuth'
 const patientTabs = [
   { label: 'Início', href: '/app/home', icon: HouseSimpleIcon, tourId: 'nav-home' },
   { label: 'Pontuação', href: '/app/score', icon: TrophyIcon, tourId: 'nav-score' },
-  { label: 'Alimentos', href: '/app/foods', icon: CarrotIcon, tourId: undefined },
   { label: 'Plano', href: '/app/plan', icon: TargetIcon, tourId: 'nav-plan' },
   { label: 'Perfil', href: '/app/profile', icon: UserCircleIcon, tourId: 'nav-profile' },
 ]
@@ -37,7 +35,7 @@ export default function TopTabBar({ hidden = false, variant = 'top' }: TopTabBar
   const { data: user } = useAuth()
 
   const tabs = user?.role === 'nutritionist' ? nutritionistTabs : patientTabs
-  const cols = tabs.length === 2 ? 'grid-cols-2' : tabs.length === 3 ? 'grid-cols-3' : 'grid-cols-5'
+  const cols = tabs.length === 2 ? 'grid-cols-2' : tabs.length === 3 ? 'grid-cols-3' : tabs.length === 4 ? 'grid-cols-4' : 'grid-cols-5'
   const activeIndex = tabs.findIndex((t) => pathname === t.href)
   const tabWidthPct = 100 / tabs.length
 

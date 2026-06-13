@@ -29,16 +29,16 @@ export default function PatientHomeContent() {
 
         {planPending || mealsPending ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start">
-            <DailySummarySkeleton />
             <MealListSkeleton />
+            <DailySummarySkeleton />
           </div>
         ) : (
           <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start transition-opacity duration-200 ${mealsFetching ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-            <div data-tutorial="daily-summary">
-              {summary ? <DailySummary data={summary} /> : <DailySummarySkeleton />}
-            </div>
             <div data-tutorial="meal-list">
               <MealList meals={meals ?? []} />
+            </div>
+            <div data-tutorial="daily-summary">
+              {summary ? <DailySummary data={summary} /> : <DailySummarySkeleton />}
             </div>
           </div>
         )}

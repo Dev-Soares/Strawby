@@ -13,10 +13,10 @@ export const useCreateMeal = () => {
       await queryClient.refetchQueries({ queryKey: ['meals'], type: 'all' })
       queryClient.invalidateQueries({ queryKey: ['daily-score-live', new Date().toISOString().split('T')[0]] })
       queryClient.invalidateQueries({ queryKey: ['daily-scores'] })
-      toast.success('Refeicao criada com sucesso!')
+      toast.success('Refeição criada com sucesso!')
     },
     onError: () => {
-      toast.error('Erro ao criar refeicao. Tente novamente.')
+      toast.error('Erro ao criar refeição. Tente novamente.')
     },
   })
 }

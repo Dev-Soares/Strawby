@@ -26,7 +26,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <div className={`sticky top-0 z-70 pt-3 sm:pt-4 transition-colors duration-300 ${menuOpen ? 'bg-transparent' : 'bg-neutral-50/80 dark:bg-neutral-950/80 backdrop-blur-md'}`}>
         <header className="flex items-center justify-between px-5 sm:px-8 h-14 sm:h-16 md:h-20">
           <div
-            className={`flex items-center gap-2.5 sm:gap-3 transition-opacity duration-200 ${
+            className={`flex items-center gap-1 transition-opacity duration-200 ${
               menuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
             }`}
           >
@@ -38,7 +38,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
           <button
             onClick={() => setMenuOpen((o) => !o)}
-            className="flex flex-col gap-1.5 sm:gap-2 cursor-pointer p-3 shrink-0"
+            className={`flex flex-col gap-1.5 sm:gap-2 cursor-pointer p-3 shrink-0 ${menuOpen ? 'fixed top-3 sm:top-4 right-4 sm:right-7 z-80' : 'relative'}`}
             aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
           >
             <span className={`block h-0.75 transition-all duration-300 origin-center rounded-full ${menuOpen ? 'w-7 sm:w-8 bg-white rotate-45 translate-y-2.5 sm:translate-y-3' : 'w-7 sm:w-8 bg-neutral-950 dark:bg-neutral-100'}`} />
