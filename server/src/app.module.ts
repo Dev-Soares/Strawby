@@ -94,5 +94,6 @@ import { NotificationModule } from './modules/notification/send-notification/not
 			useClass: ThrottlerGuard,
 		},
 	],
+	
 })
 export class AppModule {}
