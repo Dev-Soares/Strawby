@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, HouseSimple, Carrot, Gear, Users, ChartBar, UserCircle } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useSignOut } from '@/modules/auth/hooks/useSignOut'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
 
@@ -26,7 +26,6 @@ const nutritionistNavItems: { label: string; href: string; icon: Icon }[] = [
 ]
 
 export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
-  const { pathname } = useLocation()
   const { mutate: signOut, isPending: isSigningOut } = useSignOut()
   const { data: user } = useAuth()
 
@@ -61,7 +60,6 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
           >
             <nav className="flex flex-col pointer-events-auto">
               {navItems.map((item, i) => {
-                const isActive = pathname === item.href
                 return (
                   <motion.div
                     key={item.href}
