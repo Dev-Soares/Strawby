@@ -40,15 +40,15 @@ export default function NotFoundPage() {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
               <Link
-                to="/"
+                to="/login"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-neutral-200 bg-white px-5 py-3 text-sm font-medium text-neutral-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-red-200 hover:text-red-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-red-900/50 dark:hover:text-red-300"
               >
                 <ArrowLeft size={16} weight="bold" />
-                Início
+                Login
               </Link>
 
               <Link
-                to="/app"
+                to="/app/home"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-700"
               >
                 Abrir app
