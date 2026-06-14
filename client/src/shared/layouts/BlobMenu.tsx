@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, HouseSimple, Carrot, Gear, Users, ChartBar, UserCircle } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
-import { useSignOut } from '@/modules/auth/hooks/useSignOut'
+
 import { useAuth } from '@/modules/auth/hooks/useAuth'
 
 interface BlobMenuProps {
@@ -26,7 +26,6 @@ const nutritionistNavItems: { label: string; href: string; icon: Icon }[] = [
 ]
 
 export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
-  const { mutate: signOut, isPending: isSigningOut } = useSignOut()
   const { data: user } = useAuth()
 
   const navItems = user?.role === 'nutritionist' ? nutritionistNavItems : patientNavItems
