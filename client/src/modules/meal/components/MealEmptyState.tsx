@@ -8,12 +8,12 @@ type Props = {
 
 export default function MealEmptyState({ title, description, onAddClick }: Props) {
   return (
-    <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-dashed border-neutral-200 dark:border-neutral-800 p-8 text-center mb-6 transition-colors duration-300">
-      <div className="w-12 h-12 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mx-auto mb-3 transition-colors duration-300">
-        <ForkKnifeIcon size={20} weight="duotone" className="text-neutral-400 dark:text-neutral-500" />
+    <div className="p-8 text-center mb-6">
+      <div className="w-14 h-14 rounded-2xl bg-neutral-200 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 flex items-center justify-center mx-auto mb-3 transition-colors duration-300">
+        <ForkKnifeIcon size={22} weight="duotone" className="text-neutral-500 dark:text-neutral-300" />
       </div>
-      <p className="text-sm font-bold text-neutral-600 dark:text-neutral-400 mb-1">{title}</p>
-      <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-4">{description}</p>
+      <p className="text-sm font-bold text-neutral-800 dark:text-neutral-100 mb-1">{title}</p>
+      <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-4">{description}</p>
       <button
         type="button"
         onClick={onAddClick}

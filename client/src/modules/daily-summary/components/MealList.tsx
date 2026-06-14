@@ -50,15 +50,15 @@ export default function MealList({ meals }: MealListProps) {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
-          className="flex flex-col items-center text-center py-10 px-4 bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 transition-colors duration-300"
+          className="flex flex-col items-center text-center py-10 px-4"
         >
-          <div className="w-14 h-14 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 transition-colors duration-300">
-            <ForkKnifeIcon size={24} weight="duotone" className="text-neutral-400 dark:text-neutral-500" />
+          <div className="w-16 h-16 rounded-2xl bg-neutral-200 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 flex items-center justify-center mb-4 transition-colors duration-300">
+            <ForkKnifeIcon size={26} weight="duotone" className="text-neutral-500 dark:text-neutral-300" />
           </div>
-          <p className="text-sm font-bold text-neutral-700 dark:text-neutral-300 mb-1 transition-colors duration-300">
+          <p className="text-base font-bold text-neutral-800 dark:text-neutral-100 mb-1 transition-colors duration-300">
             {isToday ? 'Nenhuma refeição hoje' : 'Sem refeições neste dia'}
           </p>
-          <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-5 max-w-50 leading-relaxed transition-colors duration-300">
+          <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-5 max-w-50 leading-relaxed transition-colors duration-300">
             {isToday
               ? 'Registre o que você comeu para acompanhar seus macros'
               : 'Nenhuma refeição foi registrada neste dia'}
