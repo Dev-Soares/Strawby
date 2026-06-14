@@ -128,9 +128,9 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                   {meal.items.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center justify-between"
+                      className="flex items-center gap-3"
                     >
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="text-sm font-bold text-neutral-900 dark:text-neutral-200 truncate">
                           {(item.food ?? item.privateFood)?.name ?? 'Alimento'}
                         </p>
@@ -138,7 +138,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                           {Math.round(item.quantity)}g
                         </p>
                       </div>
-                        <span className="text-sm font-extrabold tabular-nums text-neutral-700 dark:text-neutral-300 shrink-0">
+                      <span className="text-sm font-extrabold tabular-nums text-neutral-700 dark:text-neutral-300 shrink-0">
                         {Math.round(item.calories)} kcal
                       </span>
                     </div>
@@ -154,9 +154,9 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                   {meal.recipes.map((recipe) => (
                     <div
                       key={recipe.id}
-                      className="flex items-center justify-between"
+                      className="flex items-center gap-3"
                     >
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="text-sm font-bold text-neutral-900 dark:text-neutral-200 truncate">
                           {recipe.name}
                         </p>
@@ -164,7 +164,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                           Receita
                         </p>
                       </div>
-                        <span className="text-sm font-extrabold tabular-nums text-neutral-700 dark:text-neutral-300 shrink-0">
+                      <span className="text-sm font-extrabold tabular-nums text-neutral-700 dark:text-neutral-300 shrink-0">
                         {Math.round(recipe.calories)} kcal
                       </span>
                     </div>

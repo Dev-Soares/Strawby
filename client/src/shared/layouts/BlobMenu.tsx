@@ -55,7 +55,7 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
           </div>
 
           <div
-            className="absolute inset-0 flex flex-col justify-between pt-28 pb-12 sm:justify-center sm:pt-0 sm:pb-0 pl-[28%] sm:pl-[24%] md:pl-[28%] lg:pl-[32%] pr-8 sm:pr-10 md:pr-16 pointer-events-none"
+            className="absolute inset-0 flex flex-col justify-between pt-28 pb-12 sm:justify-center sm:pt-0 sm:pb-0 pl-[20%] sm:pl-[24%] md:pl-[28%] lg:pl-[32%] sm:pr-10 md:pr-16 pointer-events-none"
             onClick={(e) => e.stopPropagation()}
           >
             <nav className="flex flex-col pointer-events-auto">
@@ -80,7 +80,7 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
                         className="shrink-0 text-white transition-all duration-300 ease-out group-hover:translate-x-2"
                       />
                       <span
-                        className="font-extrabold text-[48px] sm:text-[60px] lg:text-[72px] leading-none tracking-tight text-white transition-all duration-300 ease-out group-hover:translate-x-2"
+                        className="font-extrabold text-[48px] sm:text-[60px] lg:text-[72px] leading-none tracking-tight text-white transition-all duration-300 ease-out group-hover:translate-x-2 pr-4"
                       >
                         {item.label}
                       </span>
@@ -95,23 +95,7 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
               })}
             </nav>
 
-            <motion.div
-              className="flex justify-end pointer-events-auto"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, delay: 0.5 }}
-            >
-              <button
-                type="button"
-                onClick={() => signOut()}
-                disabled={isSigningOut}
-                className="group bg-white/95 backdrop-blur-sm border border-white/20 text-neutral-900 hover:bg-white hover:border-white/40 text-sm sm:text-base font-extrabold px-10 sm:px-9 py-4 sm:py-4.5 rounded-full transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap shadow-lg hover:shadow-2xl hover:-translate-y-1 tracking-tight disabled:opacity-50 cursor-pointer"
-              >
-                {isSigningOut ? 'Saindo…' : 'Sair da conta'}
-                <ArrowRight size={17} weight="bold" className="group-hover:translate-x-1.5 transition-transform duration-300" />
-              </button>
-            </motion.div>
+            
           </div>
         </motion.div>
       )}
