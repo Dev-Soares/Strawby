@@ -1,17 +1,7 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsEnum, IsIn, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsIn, IsISO8601, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
-export class CompleteOnboardingDto {
-  @ApiProperty({ example: true })
-  @IsBoolean()
-  @IsNotEmpty()
-  acceptTerms: boolean;
-
-  @ApiProperty({ example: 'patient', enum: ['patient', 'nutritionist'] })
-  @IsEnum(['patient', 'nutritionist'], { message: 'Role deve ser patient ou nutritionist' })
-  @IsNotEmpty()
-  role: 'patient' | 'nutritionist';
-
+export class CreatePatientDto {
   @ApiPropertyOptional({ example: 70 })
   @IsNumber()
   @Min(30)

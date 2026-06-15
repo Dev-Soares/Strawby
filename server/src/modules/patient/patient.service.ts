@@ -5,6 +5,7 @@ import { PatientAccessService } from '../../common/patient-access/patient-access
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { yesterdayInAppTz } from '../../common/utils/date.util';
 import type { PatientStreakPublic, StreakProcessResult } from './types';
+import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
 import { DailyScoreService } from '../daily-score/daily-score.service';
 
@@ -16,10 +17,7 @@ export class PatientService {
     private readonly dailyScoreService: DailyScoreService,
   ) {}
 
-  async createFromOnboarding(
-    userId: string,
-    data: { height?: number; birthDate?: string; gender?: string; weight?: number },
-  ): Promise<void> {
+  async createFromOnboarding(userId: string, data: CreatePatientDto): Promise<void> {
     try {
       await this.prisma.patient.create({
         data: {
@@ -27,6 +25,7 @@ export class PatientService {
           ...(data.height !== undefined && { height: data.height }),
           ...(data.birthDate !== undefined && { birthDate: new Date(data.birthDate) }),
           ...(data.gender !== undefined && { gender: data.gender }),
+          ...(data.goal !== undefined && { goal: data.goal }),
         },
       });
       if (data.weight !== undefined) {
@@ -50,6 +49,7 @@ export class PatientService {
         gender: true,
         currentStreak: true,
         bestStreak: true,
+        goal: true,
         weightRecord: {
           orderBy: { date: 'desc' },
           take: 1,
@@ -141,6 +141,7 @@ export class PatientService {
           ...(dto.height !== undefined && { height: dto.height }),
           ...(dto.birthDate !== undefined && { birthDate: new Date(dto.birthDate) }),
           ...(dto.gender !== undefined && { gender: dto.gender }),
+          ...(dto.goal !== undefined && { goal: dto.goal }),
         },
       });
     } catch (error) {

@@ -19,4 +19,10 @@ export class UpdatePatientDto {
   @IsIn(['male', 'female'])
   @IsOptional()
   gender?: string;
+
+  @ApiPropertyOptional({ example: 'lose', enum: ['lose', 'gain', 'mantain'] })
+  @IsString()
+  @IsIn(['lose', 'gain', 'mantain'])
+  @IsOptional()
+  goal?: 'lose' | 'gain' | 'mantain';
 }

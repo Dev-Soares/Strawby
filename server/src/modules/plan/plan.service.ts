@@ -16,7 +16,7 @@ type GenerateParams = {
   age: number;
   gender: string;
   movementLevel: number;
-  goal: string;
+  goal: string | null;
 };
 
 @Injectable()
@@ -35,7 +35,7 @@ export class PlanService {
 
     let planData: PlanMacros;
 
-    if (dto.goal && dto.movementLevel) {
+    if (dto.movementLevel) {
         const patient = await this.patientService.findById(patientId);
         const lastWeight = patient?.weightRecord[0];
 
@@ -51,7 +51,7 @@ export class PlanService {
         age: this.calculateAge(patient.birthDate),
         gender: patient.gender,
         movementLevel: dto.movementLevel,
-        goal: dto.goal,
+        goal: patient.goal,
       });
     } else if (
       dto.calories !== undefined &&
@@ -169,12 +169,21 @@ export class PlanService {
   private generateRecomendedPlan(params: GenerateParams): PlanMacros {
     const userTmb = this.getUserTmb(params.weight, params.height, params.age, params.gender);
     const userDailyCalories = userTmb * params.movementLevel;
-    const caloriesForPlan = params.goal === 'lose' ? userDailyCalories - 400 : userDailyCalories + 400;
+    const caloriesForPlan = userDailyCalories - (this.getCaloriesForGoal(params.goal));
     const macros = this.generateMacrosNumbers(caloriesForPlan, params.goal, params.weight);
     return { calories: Math.round(caloriesForPlan), ...macros };
   }
 
-  private generateMacrosNumbers(calories: number, goal: string, weight: number): MacroDistribution {
+  private getCaloriesForGoal(goal: string | null): number {
+    switch (goal) {
+      case 'lose': return 400;
+      case 'gain': return -400;
+      case 'mantain': return 0;
+      default: return 0;
+    }
+  }
+
+  private generateMacrosNumbers(calories: number, goal: string | null, weight: number): MacroDistribution {
     const protein = Math.round(weight * (goal === 'lose' ? 2.0 : 1.8));
     const fat = Math.round(weight * (goal === 'lose' ? 0.8 : 1.0));
     const carbs = Math.round(Math.max(calories - protein * 4 - fat * 9, 0) / 4);
