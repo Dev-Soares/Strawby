@@ -21,6 +21,7 @@ import { PatientModule } from './modules/patient/patient.module';
 import { EmailModule } from './modules/email/email.module';
 import { NotificationTokenModule } from './modules/notification/notification-token/notification-token.module';
 import { NotificationModule } from './modules/notification/send-notification/notification.module';
+import { PatientWeightModule } from './modules/patient-weight/patient-weight.module';
 
 @Module({
 	imports: [
@@ -87,6 +88,7 @@ import { NotificationModule } from './modules/notification/send-notification/not
 		ScheduleModule.forRoot(),
 		NotificationTokenModule,
 		NotificationModule,
+		PatientWeightModule,
 	],
 	providers: [
 		{
