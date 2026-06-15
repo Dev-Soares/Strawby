@@ -7,6 +7,7 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export function useAndroidInstall() {
+  
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [isInstalled, setIsInstalled] = useState(false)
 
