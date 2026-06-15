@@ -6,7 +6,7 @@ export type UserPublic = {
   patient: {
     weight: number | null
     height: number | null
-    age: number | null
+    birthDate: string | null
     gender: string | null
     nutritionistId: string | null
     nutritionist: { user: { name: string } } | null

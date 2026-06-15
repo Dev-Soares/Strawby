@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsIn, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
+import { IsEnum, IsIn, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class CompleteOnboardingDto {
   @ApiProperty({ example: 'patient', enum: ['patient', 'nutritionist'] })
@@ -21,12 +21,10 @@ export class CompleteOnboardingDto {
   @IsOptional()
   height?: number;
 
-  @ApiPropertyOptional({ example: 25 })
-  @IsInt()
-  @Min(10)
-  @Max(120)
+  @ApiPropertyOptional({ example: '1996-03-15' })
+  @IsISO8601({ strict: true })
   @IsOptional()
-  age?: number;
+  birthDate?: string;
 
   @ApiPropertyOptional({ example: 'male', enum: ['male', 'female'] })
   @IsString()

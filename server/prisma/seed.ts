@@ -73,7 +73,7 @@ async function main() {
           nutritionistId: nutriUser.nutritionist!.id,
           weight: 82,
           height: 178,
-          age: 28,
+          birthDate: new Date('1996-03-15'),
           gender: 'male',
           currentStreak: 5,
           bestStreak: 12,

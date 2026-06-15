@@ -63,7 +63,7 @@ export class NutritionistService {
               id: true,
               weight: true,
               height: true,
-              age: true,
+              birthDate: true,
               gender: true,
               user: { select: { id: true, name: true, email: true } },
             },

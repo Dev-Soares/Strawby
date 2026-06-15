@@ -74,7 +74,7 @@ export class UserService {
                   create: {
                     ...(dto.weight !== undefined && { weight: dto.weight }),
                     ...(dto.height !== undefined && { height: dto.height }),
-                    ...(dto.age !== undefined && { age: dto.age }),
+                    ...(dto.birthDate !== undefined && { birthDate: new Date(dto.birthDate) }),
                     ...(dto.gender !== undefined && { gender: dto.gender }),
                   },
                 },
@@ -124,7 +124,7 @@ export class UserService {
     const hasPatientFields =
       dto.weight !== undefined ||
       dto.height !== undefined ||
-      dto.age !== undefined ||
+      dto.birthDate !== undefined ||
       dto.gender !== undefined;
 
     try {
@@ -134,7 +134,7 @@ export class UserService {
           data: {
             ...(dto.weight !== undefined && { weight: dto.weight }),
             ...(dto.height !== undefined && { height: dto.height }),
-            ...(dto.age !== undefined && { age: dto.age }),
+            ...(dto.birthDate !== undefined && { birthDate: new Date(dto.birthDate) }),
             ...(dto.gender !== undefined && { gender: dto.gender }),
           },
         });

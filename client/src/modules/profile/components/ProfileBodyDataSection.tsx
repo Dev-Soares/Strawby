@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { GenderMale, GenderFemale, Scales, ArrowsVertical, Calendar, PencilSimple, PlusCircle } from '@phosphor-icons/react'
 import { useUpdateUser } from '@/modules/auth/hooks/useUpdateUser'
 import PatientBodyEditModal from '@/modules/auth/components/PatientBodyEditModal'
+import { computeAge } from '@/shared/utils/date'
 
 const GENDER_LABEL: Record<string, string> = {
   male: 'Masculino',
@@ -11,7 +12,7 @@ const GENDER_LABEL: Record<string, string> = {
 interface Patient {
   weight: number | null
   height: number | null
-  age: number | null
+  birthDate: string | null
   gender: string | null
 }
 
@@ -26,7 +27,7 @@ export default function ProfileBodyDataSection({ patient }: Props) {
   const hasData =
     patient.weight !== null ||
     patient.height !== null ||
-    patient.age !== null ||
+    patient.birthDate !== null ||
     patient.gender !== null
 
   return (
@@ -107,9 +108,9 @@ export default function ProfileBodyDataSection({ patient }: Props) {
               <p className="text-[10px] font-black text-violet-400 dark:text-violet-500 uppercase tracking-widest mb-0.5">Idade</p>
               <div className="flex items-baseline gap-1 leading-none">
                 <span className="font-display text-3xl font-extrabold text-violet-600 dark:text-violet-400">
-                  {patient.age ?? '—'}
+                  {patient.birthDate ? computeAge(patient.birthDate) : '—'}
                 </span>
-                {patient.age !== null && (
+                {patient.birthDate !== null && (
                   <span className="text-sm font-bold text-violet-400 dark:text-violet-500">anos</span>
                 )}
               </div>
@@ -158,7 +159,7 @@ export default function ProfileBodyDataSection({ patient }: Props) {
         defaultValues={{
           weight: patient.weight,
           height: patient.height,
-          age: patient.age,
+          birthDate: patient.birthDate,
           gender: patient.gender,
         }}
         onClose={() => setOpen(false)}

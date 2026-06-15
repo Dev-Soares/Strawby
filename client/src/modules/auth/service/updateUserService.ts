@@ -6,7 +6,7 @@ export type UpdateUserPayload = {
   email?: string
   weight?: number
   height?: number
-  age?: number
+  birthDate?: string
   gender?: 'male' | 'female'
 }
 

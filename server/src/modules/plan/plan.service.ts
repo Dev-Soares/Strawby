@@ -35,14 +35,20 @@ export class PlanService {
     if (dto.goal && dto.movementLevel) {
       const patient = await this.prisma.patient.findUnique({
         where: { id: patientId },
-        select: { weight: true, height: true, age: true, gender: true },
+        select: { weight: true, height: true, birthDate: true, gender: true },
       });
 
+      if (!patient?.weight || !patient?.height || !patient?.birthDate || !patient?.gender) {
+        throw new BadRequestException(
+          'Preencha peso, altura, data de nascimento e sexo antes de gerar um plano automático',
+        );
+      }
+
       planData = this.generateRecomendedPlan({
-        weight: patient!.weight!,
-        height: patient!.height!,
-        age: patient!.age!,
-        gender: patient!.gender!,
+        weight: patient.weight,
+        height: patient.height,
+        age: this.calculateAge(patient.birthDate),
+        gender: patient.gender,
         movementLevel: dto.movementLevel,
         goal: dto.goal,
       });
@@ -149,6 +155,14 @@ export class PlanService {
     } catch (error) {
       mapPrismaError(error, 'Erro ao deletar plano', { p2025: 'Plano não encontrado' });
     }
+  }
+
+  private calculateAge(birthDate: Date): number {
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+    return age;
   }
 
   private generateRecomendedPlan(params: GenerateParams): PlanMacros {
