@@ -36,9 +36,7 @@ export default function ProfilePage() {
         )}
 
         {isNutritionist && (
-          <div className="max-w-sm">
-            <ProfileInviteCodeSection />
-          </div>
+          <ProfileInviteCodeSection />
         )}
 
       </div>
