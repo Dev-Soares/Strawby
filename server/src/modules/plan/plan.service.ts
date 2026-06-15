@@ -1,4 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
+import { PatientService } from '../patient/patient.service';
 import { MealKind } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
@@ -25,6 +26,8 @@ export class PlanService {
     private readonly patientAccess: PatientAccessService,
     private readonly pdfService: PdfService,
     private readonly mealService: MealService,
+    @Inject(forwardRef(() => PatientService))
+    private readonly patientService: PatientService,
   ) {}
 
   async create(callerId: string, patientId: string, dto: CreatePlanDto): Promise<PlanPublic> {
@@ -33,19 +36,17 @@ export class PlanService {
     let planData: PlanMacros;
 
     if (dto.goal && dto.movementLevel) {
-      const patient = await this.prisma.patient.findUnique({
-        where: { id: patientId },
-        select: { weight: true, height: true, birthDate: true, gender: true },
-      });
+        const patient = await this.patientService.findById(patientId);
+        const lastWeight = patient?.weightRecord[0];
 
-      if (!patient?.weight || !patient?.height || !patient?.birthDate || !patient?.gender) {
+      if (!lastWeight?.weight || !patient?.height || !patient?.birthDate || !patient?.gender) {
         throw new BadRequestException(
           'Preencha peso, altura, data de nascimento e sexo antes de gerar um plano automático',
         );
       }
 
       planData = this.generateRecomendedPlan({
-        weight: patient.weight,
+        weight: lastWeight.weight,
         height: patient.height,
         age: this.calculateAge(patient.birthDate),
         gender: patient.gender,

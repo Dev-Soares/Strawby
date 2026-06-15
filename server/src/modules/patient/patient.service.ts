@@ -15,6 +15,54 @@ export class PatientService {
     private readonly dailyScoreService: DailyScoreService,
   ) {}
 
+  async createFromOnboarding(
+    userId: string,
+    data: { height?: number; birthDate?: string; gender?: string; weight?: number },
+  ): Promise<void> {
+    try {
+      await this.prisma.patient.create({
+        data: {
+          id: userId,
+          ...(data.height !== undefined && { height: data.height }),
+          ...(data.birthDate !== undefined && { birthDate: new Date(data.birthDate) }),
+          ...(data.gender !== undefined && { gender: data.gender }),
+        },
+      });
+      if (data.weight !== undefined) {
+        await this.prisma.patientWeight.create({
+          data: { patientId: userId, weight: data.weight, date: new Date() },
+        });
+      }
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao criar paciente');
+    }
+  }
+
+  findById( patientId: string) {
+    try {
+    return this.prisma.patient.findUnique({
+      where: { id: patientId },
+      select: {
+        id: true,
+        height: true,
+        birthDate: true, 
+        gender: true,
+        currentStreak: true,
+        bestStreak: true,
+        weightRecord: {
+          orderBy: { date: 'desc' },
+          take: 1,
+          select: { weight: true, date: true },
+        },
+      },
+    });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar paciente', {
+        p2025: 'Paciente não encontrado',
+      });
+    }
+  }
+
   async generateStreakForEachUser(): Promise<StreakProcessResult> {
     const yesterdayDate = yesterdayInAppTz();
 
