@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Stethoscope, UserCirclePlus, Trash } from '@phosphor-icons/react'
+import { Stethoscope, UserCirclePlus, Trash, Plus } from '@phosphor-icons/react'
 import { useDisconnectNutritionist } from '@/modules/nutritionist/hooks/useDisconnectNutritionist'
 import { useMakeConnectionRequest } from '@/modules/connection-request/hooks/useMakeConnectionRequest'
 import AddNutritionistModal from '@/modules/connection-request/components/AddNutritionistModal'
@@ -61,19 +61,12 @@ export default function ProfileNutritionistSection({ patient }: Props) {
         <button
           type="button"
           onClick={() => setAddOpen(true)}
-          className="w-full rounded-2xl border-2 border-dashed border-neutral-200 dark:border-neutral-800 hover:border-red-300 dark:hover:border-red-900 hover:bg-red-50/50 dark:hover:bg-red-950/10 active:scale-[0.99] transition-all duration-200 cursor-pointer p-6 flex flex-col items-center gap-3 group"
+          className="inline-flex items-center gap-3 rounded-2xl bg-red-600 hover:bg-red-700 active:scale-[0.97] transition-all duration-150 cursor-pointer px-5 py-4 shadow-lg shadow-red-600/25"
         >
-          <div className="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 group-hover:bg-red-100 dark:group-hover:bg-red-950/40 flex items-center justify-center transition-colors duration-200">
-            <UserCirclePlus size={22} weight="bold" className="text-neutral-400 dark:text-neutral-500 group-hover:text-red-500 dark:group-hover:text-red-400 transition-colors duration-200" />
-          </div>
-          <div className="text-center">
-            <p className="text-sm font-extrabold text-neutral-700 dark:text-neutral-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors duration-200">
-              Adicionar nutricionista
-            </p>
-            <p className="text-xs font-medium text-neutral-400 dark:text-neutral-500 mt-0.5">
-              Use o código do seu profissional
-            </p>
-          </div>
+          <Plus size={20} weight="bold" className="text-white shrink-0" />
+          <p className="text-sm font-extrabold text-white">
+            Adicionar nutricionista
+          </p>
         </button>
       )}
 

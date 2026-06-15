@@ -51,7 +51,7 @@ export default function ProfileBodyDataSection({ patient }: Props) {
       </div>
 
       {hasData ? (
-        <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+        <div className="flex flex-col gap-1">
 
           <button
             type="button"
@@ -77,9 +77,9 @@ export default function ProfileBodyDataSection({ patient }: Props) {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-rose-50/60 dark:hover:bg-rose-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
+            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-blue-50/60 dark:hover:bg-blue-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
           >
-            <div className="w-12 h-12 rounded-2xl bg-rose-500 flex items-center justify-center shrink-0 shadow-md shadow-rose-200 dark:shadow-rose-950/40">
+            <div className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center shrink-0 shadow-md shadow-blue-200 dark:shadow-blue-950/40">
               {patient.gender === 'female' ? (
                 <GenderFemale size={22} weight="bold" className="text-white" />
               ) : (
@@ -87,8 +87,8 @@ export default function ProfileBodyDataSection({ patient }: Props) {
               )}
             </div>
             <div>
-              <p className="text-[10px] font-black text-rose-400 dark:text-rose-500 uppercase tracking-widest mb-0.5">Sexo</p>
-              <span className="font-display text-2xl font-extrabold text-rose-600 dark:text-rose-400 leading-none">
+              <p className="text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase tracking-widest mb-0.5">Sexo</p>
+              <span className="font-display text-2xl font-extrabold text-blue-600 dark:text-blue-400 leading-none">
                 {patient.gender ? (GENDER_LABEL[patient.gender] ?? '—') : '—'}
               </span>
             </div>
@@ -97,7 +97,7 @@ export default function ProfileBodyDataSection({ patient }: Props) {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="col-span-2 flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-violet-50/60 dark:hover:bg-violet-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
+            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-violet-50/60 dark:hover:bg-violet-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
           >
             <div className="w-12 h-12 rounded-2xl bg-violet-500 flex items-center justify-center shrink-0 shadow-md shadow-violet-200 dark:shadow-violet-950/40">
               <Calendar size={22} weight="bold" className="text-white" />

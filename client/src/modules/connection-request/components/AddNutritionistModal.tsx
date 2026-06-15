@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, Key, PaperPlaneTilt } from '@phosphor-icons/react'
+import { X, Key, PaperPlaneTilt, ChatCircleText } from '@phosphor-icons/react'
 
 const schema = z.object({
   code: z.string().min(1, 'Código obrigatório'),
@@ -70,7 +70,18 @@ export default function AddNutritionistModal({ isOpen, isPending, onClose, onSen
               </button>
             </div>
 
-            <form onSubmit={onSubmit} className="px-7 pb-7 flex flex-col gap-4">
+            <form onSubmit={onSubmit} className="px-7 pb-7 flex flex-col gap-5">
+
+              <div className="rounded-2xl bg-red-600/10 border border-red-600/20 px-4 py-4 flex items-start gap-3">
+                <ChatCircleText size={20} weight="fill" className="text-red-500 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-bold text-red-500 mb-1">Não sabe o código?</p>
+                  <p className="text-xs font-medium text-neutral-300 leading-relaxed">
+                    Peça ao seu nutricionista — ele encontra o código de convite no perfil dele dentro do app.
+                  </p>
+                </div>
+              </div>
+
               <div>
                 <label className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest block mb-2">
                   Código de convite

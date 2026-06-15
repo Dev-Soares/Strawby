@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { LayoutGroup, motion } from 'framer-motion'
 import {
   HouseSimpleIcon,
   TrophyIcon,
@@ -23,7 +23,7 @@ const nutritionistTabs = [
   { label: 'Perfil', href: '/app/profile', icon: UserCircleIcon, tourId: 'nav-profile' },
 ]
 
-const INDICATOR_INSET = 12
+const spring = { type: 'spring', stiffness: 380, damping: 32, mass: 0.8 } as const
 
 interface TopTabBarProps {
   hidden?: boolean
@@ -36,8 +36,6 @@ export default function TopTabBar({ hidden = false, variant = 'top' }: TopTabBar
 
   const tabs = user?.role === 'nutritionist' ? nutritionistTabs : patientTabs
   const cols = tabs.length === 2 ? 'grid-cols-2' : tabs.length === 3 ? 'grid-cols-3' : tabs.length === 4 ? 'grid-cols-4' : 'grid-cols-5'
-  const activeIndex = tabs.findIndex((t) => pathname === t.href)
-  const tabWidthPct = 100 / tabs.length
 
   if (variant === 'bottom') {
     return (
@@ -46,83 +44,83 @@ export default function TopTabBar({ hidden = false, variant = 'top' }: TopTabBar
           hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'
         }`}
       >
-        <div className={`grid ${cols} pb-4 relative`}>
-          {activeIndex >= 0 && (
-            <motion.span
-              className="absolute top-0 h-0.5 bg-red-600 rounded-full pointer-events-none"
-              initial={false}
-              animate={{
-                left: `calc(${activeIndex * tabWidthPct}% + ${INDICATOR_INSET}px)`,
-                width: `calc(${tabWidthPct}% - ${INDICATOR_INSET * 2}px)`,
-              }}
-              transition={{ type: 'spring', stiffness: 500, damping: 35 }}
-            />
-          )}
-          {tabs.map((tab) => {
-            const Icon = tab.icon
-            const active = pathname === tab.href
-            return (
-              <Link
-                key={tab.href}
-                to={tab.href}
-                {...(tab.tourId ? { 'data-tour': tab.tourId } : {})}
-                className="flex flex-col items-center justify-center gap-1 pt-3 pb-1 min-w-0"
-              >
-                <Icon
-                  size={26}
-                  weight={active ? 'fill' : 'regular'}
-                  className={`shrink-0 transition-colors ${active ? 'text-red-600' : 'text-neutral-400 dark:text-neutral-500'}`}
-                />
-                <span className={`text-xs font-bold tracking-tight transition-colors ${active ? 'text-red-600' : 'text-neutral-400 dark:text-neutral-500'}`}>
-                  {tab.label}
-                </span>
-              </Link>
-            )
-          })}
-        </div>
+        <LayoutGroup id="bottom-nav">
+          <div className={`grid ${cols} pb-4`}>
+            {tabs.map((tab) => {
+              const Icon = tab.icon
+              const active = pathname === tab.href
+              return (
+                <Link
+                  key={tab.href}
+                  to={tab.href}
+                  {...(tab.tourId ? { 'data-tour': tab.tourId } : {})}
+                  className="relative flex flex-col items-center justify-center gap-1 pt-3 pb-1 min-w-0"
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="bottom-indicator"
+                      initial={false}
+                      transition={spring}
+                      className="absolute top-0 inset-x-4 h-0.75 bg-red-600 rounded-full"
+                    />
+                  )}
+                  <Icon
+                    size={26}
+                    weight={active ? 'fill' : 'regular'}
+                    className={`shrink-0 transition-colors duration-200 ${active ? 'text-red-600' : 'text-neutral-400 dark:text-neutral-500'}`}
+                  />
+                  <span className={`text-xs font-bold tracking-tight transition-colors duration-200 ${active ? 'text-red-600' : 'text-neutral-400 dark:text-neutral-500'}`}>
+                    {tab.label}
+                  </span>
+                </Link>
+              )
+            })}
+          </div>
+        </LayoutGroup>
       </nav>
     )
   }
 
   return (
-    <nav
-      className={`transition-opacity duration-200 ${hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-    >
+    <nav className={`transition-opacity duration-200 ${hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
       <div className="px-4 sm:px-10 lg:px-16">
-        <div className={`grid ${cols} sm:flex sm:items-center sm:gap-2`}>
-          {tabs.map((tab) => {
-            const Icon = tab.icon
-            const active = pathname === tab.href
-            return (
-              <Link
-                key={tab.href}
-                to={tab.href}
-                {...(tab.tourId ? { 'data-tour': tab.tourId } : {})}
-                className="group relative flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3.5 min-w-0"
-              >
-                <Icon
-                  size={18}
-                  weight={active ? 'fill' : 'regular'}
-                  className={`shrink-0 transition-colors ${
-                    active ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200'
-                  }`}
-                />
-                <span className={`text-[11px] sm:text-sm font-extrabold tracking-tight transition-colors max-w-full ${
-                  active ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-neutral-200'
-                }`}>
-                  {tab.label}
-                </span>
-                {active && (
-                  <motion.span
-                    layoutId="tab-indicator-top"
-                    transition={{ type: 'spring', stiffness: 500, damping: 35 }}
-                    className="absolute left-3 right-3 sm:left-2 sm:right-2 -bottom-px h-0.5 bg-red-600 rounded-full"
+        <LayoutGroup id="top-nav">
+          <div className={`grid ${cols} sm:flex sm:items-center sm:gap-2`}>
+            {tabs.map((tab) => {
+              const Icon = tab.icon
+              const active = pathname === tab.href
+              return (
+                <Link
+                  key={tab.href}
+                  to={tab.href}
+                  {...(tab.tourId ? { 'data-tour': tab.tourId } : {})}
+                  className="group relative flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3.5 min-w-0"
+                >
+                  <Icon
+                    size={18}
+                    weight={active ? 'fill' : 'regular'}
+                    className={`shrink-0 transition-colors duration-200 ${
+                      active ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200'
+                    }`}
                   />
-                )}
-              </Link>
-            )
-          })}
-        </div>
+                  <span className={`text-[11px] sm:text-sm font-extrabold tracking-tight transition-colors duration-200 max-w-full ${
+                    active ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-neutral-200'
+                  }`}>
+                    {tab.label}
+                  </span>
+                  {active && (
+                    <motion.span
+                      layoutId="top-indicator"
+                      initial={false}
+                      transition={spring}
+                      className="absolute left-3 right-3 sm:left-2 sm:right-2 -bottom-px h-0.75 bg-red-600 rounded-full"
+                    />
+                  )}
+                </Link>
+              )
+            })}
+          </div>
+        </LayoutGroup>
       </div>
     </nav>
   )
