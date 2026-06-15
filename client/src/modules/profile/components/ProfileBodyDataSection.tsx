@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { GenderMale, GenderFemale, Scales, ArrowsVertical, Calendar, PlusCircle, PencilSimple, CaretRight } from '@phosphor-icons/react'
+import { GenderMale, GenderFemale, Scales, ArrowsVertical, Calendar, PencilSimple, PlusCircle } from '@phosphor-icons/react'
 import { useUpdateUser } from '@/modules/auth/hooks/useUpdateUser'
 import PatientBodyEditModal from '@/modules/auth/components/PatientBodyEditModal'
 
-const GENDER_LABEL: Record<string, { label: string }> = {
-  male: { label: 'Masculino' },
-  female: { label: 'Feminino' },
+const GENDER_LABEL: Record<string, string> = {
+  male: 'Masculino',
+  female: 'Feminino',
 }
 
 interface Patient {
@@ -23,96 +23,134 @@ export default function ProfileBodyDataSection({ patient }: Props) {
   const updateUser = useUpdateUser()
   const [open, setOpen] = useState(false)
 
-  const hasData = patient.weight !== null || patient.height !== null || patient.age !== null || patient.gender !== null
+  const hasData =
+    patient.weight !== null ||
+    patient.height !== null ||
+    patient.age !== null ||
+    patient.gender !== null
 
   return (
     <section className="mb-5">
-      <div className="flex items-center justify-between mb-2 px-1">
-        <p className="text-xs font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest">
-          Dados corporais
-        </p>
+      <div className="flex items-start justify-between mb-5 px-1">
+        <div>
+          <h2 className="font-display text-xl font-extrabold text-neutral-900 dark:text-white tracking-tight leading-tight transition-colors duration-300">
+            Métricas corporais
+          </h2>
+          <p className="font-display text-sm font-medium text-neutral-400 dark:text-neutral-500 mt-0.5 transition-colors duration-300">
+            {hasData ? 'Seus dados físicos atuais' : 'Nenhuma métrica registrada ainda'}
+          </p>
+        </div>
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="flex items-center gap-1.5 text-sm font-bold text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 text-xs font-bold text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors cursor-pointer mt-1 shrink-0"
         >
-          <PencilSimple size={15} weight="bold" />
+          <PencilSimple size={12} weight="bold" />
           Editar
         </button>
       </div>
 
-      <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm overflow-hidden transition-colors duration-300">
-        {hasData ? (
-          <>
-            {patient.gender && (
-              <div className="flex items-center gap-3 px-5 py-4 border-b border-neutral-100 dark:border-neutral-800">
-                <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-                  {patient.gender === 'male'
-                    ? <GenderMale size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
-                    : <GenderFemale size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
-                  }
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">Sexo</p>
-                  <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
-                    {GENDER_LABEL[patient.gender]?.label ?? '—'}
-                  </p>
-                </div>
-              </div>
-            )}
+      {hasData ? (
+        <div className="grid grid-cols-2 gap-x-2 gap-y-1">
 
-            {patient.weight !== null && (
-              <div className={`flex items-center gap-3 px-5 py-4 ${patient.height !== null || patient.age !== null ? 'border-b border-neutral-100 dark:border-neutral-800' : ''}`}>
-                <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-                  <Scales size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">Peso</p>
-                  <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">{patient.weight} kg</p>
-                </div>
-              </div>
-            )}
-
-            {patient.height !== null && (
-              <div className={`flex items-center gap-3 px-5 py-4 ${patient.age !== null ? 'border-b border-neutral-100 dark:border-neutral-800' : ''}`}>
-                <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-                  <ArrowsVertical size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">Altura</p>
-                  <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">{patient.height} cm</p>
-                </div>
-              </div>
-            )}
-
-            {patient.age !== null && (
-              <div className="flex items-center gap-3 px-5 py-4">
-                <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-                  <Calendar size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">Idade</p>
-                  <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">{patient.age} anos</p>
-                </div>
-              </div>
-            )}
-          </>
-        ) : (
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="w-full flex items-center gap-3 px-5 py-4 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 transition-colors duration-200 cursor-pointer"
+            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-blue-50/60 dark:hover:bg-blue-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
           >
-            <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-              <PlusCircle size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
+            <div className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center shrink-0 shadow-md shadow-blue-200 dark:shadow-blue-950/40">
+              <Scales size={22} weight="bold" className="text-white" />
             </div>
-            <span className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
-              Adicionar peso, idade e sexo
-            </span>
-            <CaretRight size={14} weight="bold" className="text-neutral-400 dark:text-neutral-600 ml-auto shrink-0" />
+            <div>
+              <p className="text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase tracking-widest mb-0.5">Peso</p>
+              <div className="flex items-baseline gap-1 leading-none">
+                <span className="font-display text-3xl font-extrabold text-blue-600 dark:text-blue-400">
+                  {patient.weight ?? '—'}
+                </span>
+                {patient.weight !== null && (
+                  <span className="text-sm font-bold text-blue-400 dark:text-blue-500">kg</span>
+                )}
+              </div>
+            </div>
           </button>
-        )}
-      </div>
+
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-emerald-50/60 dark:hover:bg-emerald-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center shrink-0 shadow-md shadow-emerald-200 dark:shadow-emerald-950/40">
+              <ArrowsVertical size={22} weight="bold" className="text-white" />
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-emerald-400 dark:text-emerald-500 uppercase tracking-widest mb-0.5">Altura</p>
+              <div className="flex items-baseline gap-1 leading-none">
+                <span className="font-display text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
+                  {patient.height ?? '—'}
+                </span>
+                {patient.height !== null && (
+                  <span className="text-sm font-bold text-emerald-400 dark:text-emerald-500">cm</span>
+                )}
+              </div>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-violet-50/60 dark:hover:bg-violet-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-violet-500 flex items-center justify-center shrink-0 shadow-md shadow-violet-200 dark:shadow-violet-950/40">
+              <Calendar size={22} weight="bold" className="text-white" />
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-violet-400 dark:text-violet-500 uppercase tracking-widest mb-0.5">Idade</p>
+              <div className="flex items-baseline gap-1 leading-none">
+                <span className="font-display text-3xl font-extrabold text-violet-600 dark:text-violet-400">
+                  {patient.age ?? '—'}
+                </span>
+                {patient.age !== null && (
+                  <span className="text-sm font-bold text-violet-400 dark:text-violet-500">anos</span>
+                )}
+              </div>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-rose-50/60 dark:hover:bg-rose-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-rose-500 flex items-center justify-center shrink-0 shadow-md shadow-rose-200 dark:shadow-rose-950/40">
+              {patient.gender === 'female' ? (
+                <GenderFemale size={22} weight="bold" className="text-white" />
+              ) : (
+                <GenderMale size={22} weight="bold" className="text-white" />
+              )}
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-rose-400 dark:text-rose-500 uppercase tracking-widest mb-0.5">Sexo</p>
+              <span className="font-display text-2xl font-extrabold text-rose-600 dark:text-rose-400 leading-none">
+                {patient.gender ? (GENDER_LABEL[patient.gender] ?? '—') : '—'}
+              </span>
+            </div>
+          </button>
+
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="flex items-center gap-3 px-4 py-4 rounded-2xl hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors duration-150 cursor-pointer"
+        >
+          <div className="w-12 h-12 rounded-2xl bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center shrink-0">
+            <PlusCircle size={22} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
+          </div>
+          <span className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
+            Adicionar suas métricas
+          </span>
+        </button>
+      )}
 
       <PatientBodyEditModal
         isOpen={open}

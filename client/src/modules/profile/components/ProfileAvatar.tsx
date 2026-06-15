@@ -10,17 +10,28 @@ interface Props {
   role?: string
 }
 
-export default function ProfileAvatar({ name }: Props) {
+export default function ProfileAvatar({ name, role }: Props) {
   return (
-    <div data-tutorial="profile-avatar" className="flex flex-col items-center text-center mb-10">
-      <div className="w-24 h-24 rounded-full bg-red-600 flex items-center justify-center mb-4 shadow-lg">
-        <span className="font-display text-3xl font-extrabold text-white tracking-tight">
+    <div data-tutorial="profile-avatar" className="flex items-center gap-4 mb-8">
+      <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-red-500 to-rose-700 flex items-center justify-center shrink-0 shadow-md shadow-red-200/50 dark:shadow-red-950/30">
+        <span className="font-display text-xl font-extrabold text-white tracking-tight">
           {getInitials(name)}
         </span>
       </div>
-      <h1 className="font-display text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight mt-1">
-        {name}
-      </h1>
+
+      <div>
+        <h1 className="font-display text-xl font-extrabold text-neutral-900 dark:text-white tracking-tight leading-tight">
+          {name}
+        </h1>
+        {role && (
+          <span className="flex items-center gap-1.5 mt-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+            <span className="text-xs font-bold text-neutral-400 dark:text-neutral-500">
+              {role === 'patient' ? 'Paciente' : 'Nutricionista'}
+            </span>
+          </span>
+        )}
+      </div>
     </div>
   )
 }
