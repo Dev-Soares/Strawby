@@ -5,6 +5,14 @@ export function toLocalISODate(date = new Date()): string {
   return `${year}-${month}-${day}`
 }
 
+export function formatBirthDate(birthDate: string): string {
+  const d = new Date(birthDate)
+  const day = String(d.getUTCDate()).padStart(2, '0')
+  const month = String(d.getUTCMonth() + 1).padStart(2, '0')
+  const year = d.getUTCFullYear()
+  return `${day}/${month}/${year}`
+}
+
 export function computeAge(birthDate: string): number {
   const today = new Date()
   const birth = new Date(birthDate)

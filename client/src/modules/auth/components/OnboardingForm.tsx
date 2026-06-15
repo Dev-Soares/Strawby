@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { GenderMale, GenderFemale, Heartbeat, Stethoscope, ArrowRight } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
@@ -21,6 +21,9 @@ const ROLES = [
 
 export default function OnboardingForm() {
   const [step, setStep] = useState(1)
+  const [birthDay, setBirthDay] = useState('')
+  const [birthMonth, setBirthMonth] = useState('')
+  const [birthYear, setBirthYear] = useState('')
 
   const {
     register,
@@ -36,6 +39,16 @@ export default function OnboardingForm() {
   const gender = watch('gender')
   const isPatient = role === 'patient'
   const totalSteps = isPatient ? 2 : 1
+
+  useEffect(() => {
+    if (birthDay && birthMonth && birthYear.length === 4) {
+      const d = birthDay.padStart(2, '0')
+      const m = birthMonth.padStart(2, '0')
+      setValue('birthDate', `${birthYear}-${m}-${d}`, { shouldValidate: true })
+    } else {
+      setValue('birthDate', undefined as unknown as string)
+    }
+  }, [birthDay, birthMonth, birthYear])
 
   const handleStep1 = async () => {
     const valid = await trigger(['role', 'acceptTerms'])
@@ -169,11 +182,10 @@ export default function OnboardingForm() {
               {errors.gender && <p className="text-yellow-200 text-[11px] mt-2">{errors.gender.message}</p>}
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {([
                 { field: 'weight' as const, label: 'Peso', unit: 'kg', placeholder: '70' },
                 { field: 'height' as const, label: 'Altura', unit: 'cm', placeholder: '175' },
-                { field: 'age' as const, label: 'Idade', unit: 'anos', placeholder: '25' },
               ]).map(({ field, label, unit, placeholder }) => (
                 <div key={field}>
                   <label className="block text-[11px] font-semibold text-white mb-3 uppercase tracking-widest">
@@ -188,6 +200,35 @@ export default function OnboardingForm() {
                   {errors[field] && <p className="text-yellow-200 text-[11px] mt-2">{errors[field]?.message}</p>}
                 </div>
               ))}
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-semibold text-white mb-3 uppercase tracking-widest">
+                Data de nascimento
+              </label>
+              <div className="grid grid-cols-3 gap-4">
+                {([
+                  { label: 'Dia', placeholder: 'DD', value: birthDay, min: 1, max: 31, set: setBirthDay },
+                  { label: 'Mês', placeholder: 'MM', value: birthMonth, min: 1, max: 12, set: setBirthMonth },
+                  { label: 'Ano', placeholder: 'AAAA', value: birthYear, min: 1900, max: new Date().getFullYear(), set: setBirthYear },
+                ]).map(({ label, placeholder, value, min, max, set }) => (
+                  <div key={label}>
+                    <label className="block text-[10px] font-semibold text-white/50 mb-3 uppercase tracking-widest">
+                      {label}
+                    </label>
+                    <input
+                      type="number"
+                      placeholder={placeholder}
+                      value={value}
+                      min={min}
+                      max={max}
+                      onChange={e => set(e.target.value)}
+                      className="w-full border-0 border-b-2 border-white/50 bg-transparent pb-3 text-[15px] text-white placeholder-white/30 focus:outline-none focus:border-white transition-colors duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                  </div>
+                ))}
+              </div>
+              {errors.birthDate && <p className="text-yellow-200 text-[11px] mt-2">{errors.birthDate.message}</p>}
             </div>
 
             <div className="flex flex-col gap-5 pt-2 mt-auto">

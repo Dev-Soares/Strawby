@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { GenderMale, GenderFemale, Scales, ArrowsVertical, Calendar, PencilSimple, PlusCircle } from '@phosphor-icons/react'
+import { GenderMale, GenderFemale, ArrowsVertical, Calendar, PencilSimple, PlusCircle } from '@phosphor-icons/react'
 import { useUpdateUser } from '@/modules/auth/hooks/useUpdateUser'
 import PatientBodyEditModal from '@/modules/auth/components/PatientBodyEditModal'
-import { computeAge } from '@/shared/utils/date'
+import { formatBirthDate } from '@/shared/utils/date'
 
 const GENDER_LABEL: Record<string, string> = {
   male: 'Masculino',
@@ -25,7 +25,6 @@ export default function ProfileBodyDataSection({ patient }: Props) {
   const [open, setOpen] = useState(false)
 
   const hasData =
-    patient.weight !== null ||
     patient.height !== null ||
     patient.birthDate !== null ||
     patient.gender !== null
@@ -57,27 +56,6 @@ export default function ProfileBodyDataSection({ patient }: Props) {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-blue-50/60 dark:hover:bg-blue-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center shrink-0 shadow-md shadow-blue-200 dark:shadow-blue-950/40">
-              <Scales size={22} weight="bold" className="text-white" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase tracking-widest mb-0.5">Peso</p>
-              <div className="flex items-baseline gap-1 leading-none">
-                <span className="font-display text-3xl font-extrabold text-blue-600 dark:text-blue-400">
-                  {patient.weight ?? '—'}
-                </span>
-                {patient.weight !== null && (
-                  <span className="text-sm font-bold text-blue-400 dark:text-blue-500">kg</span>
-                )}
-              </div>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
             className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-emerald-50/60 dark:hover:bg-emerald-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
           >
             <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center shrink-0 shadow-md shadow-emerald-200 dark:shadow-emerald-950/40">
@@ -91,27 +69,6 @@ export default function ProfileBodyDataSection({ patient }: Props) {
                 </span>
                 {patient.height !== null && (
                   <span className="text-sm font-bold text-emerald-400 dark:text-emerald-500">cm</span>
-                )}
-              </div>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-violet-50/60 dark:hover:bg-violet-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-violet-500 flex items-center justify-center shrink-0 shadow-md shadow-violet-200 dark:shadow-violet-950/40">
-              <Calendar size={22} weight="bold" className="text-white" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-violet-400 dark:text-violet-500 uppercase tracking-widest mb-0.5">Idade</p>
-              <div className="flex items-baseline gap-1 leading-none">
-                <span className="font-display text-3xl font-extrabold text-violet-600 dark:text-violet-400">
-                  {patient.birthDate ? computeAge(patient.birthDate) : '—'}
-                </span>
-                {patient.birthDate !== null && (
-                  <span className="text-sm font-bold text-violet-400 dark:text-violet-500">anos</span>
                 )}
               </div>
             </div>
@@ -137,6 +94,22 @@ export default function ProfileBodyDataSection({ patient }: Props) {
             </div>
           </button>
 
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="col-span-2 flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-violet-50/60 dark:hover:bg-violet-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-violet-500 flex items-center justify-center shrink-0 shadow-md shadow-violet-200 dark:shadow-violet-950/40">
+              <Calendar size={22} weight="bold" className="text-white" />
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-violet-400 dark:text-violet-500 uppercase tracking-widest mb-0.5">Data de nascimento</p>
+              <span className="font-display text-2xl font-extrabold text-violet-600 dark:text-violet-400 leading-none">
+                {patient.birthDate ? formatBirthDate(patient.birthDate) : '—'}
+              </span>
+            </div>
+          </button>
+
         </div>
       ) : (
         <button
@@ -157,7 +130,6 @@ export default function ProfileBodyDataSection({ patient }: Props) {
         isOpen={open}
         isPending={updateUser.isPending}
         defaultValues={{
-          weight: patient.weight,
           height: patient.height,
           birthDate: patient.birthDate,
           gender: patient.gender,

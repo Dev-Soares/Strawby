@@ -11,7 +11,6 @@ const optionalNumber = (min: number, max: number) =>
     .pipe(z.number().min(min).max(max).optional())
 
 const bodySchema = z.object({
-  weight: optionalNumber(30, 300),
   height: optionalNumber(100, 250),
   birthDate: z.string().date().optional(),
   gender: z.enum(['male', 'female']).optional(),
@@ -22,7 +21,7 @@ type BodyData = z.infer<typeof bodySchema>
 interface Props {
   isOpen: boolean
   isPending: boolean
-  defaultValues: { weight: number | null; height: number | null; birthDate: string | null; gender: string | null }
+  defaultValues: { height: number | null; birthDate: string | null; gender: string | null }
   onClose: () => void
   onSave: (data: BodyData) => void
 }
@@ -37,7 +36,6 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
   useEffect(() => {
     if (isOpen) {
       reset({
-        weight: defaultValues.weight ?? undefined,
         height: defaultValues.height ?? undefined,
         birthDate: defaultValues.birthDate ? defaultValues.birthDate.slice(0, 10) : undefined,
         gender: (defaultValues.gender as 'male' | 'female' | undefined) ?? undefined,
@@ -111,28 +109,21 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
                 </div>
               </div>
 
-              {/* Weight and Height */}
-              <div className="grid grid-cols-2 gap-3">
-                {([
-                  { field: 'weight' as const, label: 'Peso', placeholder: '70', unit: 'kg' },
-                  { field: 'height' as const, label: 'Altura', placeholder: '175', unit: 'cm' },
-                ]).map(({ field, label, placeholder, unit }) => (
-                  <div key={field}>
-                    <label className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest block mb-2">
-                      {label}
-                    </label>
-                    <div className="relative">
-                      <input
-                        {...register(field, { valueAsNumber: true })}
-                        type="number"
-                        placeholder={placeholder}
-                        className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2.5 pr-8 text-sm font-bold text-neutral-900 dark:text-neutral-100 outline-none focus:border-neutral-400 dark:focus:border-neutral-500 transition-all duration-150 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
-                      <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-neutral-400 font-medium">{unit}</span>
-                    </div>
-                    {errors[field] && <p className="text-[10px] text-red-500 mt-1">{errors[field]?.message}</p>}
-                  </div>
-                ))}
+              {/* Height */}
+              <div>
+                <label className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest block mb-2">
+                  Altura
+                </label>
+                <div className="relative">
+                  <input
+                    {...register('height', { valueAsNumber: true })}
+                    type="number"
+                    placeholder="175"
+                    className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2.5 pr-8 text-sm font-bold text-neutral-900 dark:text-neutral-100 outline-none focus:border-neutral-400 dark:focus:border-neutral-500 transition-all duration-150 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-neutral-400 font-medium">cm</span>
+                </div>
+                {errors.height && <p className="text-[10px] text-red-500 mt-1">{errors.height.message}</p>}
               </div>
 
               {/* Birth Date */}

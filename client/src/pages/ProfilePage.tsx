@@ -30,7 +30,7 @@ export default function ProfilePage() {
               {patient && <ProfileBodyDataSection patient={patient} />}
             </div>
             <div className="lg:pl-16">
-              <WeightHistoryChart />
+              <WeightHistoryChart weight={patient?.weight ?? null} />
             </div>
           </div>
         )}

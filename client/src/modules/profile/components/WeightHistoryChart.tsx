@@ -1,3 +1,4 @@
+import { Scales } from '@phosphor-icons/react'
 import {
   BarChart,
   Bar,
@@ -47,7 +48,11 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   )
 }
 
-export default function WeightHistoryChart() {
+interface Props {
+  weight: number | null
+}
+
+export default function WeightHistoryChart({ weight }: Props) {
   const latestWeight = MOCK_DATA[0].weight
   const oldestWeight = MOCK_DATA[MOCK_DATA.length - 1].weight
   const delta = (latestWeight - oldestWeight).toFixed(1)
@@ -65,6 +70,26 @@ export default function WeightHistoryChart() {
           Sua evolução nos últimos meses
         </p>
       </div>
+
+      <button
+        type="button"
+        className="flex items-center gap-4 px-4 py-4 w-full rounded-2xl hover:bg-blue-50/60 dark:hover:bg-blue-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left mb-1"
+      >
+        <div className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center shrink-0 shadow-md shadow-blue-200 dark:shadow-blue-950/40">
+          <Scales size={22} weight="bold" className="text-white" />
+        </div>
+        <div>
+          <p className="text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase tracking-widest mb-0.5">Peso atual</p>
+          <div className="flex items-baseline gap-1 leading-none">
+            <span className="font-display text-3xl font-extrabold text-blue-600 dark:text-blue-400">
+              {weight ?? '—'}
+            </span>
+            {weight !== null && (
+              <span className="text-sm font-bold text-blue-400 dark:text-blue-500">kg</span>
+            )}
+          </div>
+        </div>
+      </button>
 
       <div className="rounded-2xl bg-neutral-950 border border-neutral-800 p-4 pt-5">
         <div className="mb-5 px-1">
