@@ -120,36 +120,16 @@ export class UserService {
   }
 
   async update(id: string, dto: UpdateUserDto): Promise<UserPublic> {
-    const hasPatientFields =
-      dto.weight !== undefined ||
-      dto.height !== undefined ||
-      dto.birthDate !== undefined ||
-      dto.gender !== undefined;
-
     try {
-      if (hasPatientFields) {
-        await this.prisma.patient.updateMany({
-          where: { id },
-          data: {
-            ...(dto.weight !== undefined && { weight: dto.weight }),
-            ...(dto.height !== undefined && { height: dto.height }),
-            ...(dto.birthDate !== undefined && { birthDate: new Date(dto.birthDate) }),
-            ...(dto.gender !== undefined && { gender: dto.gender }),
-          },
-        });
-      }
-
       return await this.prisma.user.update({
         where: { id },
         data: {
           ...(dto.name !== undefined && { name: dto.name }),
-          ...(dto.email !== undefined && { email: dto.email }),
         },
         select: userSelect,
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao atualizar informações do usuário', {
-        p2002: 'E-mail já cadastrado',
         p2025: 'Usuário não encontrado',
       });
     }

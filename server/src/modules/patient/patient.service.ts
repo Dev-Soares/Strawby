@@ -5,6 +5,7 @@ import { PatientAccessService } from '../../common/patient-access/patient-access
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { yesterdayInAppTz } from '../../common/utils/date.util';
 import type { PatientStreakPublic, StreakProcessResult } from './types';
+import { UpdatePatientDto } from './dto/update-patient.dto';
 import { DailyScoreService } from '../daily-score/daily-score.service';
 
 @Injectable()
@@ -129,6 +130,23 @@ export class PatientService {
       return patientStreak;
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar streak do paciente');
+    }
+  }
+
+  async update(patientId: string, dto: UpdatePatientDto): Promise<void> {
+    try {
+      await this.prisma.patient.updateMany({
+        where: { id: patientId },
+        data: {
+          ...(dto.height !== undefined && { height: dto.height }),
+          ...(dto.birthDate !== undefined && { birthDate: new Date(dto.birthDate) }),
+          ...(dto.gender !== undefined && { gender: dto.gender }),
+        },
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao atualizar paciente', {
+        p2025: 'Paciente não encontrado',
+      });
     }
   }
 

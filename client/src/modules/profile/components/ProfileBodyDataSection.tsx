@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { GenderMale, GenderFemale, ArrowsVertical, Calendar, PencilSimple, PlusCircle } from '@phosphor-icons/react'
-import { useUpdateUser } from '@/modules/auth/hooks/useUpdateUser'
+import { useUpdatePatient } from '@/modules/patient/hooks/useUpdatePatient'
 import PatientBodyEditModal from '@/modules/auth/components/PatientBodyEditModal'
 import { formatBirthDate } from '@/shared/utils/date'
 
@@ -21,7 +21,7 @@ interface Props {
 }
 
 export default function ProfileBodyDataSection({ patient }: Props) {
-  const updateUser = useUpdateUser()
+  const updatePatient = useUpdatePatient()
   const [open, setOpen] = useState(false)
 
   const hasData =
@@ -128,14 +128,14 @@ export default function ProfileBodyDataSection({ patient }: Props) {
 
       <PatientBodyEditModal
         isOpen={open}
-        isPending={updateUser.isPending}
+        isPending={updatePatient.isPending}
         defaultValues={{
           height: patient.height,
           birthDate: patient.birthDate,
           gender: patient.gender,
         }}
         onClose={() => setOpen(false)}
-        onSave={(data) => updateUser.mutate(data, { onSuccess: () => setOpen(false) })}
+        onSave={(data) => updatePatient.mutate(data, { onSuccess: () => setOpen(false) })}
       />
     </section>
   )
