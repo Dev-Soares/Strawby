@@ -13,7 +13,7 @@ const optionalNumber = (min: number, max: number) =>
 const bodySchema = z.object({
   weight: optionalNumber(30, 300),
   height: optionalNumber(100, 250),
-  birthDate: z.preprocess((v) => (v === '' ? undefined : v), z.string().date().optional()),
+  birthDate: z.string().date().optional(),
   gender: z.enum(['male', 'female']).optional(),
 })
 
@@ -141,7 +141,7 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
                   Data de nascimento
                 </label>
                 <input
-                  {...register('birthDate')}
+                  {...register('birthDate', { setValueAs: (v: string) => v === '' ? undefined : v })}
                   type="date"
                   max={new Date().toISOString().slice(0, 10)}
                   className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2.5 text-sm font-bold text-neutral-900 dark:text-neutral-100 outline-none focus:border-neutral-400 dark:focus:border-neutral-500 transition-all duration-150"
