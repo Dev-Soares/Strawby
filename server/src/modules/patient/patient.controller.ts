@@ -12,6 +12,12 @@ import { PatientService } from './patient.service'
 export class PatientController {
   constructor(private readonly patientService: PatientService) {}
 
+  @Get(':id')
+  @UseGuards(OwnershipGuard)
+  findById(@Param('id') id: string) {
+    return this.patientService.findById(id)
+  }
+
   @Get(':id/streak')
   getPatientStreak(@Req() req: AuthenticatedRequest, @Param('id') patientId: string) {
     return this.patientService.getPatientStreak(req.user.sub, patientId)

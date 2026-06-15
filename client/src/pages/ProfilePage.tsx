@@ -1,5 +1,6 @@
 import AppLayout from '@/shared/layouts/AppLayout'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
+import { useGetPatient } from '@/modules/patient/hooks/useGetPatient'
 import ProfileInviteCodeSection from '@/modules/profile/components/ProfileInviteCodeSection'
 import ProfileNutritionistSection from '@/modules/profile/components/ProfileNutritionistSection'
 import ProfileBodyDataSection from '@/modules/profile/components/ProfileBodyDataSection'
@@ -10,7 +11,8 @@ export default function ProfilePage() {
 
   const isNutritionist = user?.role === 'nutritionist'
   const isPatient = user?.role === 'patient'
-  const patient = user?.patient ?? null
+
+  const { data: patient } = useGetPatient(isPatient ? (user?.id ?? '') : '')
 
   return (
     <AppLayout>
@@ -25,12 +27,12 @@ export default function ProfilePage() {
         {isPatient && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-0 items-start">
             <div className="lg:pr-16 lg:border-r border-neutral-100 dark:border-neutral-800">
-              {patient && <ProfileNutritionistSection patient={patient} />}
+              {user?.patient && <ProfileNutritionistSection patient={user.patient} />}
               <hr className="border-neutral-100 dark:border-neutral-800 my-8 transition-colors duration-300" />
               {patient && <ProfileBodyDataSection patient={patient} />}
             </div>
             <div className="lg:pl-16">
-              <WeightHistoryChart weight={patient?.weight ?? null} />
+              <WeightHistoryChart weight={patient?.weightRecord[0]?.weight ?? null} />
             </div>
           </div>
         )}

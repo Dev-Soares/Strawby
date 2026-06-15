@@ -11,6 +11,7 @@ export const useUpdatePatient = () => {
     mutationFn: (data: UpdatePatientPayload) => updatePatientService(user!.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
+      queryClient.invalidateQueries({ queryKey: ['patient', user!.id] })
       toast.success('Dados atualizados!')
     },
     onError: () => {
