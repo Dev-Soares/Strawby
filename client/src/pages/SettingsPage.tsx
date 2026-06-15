@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { SignOutIcon } from '@phosphor-icons/react'
 import AppLayout from '@/shared/layouts/AppLayout'
 import { useSignOut } from '@/modules/auth/hooks/useSignOut'
@@ -5,11 +6,13 @@ import ProfileAccountSection from '@/modules/profile/components/ProfileAccountSe
 import ProfileThemeSection from '@/modules/profile/components/ProfileThemeSection'
 import ProfileSupportSection from '@/modules/profile/components/ProfileSupportSection'
 import ProfileNotificationsSection from '@/modules/notifications/components/ProfileNotificationsSection'
+import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
 
 export default function SettingsPage() {
   const { data: user } = useAuth()
   const signOut = useSignOut()
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   return (
     <AppLayout>
@@ -29,7 +32,7 @@ export default function SettingsPage() {
 
         <button
           type="button"
-          onClick={() => signOut.mutate()}
+          onClick={() => setConfirmOpen(true)}
           disabled={signOut.isPending}
           className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer shadow-sm"
         >
@@ -40,6 +43,16 @@ export default function SettingsPage() {
           )}
           {signOut.isPending ? 'Saindo…' : 'Sair da conta'}
         </button>
+
+        <ConfirmDeleteModal
+          isOpen={confirmOpen}
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={() => signOut.mutate()}
+          isPending={signOut.isPending}
+          title="Sair da conta?"
+          description="Você será desconectado e precisará fazer login novamente para acessar o app."
+          confirmLabel="Sair"
+        />
 
       </div>
     </AppLayout>
