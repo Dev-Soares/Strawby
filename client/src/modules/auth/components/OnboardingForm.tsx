@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { GenderMale, GenderFemale, Heartbeat, Stethoscope, ArrowRight } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { useCompleteOnboarding } from '../hooks/useCompleteOnboarding'
 
 const ROLES = [
@@ -37,7 +38,7 @@ export default function OnboardingForm() {
   const totalSteps = isPatient ? 2 : 1
 
   const handleStep1 = async () => {
-    const valid = await trigger(['role'])
+    const valid = await trigger(['role', 'acceptTerms'])
     if (!valid) return
     if (isPatient) setStep(2)
     else onSubmit()
@@ -106,6 +107,26 @@ export default function OnboardingForm() {
             </div>
 
             <div className="flex flex-col gap-5 pt-2 mt-auto">
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <input type="checkbox" {...register('acceptTerms')} className="sr-only" />
+                <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all duration-150 ${
+                  watch('acceptTerms') ? 'bg-white border-white' : 'border-white/40 group-hover:border-white/60'
+                }`}>
+                  {watch('acceptTerms') && (
+                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+                      <path d="M2 6l3 3 5-5" stroke="#dc2626" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </div>
+                <span className="text-[12px] text-white/70 leading-relaxed">
+                  Li e aceito os{' '}
+                  <Link to="/termos" target="_blank" className="text-white font-semibold underline underline-offset-2">Termos de Uso</Link>
+                  {' '}e a{' '}
+                  <Link to="/privacidade" target="_blank" className="text-white font-semibold underline underline-offset-2">Política de Privacidade</Link>
+                </span>
+              </label>
+              {errors.acceptTerms && <p className="text-yellow-200 text-[11px] -mt-2">{errors.acceptTerms.message}</p>}
+
               <button
                 type="button"
                 onClick={handleStep1}

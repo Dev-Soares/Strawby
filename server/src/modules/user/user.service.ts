@@ -49,7 +49,7 @@ export class UserService {
   async createFromGoogle(email: string, name: string): Promise<UserPublic> {
     try {
       return await this.prisma.user.create({
-        data: { name, email },
+        data: { name, email, emailVerified: true },
         select: userSelect,
       });
     } catch (error) {
@@ -68,6 +68,7 @@ export class UserService {
         where: { id: userId },
         data: {
           role: dto.role,
+          ...(dto.acceptTerms && { termsAcceptedAt: new Date() }),
           ...(dto.role === 'patient'
             ? {
                 patient: {

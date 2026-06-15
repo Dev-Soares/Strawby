@@ -8,6 +8,7 @@ const requiredNumber = (min: number, max: number, msg: string) =>
 export const onboardingSchema = z
   .object({
     role: z.enum(['patient', 'nutritionist'], { error: 'Selecione um perfil' }),
+    acceptTerms: z.literal(true, { error: 'Você deve aceitar os termos para continuar' }),
     weight: requiredNumber(30, 300, 'Informe o peso').optional(),
     height: requiredNumber(100, 250, 'Informe a altura').optional(),
     age: requiredNumber(10, 120, 'Informe a idade').optional(),
