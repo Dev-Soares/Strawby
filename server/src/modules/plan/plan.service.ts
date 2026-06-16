@@ -1,4 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
+import { PatientService } from '../patient/patient.service';
 import { MealKind } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
@@ -15,7 +16,7 @@ type GenerateParams = {
   age: number;
   gender: string;
   movementLevel: number;
-  goal: string;
+  goal: string | null;
 };
 
 @Injectable()
@@ -25,6 +26,8 @@ export class PlanService {
     private readonly patientAccess: PatientAccessService,
     private readonly pdfService: PdfService,
     private readonly mealService: MealService,
+    @Inject(forwardRef(() => PatientService))
+    private readonly patientService: PatientService,
   ) {}
 
   async create(callerId: string, patientId: string, dto: CreatePlanDto): Promise<PlanPublic> {
@@ -32,25 +35,23 @@ export class PlanService {
 
     let planData: PlanMacros;
 
-    if (dto.goal && dto.movementLevel) {
-      const patient = await this.prisma.patient.findUnique({
-        where: { id: patientId },
-        select: { weight: true, height: true, birthDate: true, gender: true },
-      });
+    if (dto.movementLevel) {
+        const patient = await this.patientService.findById(patientId);
+        const lastWeight = patient?.weightRecord[0];
 
-      if (!patient?.weight || !patient?.height || !patient?.birthDate || !patient?.gender) {
+      if (!lastWeight?.weight || !patient?.height || !patient?.birthDate || !patient?.gender) {
         throw new BadRequestException(
           'Preencha peso, altura, data de nascimento e sexo antes de gerar um plano automático',
         );
       }
 
       planData = this.generateRecomendedPlan({
-        weight: patient.weight,
+        weight: lastWeight.weight,
         height: patient.height,
         age: this.calculateAge(patient.birthDate),
         gender: patient.gender,
         movementLevel: dto.movementLevel,
-        goal: dto.goal,
+        goal: patient.goal,
       });
     } else if (
       dto.calories !== undefined &&
@@ -168,12 +169,21 @@ export class PlanService {
   private generateRecomendedPlan(params: GenerateParams): PlanMacros {
     const userTmb = this.getUserTmb(params.weight, params.height, params.age, params.gender);
     const userDailyCalories = userTmb * params.movementLevel;
-    const caloriesForPlan = params.goal === 'lose' ? userDailyCalories - 400 : userDailyCalories + 400;
+    const caloriesForPlan = userDailyCalories - (this.getCaloriesForGoal(params.goal));
     const macros = this.generateMacrosNumbers(caloriesForPlan, params.goal, params.weight);
     return { calories: Math.round(caloriesForPlan), ...macros };
   }
 
-  private generateMacrosNumbers(calories: number, goal: string, weight: number): MacroDistribution {
+  private getCaloriesForGoal(goal: string | null): number {
+    switch (goal) {
+      case 'lose': return 400;
+      case 'gain': return -400;
+      case 'mantain': return 0;
+      default: return 0;
+    }
+  }
+
+  private generateMacrosNumbers(calories: number, goal: string | null, weight: number): MacroDistribution {
     const protein = Math.round(weight * (goal === 'lose' ? 2.0 : 1.8));
     const fat = Math.round(weight * (goal === 'lose' ? 0.8 : 1.0));
     const carbs = Math.round(Math.max(calories - protein * 4 - fat * 9, 0) / 4);

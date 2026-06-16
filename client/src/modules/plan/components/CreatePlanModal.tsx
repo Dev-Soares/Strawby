@@ -7,8 +7,6 @@ import {
   Fire,
   PencilSimple,
   Sparkle,
-  TrendDown,
-  TrendUp,
   ArrowLeft,
   ArrowRight,
   FloppyDisk,
@@ -22,7 +20,6 @@ import {
 } from '../types/createPlan'
 
 type Mode = 'select' | 'manual' | 'generate'
-type GenerateStep = 1 | 2
 
 interface CreatePlanModalProps {
   isOpen: boolean
@@ -43,7 +40,6 @@ const ACTIVITY_OPTIONS = [
 
 export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, initialMode = 'select', isNutritionist = false }: CreatePlanModalProps) {
   const [mode, setMode] = useState<Mode>(initialMode)
-  const [step, setStep] = useState<GenerateStep>(1)
 
   const manualForm = useForm<ManualPlanData>({
     resolver: zodResolver(manualPlanSchema),
@@ -58,7 +54,6 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
   useEffect(() => {
     if (isOpen) {
       setMode(initialMode)
-      setStep(1)
       manualForm.reset()
       generateForm.reset({ movementLevel: 1.375 })
     }
@@ -66,24 +61,13 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
 
   const handleClose = () => {
     setMode('select')
-    setStep(1)
     manualForm.reset()
     generateForm.reset({ movementLevel: 1.375 })
     onClose()
   }
 
   const handleBack = () => {
-    if (mode === 'generate' && step > 1) {
-      setStep(1)
-    } else {
-      setMode('select')
-      setStep(1)
-    }
-  }
-
-  const handleGenerateNext = async () => {
-    const valid = await generateForm.trigger(['goal'])
-    if (valid) setStep(2)
+    setMode('select')
   }
 
   const handleManualSubmit = manualForm.handleSubmit((data) => onSubmit(data))
@@ -121,20 +105,12 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                 )}
                 <div>
                   <h2 className="text-lg font-extrabold text-neutral-950 dark:text-neutral-50 tracking-tight">{title}</h2>
-                  {mode === 'generate' && <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">Etapa {step} de 2</p>}
                 </div>
               </div>
               <button type="button" onClick={handleClose} className="w-9 h-9 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer">
                 <X size={15} weight="bold" className="text-neutral-600 dark:text-neutral-400" />
               </button>
             </div>
-
-            {/* Progress bar (generate only) */}
-            {mode === 'generate' && (
-              <div className="mx-8 mb-6 h-1 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
-                <motion.div className="h-full bg-red-500 rounded-full" animate={{ width: `${(step / 2) * 100}%` }} transition={{ duration: 0.3, ease: 'easeInOut' }} />
-              </div>
-            )}
 
             <div className="px-8 pb-8 max-h-[70vh] overflow-y-auto overflow-x-hidden">
 
@@ -222,72 +198,28 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
 
               {/* ── Generate ── */}
               {mode === 'generate' && (
-                <div>
-                  {/* Step 1 — Goal */}
-                  {step === 1 && (
-                    <div className="flex flex-col gap-3">
-                      <p className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                        {isNutritionist ? 'Qual é o objetivo do paciente?' : 'Qual é o seu objetivo?'}
-                      </p>
-                      <Controller control={generateForm.control} name="goal" render={({ field }) => (
-                        <div className="flex flex-col gap-3">
-                          {[
-                            { value: 'lose' as const, label: 'Perder peso', desc: 'Déficit calórico para emagrecer', Icon: TrendDown },
-                            { value: 'gain' as const, label: 'Ganhar massa', desc: 'Superávit calórico para hipertrofia', Icon: TrendUp },
-                          ].map((opt) => (
-                            <button key={opt.value} type="button" onClick={() => field.onChange(opt.value)}
-                              className={`flex items-center gap-4 p-5 border-2 rounded-2xl transition-all duration-200 text-left cursor-pointer ${field.value === opt.value ? 'border-red-500 bg-red-50 dark:bg-red-950/30' : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-800'}`}>
-                              <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${field.value === opt.value ? 'bg-red-500' : 'bg-neutral-100 dark:bg-neutral-800'}`}>
-                                <opt.Icon size={22} weight="bold" className={field.value === opt.value ? 'text-white' : 'text-neutral-500 dark:text-neutral-400'} />
-                              </div>
-                              <div>
-                                <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100">{opt.label}</p>
-                                <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">{opt.desc}</p>
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      )} />
-                      {generateForm.formState.errors.goal && <p className="text-xs text-red-500">{generateForm.formState.errors.goal.message}</p>}
-                    </div>
-                  )}
-
-                  {/* Step 2 — Activity */}
-                  {step === 2 && (
+                <div className="flex flex-col gap-4">
+                  <p className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">Nível de atividade física</p>
+                  <Controller control={generateForm.control} name="movementLevel" render={({ field }) => (
                     <div className="flex flex-col gap-2">
-                      <p className="text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">Nível de atividade física</p>
-                      <Controller control={generateForm.control} name="movementLevel" render={({ field }) => (
-                        <div className="flex flex-col gap-2">
-                          {ACTIVITY_OPTIONS.map((opt) => (
-                            <button key={opt.value} type="button" onClick={() => field.onChange(opt.value)}
-                              className={`flex items-center gap-3 px-4 py-3.5 border-2 rounded-xl transition-all duration-200 text-left cursor-pointer ${field.value === opt.value ? 'border-red-500 bg-red-50 dark:bg-red-950/30' : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-800'}`}>
-                              <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${field.value === opt.value ? 'bg-red-500' : 'bg-neutral-300 dark:bg-neutral-600'}`} />
-                              <div>
-                                <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100">{opt.label}</p>
-                                <p className="text-xs text-neutral-400 dark:text-neutral-500">{opt.description}</p>
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      )} />
+                      {ACTIVITY_OPTIONS.map((opt) => (
+                        <button key={opt.value} type="button" onClick={() => field.onChange(opt.value)}
+                          className={`flex items-center gap-3 px-4 py-3.5 border-2 rounded-xl transition-all duration-200 text-left cursor-pointer ${field.value === opt.value ? 'border-red-500 bg-red-50 dark:bg-red-950/30' : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-800'}`}>
+                          <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${field.value === opt.value ? 'bg-red-500' : 'bg-neutral-300 dark:bg-neutral-600'}`} />
+                          <div>
+                            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100">{opt.label}</p>
+                            <p className="text-xs text-neutral-400 dark:text-neutral-500">{opt.description}</p>
+                          </div>
+                        </button>
+                      ))}
                     </div>
-                  )}
+                  )} />
 
-                  {/* Nav */}
-                  <div className="mt-6">
-                    {step < 2 ? (
-                      <button type="button" onClick={handleGenerateNext}
-                        className="w-full flex items-center justify-center gap-2 bg-neutral-950 dark:bg-neutral-100 hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-neutral-950 text-sm font-bold py-3.5 rounded-xl transition-colors duration-200 cursor-pointer">
-                        Continuar <ArrowRight size={15} weight="bold" />
-                      </button>
-                    ) : (
-                      <button type="button" onClick={handleGenerateSubmit} disabled={isPending}
-                        className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-3.5 rounded-xl transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-                        {isPending ? <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Sparkle size={16} weight="fill" />}
-                        {isPending ? 'Gerando…' : 'Gerar meu plano'}
-                      </button>
-                    )}
-                  </div>
+                  <button type="button" onClick={handleGenerateSubmit} disabled={isPending}
+                    className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-3.5 rounded-xl transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2">
+                    {isPending ? <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Sparkle size={16} weight="fill" />}
+                    {isPending ? 'Gerando…' : isNutritionist ? 'Gerar plano' : 'Gerar meu plano'}
+                  </button>
                 </div>
               )}
 

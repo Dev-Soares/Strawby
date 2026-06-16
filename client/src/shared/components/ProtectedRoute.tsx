@@ -18,7 +18,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     return <Navigate to="/app/login" state={{ from: location }} replace />
   }
 
-  if ((user.role as string) === 'user') {
+  if (!user.patient && !user.nutritionist) {
     return <Navigate to="/app/onboarding" replace />
   }
 

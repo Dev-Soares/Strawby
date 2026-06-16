@@ -227,7 +227,7 @@ export function useTriggerTutorial() {
   const { data: user } = useAuth()
 
   return useCallback(() => {
-    if (!user) return
+    if (!user || user.role === 'user') return
     const isDark = document.documentElement.classList.contains('dark')
     injectStyles(isDark)
     const tour = buildTour(navigate, user.role)

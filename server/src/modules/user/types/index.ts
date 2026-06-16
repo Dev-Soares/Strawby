@@ -2,13 +2,14 @@ import { User } from '@prisma/client';
 
 export type UserPublic = Pick<User, 'id' | 'name' | 'email' | 'role'> & {
   patient: {
-    weight: number | null;
     height: number | null;
     birthDate: Date | null;
     gender: string | null;
+    goal: 'lose' | 'gain' | 'mantain' | null;
     nutritionistId: string | null;
     nutritionist: { user: { name: string } } | null;
   } | null;
+  nutritionist: { id: string } | null;
 };
 
 export const userSelect = {
@@ -18,13 +19,16 @@ export const userSelect = {
   role: true,
   patient: {
     select: {
-      weight: true,
       height: true,
       birthDate: true,
       gender: true,
+      goal: true,
       nutritionistId: true,
       nutritionist: { select: { user: { select: { name: true } } } },
     },
+  },
+  nutritionist: {
+    select: { id: true },
   },
 } as const;
 

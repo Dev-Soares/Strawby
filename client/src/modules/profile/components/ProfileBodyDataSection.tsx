@@ -1,33 +1,36 @@
 import { useState } from 'react'
-import { GenderMale, GenderFemale, ArrowsVertical, Calendar, PencilSimple, PlusCircle } from '@phosphor-icons/react'
-import { useUpdateUser } from '@/modules/auth/hooks/useUpdateUser'
+import { GenderMale, GenderFemale, ArrowsVertical, Calendar, PencilSimple, PlusCircle, TrendDown, TrendUp, Minus } from '@phosphor-icons/react'
+import { useUpdatePatient } from '@/modules/patient/hooks/useUpdatePatient'
 import PatientBodyEditModal from '@/modules/auth/components/PatientBodyEditModal'
 import { formatBirthDate } from '@/shared/utils/date'
+import type { Patient } from '@/modules/patient/types/patient'
 
 const GENDER_LABEL: Record<string, string> = {
   male: 'Masculino',
   female: 'Feminino',
 }
 
-interface Patient {
-  weight: number | null
-  height: number | null
-  birthDate: string | null
-  gender: string | null
-}
+const GOAL_CONFIG = {
+  lose: { label: 'Perder peso', Icon: TrendDown, color: 'orange' },
+  gain: { label: 'Ganhar massa', Icon: TrendUp, color: 'teal' },
+  mantain: { label: 'Manter peso', Icon: Minus, color: 'sky' },
+} as const
 
 interface Props {
   patient: Patient
 }
 
 export default function ProfileBodyDataSection({ patient }: Props) {
-  const updateUser = useUpdateUser()
+  const updatePatient = useUpdatePatient()
   const [open, setOpen] = useState(false)
 
   const hasData =
     patient.height !== null ||
     patient.birthDate !== null ||
     patient.gender !== null
+
+  const goal = patient.goal ? GOAL_CONFIG[patient.goal] : null
+  const GoalIcon = goal?.Icon
 
   return (
     <section className="mb-5">
@@ -51,7 +54,7 @@ export default function ProfileBodyDataSection({ patient }: Props) {
       </div>
 
       {hasData ? (
-        <div className="grid grid-cols-2 gap-x-2 gap-y-1">
+        <div className="flex flex-col gap-1">
 
           <button
             type="button"
@@ -77,9 +80,9 @@ export default function ProfileBodyDataSection({ patient }: Props) {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-rose-50/60 dark:hover:bg-rose-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
+            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-blue-50/60 dark:hover:bg-blue-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
           >
-            <div className="w-12 h-12 rounded-2xl bg-rose-500 flex items-center justify-center shrink-0 shadow-md shadow-rose-200 dark:shadow-rose-950/40">
+            <div className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center shrink-0 shadow-md shadow-blue-200 dark:shadow-blue-950/40">
               {patient.gender === 'female' ? (
                 <GenderFemale size={22} weight="bold" className="text-white" />
               ) : (
@@ -87,8 +90,8 @@ export default function ProfileBodyDataSection({ patient }: Props) {
               )}
             </div>
             <div>
-              <p className="text-[10px] font-black text-rose-400 dark:text-rose-500 uppercase tracking-widest mb-0.5">Sexo</p>
-              <span className="font-display text-2xl font-extrabold text-rose-600 dark:text-rose-400 leading-none">
+              <p className="text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase tracking-widest mb-0.5">Sexo</p>
+              <span className="font-display text-2xl font-extrabold text-blue-600 dark:text-blue-400 leading-none">
                 {patient.gender ? (GENDER_LABEL[patient.gender] ?? '—') : '—'}
               </span>
             </div>
@@ -97,7 +100,7 @@ export default function ProfileBodyDataSection({ patient }: Props) {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="col-span-2 flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-violet-50/60 dark:hover:bg-violet-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
+            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-violet-50/60 dark:hover:bg-violet-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
           >
             <div className="w-12 h-12 rounded-2xl bg-violet-500 flex items-center justify-center shrink-0 shadow-md shadow-violet-200 dark:shadow-violet-950/40">
               <Calendar size={22} weight="bold" className="text-white" />
@@ -106,6 +109,22 @@ export default function ProfileBodyDataSection({ patient }: Props) {
               <p className="text-[10px] font-black text-violet-400 dark:text-violet-500 uppercase tracking-widest mb-0.5">Data de nascimento</p>
               <span className="font-display text-2xl font-extrabold text-violet-600 dark:text-violet-400 leading-none">
                 {patient.birthDate ? formatBirthDate(patient.birthDate) : '—'}
+              </span>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-orange-50/60 dark:hover:bg-orange-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-orange-500 flex items-center justify-center shrink-0 shadow-md shadow-orange-200 dark:shadow-orange-950/40">
+              {GoalIcon ? <GoalIcon size={22} weight="bold" className="text-white" /> : <Minus size={22} weight="bold" className="text-white" />}
+            </div>
+            <div>
+              <p className="text-[10px] font-black text-orange-400 dark:text-orange-500 uppercase tracking-widest mb-0.5">Objetivo</p>
+              <span className="font-display text-2xl font-extrabold text-orange-600 dark:text-orange-400 leading-none">
+                {goal?.label ?? '—'}
               </span>
             </div>
           </button>
@@ -128,14 +147,15 @@ export default function ProfileBodyDataSection({ patient }: Props) {
 
       <PatientBodyEditModal
         isOpen={open}
-        isPending={updateUser.isPending}
+        isPending={updatePatient.isPending}
         defaultValues={{
           height: patient.height,
           birthDate: patient.birthDate,
           gender: patient.gender,
+          goal: patient.goal,
         }}
         onClose={() => setOpen(false)}
-        onSave={(data) => updateUser.mutate(data, { onSuccess: () => setOpen(false) })}
+        onSave={(data) => updatePatient.mutate(data, { onSuccess: () => setOpen(false) })}
       />
     </section>
   )

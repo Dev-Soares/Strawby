@@ -5,6 +5,8 @@ import { PatientAccessService } from '../../common/patient-access/patient-access
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { yesterdayInAppTz } from '../../common/utils/date.util';
 import type { PatientStreakPublic, StreakProcessResult } from './types';
+import { CreatePatientDto } from './dto/create-patient.dto';
+import { UpdatePatientDto } from './dto/update-patient.dto';
 import { DailyScoreService } from '../daily-score/daily-score.service';
 
 @Injectable()
@@ -14,6 +16,53 @@ export class PatientService {
     private readonly patientAccessService: PatientAccessService,
     private readonly dailyScoreService: DailyScoreService,
   ) {}
+
+  async createFromOnboarding(userId: string, data: CreatePatientDto): Promise<void> {
+    try {
+      await this.prisma.patient.create({
+        data: {
+          id: userId,
+          ...(data.height !== undefined && { height: data.height }),
+          ...(data.birthDate !== undefined && { birthDate: new Date(data.birthDate) }),
+          ...(data.gender !== undefined && { gender: data.gender }),
+          ...(data.goal !== undefined && { goal: data.goal }),
+        },
+      });
+      if (data.weight !== undefined) {
+        await this.prisma.patientWeight.create({
+          data: { patientId: userId, weight: data.weight, date: new Date() },
+        });
+      }
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao criar paciente');
+    }
+  }
+
+  findById( patientId: string) {
+    try {
+    return this.prisma.patient.findUnique({
+      where: { id: patientId },
+      select: {
+        id: true,
+        height: true,
+        birthDate: true, 
+        gender: true,
+        currentStreak: true,
+        bestStreak: true,
+        goal: true,
+        weightRecord: {
+          orderBy: { date: 'desc' },
+          take: 1,
+          select: { weight: true, date: true },
+        },
+      },
+    });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar paciente', {
+        p2025: 'Paciente não encontrado',
+      });
+    }
+  }
 
   async generateStreakForEachUser(): Promise<StreakProcessResult> {
     const yesterdayDate = yesterdayInAppTz();
@@ -81,6 +130,24 @@ export class PatientService {
       return patientStreak;
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar streak do paciente');
+    }
+  }
+
+  async update(patientId: string, dto: UpdatePatientDto): Promise<void> {
+    try {
+      await this.prisma.patient.updateMany({
+        where: { id: patientId },
+        data: {
+          ...(dto.height !== undefined && { height: dto.height }),
+          ...(dto.birthDate !== undefined && { birthDate: new Date(dto.birthDate) }),
+          ...(dto.gender !== undefined && { gender: dto.gender }),
+          ...(dto.goal !== undefined && { goal: dto.goal }),
+        },
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao atualizar paciente', {
+        p2025: 'Paciente não encontrado',
+      });
     }
   }
 

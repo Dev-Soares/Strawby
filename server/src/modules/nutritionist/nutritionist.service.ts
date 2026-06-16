@@ -61,10 +61,14 @@ export class NutritionistService {
           patients: {
             select: {
               id: true,
-              weight: true,
               height: true,
               birthDate: true,
               gender: true,
+              weightRecord: {
+                orderBy: { date: 'desc' },
+                take: 1,
+                select: { weight: true, date: true },
+              },
               user: { select: { id: true, name: true, email: true } },
             },
           },

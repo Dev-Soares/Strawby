@@ -33,6 +33,12 @@ enum Role {
   nutritionist
 }
 
+enum EnumPatientGoal {
+  lose
+  gain
+  mantain
+}
+
 model User {
   id                         String        @id @default(uuid())
   name                       String
@@ -66,9 +72,10 @@ model Patient {
   connectionRequests ConnectionRequest[]
   currentStreak      Int                 @default(0)
   bestStreak         Int                 @default(0)
-  weight             Float?
+  weightRecord       PatientWeight[]
   height             Float?
   birthDate          DateTime?
+  goal               EnumPatientGoal?
   gender             String?
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
@@ -226,4 +233,16 @@ model NotificationToken {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+model PatientWeight {
+  id        String   @id @default(uuid())
+  patientId String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  weight    Float
+  date      DateTime @db.Date
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([patientId, date])
 }

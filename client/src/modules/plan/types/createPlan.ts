@@ -13,7 +13,6 @@ export const manualPlanSchema = z.object({
 export type ManualPlanData = z.infer<typeof manualPlanSchema>
 
 export const generatePlanSchema = z.object({
-  goal: z.enum(['lose', 'gain']),
   movementLevel: z.number().min(1.2).max(1.9),
 })
 

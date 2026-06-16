@@ -17,7 +17,7 @@ export default function OnboardingRoute({ children }: OnboardingRouteProps) {
     return <Navigate to="/app/login" replace />
   }
 
-  if ((user.role as string) !== 'user') {
+  if (user.patient || user.nutritionist) {
     return <Navigate to="/app/home" replace />
   }
 

@@ -71,10 +71,10 @@ async function main() {
       patient: {
         create: {
           nutritionistId: nutriUser.nutritionist!.id,
-          weight: 82,
           height: 178,
           birthDate: new Date('1996-03-15'),
           gender: 'male',
+          goal: 'mantain',
           currentStreak: 5,
           bestStreak: 12,
         },
@@ -85,6 +85,10 @@ async function main() {
   console.log('✅ Paciente criado:', patientUser.email)
 
   const patientId = patientUser.patient!.id
+
+  await prisma.patientWeight.create({
+    data: { patientId, weight: 82, date: new Date() },
+  })
 
   // ─── Plano alimentar ─────────────────────────────────────────────────────────
   await prisma.plan.create({

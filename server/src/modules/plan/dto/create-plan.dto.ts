@@ -1,11 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNumber, Min, IsEnum, IsOptional } from 'class-validator';
 
-export enum Goal {
-  Lose = 'lose',
-  Gain = 'gain',
-}
-
 export class CreatePlanDto {
   @ApiPropertyOptional({ example: 2000 })
   @IsNumber()
@@ -36,9 +31,4 @@ export class CreatePlanDto {
   @IsOptional()
   @Min(1.2)
   movementLevel?: number;
-
-  @ApiPropertyOptional({ example: Goal.Lose, enum: Goal })
-  @IsEnum(Goal)
-  @IsOptional()
-  goal?: Goal;
 }
