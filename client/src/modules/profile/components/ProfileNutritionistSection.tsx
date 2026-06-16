@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Stethoscope, UserCirclePlus, Trash, Plus } from '@phosphor-icons/react'
+import { Stethoscope, Trash, Plus } from '@phosphor-icons/react'
 import { useDisconnectNutritionist } from '@/modules/nutritionist/hooks/useDisconnectNutritionist'
 import { useMakeConnectionRequest } from '@/modules/connection-request/hooks/useMakeConnectionRequest'
 import AddNutritionistModal from '@/modules/connection-request/components/AddNutritionistModal'
