@@ -152,6 +152,7 @@ export default function ProfileBodyDataSection({ patient }: Props) {
           height: patient.height,
           birthDate: patient.birthDate,
           gender: patient.gender,
+          goal: patient.goal,
         }}
         onClose={() => setOpen(false)}
         onSave={(data) => updatePatient.mutate(data, { onSuccess: () => setOpen(false) })}
