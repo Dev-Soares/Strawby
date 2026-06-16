@@ -1,4 +1,5 @@
-import { Scales } from '@phosphor-icons/react'
+import { useState } from 'react'
+import { Scales, Plus, PencilSimple } from '@phosphor-icons/react'
 import {
   BarChart,
   Bar,
@@ -11,6 +12,11 @@ import {
   LabelList,
 } from 'recharts'
 import { useGetPatientWeightRecords } from '@/modules/patient/hooks/useGetPatientWeightRecords'
+import { useCreatePatientWeight } from '@/modules/patient/hooks/useCreatePatientWeight'
+import { useUpdatePatientWeight } from '@/modules/patient/hooks/useUpdatePatientWeight'
+import WeightRecordModal from './WeightRecordModal'
+import type { WeightRecordFormData } from '@/modules/patient/types/weightRecord'
+import { toLocalISODate } from '@/shared/utils/date'
 
 interface CustomTooltipProps {
   active?: boolean
@@ -45,6 +51,11 @@ interface Props {
 
 export default function WeightHistoryChart({ patientId }: Props) {
   const { data: records, isPending } = useGetPatientWeightRecords(patientId)
+  const createMutation = useCreatePatientWeight(patientId)
+  const updateMutation = useUpdatePatientWeight(patientId)
+
+  const [createOpen, setCreateOpen] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
 
   const chartData = (records ?? []).map((r) => ({
     date: formatDate(r.date),
@@ -53,12 +64,28 @@ export default function WeightHistoryChart({ patientId }: Props) {
 
   const latestWeight = chartData[0]?.weight ?? null
   const oldestWeight = chartData[chartData.length - 1]?.weight ?? null
-  const delta = latestWeight !== null && oldestWeight !== null
-    ? (latestWeight - oldestWeight).toFixed(1)
-    : null
+  const delta =
+    latestWeight !== null && oldestWeight !== null
+      ? (latestWeight - oldestWeight).toFixed(1)
+      : null
   const lost = delta !== null && parseFloat(delta) < 0
 
   const chartHeight = Math.max(chartData.length * 42, 80)
+
+  function handleCreate(data: WeightRecordFormData) {
+    createMutation.mutate(
+      { weight: data.weight, date: toLocalISODate() },
+      { onSuccess: () => setCreateOpen(false) },
+    )
+  }
+
+  function handleEdit(data: WeightRecordFormData) {
+    if (!records?.[0]) return
+    updateMutation.mutate(
+      { recordId: records[0].id, data: { weight: data.weight } },
+      { onSuccess: () => setEditOpen(false) },
+    )
+  }
 
   return (
     <section className="mb-5">
@@ -71,15 +98,14 @@ export default function WeightHistoryChart({ patientId }: Props) {
         </p>
       </div>
 
-      <button
-        type="button"
-        className="flex items-center gap-4 px-4 py-4 w-full rounded-2xl hover:bg-red-50/60 dark:hover:bg-red-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left mb-1"
-      >
+      <div className="flex items-center gap-4 px-4 py-4 rounded-2xl mb-1">
         <div className="w-12 h-12 rounded-2xl bg-red-600 flex items-center justify-center shrink-0 shadow-md shadow-red-200 dark:shadow-red-950/40">
           <Scales size={22} weight="bold" className="text-white" />
         </div>
-        <div>
-          <p className="text-[10px] font-black text-red-400 dark:text-red-500 uppercase tracking-widest mb-0.5">Peso atual</p>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] font-black text-red-400 dark:text-red-500 uppercase tracking-widest mb-0.5">
+            Peso atual
+          </p>
           <div className="flex items-baseline gap-1 leading-none">
             {isPending ? (
               <div className="h-8 w-16 rounded-lg bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
@@ -95,7 +121,27 @@ export default function WeightHistoryChart({ patientId }: Props) {
             )}
           </div>
         </div>
-      </button>
+        <div className="flex flex-col items-end gap-2 shrink-0">
+          <button
+            type="button"
+            onClick={() => setCreateOpen(true)}
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-700 active:scale-95 transition-all duration-150 cursor-pointer shadow-sm shadow-red-200 dark:shadow-red-950/40"
+          >
+            <Plus size={13} weight="bold" className="text-white" />
+            <span className="text-xs font-bold text-white whitespace-nowrap">Adicionar novo peso</span>
+          </button>
+          {records && records.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setEditOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 active:scale-95 transition-all duration-150 cursor-pointer"
+            >
+              <PencilSimple size={13} weight="bold" className="text-neutral-600 dark:text-neutral-400" />
+              <span className="text-xs font-bold text-neutral-600 dark:text-neutral-400 whitespace-nowrap">Editar peso atual</span>
+            </button>
+          )}
+        </div>
+      </div>
 
       <div className="rounded-2xl bg-neutral-950 border border-neutral-800 p-4 pt-5">
         {isPending ? (
@@ -111,7 +157,9 @@ export default function WeightHistoryChart({ patientId }: Props) {
           <>
             {delta !== null && (
               <div className="mb-5 px-1">
-                <p className="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-0.5">Variação total</p>
+                <p className="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-0.5">
+                  Variação total
+                </p>
                 <div className="flex items-baseline gap-1">
                   <span className="font-display text-2xl font-extrabold text-red-400">
                     {lost ? delta : `+${delta}`}
@@ -165,6 +213,23 @@ export default function WeightHistoryChart({ patientId }: Props) {
           </>
         )}
       </div>
+
+      <WeightRecordModal
+        isOpen={createOpen}
+        isPending={createMutation.isPending}
+        title="Adicionar peso"
+        onClose={() => setCreateOpen(false)}
+        onSave={handleCreate}
+      />
+
+      <WeightRecordModal
+        isOpen={editOpen}
+        isPending={updateMutation.isPending}
+        defaultWeight={records?.[0]?.weight}
+        title="Editar medição"
+        onClose={() => setEditOpen(false)}
+        onSave={handleEdit}
+      />
     </section>
   )
 }
