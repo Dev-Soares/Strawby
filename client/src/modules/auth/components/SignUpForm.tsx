@@ -4,6 +4,7 @@ import { Eye, EyeSlash, ArrowLeft } from '@phosphor-icons/react'
 import { GoogleLogin } from '@react-oauth/google'
 import { useSignUp } from '../hooks/useSignUp'
 import { useGoogleSignIn } from '../hooks/useGoogleSignIn'
+import Spinner from '../../../shared/components/Spinner'
 
 export default function SignUpForm() {
   const [step, setStep] = useState(1)
@@ -172,8 +173,9 @@ export default function SignUpForm() {
                   <button
                     type="submit"
                     disabled={isPending}
-                    className="flex-1 rounded-full bg-red-600 text-white font-bold py-3.5 px-12 text-[14px] hover:bg-red-700 transition-colors disabled:opacity-50 cursor-pointer"
+                    className="flex-1 flex items-center justify-center gap-2 rounded-full bg-red-600 text-white font-bold py-3.5 px-12 text-[14px] hover:bg-red-700 transition-colors disabled:opacity-50 cursor-pointer"
                   >
+                    {isPending && <Spinner size={16} />}
                     {isPending ? 'Criando conta…' : 'Criar conta'}
                   </button>
                 </div>

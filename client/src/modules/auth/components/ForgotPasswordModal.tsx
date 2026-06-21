@@ -1,5 +1,6 @@
 import { EnvelopeSimple } from '@phosphor-icons/react'
 import { useForgotPassword } from '../hooks/useForgotPassword'
+import Spinner from '../../../shared/components/Spinner'
 
 interface Props {
   onClose: () => void
@@ -59,8 +60,9 @@ export default function ForgotPasswordModal({ onClose }: Props) {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full py-3 rounded-xl bg-red-600 hover:bg-red-700 active:bg-red-800 text-white text-[13px] font-bold transition-colors cursor-pointer disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-red-600 hover:bg-red-700 active:bg-red-800 text-white text-[13px] font-bold transition-colors cursor-pointer disabled:opacity-50"
             >
+              {isPending && <Spinner size={16} />}
               {isPending ? 'Enviando…' : 'Enviar código'}
             </button>
             <button

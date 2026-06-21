@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Warning } from '@phosphor-icons/react'
+import Spinner from '@/shared/components/Spinner'
 
 type Props = {
   mealId: string | null
@@ -37,9 +38,10 @@ export default function ConfirmDeletePatientMealModal({ mealId, isPending, onClo
               <button
                 onClick={() => onConfirm(mealId)}
                 disabled={isPending}
-                className="flex-1 text-xs font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl py-3 disabled:opacity-50 cursor-pointer transition-colors"
+                className="flex-1 flex items-center justify-center gap-2 text-xs font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl py-3 disabled:opacity-50 cursor-pointer transition-colors"
               >
-                {isPending ? '…' : 'Remover'}
+                {isPending && <Spinner size={13} />}
+                {isPending ? 'Removendo…' : 'Remover'}
               </button>
             </div>
           </motion.div>

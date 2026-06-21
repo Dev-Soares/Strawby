@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom'
 import { ArrowLeft, Plus, Trash } from '@phosphor-icons/react'
 import AppLayout from '@/shared/layouts/AppLayout'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
+import Spinner from '@/shared/components/Spinner'
 import RecipeDetailSkeleton from '@/modules/recipe/skeletons/RecipeDetailSkeleton'
 import RecipeTotalsCard from '@/modules/recipe/components/RecipeTotalsCard'
 import RecipeItemRow from '@/modules/recipe/components/RecipeItemRow'
@@ -118,7 +119,7 @@ export default function RecipeDetailPage() {
             className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white bg-red-500 hover:bg-red-600 shadow-md transition-colors duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {deleteMutation.isPending ? (
-              <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              <Spinner size={16} className="border-white/40 border-t-white" />
             ) : (
               <Trash size={16} weight="bold" />
             )}

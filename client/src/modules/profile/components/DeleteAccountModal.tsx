@@ -1,5 +1,6 @@
 import { useDeleteUser } from '@/modules/auth/hooks/useDeleteUser'
 import { Warning } from '@phosphor-icons/react'
+import Spinner from '@/shared/components/Spinner'
 
 interface Props {
   userId: string
@@ -43,8 +44,9 @@ export default function DeleteAccountModal({ userId, onClose }: Props) {
             type="button"
             onClick={handleConfirm}
             disabled={deleteUser.isPending}
-            className="w-full py-3 rounded-xl bg-red-600 hover:bg-red-700 active:bg-red-800 text-white text-[13px] font-bold transition-colors cursor-pointer disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-red-600 hover:bg-red-700 active:bg-red-800 text-white text-[13px] font-bold transition-colors cursor-pointer disabled:opacity-50"
           >
+            {deleteUser.isPending && <Spinner size={14} />}
             {deleteUser.isPending ? 'Deletando…' : 'Sim, deletar minha conta'}
           </button>
           <button

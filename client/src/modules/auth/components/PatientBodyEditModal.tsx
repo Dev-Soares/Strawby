@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X, FloppyDisk, GenderMale, GenderFemale, Heartbeat, TrendDown, TrendUp, Minus } from '@phosphor-icons/react'
+import Spinner from '../../../shared/components/Spinner'
 
 const optionalNumber = (min: number, max: number) =>
   z.number().optional()
@@ -182,7 +183,7 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
                 className="w-full flex items-center justify-center gap-2 bg-neutral-950 dark:bg-neutral-100 hover:bg-neutral-800 dark:hover:bg-white text-white dark:text-neutral-950 text-sm font-bold py-3.5 rounded-xl transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isPending
-                  ? <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ? <Spinner size={15} />
                   : <FloppyDisk size={15} weight="bold" />
                 }
                 {isPending ? 'Salvando…' : 'Salvar'}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Bell, X } from '@phosphor-icons/react'
 import toast from 'react-hot-toast'
 import { useRequestNotificationPermission } from '../hooks/useRequestNotificationPermission'
+import Spinner from '../../../shared/components/Spinner'
 
 const STORAGE_KEY = 'notification_permission_asked'
 
@@ -87,8 +88,9 @@ const NotificationPermissionPopup = ({ forceOpen, onClose }: NotificationPermiss
           <button
             onClick={handleAccept}
             disabled={isPending}
-            className="flex-1 py-2 rounded-xl text-xs font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+            className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
           >
+            {isPending && <Spinner size={14} />}
             {isPending ? 'Aguarde...' : 'Sim, quero!'}
           </button>
         </div>

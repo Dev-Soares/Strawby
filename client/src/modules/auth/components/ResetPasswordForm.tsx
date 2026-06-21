@@ -3,6 +3,7 @@ import { useLocation, Link } from 'react-router-dom'
 import { LockKey, Eye, EyeSlash } from '@phosphor-icons/react'
 import { useResetPassword } from '../hooks/useResetPassword'
 import { useResendResetPassword } from '../hooks/useResendResetPassword'
+import Spinner from '../../../shared/components/Spinner'
 
 export default function ResetPasswordForm() {
   const location = useLocation()
@@ -118,8 +119,9 @@ export default function ResetPasswordForm() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full rounded-full bg-red-600 text-white font-bold py-3.5 px-12 text-[14px] hover:bg-red-700 active:bg-red-800 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 rounded-full bg-red-600 text-white font-bold py-3.5 px-12 text-[14px] hover:bg-red-700 active:bg-red-800 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
             >
+              {isPending && <Spinner size={16} />}
               {isPending ? 'Redefinindo…' : 'Redefinir senha'}
             </button>
 

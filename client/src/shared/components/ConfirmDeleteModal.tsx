@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Warning, Trash } from '@phosphor-icons/react'
+import Spinner from './Spinner'
 
 interface ConfirmDeleteModalProps {
   isOpen: boolean
@@ -70,7 +71,7 @@ export default function ConfirmDeleteModal({
                 className="flex-1 py-3 rounded-xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 transition-colors duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isPending ? (
-                  <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  <Spinner size={16} className="border-white/40 border-t-white" />
                 ) : (
                   <Trash size={16} weight="bold" />
                 )}

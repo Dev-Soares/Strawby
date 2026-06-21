@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { planSchema, type PlanData } from '../types/plan'
 import { X, Fire, FloppyDisk, PencilSimple } from '@phosphor-icons/react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import Spinner from '@/shared/components/Spinner'
 
 interface PlanEditModalProps {
   isOpen: boolean
@@ -162,7 +163,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
                   className="flex-1 py-3.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 dark:bg-neutral-100 dark:hover:bg-neutral-200 text-sm font-bold text-white dark:text-neutral-950 flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isPending ? (
-                    <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <Spinner size={16} />
                   ) : (
                     <FloppyDisk size={16} weight="bold" />
                   )}
