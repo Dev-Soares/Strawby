@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Eye, EyeSlash, ArrowLeft } from '@phosphor-icons/react'
-import { GoogleLogin } from '@react-oauth/google'
 import { useSignUp } from '../hooks/useSignUp'
 import { useGoogleSignIn } from '../hooks/useGoogleSignIn'
 import Spinner from '../../../shared/components/Spinner'
+import GoogleAuthButton from './GoogleAuthButton'
 
 export default function SignUpForm() {
   const [step, setStep] = useState(1)
@@ -87,18 +87,11 @@ export default function SignUpForm() {
                   <div className="h-px flex-1 bg-neutral-700" />
                 </div>
 
-                <div className="w-fit mx-auto my-3">
-                  <GoogleLogin
-                    onSuccess={googleSignIn.onSuccess}
-                    onError={googleSignIn.onError}
-                    useOneTap
-                    theme="outline"
-                    size="large"
-                    shape="pill"
-                    text="continue_with"
-                    width="240"
-                  />
-                </div>
+                <GoogleAuthButton
+                  label="Continuar com Google"
+                  onSuccess={googleSignIn.onSuccess}
+                  onError={googleSignIn.onError}
+                />
 
                 <p className="text-[14px] text-neutral-500">
                   Já tem conta?{' '}

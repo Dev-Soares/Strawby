@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Eye, EyeSlash } from '@phosphor-icons/react'
-import { GoogleLogin } from '@react-oauth/google'
 import { useSignIn } from '../hooks/useSignIn'
 import { useGoogleSignIn } from '../hooks/useGoogleSignIn'
 import ForgotPasswordModal from './ForgotPasswordModal'
+import GoogleAuthButton from './GoogleAuthButton'
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -96,18 +96,11 @@ export default function LoginForm() {
               <div className="h-px flex-1 bg-neutral-700" />
             </div>
 
-            <div className="w-fit mx-auto my-3">
-              <GoogleLogin
-                onSuccess={googleSignIn.onSuccess}
-                onError={googleSignIn.onError}
-                useOneTap
-                theme="outline"
-                size="large"
-                shape="pill"
-                text="continue_with"
-                width="240"
-              />
-            </div>
+            <GoogleAuthButton
+              label="Continuar com Google"
+              onSuccess={googleSignIn.onSuccess}
+              onError={googleSignIn.onError}
+            />
 
             <p className="text-[14px] text-neutral-500">
               Não tem conta?{' '}
