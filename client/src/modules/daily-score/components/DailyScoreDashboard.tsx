@@ -1,53 +1,59 @@
 import { useState } from 'react'
-import { CaretLeft, CaretRight } from '@phosphor-icons/react'
 import { useGetDailyScores } from '../hooks/useGetDailyScores'
 import DailyScoreSkeleton from '../skeletons/DailyScoreSkeleton'
 import DailyScoreCard from './DailyScoreCard'
 import TotalScoreCard from './TotalScoreCard'
-import WeeklyReport from '../../daily-summary/components/WeeklyReport'
+import MonthlyCalendar from '../../daily-summary/components/MonthlyCalendar'
 import PatientStreakCard from '../../patient/components/PatientStreakCard'
-import type { WeeklyReportData, WeekDayStatus } from '../../daily-summary/types/weeklyReport'
+import BestStreakCard from '../../patient/components/BestStreakCard'
+import type { MonthlyScoreData, DayStatus } from '../../daily-summary/types/monthlyScore'
 import type { DailyScore } from '../types/dailyScore'
 
-function getDayStatus(score: number): WeekDayStatus {
-  if (score >= 8) return 'good'
-  if (score >= 5) return 'warn'
-  return 'bad'
+function getDayStatus(score: number): DayStatus {
+  return score >= 8 ? 'good' : 'bad'
 }
 
-function getWeekRange(offset: number = 0): { startDate: string; endDate: string; weekStart: Date } {
+function getMonthRange(offset: number = 0): {
+  startDate: string
+  endDate: string
+  monthStart: Date
+  daysInMonth: number
+  firstDayOffset: number
+} {
   const now = new Date()
-  const currentDay = now.getDay()
-  const mondayOffset = currentDay === 0 ? -6 : 1 - currentDay
+  const monthStart = new Date(now.getFullYear(), now.getMonth() + offset, 1)
+  const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0)
 
-  const start = new Date(now)
-  start.setDate(now.getDate() + mondayOffset + offset * 7)
-  start.setHours(0, 0, 0, 0)
-
-  const end = new Date(start)
-  end.setDate(start.getDate() + 6)
-  end.setHours(0, 0, 0, 0)
+  const dow = monthStart.getDay()
+  const firstDayOffset = dow === 0 ? 6 : dow - 1
 
   const fmt = (d: Date) => d.toISOString().split('T')[0]
-  return { startDate: fmt(start), endDate: fmt(end), weekStart: start }
+  return {
+    startDate: fmt(monthStart),
+    endDate: fmt(monthEnd),
+    monthStart,
+    daysInMonth: monthEnd.getDate(),
+    firstDayOffset,
+  }
 }
 
-function getTodayIndex(weekStart: Date): number {
+function getTodayDateInMonth(monthStart: Date): number | null {
   const now = new Date()
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
-  const start = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate())
-
-  const diffDays = Math.floor((today.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
-
-  if (diffDays >= 0 && diffDays < 7) return diffDays
-  return -1
+  if (now.getFullYear() === monthStart.getFullYear() && now.getMonth() === monthStart.getMonth()) {
+    return now.getDate()
+  }
+  return null
 }
 
-function buildWeekData(scores: DailyScore[], weekStart: Date): WeeklyReportData {
-  const shortNames = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']
-  const days = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(weekStart)
-    d.setDate(weekStart.getDate() + i)
+function buildMonthData(
+  scores: DailyScore[],
+  monthStart: Date,
+  daysInMonth: number,
+  firstDayOffset: number,
+): MonthlyScoreData {
+  const days = Array.from({ length: daysInMonth }, (_, i) => {
+    const dayNum = i + 1
+    const d = new Date(monthStart.getFullYear(), monthStart.getMonth(), dayNum)
 
     const scoreEntry = scores.find((s) => {
       const sDate = new Date(s.date)
@@ -59,34 +65,19 @@ function buildWeekData(scores: DailyScore[], weekStart: Date): WeeklyReportData 
     })
 
     if (scoreEntry) {
-      return {
-        day: shortNames[i],
-        date: d.getDate(),
-        status: getDayStatus(scoreEntry.score),
-        kcal: 0,
-        goal: 0,
-        score: Math.round(scoreEntry.score),
-      }
+      return { date: dayNum, status: getDayStatus(scoreEntry.score), score: Math.round(scoreEntry.score) }
     }
-
-    return {
-      day: shortNames[i],
-      date: d.getDate(),
-      status: 'neutral' as WeekDayStatus,
-      kcal: 0,
-      goal: 0,
-    }
+    return { date: dayNum, status: 'neutral' as DayStatus }
   })
 
-  const weekScore = days.reduce((sum, d) => sum + (d.score ?? 0), 0)
+  const monthLabel = monthStart.toLocaleDateString('pt-BR', { month: 'long' }).toUpperCase()
+  const displayMonth = monthLabel.charAt(0) + monthLabel.slice(1).toLowerCase()
 
   return {
     days,
-    weekScore,
-    weekMaxScore: 70,
-    level: Math.floor(weekScore / 10),
-    weekTotalKcal: 0,
-    weekGoalKcal: 0,
+    firstDayOffset,
+    monthLabel: displayMonth,
+    year: monthStart.getFullYear(),
   }
 }
 
@@ -94,9 +85,9 @@ type ScoreView = 'hoje' | 'total'
 
 export default function DailyScoreDashboard() {
   const [activeView, setActiveView] = useState<ScoreView>('hoje')
-  const [weekOffset, setWeekOffset] = useState(0)
-  const { startDate, endDate, weekStart } = getWeekRange(weekOffset)
-  const todayIndex = getTodayIndex(weekStart)
+  const [monthOffset, setMonthOffset] = useState(0)
+  const { startDate, endDate, monthStart, daysInMonth, firstDayOffset } = getMonthRange(monthOffset)
+  const todayDate = getTodayDateInMonth(monthStart)
   const { data: scores, isPending, isFetching, isError } = useGetDailyScores(startDate, endDate)
 
   if (isPending) return <DailyScoreSkeleton />
@@ -107,11 +98,11 @@ export default function DailyScoreDashboard() {
       </div>
     )
 
-  const weekly = buildWeekData(scores, weekStart)
+  const monthly = buildMonthData(scores, monthStart, daysInMonth, firstDayOffset)
 
   return (
-    <div data-tutorial="score-dashboard" className="space-y-4 sm:space-y-5">
-      <div className="flex gap-1 p-1 bg-neutral-100 dark:bg-neutral-800/60 rounded-xl w-fit transition-colors duration-300">
+    <div data-tutorial="score-dashboard">
+      <div className="flex gap-1 p-1 bg-neutral-100 dark:bg-neutral-800/60 rounded-xl w-fit mb-8 sm:mb-10 transition-colors duration-300">
         <button
           type="button"
           onClick={() => setActiveView('hoje')}
@@ -137,39 +128,34 @@ export default function DailyScoreDashboard() {
       </div>
 
       {activeView === 'hoje' ? (
-        <>
-          <PatientStreakCard />
-          <DailyScoreCard />
-        </>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-0 items-start">
+          <div className="lg:pr-16 lg:border-r border-neutral-100 dark:border-neutral-800">
+            <PatientStreakCard />
+          </div>
+          <div className="lg:pl-16">
+            <DailyScoreCard />
+            <hr className="border-neutral-100 dark:border-neutral-800 my-8 transition-colors duration-300" />
+            <BestStreakCard />
+          </div>
+        </div>
       ) : (
-        <>
-          <div className="flex items-center justify-between">
-            <button
-              type="button"
-              onClick={() => setWeekOffset((o) => o - 1)}
-              className="flex items-center gap-1 text-sm font-bold text-neutral-500 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-100 transition-colors duration-300"
-            >
-              <CaretLeft size={18} weight="bold" />
-              Anterior
-            </button>
-            <span className="text-xs font-bold uppercase tracking-wider text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
-              {`${startDate.slice(8)}/${startDate.slice(5, 7)} — ${endDate.slice(8)}/${endDate.slice(5, 7)}`}
-            </span>
-            <button
-              type="button"
-              onClick={() => setWeekOffset((o) => o + 1)}
-              className="flex items-center gap-1 text-sm font-bold text-neutral-500 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-100 transition-colors duration-300"
-            >
-              Próxima
-              <CaretRight size={18} weight="bold" />
-            </button>
+        <div
+          className={`grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-0 items-start transition-opacity duration-200 ${
+            isFetching ? 'opacity-40 pointer-events-none' : 'opacity-100'
+          }`}
+        >
+          <div className="lg:pr-16 lg:border-r border-neutral-100 dark:border-neutral-800">
+            <MonthlyCalendar
+              data={monthly}
+              todayDate={todayDate}
+              onPrevMonth={() => setMonthOffset((o) => o - 1)}
+              onNextMonth={() => setMonthOffset((o) => o + 1)}
+            />
           </div>
-
-          <div className={`transition-opacity duration-200 ${isFetching ? 'opacity-40 pointer-events-none' : 'opacity-100'}`}>
-            <WeeklyReport data={weekly} todayIndex={todayIndex} weekStartDate={weekStart} />
+          <div className="lg:pl-16">
+            <TotalScoreCard />
           </div>
-          <TotalScoreCard />
-        </>
+        </div>
       )}
     </div>
   )

@@ -1,26 +1,18 @@
 const DailyScoreSkeleton = () => (
-  <div className="space-y-4 sm:space-y-5">
-    <div className="animate-pulse rounded-2xl bg-neutral-100 dark:bg-neutral-800 p-4 sm:p-8 flex flex-col gap-4 transition-colors duration-300">
-      <div className="h-5 w-1/3 rounded bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
-      <div className="h-4 w-2/3 rounded bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
-      <div className="grid grid-cols-4 sm:grid-cols-7 gap-2 sm:gap-2.5 mt-2">
-        {Array.from({ length: 7 }).map((_, i) => (
-          <div
-            key={i}
-            className="aspect-4/5 sm:aspect-5/7 rounded-2xl bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300"
-          />
-        ))}
-      </div>
+  <div className="animate-pulse space-y-6 sm:space-y-8">
+    <div className="flex flex-col items-center gap-3 py-2">
+      <div className="h-35 w-35 rounded-full bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
+      <div className="h-10 w-24 rounded-full bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
+      <div className="h-3 w-32 rounded-full bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
     </div>
-    <div className="animate-pulse rounded-2xl bg-neutral-100 dark:bg-neutral-800 p-4 sm:p-8 flex flex-col gap-4 transition-colors duration-300">
-      <div className="h-5 w-1/3 rounded bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
-      <div className="flex items-center gap-4 mt-2">
-        <div className="h-12 w-32 rounded bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+      <div className="flex flex-col items-center gap-3">
+        <div className="h-3 w-12 rounded-full bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
+        <div className="w-33 h-33 rounded-full bg-neutral-200 dark:bg-neutral-800 mt-2 transition-colors duration-300" />
       </div>
-      <div className="h-3 w-full rounded-full bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
-      <div className="grid grid-cols-2 gap-3 sm:gap-6 w-full mt-1">
-        <div className="h-10 rounded bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
-        <div className="h-10 rounded bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
+      <div className="flex flex-col items-center gap-3">
+        <div className="h-3 w-16 rounded-full bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
+        <div className="w-28 h-28 rounded-full bg-neutral-200 dark:bg-neutral-800 mt-2 transition-colors duration-300" />
       </div>
     </div>
   </div>
