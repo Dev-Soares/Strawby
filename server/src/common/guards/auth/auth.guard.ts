@@ -21,7 +21,7 @@ export class AuthGuard extends BaseJwtGuard implements CanActivate {
       request.user = await this.verifyToken(token);
       return true;
     } catch (error) {
-      if (error.name === 'TokenExpiredError') {
+      if (error instanceof Error && error.name === 'TokenExpiredError') {
         throw new UnauthorizedException('Token expirado');
       }
       throw new UnauthorizedException('Token inválido');

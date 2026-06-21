@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { UserModule } from '../user/user.module';
 import { HashModule } from '../../common/hash/hash.module';
 import { AuthGuardModule } from '../../common/guards/auth/auth.module';
+import { getAccessTokenConfig } from 'src/common/config/jwt.config';
 
 @Module({
   imports: [
@@ -15,12 +16,7 @@ import { AuthGuardModule } from '../../common/guards/auth/auth.module';
     JwtModule.registerAsync({
       global: true,
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.getOrThrow<string>('JWT_SECRET'),
-        signOptions: {
-          expiresIn: '30d',
-        },
-      }),
+      useFactory: getAccessTokenConfig,
     }),
   ],
   controllers: [AuthController],
