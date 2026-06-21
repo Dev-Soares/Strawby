@@ -205,7 +205,7 @@ export default function WeightHistoryChart({ patientId }: Props) {
                     {chartData.map((_, index) => (
                       <Cell
                         key={index}
-                        fill={index === chartData.length - 1 ? '#ef4444' : '#3f1010'}
+                        fill={index === 0 ? '#ef4444' : '#3f1010'}
                       />
                     ))}
                   </Bar>
