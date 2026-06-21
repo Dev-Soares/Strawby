@@ -16,7 +16,7 @@ import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { cookieConfig } from 'src/common/config/cookie.config';
+import { cookieConfig, refreshCookieConfig } from 'src/common/config/cookie.config';
 import type { SignInResponse, LogoutResponse } from './types';
 
 @ApiTags('auth')
@@ -36,14 +36,14 @@ export class AuthController {
       signInDto.password,
     );
     res.cookie('access_token', result.access_token, cookieConfig);
-    res.cookie('refresh_token', result.refresh_token, cookieConfig);
+    res.cookie('refresh_token', result.refresh_token, refreshCookieConfig);
     return { message: 'Login efetuado com sucesso' };
   }
 
   @Post('logout')
   logout(@Res({ passthrough: true }) res: Response): LogoutResponse {
     res.clearCookie('access_token', cookieConfig);
-    res.clearCookie('refresh_token', cookieConfig);
+    res.clearCookie('refresh_token', refreshCookieConfig);
     return { message: 'Logout efetuado com sucesso' };
   }
 
@@ -68,7 +68,7 @@ export class AuthController {
     const result = await this.authService.googleAuth(credential);
 
     res.cookie('access_token', result.access_token, cookieConfig);
-    res.cookie('refresh_token', result.refresh_token, cookieConfig);
+    res.cookie('refresh_token', result.refresh_token, refreshCookieConfig);
     return { message: 'Login com Google efetuado com sucesso' };
   }
 
@@ -79,7 +79,7 @@ export class AuthController {
   ): Promise<SignInResponse> {
     const result = await this.authService.verifyEmail(token);
     res.cookie('access_token', result.access_token, cookieConfig);
-    res.cookie('refresh_token', result.refresh_token, cookieConfig);
+    res.cookie('refresh_token', result.refresh_token, refreshCookieConfig);
     return { message: 'E-mail verificado com sucesso' };
   }
 
@@ -105,7 +105,7 @@ export class AuthController {
   ) {
     const result = await this.authService.resetPassword(dto.token, dto.newPassword);
     res.cookie('access_token', result.access_token, cookieConfig);
-    res.cookie('refresh_token', result.refresh_token, cookieConfig);
+    res.cookie('refresh_token', result.refresh_token, refreshCookieConfig);
     return { message: 'Senha redefinida com sucesso' };
   }
 }
