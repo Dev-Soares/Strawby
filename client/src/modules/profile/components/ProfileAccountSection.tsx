@@ -4,6 +4,7 @@ import { useUpdateUser } from '@/modules/auth/hooks/useUpdateUser'
 import { useSendResetPasswordEmail } from '@/modules/auth/hooks/useSendResetPasswordEmail'
 import DeleteAccountModal from './DeleteAccountModal'
 import ResetPasswordConfirmModal from './ResetPasswordConfirmModal'
+import Spinner from '@/shared/components/Spinner'
 
 interface Props {
   id: string
@@ -54,9 +55,10 @@ export default function ProfileAccountSection({ id, name, email }: Props) {
                   type="button"
                   onClick={handleSave}
                   disabled={updateUser.isPending || nameValue.trim().length < 2}
-                  className="text-[11px] font-bold text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-lg disabled:opacity-40 transition-colors cursor-pointer shrink-0"
+                  className="flex items-center gap-1.5 text-[11px] font-bold text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-lg disabled:opacity-40 transition-colors cursor-pointer shrink-0"
                 >
-                  {updateUser.isPending ? '…' : 'Salvar'}
+                  {updateUser.isPending && <Spinner size={11} />}
+                  {updateUser.isPending ? 'Salvando…' : 'Salvar'}
                 </button>
                 <button
                   type="button"

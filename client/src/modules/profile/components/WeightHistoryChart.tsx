@@ -98,46 +98,48 @@ export default function WeightHistoryChart({ patientId }: Props) {
         </p>
       </div>
 
-      <div className="flex items-center gap-4 px-4 py-4 rounded-2xl mb-1">
-        <div className="w-12 h-12 rounded-2xl bg-red-600 flex items-center justify-center shrink-0 shadow-md shadow-red-200 dark:shadow-red-950/40">
-          <Scales size={22} weight="bold" className="text-white" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-black text-red-400 dark:text-red-500 uppercase tracking-widest mb-0.5">
-            Peso atual
-          </p>
-          <div className="flex items-baseline gap-1 leading-none">
-            {isPending ? (
-              <div className="h-8 w-16 rounded-lg bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
-            ) : (
-              <>
-                <span className="font-display text-3xl font-extrabold text-red-600 dark:text-red-400">
-                  {latestWeight ?? '—'}
-                </span>
-                {latestWeight !== null && (
-                  <span className="text-sm font-bold text-red-400 dark:text-red-500">kg</span>
-                )}
-              </>
-            )}
+      <div className="flex flex-col gap-4 px-4 py-4 rounded-2xl mb-1">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-red-600 flex items-center justify-center shrink-0">
+            <Scales size={22} weight="bold" className="text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-black text-red-400 dark:text-red-500 uppercase tracking-widest mb-0.5">
+              Peso atual
+            </p>
+            <div className="flex items-baseline gap-1 leading-none">
+              {isPending ? (
+                <div className="h-8 w-16 rounded-lg bg-neutral-200 dark:bg-neutral-700 animate-pulse" />
+              ) : (
+                <>
+                  <span className="font-display text-3xl font-extrabold text-red-600 dark:text-red-400">
+                    {latestWeight ?? '—'}
+                  </span>
+                  {latestWeight !== null && (
+                    <span className="text-sm font-bold text-red-400 dark:text-red-500">kg</span>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
-        <div className="flex flex-col items-end gap-2 shrink-0">
+        <div className="flex flex-col sm:flex-row gap-2.5">
           <button
             type="button"
             onClick={() => setCreateOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-700 active:scale-95 transition-all duration-150 cursor-pointer shadow-sm shadow-red-200 dark:shadow-red-950/40"
+            className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all duration-150 cursor-pointer"
           >
-            <Plus size={13} weight="bold" className="text-white" />
-            <span className="text-xs font-bold text-white whitespace-nowrap">Adicionar novo peso</span>
+            <Plus size={17} weight="bold" className="text-white" />
+            <span className="text-sm font-bold text-white whitespace-nowrap">Adicionar novo peso</span>
           </button>
           {records && records.length > 0 && (
             <button
               type="button"
               onClick={() => setEditOpen(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 active:scale-95 transition-all duration-150 cursor-pointer"
+              className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 active:scale-[0.98] transition-all duration-150 cursor-pointer"
             >
-              <PencilSimple size={13} weight="bold" className="text-neutral-600 dark:text-neutral-400" />
-              <span className="text-xs font-bold text-neutral-600 dark:text-neutral-400 whitespace-nowrap">Editar peso atual</span>
+              <PencilSimple size={17} weight="bold" className="text-neutral-600 dark:text-neutral-400" />
+              <span className="text-sm font-bold text-neutral-600 dark:text-neutral-400 whitespace-nowrap">Editar peso atual</span>
             </button>
           )}
         </div>
@@ -203,7 +205,7 @@ export default function WeightHistoryChart({ patientId }: Props) {
                     {chartData.map((_, index) => (
                       <Cell
                         key={index}
-                        fill={index === chartData.length - 1 ? '#ef4444' : '#3f1010'}
+                        fill={index === 0 ? '#ef4444' : '#3f1010'}
                       />
                     ))}
                   </Bar>

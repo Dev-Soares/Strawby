@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FloppyDisk } from '@phosphor-icons/react'
 import { createRecipeSchema, type CreateRecipeData } from '../types/createRecipe'
 import { useCreateRecipe } from '../hooks/useCreateRecipe'
+import Spinner from '@/shared/components/Spinner'
 
 interface RecipeFormProps {
   onSuccess?: (recipe: { id: string }) => void
@@ -48,7 +49,7 @@ export default function RecipeForm({ onSuccess }: RecipeFormProps) {
         className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl text-sm font-bold text-white transition-colors duration-200 cursor-pointer bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {createRecipe.isPending ? (
-          <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          <Spinner size={17} />
         ) : (
           <FloppyDisk size={17} weight="bold" />
         )}

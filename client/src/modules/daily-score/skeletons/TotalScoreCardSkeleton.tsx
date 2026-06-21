@@ -1,13 +1,12 @@
 const TotalScoreCardSkeleton = () => (
-  <div className="animate-pulse rounded-2xl bg-neutral-100 dark:bg-neutral-800 p-4 sm:p-8 flex flex-col gap-4 transition-colors duration-300">
-    <div className="h-5 w-1/3 rounded bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
-    <div className="flex items-center gap-4 mt-2">
-      <div className="h-12 w-32 rounded bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
+  <div className="animate-pulse">
+    <div className="mb-5 px-1 flex flex-col gap-2">
+      <div className="h-5 w-32 rounded-full bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
+      <div className="h-3 w-44 rounded-full bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
     </div>
-    <div className="h-3 w-full rounded-full bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
-    <div className="grid grid-cols-2 gap-3 sm:gap-6 w-full mt-1">
-      <div className="h-10 rounded bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
-      <div className="h-10 rounded bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
+    <div className="flex flex-col items-center gap-3 py-2">
+      <div className="w-33 h-33 rounded-full bg-neutral-200 dark:bg-neutral-800 transition-colors duration-300" />
+      <div className="h-4 w-20 rounded-full bg-neutral-200 dark:bg-neutral-800 mt-1 transition-colors duration-300" />
     </div>
   </div>
 )

@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X, FloppyDisk, Scales } from '@phosphor-icons/react'
 import { weightRecordSchema, type WeightRecordFormData } from '@/modules/patient/types/weightRecord'
+import Spinner from '@/shared/components/Spinner'
 
 interface Props {
   isOpen: boolean
@@ -101,7 +102,7 @@ export default function WeightRecordModal({
                 className="w-full flex items-center justify-center gap-2 bg-neutral-950 dark:bg-neutral-100 hover:bg-neutral-800 dark:hover:bg-white text-white dark:text-neutral-950 text-sm font-bold py-3.5 rounded-xl transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isPending ? (
-                  <span className="inline-block w-4 h-4 border-2 border-white/30 dark:border-neutral-950/30 border-t-white dark:border-t-neutral-950 rounded-full animate-spin" />
+                  <Spinner size={15} className="border-white/30 dark:border-neutral-950/30 border-t-white dark:border-t-neutral-950" />
                 ) : (
                   <FloppyDisk size={15} weight="bold" />
                 )}

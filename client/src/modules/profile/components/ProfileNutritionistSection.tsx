@@ -4,6 +4,7 @@ import { useDisconnectNutritionist } from '@/modules/nutritionist/hooks/useDisco
 import { useMakeConnectionRequest } from '@/modules/connection-request/hooks/useMakeConnectionRequest'
 import AddNutritionistModal from '@/modules/connection-request/components/AddNutritionistModal'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
+import Spinner from '@/shared/components/Spinner'
 
 interface Patient {
   nutritionistId: string | null
@@ -53,7 +54,7 @@ export default function ProfileNutritionistSection({ patient }: Props) {
             disabled={disconnectMutation.isPending}
             className="shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 active:scale-[0.97] transition-all duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <Trash size={15} weight="bold" />
+            {disconnectMutation.isPending ? <Spinner size={15} /> : <Trash size={15} weight="bold" />}
             {disconnectMutation.isPending ? 'Removendo…' : 'Remover'}
           </button>
         </div>
@@ -61,7 +62,7 @@ export default function ProfileNutritionistSection({ patient }: Props) {
         <button
           type="button"
           onClick={() => setAddOpen(true)}
-          className="inline-flex items-center gap-3 rounded-2xl bg-red-600 hover:bg-red-700 active:scale-[0.97] transition-all duration-150 cursor-pointer px-5 py-4 shadow-lg shadow-red-600/25"
+          className="inline-flex items-center gap-3 rounded-2xl bg-red-600 hover:bg-red-700 active:scale-[0.97] transition-all duration-150 cursor-pointer px-5 py-4"
         >
           <Plus size={20} weight="bold" className="text-white shrink-0" />
           <p className="text-sm font-extrabold text-white">

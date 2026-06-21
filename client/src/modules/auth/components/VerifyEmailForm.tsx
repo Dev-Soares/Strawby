@@ -2,6 +2,7 @@ import { useLocation, Link } from 'react-router-dom'
 import { EnvelopeSimple } from '@phosphor-icons/react'
 import { useVerifyEmail } from '../hooks/useVerifyEmail'
 import { useResendVerification } from '../hooks/useResendVerification'
+import Spinner from '../../../shared/components/Spinner'
 
 export default function VerifyEmailForm() {
   const location = useLocation()
@@ -68,8 +69,9 @@ export default function VerifyEmailForm() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full rounded-full bg-red-600 text-white font-bold py-3.5 px-12 text-[14px] hover:bg-red-700 active:bg-red-800 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 rounded-full bg-red-600 text-white font-bold py-3.5 px-12 text-[14px] hover:bg-red-700 active:bg-red-800 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
             >
+              {isPending && <Spinner size={16} />}
               {isPending ? 'Verificando…' : 'Verificar e-mail'}
             </button>
 

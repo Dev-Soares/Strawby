@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import AppLayout from '@/shared/layouts/AppLayout'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
 import { useGetPatient } from '@/modules/patient/hooks/useGetPatient'
@@ -18,11 +19,16 @@ export default function ProfilePage() {
     <AppLayout>
       <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-32 sm:py-10 lg:py-12 transition-colors duration-300">
 
-        <div className="mb-8 sm:mb-10">
+        <motion.div
+          className="mb-8 sm:mb-10"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-tight tracking-tight transition-colors duration-300">
             Seu perfil
           </h1>
-        </div>
+        </motion.div>
 
         {isPatient && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-0 items-start">

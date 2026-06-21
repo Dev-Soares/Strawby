@@ -50,7 +50,7 @@ export default function ProfileScoreSection() {
             <Trophy size={20} weight="duotone" className="text-yellow-500 shrink-0" />
             <div>
               <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-yellow-500/70 leading-none mb-1 transition-colors duration-300">
-                Melhor streak
+                Melhor sequência
               </p>
               <div className="flex items-baseline gap-1 leading-none">
                 <span className="font-display text-xl font-extrabold text-yellow-500 transition-colors duration-300">

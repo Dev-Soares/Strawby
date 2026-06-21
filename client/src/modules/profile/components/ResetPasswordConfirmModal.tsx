@@ -1,4 +1,5 @@
 import { LockKey } from '@phosphor-icons/react'
+import Spinner from '@/shared/components/Spinner'
 
 interface Props {
   email: string
@@ -37,8 +38,9 @@ export default function ResetPasswordConfirmModal({ email, isPending, onConfirm,
             type="button"
             onClick={onConfirm}
             disabled={isPending}
-            className="w-full py-3 rounded-xl bg-neutral-900 dark:bg-neutral-100 hover:bg-neutral-700 dark:hover:bg-neutral-300 text-white dark:text-neutral-900 text-[13px] font-bold transition-colors cursor-pointer disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-neutral-900 dark:bg-neutral-100 hover:bg-neutral-700 dark:hover:bg-neutral-300 text-white dark:text-neutral-900 text-[13px] font-bold transition-colors cursor-pointer disabled:opacity-50"
           >
+            {isPending && <Spinner size={14} className="border-white/30 dark:border-neutral-900/30 border-t-white dark:border-t-neutral-900" />}
             {isPending ? 'Enviando…' : 'Enviar código'}
           </button>
           <button

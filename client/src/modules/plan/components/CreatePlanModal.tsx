@@ -18,6 +18,7 @@ import {
   type GeneratePlanData,
   type CreatePlanData,
 } from '../types/createPlan'
+import Spinner from '@/shared/components/Spinner'
 
 type Mode = 'select' | 'manual' | 'generate'
 
@@ -190,7 +191,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
 
                   <button type="submit" disabled={isPending}
                     className="w-full flex items-center justify-center gap-2 bg-neutral-950 dark:bg-neutral-50 hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-neutral-950 text-sm font-bold py-3.5 rounded-xl transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-1">
-                    {isPending ? <span className="inline-block w-4 h-4 border-2 border-white/30 dark:border-neutral-950/30 border-t-white dark:border-t-neutral-950 rounded-full animate-spin" /> : <FloppyDisk size={16} weight="bold" />}
+                    {isPending ? <Spinner size={16} className="border-white/30 dark:border-neutral-950/30 border-t-white dark:border-t-neutral-950" /> : <FloppyDisk size={16} weight="bold" />}
                     {isPending ? 'Salvando…' : 'Salvar plano'}
                   </button>
                 </form>
@@ -217,7 +218,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
 
                   <button type="button" onClick={handleGenerateSubmit} disabled={isPending}
                     className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-3.5 rounded-xl transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2">
-                    {isPending ? <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Sparkle size={16} weight="fill" />}
+                    {isPending ? <Spinner size={16} /> : <Sparkle size={16} weight="fill" />}
                     {isPending ? 'Gerando…' : isNutritionist ? 'Gerar plano' : 'Gerar meu plano'}
                   </button>
                 </div>

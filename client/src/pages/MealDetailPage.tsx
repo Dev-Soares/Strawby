@@ -3,6 +3,7 @@ import { useThemeContext } from '@/shared/contexts/ThemeProvider'
 import { ArrowLeft, Plus, Trash } from '@phosphor-icons/react'
 import AppLayout from '@/shared/layouts/AppLayout'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
+import Spinner from '@/shared/components/Spinner'
 import MealDetailSkeleton from '@/modules/meal/skeletons/MealDetailSkeleton'
 import MealTotalsCard from '@/modules/meal/components/MealTotalsCard'
 import MealItemRow from '@/modules/meal/components/MealItemRow'
@@ -175,7 +176,7 @@ export default function MealDetailPage() {
             className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white bg-red-500 hover:bg-red-600 shadow-md transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {deleteMutation.isPending ? (
-              <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              <Spinner size={16} className="border-white/40 border-t-white" />
             ) : (
               <Trash size={16} weight="bold" />
             )}

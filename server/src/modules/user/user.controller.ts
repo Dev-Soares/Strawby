@@ -30,12 +30,10 @@ export class UserController {
     return this.userService.completeOnboarding(req.user.sub, dto);
   }
 
-  @UseGuards(OptionalAuthGuard)
+  @UseGuards(AuthGuard)
   @Get('me')
-  async findMe(@Req() req: OptionalAuthRequest) {
-    const user = req.user;
-    if (!user) return null;
-    return this.userService.findOne(user.sub);
+  async findMe(@Req() req: AuthenticatedRequest) {
+    return this.userService.findOne(req.user.sub);
   }
 
   @UseGuards(AuthGuard, OwnershipGuard)

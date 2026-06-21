@@ -3,6 +3,7 @@ import { GenderMale, GenderFemale, Heartbeat, Stethoscope, ArrowRight, TrendDown
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useCompleteOnboarding } from '../hooks/useCompleteOnboarding'
+import Spinner from '../../../shared/components/Spinner'
 
 const ROLES = [
   {
@@ -309,8 +310,9 @@ export default function OnboardingForm() {
               <button
                 type="submit"
                 disabled={isPending}
-                className="rounded-full bg-white text-red-600 font-bold py-3.5 px-12 text-[14px] hover:bg-neutral-100 transition-colors disabled:opacity-50 cursor-pointer"
+                className="flex items-center justify-center gap-2 rounded-full bg-white text-red-600 font-bold py-3.5 px-12 text-[14px] hover:bg-neutral-100 transition-colors disabled:opacity-50 cursor-pointer"
               >
+                {isPending && <Spinner size={16} className="border-red-600/30 border-t-red-600" />}
                 {isPending ? 'Salvando…' : 'Concluir'}
               </button>
             </div>

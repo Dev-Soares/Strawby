@@ -1,4 +1,5 @@
 import { CookingPot, PencilSimple, Check } from '@phosphor-icons/react'
+import Spinner from '@/shared/components/Spinner'
 
 type Props = {
   name: string
@@ -40,7 +41,7 @@ export default function RecipeNameEditor({
             className="w-9 h-9 rounded-xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-950/60 flex items-center justify-center transition-colors cursor-pointer shrink-0 disabled:opacity-50"
           >
             {isPending ? (
-              <span className="inline-block w-4 h-4 border-2 border-rose-300 border-t-rose-600 rounded-full animate-spin" />
+              <Spinner size={16} className="border-rose-300 border-t-rose-600" />
             ) : (
               <Check size={16} weight="bold" className="text-rose-600" />
             )}

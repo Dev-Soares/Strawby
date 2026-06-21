@@ -1,9 +1,16 @@
-import { ForbiddenException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { HashService } from 'src/common/hash/hash.service';
 import { JwtService } from '@nestjs/jwt';
-import { AuthTokenResponse } from './types';
+import { AuthTokenResponse, AuthTokensResponse } from './types';
 import { googleClient } from './google-client/client';
+import { getRefreshTokenConfig } from 'src/common/config/jwt.config';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -11,9 +18,10 @@ export class AuthService {
     private usersService: UserService,
     private hashService: HashService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
-  async signIn(email: string, password: string): Promise<AuthTokenResponse> {
+  async signIn(email: string, password: string): Promise<AuthTokensResponse> {
     const user = await this.usersService.findByEmailWithPassword(email);
 
     if (!user) {
@@ -28,7 +36,10 @@ export class AuthService {
       throw new ForbiddenException('E-mail não verificado');
     }
 
-    const passwordValid = await this.hashService.comparePassword(password, user.password);
+    const passwordValid = await this.hashService.comparePassword(
+      password,
+      user.password,
+    );
 
     if (!passwordValid) {
       throw new UnauthorizedException('E-mail ou senha inválidos');
@@ -37,17 +48,40 @@ export class AuthService {
     const payload = { sub: user.id, name: user.name, role: user.role };
     const access_token = await this.jwtService.signAsync(payload);
 
-    return { access_token };
+    const refresh_token = await this.jwtService.signAsync(
+      { sub: user.id },
+      getRefreshTokenConfig(this.configService),
+    );
+
+    return { access_token, refresh_token };
   }
 
-  async refresh(userId: string): Promise<AuthTokenResponse> {
-    const user = await this.usersService.findOne(userId);
-    const payload = { sub: user.id, name: user.name, role: user.role };
-    const access_token = await this.jwtService.signAsync(payload);
-    return { access_token };
+  async refresh(refreshToken: string): Promise<AuthTokenResponse> {
+    
+    if (!refreshToken) {
+      throw new UnauthorizedException('Token de atualização não fornecido');
+    }
+
+    let payload: { sub: string };
+
+    try {
+
+      payload = await this.jwtService.verifyAsync(refreshToken, {
+        secret: getRefreshTokenConfig(this.configService).secret,
+      });
+
+      const user = await this.usersService.findOne(payload.sub);
+      const newPayload = { sub: user.id, name: user.name, role: user.role };
+      const access_token = await this.jwtService.signAsync(newPayload);
+
+      return { access_token };
+
+    } catch {
+      throw new UnauthorizedException('Token de atualização inválido');
+    }
   }
 
-  async googleAuth(credential: string): Promise<AuthTokenResponse> {
+  async googleAuth(credential: string): Promise<AuthTokensResponse> {
     try {
       const ticket = await googleClient.verifyIdToken({
         idToken: credential,
@@ -66,9 +100,14 @@ export class AuthService {
       const userForToken = existingUser ?? await this.usersService.createFromGoogle(email, name);
 
       const tokenPayload = { sub: userForToken.id, name: userForToken.name, role: userForToken.role };
-      const access_token = await this.jwtService.signAsync(tokenPayload);
 
-      return { access_token };
+      const access_token = await this.jwtService.signAsync(tokenPayload);
+      const refresh_token = await this.jwtService.signAsync(
+        { sub: userForToken.id },
+        getRefreshTokenConfig(this.configService),
+      );
+
+      return { access_token, refresh_token };
     } catch (error) {
       if (error instanceof UnauthorizedException) throw error;
       throw new InternalServerErrorException('Erro ao autenticar com Google');
@@ -79,34 +118,60 @@ export class AuthService {
     return this.usersService.resendVerificationEmail(email);
   }
 
-  async verifyEmail(token: string): Promise<AuthTokenResponse> {
+  async verifyEmail(token: string): Promise<AuthTokensResponse> {
     const user = await this.usersService.findOneByVerificationToken(token);
 
     if (!user) {
-      throw new UnauthorizedException('Token de verificação inválido ou expirado');
+      throw new UnauthorizedException(
+        'Token de verificação inválido ou expirado',
+      );
     }
 
     const verifiedUser = await this.usersService.markEmailAsVerified(user.id);
-    const payload = { sub: verifiedUser.id, name: verifiedUser.name, role: verifiedUser.role };
+    const payload = {
+      sub: verifiedUser.id,
+      name: verifiedUser.name,
+      role: verifiedUser.role,
+    };
     const access_token = await this.jwtService.signAsync(payload);
-    return { access_token };
+    const refresh_token = await this.jwtService.signAsync(
+      { sub: verifiedUser.id },
+      getRefreshTokenConfig(this.configService),
+    );
+    return { access_token, refresh_token };
   }
 
-  async resetPassword(token: string, newPassword: string): Promise<AuthTokenResponse> {
+  async resetPassword(
+    token: string,
+    newPassword: string,
+  ): Promise<AuthTokensResponse> {
     const user = await this.usersService.findOneByPasswordResetToken(token);
 
     if (!user) {
-      throw new UnauthorizedException('Token de redefinição inválido ou expirado');
+      throw new UnauthorizedException(
+        'Token de redefinição inválido ou expirado',
+      );
     }
 
     const hashedPassword = await this.hashService.hashPassword(newPassword);
-    const updatedUser = await this.usersService.resetPassword(user.id, hashedPassword);
+    const updatedUser = await this.usersService.resetPassword(
+      user.id,
+      hashedPassword,
+    );
 
-    const payload = { sub: updatedUser.id, name: updatedUser.name, role: updatedUser.role };
+    const payload = {
+      sub: updatedUser.id,
+      name: updatedUser.name,
+      role: updatedUser.role,
+    };
 
     const access_token = await this.jwtService.signAsync(payload);
+    const refresh_token = await this.jwtService.signAsync(
+      { sub: updatedUser.id },
+      getRefreshTokenConfig(this.configService),
+    );
 
-    return { access_token };
+    return { access_token, refresh_token };
   }
 
   async sendResetPasswordEmail(email: string): Promise<void> {

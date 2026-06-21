@@ -7,6 +7,7 @@ import ProfileThemeSection from '@/modules/profile/components/ProfileThemeSectio
 import ProfileSupportSection from '@/modules/profile/components/ProfileSupportSection'
 import ProfileNotificationsSection from '@/modules/notifications/components/ProfileNotificationsSection'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
+import Spinner from '@/shared/components/Spinner'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
 
 export default function SettingsPage() {
@@ -37,7 +38,7 @@ export default function SettingsPage() {
           className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer shadow-sm"
         >
           {signOut.isPending ? (
-            <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            <Spinner size={17} />
           ) : (
             <SignOutIcon size={17} weight="bold" />
           )}

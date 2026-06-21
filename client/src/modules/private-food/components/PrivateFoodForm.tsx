@@ -7,6 +7,7 @@ import {
   Check,
 } from '@phosphor-icons/react'
 import type { CreatePrivateFoodData } from '../types/privateFood'
+import Spinner from '@/shared/components/Spinner'
 
 export interface PrivateFoodFormProps {
   register: UseFormRegister<CreatePrivateFoodData>
@@ -186,7 +187,7 @@ export default function PrivateFoodForm({
               className="flex-1 py-3.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-sm font-bold text-white flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending ? (
-                <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <Spinner size={16} />
               ) : (
                 <FloppyDisk size={16} weight="bold" />
               )}
@@ -200,7 +201,7 @@ export default function PrivateFoodForm({
             className="w-full py-4 rounded-2xl text-sm font-extrabold text-white bg-red-600 hover:bg-red-700 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2.5 shadow-md shadow-red-200 dark:shadow-red-900"
           >
             {isPending ? (
-              <span className="inline-block w-5 h-5 border-[2.5px] border-white/30 border-t-white rounded-full animate-spin" />
+              <Spinner size={20} className="border-[2.5px] border-white/30 border-t-white" />
             ) : (
               <Check size={18} weight="bold" />
             )}

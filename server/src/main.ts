@@ -22,6 +22,7 @@ function requireEnv(name: string): string {
 function validateRequiredEnvs(): void {
   requireEnv('CORS_ORIGIN');
   requireEnv('JWT_SECRET');
+  requireEnv('JWT_REFRESH_SECRET');
   requireEnv('DATABASE_URL');
 }
 

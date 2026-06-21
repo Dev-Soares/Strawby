@@ -6,20 +6,17 @@ import {
   HttpStatus,
   Res,
   Req,
-  UseGuards,
   Get,
   Query,
 } from '@nestjs/common';
-import { AuthGuard } from 'src/common/guards/auth/auth.guard';
-import type { AuthenticatedRequest } from 'src/common/types/req-types';
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import type { Response } from 'express';
+import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { cookieConfig } from 'src/common/config/cookie.config';
+import { cookieConfig, refreshCookieConfig } from 'src/common/config/cookie.config';
 import type { SignInResponse, LogoutResponse } from './types';
 
 @ApiTags('auth')
@@ -39,23 +36,25 @@ export class AuthController {
       signInDto.password,
     );
     res.cookie('access_token', result.access_token, cookieConfig);
+    res.cookie('refresh_token', result.refresh_token, refreshCookieConfig);
     return { message: 'Login efetuado com sucesso' };
   }
 
   @Post('logout')
   logout(@Res({ passthrough: true }) res: Response): LogoutResponse {
     res.clearCookie('access_token', cookieConfig);
+    res.clearCookie('refresh_token', refreshCookieConfig);
     return { message: 'Logout efetuado com sucesso' };
   }
 
-  @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
   async refresh(
-    @Req() req: AuthenticatedRequest,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.authService.refresh(req.user.sub);
+    const refreshToken = req.cookies?.refresh_token;
+    const result = await this.authService.refresh(refreshToken);
     res.cookie('access_token', result.access_token, cookieConfig);
     return { message: 'Token renovado' };
   }
@@ -69,6 +68,7 @@ export class AuthController {
     const result = await this.authService.googleAuth(credential);
 
     res.cookie('access_token', result.access_token, cookieConfig);
+    res.cookie('refresh_token', result.refresh_token, refreshCookieConfig);
     return { message: 'Login com Google efetuado com sucesso' };
   }
 
@@ -79,6 +79,7 @@ export class AuthController {
   ): Promise<SignInResponse> {
     const result = await this.authService.verifyEmail(token);
     res.cookie('access_token', result.access_token, cookieConfig);
+    res.cookie('refresh_token', result.refresh_token, refreshCookieConfig);
     return { message: 'E-mail verificado com sucesso' };
   }
 
@@ -104,6 +105,7 @@ export class AuthController {
   ) {
     const result = await this.authService.resetPassword(dto.token, dto.newPassword);
     res.cookie('access_token', result.access_token, cookieConfig);
+    res.cookie('refresh_token', result.refresh_token, refreshCookieConfig);
     return { message: 'Senha redefinida com sucesso' };
   }
 }
