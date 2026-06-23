@@ -14,8 +14,9 @@ const onRefreshed = () => {
 }
 
 const handleUnauthorized = () => {
+  // Marca usuário como deslogado SEM invalidar — invalidar dispararia
+  // refetch de /user/me → 401 → refresh → handleUnauthorized → loop infinito.
   queryClient.setQueryData(['user', 'me'], null)
-  queryClient.invalidateQueries({ queryKey: ['user', 'me'] })
   window.dispatchEvent(new CustomEvent(UNAUTHORIZED_EVENT))
 }
 
