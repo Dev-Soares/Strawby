@@ -13,7 +13,7 @@ export const manualPlanSchema = z.object({
 export type ManualPlanData = z.infer<typeof manualPlanSchema>
 
 export const generatePlanSchema = z.object({
-  movementLevel: z.number().min(1.2).max(1.9),
+  movementLevel: z.number().min(1.15).max(1.6),
 })
 
 export type GeneratePlanData = z.infer<typeof generatePlanSchema>
