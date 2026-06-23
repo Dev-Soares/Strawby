@@ -64,54 +64,6 @@ export class PatientService {
     }
   }
 
-  async generateStreakForEachUser(): Promise<StreakProcessResult> {
-    const yesterdayDate = yesterdayInAppTz();
-
-    try {
-      const [patientIds, scores] = await Promise.all([
-        this.prisma.patient.findMany({ select: { id: true } }),
-        this.dailyScoreService.findScoresByDate(yesterdayDate),
-      ]);
-
-      const scoreMap = new Map(scores.map((s) => [s.patientId, s.score])); //mapeia os scores por patientId para acesso rápido
-
-      const resetIds = patientIds
-        .filter((patient) => (scoreMap.get(patient.id) ?? 0) < 8)
-        .map((patient) => patient.id); // pacientes com score < 8 terão streak resetado
-      const incrementIds = patientIds
-        .filter((patient) => (scoreMap.get(patient.id) ?? 0) >= 8)
-        .map((patient) => patient.id);
-      // pacientes com score >= 8 terão streak incrementado
-
-      await this.prisma.$transaction(async (tx) => {
-        if (resetIds.length > 0) {
-          await tx.patient.updateMany({
-            where: { id: { in: resetIds } },
-            data: { currentStreak: 0 },
-          });
-        }
-
-        if (incrementIds.length > 0) {
-          await tx.patient.updateMany({
-            where: { id: { in: incrementIds } },
-            data: { currentStreak: { increment: 1 } },
-          });
-          // Prisma não suporta comparação coluna-a-coluna em updateMany
-          await tx.$executeRaw`
-            UPDATE "Patient"
-            SET "bestStreak" = "currentStreak"
-            WHERE "currentStreak" > "bestStreak"
-              AND id IN (${Prisma.join(incrementIds)})
-          `;
-        }
-      });
-
-      return { incremented: incrementIds, reset: resetIds }; 
-    } catch (error) {
-      mapPrismaError(error, 'Erro ao processar streak dos pacientes');
-    }
-  }
-
   async getPatientStreak(
     callerId: string,
     patientId: string,
@@ -171,6 +123,55 @@ export class PatientService {
       return patientsIds.map((p) => p.id);
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar pacientes sem refeições diárias');
+    }
+  }
+
+  
+  async generateStreakForEachUser(): Promise<StreakProcessResult> {
+    const yesterdayDate = yesterdayInAppTz();
+
+    try {
+      const [patientIds, scores] = await Promise.all([
+        this.prisma.patient.findMany({ select: { id: true } }),
+        this.dailyScoreService.findScoresByDate(yesterdayDate),
+      ]);
+
+      const scoreMap = new Map(scores.map((s) => [s.patientId, s.score])); //mapeia os scores por patientId para acesso rápido
+
+      const resetIds = patientIds
+        .filter((patient) => (scoreMap.get(patient.id) ?? 0) < 8)
+        .map((patient) => patient.id); // pacientes com score < 8 terão streak resetado
+      const incrementIds = patientIds
+        .filter((patient) => (scoreMap.get(patient.id) ?? 0) >= 8)
+        .map((patient) => patient.id);
+      // pacientes com score >= 8 terão streak incrementado
+
+      await this.prisma.$transaction(async (tx) => {
+        if (resetIds.length > 0) {
+          await tx.patient.updateMany({
+            where: { id: { in: resetIds } },
+            data: { currentStreak: 0 },
+          });
+        }
+
+        if (incrementIds.length > 0) {
+          await tx.patient.updateMany({
+            where: { id: { in: incrementIds } },
+            data: { currentStreak: { increment: 1 } },
+          });
+          // Prisma não suporta comparação coluna-a-coluna em updateMany
+          await tx.$executeRaw`
+            UPDATE "Patient"
+            SET "bestStreak" = "currentStreak"
+            WHERE "currentStreak" > "bestStreak"
+              AND id IN (${Prisma.join(incrementIds)})
+          `;
+        }
+      });
+
+      return { incremented: incrementIds, reset: resetIds }; 
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao processar streak dos pacientes');
     }
   }
 }
