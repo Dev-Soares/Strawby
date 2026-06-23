@@ -8,6 +8,7 @@ import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto'
 import { AddMealRecipeDto } from './dto/add-meal-recipe.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
+import { UpdateFoodItemDto } from './dto/update-food-item.dto';
 import { FoodItemPublic, MealPublic, MealTotals, RecipeInMeal, foodItemSelect, mealSelect } from './types';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 
@@ -177,6 +178,32 @@ export class MealService {
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao adicionar alimento privado à refeição');
+    }
+  }
+
+  async updateItem(callerId: string, patientId: string, mealId: string, itemId: string, dto: UpdateFoodItemDto): Promise<FoodItemPublic> {
+    await this.patientAccess.resolve(callerId, patientId);
+    try {
+      const item = await this.prisma.foodItem.findFirst({
+        where: { id: itemId, meal: { id: mealId, patientId } },
+        select: {
+          id: true,
+          food: { select: { calories: true, protein: true, carbs: true, fat: true } },
+          privateFood: { select: { calories: true, protein: true, carbs: true, fat: true, servingSize: true } },
+        },
+      });
+      if (!item) throw new NotFoundException('Item não encontrado na refeição');
+      const base = item.food ?? item.privateFood;
+      if (!base) throw new NotFoundException('Alimento base não encontrado');
+      const servingSize = item.privateFood?.servingSize ? Number(item.privateFood.servingSize) : 100;
+      const ratio = dto.quantity / servingSize;
+      return await this.prisma.foodItem.update({
+        where: { id: itemId },
+        data: { quantity: dto.quantity, calories: base.calories * ratio, protein: base.protein * ratio, carbs: base.carbs * ratio, fat: base.fat * ratio },
+        select: foodItemSelect,
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao atualizar item da refeição');
     }
   }
 
