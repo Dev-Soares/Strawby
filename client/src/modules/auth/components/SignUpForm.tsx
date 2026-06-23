@@ -89,8 +89,7 @@ export default function SignUpForm() {
 
                 <GoogleAuthButton
                   label="Continuar com Google"
-                  onSuccess={googleSignIn.onSuccess}
-                  onError={googleSignIn.onError}
+                  onClick={googleSignIn.signIn}
                 />
 
                 <p className="text-[14px] text-neutral-500">

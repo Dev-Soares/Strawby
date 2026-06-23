@@ -20,7 +20,7 @@ export default function MealDetailPage() {
 
   const {
     meal, isLoading, isError, confirm, setConfirm, handleConfirm, isDeletePending,
-    deleteMutation, removeItem, removeRecipe, backPath, selectFoodPath, navigate,
+    deleteMutation, removeItem, updateItem, removeRecipe, backPath, selectFoodPath, navigate,
   } = useMealDetailPage({ mealId: id ?? '', patientId })
 
   if (isLoading) {
@@ -109,6 +109,10 @@ export default function MealDetailPage() {
                 item={item}
                 cfg={cfg}
                 isRemovePending={removeItem.isPending}
+                isUpdatePending={updateItem.isPending}
+                onUpdateQuantity={(it, quantity) =>
+                  updateItem.mutate({ mealId: meal.id, itemId: it.id, quantity })
+                }
                 onRemove={(it) =>
                   setConfirm({
                     type: 'mealItem',

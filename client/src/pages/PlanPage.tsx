@@ -15,9 +15,9 @@ import { useDeletePlan } from '../modules/plan/hooks/useDeletePlan'
 import DownloadPlanPdfButton from '../modules/plan/components/DownloadPlanPdfButton'
 
 const macros = [
-  { label: 'Proteína', field: 'protein' as const, color: '#f59e0b', trackColor: '#fef3c7', max: 500 },
-  { label: 'Carboidratos', field: 'carbs' as const, color: '#3b82f6', trackColor: '#dbeafe', max: 800 },
-  { label: 'Gordura', field: 'fat' as const, color: '#a855f7', trackColor: '#f3e8ff', max: 300 },
+  { label: 'Proteína', field: 'protein' as const, color: '#f59e0b', trackColor: '#fef3c7', kcalPerGram: 4 },
+  { label: 'Carboidratos', field: 'carbs' as const, color: '#3b82f6', trackColor: '#dbeafe', kcalPerGram: 4 },
+  { label: 'Gordura', field: 'fat' as const, color: '#a855f7', trackColor: '#f3e8ff', kcalPerGram: 9 },
 ]
 
 export default function PlanPage() {
@@ -122,9 +122,12 @@ export default function PlanPage() {
 
               {/* Right — macro cards stacked */}
               <div className="flex flex-col gap-4">
-                {macros.map((macro, index) => {
+                {(() => {
+                  const macroKcalTotal = macros.reduce((acc, m) => acc + plan[m.field] * m.kcalPerGram, 0)
+                  return macros.map((macro, index) => {
                   const value = plan[macro.field]
-                  const progress = Math.min(value / macro.max, 1)
+                  const pct = macroKcalTotal > 0 ? Math.round((value * macro.kcalPerGram / macroKcalTotal) * 100) : 0
+                  const progress = Math.min(pct / 100, 1)
 
                   return (
                     <motion.div
@@ -138,6 +141,12 @@ export default function PlanPage() {
                         <div className="flex items-center gap-2.5">
                           <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: macro.color }} />
                           <span className="text-xs font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest transition-colors duration-300">{macro.label}</span>
+                          <span
+                            className="text-xs font-bold tabular-nums px-2 py-0.5 rounded-full"
+                            style={{ backgroundColor: macro.color, color: macro.trackColor }}
+                          >
+                            {pct}%
+                          </span>
                         </div>
                         <div className="flex items-baseline gap-1">
                           <span className="text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tabular-nums transition-colors duration-300">{value}</span>
@@ -156,7 +165,8 @@ export default function PlanPage() {
                       </div>
                     </motion.div>
                   )
-                })}
+                  })
+                })()}
               </div>
             </div>
           </div>

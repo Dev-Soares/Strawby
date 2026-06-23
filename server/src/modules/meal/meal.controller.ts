@@ -8,6 +8,7 @@ import { AddMealRecipeDto } from './dto/add-meal-recipe.dto';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { QueryMealDto } from './dto/query-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
+import { UpdateFoodItemDto } from './dto/update-food-item.dto';
 import { MealService } from './meal.service';
 
 @ApiTags('meal')
@@ -54,6 +55,11 @@ export class MealController {
   @Post(':patientId/:id/private-items')
   addPrivateFoodItem(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Param('id') id: string, @Body() dto: AddMealPrivateFoodItemDto) {
     return this.mealService.addPrivateFoodItem(req.user.sub, patientId, id, dto);
+  }
+
+  @Patch(':patientId/:id/items/:itemId')
+  updateItem(@Req() req: AuthenticatedRequest, @Param('patientId') patientId: string, @Param('id') id: string, @Param('itemId') itemId: string, @Body() dto: UpdateFoodItemDto) {
+    return this.mealService.updateItem(req.user.sub, patientId, id, itemId, dto);
   }
 
   @Delete(':patientId/:id/items/:itemId')

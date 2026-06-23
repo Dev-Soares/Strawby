@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { AnimatePresence, motion } from 'framer-motion'
 import { planSchema, type PlanData } from '../types/plan'
@@ -19,6 +20,7 @@ const macroConfig = [
     field: 'protein' as const,
     step: 5,
     max: 500,
+    kcalPerGram: 4,
     color: '#f59e0b',
     bg: 'bg-amber-50 dark:bg-amber-950/40',
     border: 'border-amber-100 dark:border-amber-900/30',
@@ -30,6 +32,7 @@ const macroConfig = [
     field: 'carbs' as const,
     step: 5,
     max: 800,
+    kcalPerGram: 4,
     color: '#3b82f6',
     bg: 'bg-blue-50 dark:bg-blue-950/40',
     border: 'border-blue-100 dark:border-blue-900/30',
@@ -41,6 +44,7 @@ const macroConfig = [
     field: 'fat' as const,
     step: 5,
     max: 300,
+    kcalPerGram: 9,
     color: '#a855f7',
     bg: 'bg-purple-50 dark:bg-purple-950/40',
     border: 'border-purple-100 dark:border-purple-900/30',
@@ -50,10 +54,30 @@ const macroConfig = [
 ]
 
 export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, isPending }: PlanEditModalProps) {
-  const { handleSubmit, register } = useForm<PlanData>({
+  const { handleSubmit, register, watch, setValue } = useForm<PlanData>({
     resolver: zodResolver(planSchema),
     defaultValues,
   })
+
+  const watched = watch()
+
+  // Carbo = macro de equilíbrio: preenche o restante das calorias após proteína e gordura
+  const calories = watch('calories')
+  const protein = watch('protein')
+  const fat = watch('fat')
+  useEffect(() => {
+    const c = Number(calories)
+    const p = Number(protein)
+    const f = Number(fat)
+    if (!Number.isFinite(c) || !Number.isFinite(p) || !Number.isFinite(f)) return
+    const carbs = Math.max(Math.round((c - p * 4 - f * 9) / 4), 0)
+    setValue('carbs', carbs, { shouldValidate: true, shouldDirty: true })
+  }, [calories, protein, fat, setValue])
+
+  const macroKcalTotal = macroConfig.reduce(
+    (acc, m) => acc + (Number(watched[m.field]) || 0) * m.kcalPerGram,
+    0,
+  )
 
   const onSubmit = handleSubmit((data) => {
     onSave(data)
@@ -119,7 +143,10 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
 
               {/* Macro cards */}
               <div className="grid grid-cols-3 gap-2 sm:gap-4 mx-5 sm:mx-8 mt-4 sm:mt-5">
-                {macroConfig.map((macro) => (
+                {macroConfig.map((macro) => {
+                  const macroKcal = (Number(watched[macro.field]) || 0) * macro.kcalPerGram
+                  const pct = macroKcalTotal > 0 ? Math.round((macroKcal / macroKcalTotal) * 100) : 0
+                  return (
                   <div
                     key={macro.field}
                     className={`${macro.bg} ${macro.border} border rounded-2xl px-2 sm:px-5 py-4 sm:py-5 flex flex-col items-center`}
@@ -128,23 +155,44 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
                       {macro.label}
                     </span>
 
-                    <div className="flex items-end justify-center gap-0.5 sm:gap-1 mb-1 w-full">
+                    <div className="flex items-end justify-center gap-0.5 sm:gap-1 mb-3 w-full">
                       <input
                         {...register(macro.field, { valueAsNumber: true })}
                         type="number"
+                        readOnly={macro.field === 'carbs'}
+                        tabIndex={macro.field === 'carbs' ? -1 : undefined}
                         disabled={isPending}
-                        className="font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className={`font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed ${macro.field === 'carbs' ? 'cursor-default' : 'cursor-text'}`}
                         style={{ borderBottomColor: `${macro.color}55` }}
-                        onFocus={(e) => { if (!isPending) e.currentTarget.style.borderBottomColor = macro.color }}
+                        onFocus={(e) => { if (!isPending && macro.field !== 'carbs') e.currentTarget.style.borderBottomColor = macro.color }}
                         onBlur={(e) => { e.currentTarget.style.borderBottomColor = `${macro.color}55` }}
                       />
                       <span className="text-sm sm:text-base font-bold text-neutral-400 dark:text-neutral-500 pb-1 shrink-0 transition-colors duration-300">g</span>
-                      <PencilSimple size={14} weight="bold" className="shrink-0 mb-1.5" style={{ color: `${macro.color}aa` }} />
+                      {macro.field !== 'carbs' && (
+                        <PencilSimple size={14} weight="bold" className="shrink-0 mb-1.5" style={{ color: `${macro.color}aa` }} />
+                      )}
                     </div>
 
-                    <p className="text-[8px] sm:text-[9px] text-neutral-400 dark:text-neutral-500 mb-3 sm:mb-5 transition-colors duration-300">máx. {macro.max}g</p>
+                    <div
+                      className="flex items-baseline gap-1 px-2.5 py-1 rounded-full"
+                      style={{ backgroundColor: `${macro.color}1f` }}
+                    >
+                      <span className="text-xs sm:text-sm font-extrabold tabular-nums" style={{ color: macro.color }}>
+                        {pct}%
+                      </span>
+                      <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wide" style={{ color: macro.color }}>
+                        kcal
+                      </span>
+                    </div>
+
+                    {macro.field === 'carbs' && (
+                      <p className="text-[8px] sm:text-[9px] text-neutral-400 dark:text-neutral-500 mt-2 text-center transition-colors duration-300">
+                        ajusta automaticamente
+                      </p>
+                    )}
                   </div>
-                ))}
+                  )
+                })}
               </div>
 
               {/* Footer */}

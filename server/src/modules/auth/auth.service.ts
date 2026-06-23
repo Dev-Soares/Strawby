@@ -81,10 +81,22 @@ export class AuthService {
     }
   }
 
-  async googleAuth(credential: string): Promise<AuthTokensResponse> {
+  async googleAuth(
+    code: string,
+    redirectUri: string,
+  ): Promise<AuthTokensResponse> {
     try {
+      const { tokens } = await googleClient.getToken({
+        code,
+        redirect_uri: redirectUri,
+      });
+
+      if (!tokens.id_token) {
+        throw new UnauthorizedException('Token Google inválido');
+      }
+
       const ticket = await googleClient.verifyIdToken({
-        idToken: credential,
+        idToken: tokens.id_token,
         audience: process.env.GOOGLE_CLIENT_ID,
       });
 

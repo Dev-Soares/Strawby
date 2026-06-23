@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Plus, CalendarBlank } from '@phosphor-icons/react'
 import { useGetPlanMeals } from '../../meal/hooks/useGetPlanMeals'
 import MealCard from '../../meal/components/MealCard'
+import PlanProgressCard from './PlanProgressCard'
 import PlanMealsSectionSkeleton from '../skeletons/PlanMealsSectionSkeleton'
 
 export default function PlanMealsSection() {
@@ -73,16 +74,22 @@ export default function PlanMealsSection() {
       )}
 
       {meals && meals.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
-          {meals.map((meal) => (
-            <MealCard
-              key={meal.id}
-              meal={meal}
-              isOpen={openId === meal.id}
-              onToggle={() => toggle(meal.id)}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 items-start">
+            {meals.map((meal) => (
+              <MealCard
+                key={meal.id}
+                meal={meal}
+                isOpen={openId === meal.id}
+                onToggle={() => toggle(meal.id)}
+              />
+            ))}
+          </div>
+
+          <div className="mt-8">
+            <PlanProgressCard />
+          </div>
+        </>
       )}
     </div>
   )

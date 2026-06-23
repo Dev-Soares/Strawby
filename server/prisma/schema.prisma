@@ -13,6 +13,7 @@ enum FoodSource {
   CNF
   LIVS
   OFF
+  IBGE_POF
   MANUAL
 }
 

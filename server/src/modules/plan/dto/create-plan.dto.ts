@@ -26,9 +26,9 @@ export class CreatePlanDto {
   @Min(0)
   fat?: number;
 
-  @ApiPropertyOptional({ example: 1.2 })
+  @ApiPropertyOptional({ example: 1.4 })
   @IsNumber()
   @IsOptional()
-  @Min(1.2)
+  @Min(1.15)
   movementLevel?: number;
 }

@@ -32,11 +32,11 @@ interface CreatePlanModalProps {
 }
 
 const ACTIVITY_OPTIONS = [
-  { value: 1.2, label: 'Sedentário', description: 'Pouca ou nenhuma atividade física' },
-  { value: 1.375, label: 'Levemente ativo', description: 'Exercícios leves 1–3x por semana' },
-  { value: 1.55, label: 'Moderadamente ativo', description: 'Exercícios moderados 3–5x por semana' },
-  { value: 1.725, label: 'Muito ativo', description: 'Exercícios intensos 6–7x por semana' },
-  { value: 1.9, label: 'Extremamente ativo', description: 'Treino diário intenso ou trabalho físico' },
+  { value: 1.15, label: 'Sedentário', description: 'Pouca ou nenhuma atividade física' },
+  { value: 1.3, label: 'Levemente ativo', description: 'Exercícios leves 1–3x por semana' },
+  { value: 1.4, label: 'Moderadamente ativo', description: 'Exercícios moderados 3–5x por semana' },
+  { value: 1.5, label: 'Muito ativo', description: 'Exercícios intensos 6–7x por semana' },
+  { value: 1.6, label: 'Extremamente ativo', description: 'Treino diário intenso ou trabalho físico' },
 ]
 
 export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, initialMode = 'select', isNutritionist = false }: CreatePlanModalProps) {
@@ -49,21 +49,21 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
 
   const generateForm = useForm<GeneratePlanData>({
     resolver: zodResolver(generatePlanSchema),
-    defaultValues: { movementLevel: 1.375 },
+    defaultValues: { movementLevel: 1.4 },
   })
 
   useEffect(() => {
     if (isOpen) {
       setMode(initialMode)
       manualForm.reset()
-      generateForm.reset({ movementLevel: 1.375 })
+      generateForm.reset({ movementLevel: 1.4 })
     }
   }, [isOpen, initialMode])
 
   const handleClose = () => {
     setMode('select')
     manualForm.reset()
-    generateForm.reset({ movementLevel: 1.375 })
+    generateForm.reset({ movementLevel: 1.4 })
     onClose()
   }
 

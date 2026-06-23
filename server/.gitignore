@@ -42,3 +42,6 @@ lerna-debug.log*
 
 # Env
 .env
+
+# Large regenerable data dumps (OFF full export — baixado sob demanda)
+/prisma/data/off-products.csv.gz

@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useGetMeal } from './useGetMeal'
 import { useDeleteMeal } from './useDeleteMeal'
 import { useRemoveMealItem } from './useRemoveMealItem'
+import { useUpdateMealItem } from './useUpdateMealItem'
 import { useRemoveMealRecipe } from './useRemoveMealRecipe'
 
 export type MealConfirmState =
@@ -24,6 +25,7 @@ export const useMealDetailPage = ({ mealId, patientId }: Params) => {
   const query = useGetMeal(mealId, patientId)
   const deleteMutation = useDeleteMeal(patientId)
   const removeItem = useRemoveMealItem(patientId)
+  const updateItem = useUpdateMealItem(patientId)
   const removeRecipe = useRemoveMealRecipe(patientId)
   const [confirm, setConfirm] = useState<MealConfirmState>(null)
 
@@ -82,6 +84,7 @@ export const useMealDetailPage = ({ mealId, patientId }: Params) => {
     isDeletePending,
     deleteMutation,
     removeItem,
+    updateItem,
     removeRecipe,
     backPath,
     selectFoodPath,

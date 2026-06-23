@@ -70,7 +70,7 @@ export default function CreateMealForm() {
       {
         kind,
         mealType: data.mealType,
-        time: isPlan ? undefined : data.time,
+        time: data.time,
         date: toLocalISODate(),
       },
       {
@@ -131,20 +131,18 @@ export default function CreateMealForm() {
         {errors.mealType && <p className="text-xs text-red-500 mt-2">{errors.mealType.message}</p>}
       </div>
 
-      {/* Time — only DAILY */}
-      {!isPlan && (
-        <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-6 transition-colors duration-300">
-          <label className="block text-xs font-black text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-3">
-            Horário
-          </label>
-          <input
-            {...register('time')}
-            type="time"
-            className="font-display text-3xl font-black text-neutral-950 dark:text-neutral-100 bg-transparent outline-none border-b-2 border-neutral-200 dark:border-neutral-700 focus:border-neutral-500 dark:focus:border-neutral-500 pb-1 transition-colors duration-300 tabular-nums cursor-pointer"
-          />
-          {errors.time && <p className="text-xs text-red-500 mt-2">{errors.time.message}</p>}
-        </div>
-      )}
+      {/* Time */}
+      <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-6 transition-colors duration-300">
+        <label className="block text-xs font-black text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-3">
+          Horário
+        </label>
+        <input
+          {...register('time')}
+          type="time"
+          className="font-display text-3xl font-black text-neutral-950 dark:text-neutral-100 bg-transparent outline-none border-b-2 border-neutral-200 dark:border-neutral-700 focus:border-neutral-500 dark:focus:border-neutral-500 pb-1 transition-colors duration-300 tabular-nums cursor-pointer"
+        />
+        {errors.time && <p className="text-xs text-red-500 mt-2">{errors.time.message}</p>}
+      </div>
 
       {/* Copy from plan meal — only DAILY */}
       {!isPlan && (
