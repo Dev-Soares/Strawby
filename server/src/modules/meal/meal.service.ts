@@ -99,7 +99,7 @@ export class MealService {
     try {
       const { start, end } = appDayRange(day);
       const meals = await this.prisma.meal.findMany({
-        where: { patientId: { in: patientIds }, date: { gte: start, lt: end } },
+        where: { patientId: { in: patientIds }, date: { gte: start, lt: end }, kind: MealKind.DAILY },
         select: mealSelect,
       });
       const map = new Map<string, MealPublic[]>();
