@@ -184,7 +184,7 @@ export class PlanService {
   }
 
   private generateMacrosNumbers(calories: number, goal: string | null, weight: number): MacroDistribution {
-    const protein = Math.round(weight * (goal === 'lose' ? 2.0 : 1.8));
+    const protein = Math.round(weight * (goal === 'lose' ? 1.8 : 1.6));
     const fat = Math.round(weight * (goal === 'lose' ? 0.8 : 1.0));
     const carbs = Math.round(Math.max(calories - protein * 4 - fat * 9, 0) / 4);
     return { protein, carbs, fat };
