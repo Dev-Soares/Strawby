@@ -14,6 +14,7 @@ import { Throttle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
+import { GoogleAuthDto } from './dto/google-auth.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { cookieConfig, refreshCookieConfig } from 'src/common/config/cookie.config';
@@ -62,10 +63,10 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('google')
   async googleAuth(
-    @Body('credential') credential: string,
+    @Body() dto: GoogleAuthDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<SignInResponse> {
-    const result = await this.authService.googleAuth(credential);
+    const result = await this.authService.googleAuth(dto.code, dto.redirectUri);
 
     res.cookie('access_token', result.access_token, cookieConfig);
     res.cookie('refresh_token', result.refresh_token, refreshCookieConfig);
