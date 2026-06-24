@@ -8,7 +8,7 @@ import { UserService } from '../user/user.service';
 import { HashService } from 'src/common/hash/hash.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthTokenResponse, AuthTokensResponse } from './types';
-import { googleClient } from './google-client/client';
+import { GoogleClient } from './google-client/client';
 import { getRefreshTokenConfig } from 'src/common/config/jwt.config';
 import { ConfigService } from '@nestjs/config';
 
@@ -19,6 +19,7 @@ export class AuthService {
     private hashService: HashService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private googleClient: GoogleClient,
   ) {}
 
   async signIn(email: string, password: string): Promise<AuthTokensResponse> {
@@ -86,19 +87,13 @@ export class AuthService {
     redirectUri: string,
   ): Promise<AuthTokensResponse> {
     try {
-      const { tokens } = await googleClient.getToken({
-        code,
-        redirect_uri: redirectUri,
-      });
+      const { tokens } = await this.googleClient.getToken(code, redirectUri);
 
       if (!tokens.id_token) {
         throw new UnauthorizedException('Token Google inválido');
       }
 
-      const ticket = await googleClient.verifyIdToken({
-        idToken: tokens.id_token,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
+      const ticket = await this.googleClient.verifyIdToken(tokens.id_token);
 
       const googlePayload = ticket.getPayload();
 
