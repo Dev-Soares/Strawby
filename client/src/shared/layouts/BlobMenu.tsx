@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, HouseSimple, Carrot, Gear, Users, ChartBar, UserCircle } from '@phosphor-icons/react'
+import { ArrowRight, HouseSimple, Carrot, Gear, Users, UserCircle } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 
@@ -20,7 +20,6 @@ const patientNavItems: { label: string; href: string; icon: Icon }[] = [
 
 const nutritionistNavItems: { label: string; href: string; icon: Icon }[] = [
   { label: 'Pacientes', href: '/app/home', icon: Users },
-  { label: 'Relatórios', href: '/app/nutritionist/reports', icon: ChartBar },
   { label: 'Perfil', href: '/app/profile', icon: UserCircle },
   { label: 'Ajustes', href: '/app/settings', icon: Gear },
 ]

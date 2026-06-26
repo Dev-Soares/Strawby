@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { User } from '@phosphor-icons/react'
+import { useNavigate } from 'react-router-dom'
+import { User, ChartLineUp } from '@phosphor-icons/react'
 import { useGetPatientAverageScore } from '../hooks/useGetPatientAverageScore'
 import PatientScoreCardSkeleton from '../skeletons/PatientScoreCardSkeleton'
 import type { NutritionistPatient } from '../types/patient'
@@ -23,6 +24,7 @@ function getScoreColor(score: number) {
 }
 
 export default function PatientScoreCard({ patient, index }: Props) {
+  const navigate = useNavigate()
   const { data, isPending } = useGetPatientAverageScore(patient.id)
 
   if (isPending) return <PatientScoreCardSkeleton />
@@ -92,6 +94,15 @@ export default function PatientScoreCard({ patient, index }: Props) {
           Sem pontuações registradas ainda
         </p>
       )}
+
+      <button
+        type="button"
+        onClick={() => navigate(`/app/nutritionist/results/${patient.id}`)}
+        className="flex items-center justify-center gap-2 w-full mt-1 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 active:scale-[0.98] transition-all duration-150 cursor-pointer"
+      >
+        <ChartLineUp size={16} weight="bold" className="text-white" />
+        <span className="text-sm font-bold text-white">Ver resultados</span>
+      </button>
     </motion.div>
   )
 }

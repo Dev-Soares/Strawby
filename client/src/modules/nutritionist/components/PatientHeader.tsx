@@ -11,10 +11,10 @@ type Props = {
 
 const buildBodyStats = (patient: NutritionistPatient) => {
   const stats: { Icon: typeof Scales; label: string }[] = []
-  if (patient.weight !== null) stats.push({ Icon: Scales, label: `${patient.weight} kg` })
-  if (patient.height !== null) stats.push({ Icon: ArrowsVertical, label: `${patient.height} cm` })
-  if (patient.age !== null) stats.push({ Icon: Calendar, label: `${patient.age} anos` })
-  if (patient.gender !== null) {
+  if (patient.weight != null) stats.push({ Icon: Scales, label: `${patient.weight} kg` })
+  if (patient.height != null) stats.push({ Icon: ArrowsVertical, label: `${patient.height} cm` })
+  if (patient.age != null) stats.push({ Icon: Calendar, label: `${patient.age} anos` })
+  if (patient.gender != null) {
     stats.push({
       Icon: patient.gender === 'male' ? GenderMale : GenderFemale,
       label: patient.gender === 'male' ? 'Masculino' : 'Feminino',

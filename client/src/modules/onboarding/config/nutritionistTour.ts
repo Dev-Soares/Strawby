@@ -52,9 +52,9 @@ export const createNutritionistSteps = (
   },
   {
     id: 'reports',
-    beforeShowPromise: goTo(navigate, '/app/nutritionist/reports'),
+    beforeShowPromise: goTo(navigate, '/app/nutritionist/results'),
     attachTo: { element: '[data-tutorial="reports-header"]', on: 'bottom-start' },
-    title: `${progress(4)}Relatórios`,
+    title: `${progress(4)}Resultados`,
     text: 'Acompanhe a adesão de cada paciente ao plano alimentar. O score mostra o quão bem cada paciente está seguindo as metas definidas.',
     buttons: navButtons(tour),
   },

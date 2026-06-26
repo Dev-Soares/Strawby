@@ -25,10 +25,10 @@ export default function PatientCard({ patient, hasPlan, index }: Props) {
     .toUpperCase()
 
   const bodyStats = [
-    patient.weight !== null && { icon: Scales, label: `${patient.weight} kg` },
-    patient.height !== null && { icon: ArrowsVertical, label: `${patient.height} cm` },
-    patient.age !== null && { icon: Calendar, label: `${patient.age} anos` },
-    patient.gender !== null && {
+    patient.weight != null && { icon: Scales, label: `${patient.weight} kg` },
+    patient.height != null && { icon: ArrowsVertical, label: `${patient.height} cm` },
+    patient.age != null && { icon: Calendar, label: `${patient.age} anos` },
+    patient.gender != null && {
       icon: patient.gender === 'male' ? GenderMale : GenderFemale,
       label: GENDER_LABEL[patient.gender] ?? patient.gender,
     },
