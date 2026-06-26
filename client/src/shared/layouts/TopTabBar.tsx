@@ -31,6 +31,7 @@ interface TopTabBarProps {
 }
 
 export default function TopTabBar({ hidden = false, variant = 'top' }: TopTabBarProps) {
+  
   const { pathname } = useLocation()
   const { data: user } = useAuth()
 
