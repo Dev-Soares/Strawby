@@ -26,7 +26,7 @@ export default function ResetPasswordForm() {
       <div className="flex-1 min-w-0 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm rounded-2xl p-8 md:p-10 lg:p-12 flex flex-col transition-colors duration-300">
 
         <h1 className="text-4xl md:text-[52px] font-black tracking-tight text-neutral-900 dark:text-white leading-none mb-4">
-          Nova<br />senha.
+          Nova senha
         </h1>
 
         {email ? (
@@ -122,7 +122,7 @@ export default function ResetPasswordForm() {
               className="w-full flex items-center justify-center gap-2 rounded-full bg-red-600 text-white font-bold py-3.5 px-12 text-[14px] hover:bg-red-700 active:bg-red-800 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
             >
               {isPending && <Spinner size={16} />}
-              {isPending ? 'Redefinindo…' : 'Redefinir senha'}
+              {isPending ? 'Mudando…' : 'Mudar senha'}
             </button>
 
             {email && (
@@ -130,8 +130,9 @@ export default function ResetPasswordForm() {
                 type="button"
                 onClick={() => resend()}
                 disabled={isResending}
-                className="w-full rounded-full border border-neutral-300 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400 font-semibold py-3 px-12 text-[14px] hover:border-neutral-400 dark:hover:border-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 rounded-full border border-neutral-300 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400 font-semibold py-3 px-12 text-[14px] hover:border-neutral-400 dark:hover:border-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
               >
+                {isResending && <Spinner size={15} />}
                 {isResending ? 'Reenviando…' : 'Reenviar código'}
               </button>
             )}

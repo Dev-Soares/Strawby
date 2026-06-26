@@ -27,7 +27,7 @@ export default function SignUpForm() {
     if (valid) setStep(2)
   }
 
-  const stepLabel = step === 1 ? 'Cadastrar.' : 'Sua senha.'
+  const stepLabel = step === 1 ? 'Cadastrar' : 'Sua senha'
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:gap-28 items-stretch w-full">

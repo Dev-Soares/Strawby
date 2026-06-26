@@ -5,6 +5,7 @@ import { useSignIn } from '../hooks/useSignIn'
 import { useGoogleSignIn } from '../hooks/useGoogleSignIn'
 import ForgotPasswordModal from './ForgotPasswordModal'
 import GoogleAuthButton from './GoogleAuthButton'
+import Spinner from '../../../shared/components/Spinner'
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -24,7 +25,7 @@ export default function LoginForm() {
       <div className="flex-1 min-w-0 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm rounded-2xl p-8 md:p-10 lg:p-12 flex flex-col transition-colors duration-300">
 
         <h1 className="text-4xl md:text-[52px] font-black tracking-tight text-neutral-900 dark:text-white leading-none mb-10 md:mb-14">
-          Entrar.
+          Entrar
         </h1>
 
         <form onSubmit={onSubmit} className="flex flex-col gap-8 md:gap-10 flex-1">
@@ -85,8 +86,9 @@ export default function LoginForm() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full rounded-full bg-red-600 text-white font-bold py-3.5 px-12 text-[14px] hover:bg-red-700 active:bg-red-800 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 rounded-full bg-red-600 text-white font-bold py-3.5 px-12 text-[14px] hover:bg-red-700 active:bg-red-800 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
             >
+              {isPending && <Spinner size={16} />}
               {isPending ? 'Entrando…' : 'Entrar'}
             </button>
 

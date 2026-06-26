@@ -72,9 +72,9 @@ export default function OnboardingForm() {
   }
 
   const TITLES: Record<number, { heading: string; subtitle?: string }> = {
-    1: { heading: 'Seu perfil.', subtitle: 'Como você quer usar o Strawby?' },
-    2: { heading: 'Seus dados.' },
-    3: { heading: 'Seu objetivo.', subtitle: 'O que você quer alcançar?' },
+    1: { heading: 'Seu perfil', subtitle: 'Como você quer usar o Strawby?' },
+    2: { heading: 'Seus dados' },
+    3: { heading: 'Seu objetivo', subtitle: 'O que você quer alcançar?' },
   }
 
   return (
