@@ -48,6 +48,7 @@ export class AuthController {
     return { message: 'Logout efetuado com sucesso' };
   }
 
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
   async refresh(
