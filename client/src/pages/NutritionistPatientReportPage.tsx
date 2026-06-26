@@ -45,14 +45,9 @@ export default function NutritionistPatientReportPage() {
                 <User size={20} weight="bold" className="text-red-500" />
               )}
             </div>
-            <div className="min-w-0">
-              <p className="text-xs font-extrabold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-0.5">
-                Resultados do paciente
-              </p>
-              <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight truncate">
-                {patient?.user.name ?? '—'}
-              </h1>
-            </div>
+            <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight truncate min-w-0">
+              {patient?.user.name ?? '—'}
+            </h1>
           </div>
         </motion.div>
 
