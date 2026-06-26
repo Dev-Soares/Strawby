@@ -32,16 +32,16 @@ export default function SignUpForm() {
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:gap-28 items-stretch w-full">
 
-      <div className="flex-1 min-w-0 bg-neutral-900 rounded-2xl p-6 md:p-8 lg:p-10 flex flex-col">
+      <div className="flex-1 min-w-0 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm rounded-2xl p-6 md:p-8 lg:p-10 flex flex-col transition-colors duration-300">
 
         {/* Progress */}
         <div className="flex items-center gap-2 mb-8">
           {[0, 1].map((i) => (
-            <div key={i} className={`h-0.75 w-10 rounded-full transition-colors duration-300 ${i < step ? 'bg-white' : 'bg-neutral-700'}`} />
+            <div key={i} className={`h-0.75 w-10 rounded-full transition-colors duration-300 ${i < step ? 'bg-neutral-900 dark:bg-white' : 'bg-neutral-200 dark:bg-neutral-700'}`} />
           ))}
         </div>
 
-        <h1 className="text-4xl md:text-[52px] font-black tracking-tight text-white leading-none mb-10 md:mb-14">
+        <h1 className="text-4xl md:text-[52px] font-black tracking-tight text-neutral-900 dark:text-white leading-none mb-10 md:mb-14">
           {stepLabel}
         </h1>
 
@@ -51,23 +51,23 @@ export default function SignUpForm() {
           {step === 1 && (
             <>
               <div>
-                <label className="block text-[11px] font-semibold text-neutral-400 mb-3 uppercase tracking-widest">Nome</label>
+                <label className="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-3 uppercase tracking-widest">Nome</label>
                 <input
                   {...register('name')}
                   type="text"
                   autoComplete="name"
-                  className="w-full border-0 border-b-2 border-neutral-700 bg-transparent pb-3 text-[15px] text-white placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200"
+                  className="w-full border-0 border-b-2 border-neutral-300 dark:border-neutral-700 bg-transparent pb-3 text-[15px] text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200"
                 />
                 {errors.name && <p className="text-red-400 text-[11px] mt-2">{errors.name.message}</p>}
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-neutral-400 mb-3 uppercase tracking-widest">E-mail</label>
+                <label className="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-3 uppercase tracking-widest">E-mail</label>
                 <input
                   {...register('email')}
                   type="email"
                   autoComplete="email"
-                  className="w-full border-0 border-b-2 border-neutral-700 bg-transparent pb-3 text-[15px] text-white placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200"
+                  className="w-full border-0 border-b-2 border-neutral-300 dark:border-neutral-700 bg-transparent pb-3 text-[15px] text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200"
                 />
                 {errors.email && <p className="text-red-400 text-[11px] mt-2">{errors.email.message}</p>}
               </div>
@@ -82,9 +82,9 @@ export default function SignUpForm() {
                 </button>
 
                 <div className="flex items-center gap-3">
-                  <div className="h-px flex-1 bg-neutral-700" />
+                  <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
                   <span className="text-[11px] font-semibold text-neutral-500 uppercase tracking-widest">ou</span>
-                  <div className="h-px flex-1 bg-neutral-700" />
+                  <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
                 </div>
 
                 <GoogleAuthButton
@@ -94,7 +94,7 @@ export default function SignUpForm() {
 
                 <p className="text-[14px] text-neutral-500">
                   Já tem conta?{' '}
-                  <Link to="/app/login" className="font-semibold text-white underline underline-offset-2 hover:text-red-400 transition-colors">
+                  <Link to="/app/login" className="font-semibold text-neutral-900 dark:text-white underline underline-offset-2 hover:text-red-500 dark:hover:text-red-400 transition-colors">
                     Entrar agora
                   </Link>
                 </p>
@@ -106,15 +106,15 @@ export default function SignUpForm() {
           {step === 2 && (
             <>
               <div>
-                <label className="block text-[11px] font-semibold text-neutral-400 mb-3 uppercase tracking-widest">Senha</label>
+                <label className="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-3 uppercase tracking-widest">Senha</label>
                 <div className="relative">
                   <input
                     {...register('password')}
                     type={showPassword ? 'text' : 'password'}
                     autoComplete="new-password"
-                    className="w-full border-0 border-b-2 border-neutral-700 bg-transparent pb-3 text-[15px] text-white placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200 pr-8"
+                    className="w-full border-0 border-b-2 border-neutral-300 dark:border-neutral-700 bg-transparent pb-3 text-[15px] text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200 pr-8"
                   />
-                  <button type="button" onClick={() => setShowPassword(v => !v)} className="absolute right-0 bottom-3 text-neutral-500 hover:text-white transition-colors cursor-pointer">
+                  <button type="button" onClick={() => setShowPassword(v => !v)} className="absolute right-0 bottom-3 text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer">
                     {showPassword ? <EyeSlash size={20} weight="bold" /> : <Eye size={20} weight="bold" />}
                   </button>
                 </div>
@@ -122,15 +122,15 @@ export default function SignUpForm() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-semibold text-neutral-400 mb-3 uppercase tracking-widest">Confirmar Senha</label>
+                <label className="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-3 uppercase tracking-widest">Confirmar Senha</label>
                 <div className="relative">
                   <input
                     {...register('confirmPassword')}
                     type={showConfirmPassword ? 'text' : 'password'}
                     autoComplete="new-password"
-                    className="w-full border-0 border-b-2 border-neutral-700 bg-transparent pb-3 text-[15px] text-white placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200 pr-8"
+                    className="w-full border-0 border-b-2 border-neutral-300 dark:border-neutral-700 bg-transparent pb-3 text-[15px] text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200 pr-8"
                   />
-                  <button type="button" onClick={() => setShowConfirmPassword(v => !v)} className="absolute right-0 bottom-3 text-neutral-500 hover:text-white transition-colors cursor-pointer">
+                  <button type="button" onClick={() => setShowConfirmPassword(v => !v)} className="absolute right-0 bottom-3 text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer">
                     {showConfirmPassword ? <EyeSlash size={20} weight="bold" /> : <Eye size={20} weight="bold" />}
                   </button>
                 </div>
@@ -141,7 +141,7 @@ export default function SignUpForm() {
                 <label className="flex items-start gap-3 cursor-pointer group">
                   <input type="checkbox" {...register('acceptTerms')} className="sr-only" />
                   <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-all duration-150 ${
-                    watch('acceptTerms') ? 'bg-red-600 border-red-600' : 'border-neutral-600 group-hover:border-neutral-400'
+                    watch('acceptTerms') ? 'bg-red-600 border-red-600' : 'border-neutral-300 dark:border-neutral-600 group-hover:border-neutral-400'
                   }`}>
                     {watch('acceptTerms') && (
                       <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
@@ -149,17 +149,17 @@ export default function SignUpForm() {
                       </svg>
                     )}
                   </div>
-                  <span className="text-[12px] text-neutral-400 leading-relaxed">
+                  <span className="text-[12px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
                     Li e aceito os{' '}
-                    <Link to="/termos" target="_blank" className="text-white font-semibold underline underline-offset-2">Termos de Uso</Link>
+                    <Link to="/termos" target="_blank" className="text-neutral-900 dark:text-white font-semibold underline underline-offset-2">Termos de Uso</Link>
                     {' '}e a{' '}
-                    <Link to="/privacidade" target="_blank" className="text-white font-semibold underline underline-offset-2">Política de Privacidade</Link>
+                    <Link to="/privacidade" target="_blank" className="text-neutral-900 dark:text-white font-semibold underline underline-offset-2">Política de Privacidade</Link>
                   </span>
                 </label>
                 {errors.acceptTerms && <p className="text-red-400 text-[11px] -mt-3">{errors.acceptTerms.message}</p>}
 
                 <div className="flex items-center gap-4">
-                  <button type="button" onClick={() => setStep(1)} className="flex items-center justify-center w-11 h-11 rounded-full border-2 border-neutral-600 text-white hover:border-neutral-400 transition-colors cursor-pointer shrink-0">
+                  <button type="button" onClick={() => setStep(1)} className="flex items-center justify-center w-11 h-11 rounded-full border-2 border-neutral-300 dark:border-neutral-600 text-neutral-900 dark:text-white hover:border-neutral-400 transition-colors cursor-pointer shrink-0">
                     <ArrowLeft size={16} weight="bold" />
                   </button>
                   <button
@@ -174,7 +174,7 @@ export default function SignUpForm() {
 
                 <p className="text-[14px] text-neutral-500">
                   Já tem conta?{' '}
-                  <Link to="/app/login" className="font-semibold text-white underline underline-offset-2 hover:text-red-400 transition-colors">Entrar agora</Link>
+                  <Link to="/app/login" className="font-semibold text-neutral-900 dark:text-white underline underline-offset-2 hover:text-red-500 dark:hover:text-red-400 transition-colors">Entrar agora</Link>
                 </p>
               </div>
             </>

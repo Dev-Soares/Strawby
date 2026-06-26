@@ -184,7 +184,7 @@ export default function PrivateFoodForm({
             <button
               type="submit"
               disabled={isPending}
-              className="flex-1 py-3.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-sm font-bold text-white flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 py-3.5 rounded-xl bg-neutral-950 dark:bg-neutral-100 hover:bg-neutral-800 dark:hover:bg-neutral-200 text-sm font-bold text-white dark:text-neutral-950 flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending ? (
                 <Spinner size={16} />

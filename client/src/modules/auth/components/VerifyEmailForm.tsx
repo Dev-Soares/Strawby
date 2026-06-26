@@ -20,35 +20,35 @@ export default function VerifyEmailForm() {
   return (
     <div className="flex flex-col lg:flex-row gap-8 lg:gap-28 items-stretch w-full">
 
-      <div className="flex-1 min-w-0 bg-neutral-900 rounded-2xl p-8 md:p-10 lg:p-12 flex flex-col">
+      <div className="flex-1 min-w-0 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm rounded-2xl p-8 md:p-10 lg:p-12 flex flex-col transition-colors duration-300">
 
-        <h1 className="text-4xl md:text-[52px] font-black tracking-tight text-white leading-none mb-4">
+        <h1 className="text-4xl md:text-[52px] font-black tracking-tight text-neutral-900 dark:text-white leading-none mb-4">
           Verifique<br />seu e-mail.
         </h1>
 
         {email && (
-          <p className="text-neutral-400 text-[14px] mb-10">
+          <p className="text-neutral-500 dark:text-neutral-400 text-[14px] mb-10">
             Enviamos um código de 6 dígitos para{' '}
-            <span className="text-white font-semibold">{email}</span>
+            <span className="text-neutral-900 dark:text-white font-semibold">{email}</span>
           </p>
         )}
 
         {!email && (
-          <p className="text-neutral-400 text-[14px] mb-6">
+          <p className="text-neutral-500 dark:text-neutral-400 text-[14px] mb-6">
             Insira o código de 6 dígitos enviado para seu e-mail.
           </p>
         )}
 
         <div className="bg-amber-400/10 border border-amber-400/30 rounded-xl px-4 py-3.5 mb-8">
-          <p className="text-amber-300 text-[14px] leading-relaxed">
-            Não encontrou o e-mail? <span className="font-semibold text-amber-200">Verifique a caixa de spam ou lixo eletrônico.</span>
+          <p className="text-amber-700 dark:text-amber-300 text-[14px] leading-relaxed">
+            Não encontrou o e-mail? <span className="font-semibold text-amber-800 dark:text-amber-200">Verifique a caixa de spam ou lixo eletrônico.</span>
           </p>
         </div>
 
         <form onSubmit={onSubmit} className="flex flex-col gap-8 md:gap-10 flex-1">
 
           <div>
-            <label className="block text-[11px] font-semibold text-neutral-400 mb-3 uppercase tracking-widest">
+            <label className="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-3 uppercase tracking-widest">
               Código de verificação
             </label>
             <input
@@ -58,7 +58,7 @@ export default function VerifyEmailForm() {
               maxLength={6}
               placeholder="000000"
               autoComplete="one-time-code"
-              className="w-full border-0 border-b-2 border-neutral-700 bg-transparent pb-3 text-[24px] font-bold text-white tracking-[0.5em] placeholder-neutral-700 focus:outline-none focus:border-red-500 transition-colors duration-200"
+              className="w-full border-0 border-b-2 border-neutral-300 dark:border-neutral-700 bg-transparent pb-3 text-[24px] font-bold text-neutral-900 dark:text-white tracking-[0.5em] placeholder-neutral-300 dark:placeholder-neutral-700 focus:outline-none focus:border-red-500 transition-colors duration-200"
             />
             {errors.code && (
               <p className="text-red-400 text-[11px] mt-2">{errors.code.message}</p>
@@ -80,7 +80,7 @@ export default function VerifyEmailForm() {
                 type="button"
                 onClick={() => resend()}
                 disabled={isResending}
-                className="w-full rounded-full border border-neutral-700 text-neutral-400 font-semibold py-3 px-12 text-[14px] hover:border-neutral-500 hover:text-neutral-300 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
+                className="w-full rounded-full border border-neutral-300 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400 font-semibold py-3 px-12 text-[14px] hover:border-neutral-400 dark:hover:border-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
               >
                 {isResending ? 'Reenviando…' : 'Reenviar código'}
               </button>
@@ -90,7 +90,7 @@ export default function VerifyEmailForm() {
               Já tem conta?{' '}
               <Link
                 to="/app/login"
-                className="font-semibold text-white underline underline-offset-2 hover:text-red-400 transition-colors"
+                className="font-semibold text-neutral-900 dark:text-white underline underline-offset-2 hover:text-red-500 dark:hover:text-red-400 transition-colors"
               >
                 Entrar
               </Link>

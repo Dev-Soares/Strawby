@@ -103,8 +103,8 @@ export default function ProfileInviteCodeSection() {
           </button>
         </div>
 
-        <div className="rounded-2xl bg-neutral-950 border border-neutral-800 p-5">
-          <p className="font-mono text-4xl font-extrabold text-white tracking-[0.18em] leading-none mb-5">
+        <div className="rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-5 transition-colors duration-300">
+          <p className="font-mono text-4xl font-extrabold text-neutral-900 dark:text-white tracking-[0.18em] leading-none mb-5">
             {nutritionist?.code ?? '——'}
           </p>
 

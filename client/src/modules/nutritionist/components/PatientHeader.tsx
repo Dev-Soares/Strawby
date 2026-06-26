@@ -42,9 +42,6 @@ export default function PatientHeader({ patient }: Props) {
         <ArrowLeft size={16} weight="bold" />
         Meus pacientes
       </button>
-      <p className="text-xs font-extrabold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-1">
-        Plano do paciente
-      </p>
       <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight">
         {patient?.user.name ?? '—'}
       </h1>

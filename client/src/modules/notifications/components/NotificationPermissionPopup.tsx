@@ -21,15 +21,38 @@ const NotificationPermissionPopup = ({ forceOpen, onClose }: NotificationPermiss
       return
     }
 
-    const alreadyAsked = localStorage.getItem(STORAGE_KEY)
     const permissionStatus = 'Notification' in window ? Notification.permission : 'unsupported'
-    const tutorialPending = !!sessionStorage.getItem('strawby_show_tutorial')
 
-    if (!alreadyAsked && permissionStatus === 'default' && !tutorialPending) {
+    // Logo após concluir o tutorial, força a exibição (ignora o "já perguntado").
+    if (sessionStorage.getItem('strawby_notif_after_tutorial')) {
+      sessionStorage.removeItem('strawby_notif_after_tutorial')
+      if (permissionStatus === 'default') {
+        const timer = setTimeout(() => setVisible(true), 600)
+        return () => clearTimeout(timer)
+      }
+      return
+    }
+
+    const alreadyAsked = localStorage.getItem(STORAGE_KEY)
+    const tutorialPending = !!sessionStorage.getItem('strawby_show_tutorial')
+    const tutorialActive = !!sessionStorage.getItem('strawby_tutorial_active')
+
+    if (!alreadyAsked && permissionStatus === 'default' && !tutorialPending && !tutorialActive) {
       const timer = setTimeout(() => setVisible(true), 1500)
       return () => clearTimeout(timer)
     }
   }, [forceOpen])
+
+  // Tutorial concluído na mesma rota não remonta o layout, então ouvimos o evento.
+  useEffect(() => {
+    const handler = () => {
+      sessionStorage.removeItem('strawby_notif_after_tutorial')
+      const permissionStatus = 'Notification' in window ? Notification.permission : 'unsupported'
+      if (permissionStatus === 'default') setVisible(true)
+    }
+    window.addEventListener('strawby:tutorial-complete', handler)
+    return () => window.removeEventListener('strawby:tutorial-complete', handler)
+  }, [])
 
   const dismiss = () => {
     if (!forceOpen) localStorage.setItem(STORAGE_KEY, 'dismissed')

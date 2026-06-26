@@ -1,17 +1,12 @@
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { User, CheckCircle, XCircle, Scales, ArrowsVertical, Calendar, GenderMale, GenderFemale } from '@phosphor-icons/react'
+import { User, CheckCircle, XCircle } from '@phosphor-icons/react'
 import type { NutritionistPatient } from '../types/patient'
 
 interface Props {
   patient: NutritionistPatient
   hasPlan: boolean | null
   index: number
-}
-
-const GENDER_LABEL: Record<string, string> = {
-  male: 'Masculino',
-  female: 'Feminino',
 }
 
 export default function PatientCard({ patient, hasPlan, index }: Props) {
@@ -23,16 +18,6 @@ export default function PatientCard({ patient, hasPlan, index }: Props) {
     .map((n) => n[0])
     .join('')
     .toUpperCase()
-
-  const bodyStats = [
-    patient.weight != null && { icon: Scales, label: `${patient.weight} kg` },
-    patient.height != null && { icon: ArrowsVertical, label: `${patient.height} cm` },
-    patient.age != null && { icon: Calendar, label: `${patient.age} anos` },
-    patient.gender != null && {
-      icon: patient.gender === 'male' ? GenderMale : GenderFemale,
-      label: GENDER_LABEL[patient.gender] ?? patient.gender,
-    },
-  ].filter(Boolean) as { icon: typeof Scales; label: string }[]
 
   return (
     <motion.button
@@ -59,20 +44,6 @@ export default function PatientCard({ patient, hasPlan, index }: Props) {
           </p>
         </div>
       </div>
-
-      {bodyStats.length > 0 && (
-        <div className="grid grid-cols-2 gap-2">
-          {bodyStats.map(({ icon: Icon, label }) => (
-            <div
-              key={label}
-              className="flex items-center gap-2 bg-neutral-50 dark:bg-neutral-800/60 rounded-xl px-3.5 py-3 transition-colors duration-300"
-            >
-              <Icon size={16} weight="bold" className="text-neutral-400 dark:text-neutral-500 shrink-0" />
-              <span className="text-sm font-bold text-neutral-700 dark:text-neutral-200 truncate">{label}</span>
-            </div>
-          ))}
-        </div>
-      )}
 
       <div className="border-t border-neutral-100 dark:border-neutral-800 pt-3 transition-colors duration-300">
         {hasPlan === null ? (
