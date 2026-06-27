@@ -17,6 +17,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { GoogleAuthDto } from './dto/google-auth.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ResendVerificationDto } from './dto/resend-verification.dto';
 import { cookieConfig, refreshCookieConfig } from 'src/common/config/cookie.config';
 import type { SignInResponse, LogoutResponse } from './types';
 
@@ -85,12 +86,11 @@ export class AuthController {
     return { message: 'E-mail verificado com sucesso' };
   }
 
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
   @Post('resend-verification')
-  async resendVerification(
-    @Body('email') email: string,
-  ) {
-    await this.authService.resendVerificationEmail(email);
+  async resendVerification(@Body() dto: ResendVerificationDto) {
+    await this.authService.resendVerificationEmail(dto.email);
   }
 
   @Throttle({ default: { limit: 3, ttl: 60000 } })

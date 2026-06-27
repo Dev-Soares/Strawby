@@ -1,7 +1,9 @@
+import { Suspense } from 'react'
 import { Routes } from 'react-router-dom'
 import ScrollToTop from './shared/components/ScrollToTop'
 import UnauthorizedListener from './shared/components/UnauthorizedListener'
 import NotificationTokenRefresher from './modules/notifications/components/NotificationTokenRefresher'
+import Spinner from './shared/components/Spinner'
 import { publicRoutes } from './routes/publicRoutes'
 import { authRoutes } from './routes/authRoutes'
 import { homeRoutes } from './routes/homeRoutes'
@@ -19,18 +21,26 @@ export default function App() {
       <ScrollToTop />
       <UnauthorizedListener />
       <NotificationTokenRefresher />
-      <Routes>
-        {publicRoutes}
-        {authRoutes}
-        {homeRoutes}
-        {mealRoutes}
-        {foodRoutes}
-        {recipeRoutes}
-        {planRoutes}
-        {scoreRoutes}
-        {profileRoutes}
-        {nutritionistRoutes}
-      </Routes>
+      <Suspense
+        fallback={
+          <div className="flex min-h-screen items-center justify-center bg-white dark:bg-neutral-950">
+            <Spinner size={32} className="border-red-600/30 border-t-red-600" />
+          </div>
+        }
+      >
+        <Routes>
+          {publicRoutes}
+          {authRoutes}
+          {homeRoutes}
+          {mealRoutes}
+          {foodRoutes}
+          {recipeRoutes}
+          {planRoutes}
+          {scoreRoutes}
+          {profileRoutes}
+          {nutritionistRoutes}
+        </Routes>
+      </Suspense>
     </>
   )
 }

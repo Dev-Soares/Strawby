@@ -1,8 +1,10 @@
+import { lazy } from 'react'
 import { Route } from 'react-router-dom'
 import ProtectedRoute from '../shared/components/ProtectedRoute'
-import NutritionistPatientPage from '../pages/NutritionistPatientPage'
-import NutritionistReportsPage from '../pages/NutritionistReportsPage'
-import NutritionistPatientReportPage from '../pages/NutritionistPatientReportPage'
+
+const NutritionistPatientPage = lazy(() => import('../pages/NutritionistPatientPage'))
+const NutritionistReportsPage = lazy(() => import('../pages/NutritionistReportsPage'))
+const NutritionistPatientReportPage = lazy(() => import('../pages/NutritionistPatientReportPage'))
 
 export const nutritionistRoutes = [
   <Route key="nutritionist-patient" path="/app/nutritionist/patient/:patientId" element={<ProtectedRoute><NutritionistPatientPage /></ProtectedRoute>} />,
