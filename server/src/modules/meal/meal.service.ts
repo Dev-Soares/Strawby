@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { MealKind } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
-import { PatientAccessService } from '../../common/patient-access/patient-access.service';
+import { PatientAccessService } from '../patient-access/patient-access.service';
 import { appDayRange } from '../../common/utils/date.util';
 import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';

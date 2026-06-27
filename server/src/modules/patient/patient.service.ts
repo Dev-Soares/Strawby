@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
-import { PatientAccessService } from '../../common/patient-access/patient-access.service';
+import { PatientAccessService } from '../patient-access/patient-access.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { yesterdayInAppTz } from '../../common/utils/date.util';
 import type { PatientStreakPublic, StreakProcessResult } from './types';

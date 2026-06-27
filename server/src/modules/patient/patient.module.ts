@@ -3,7 +3,7 @@ import { PatientController } from './patient.controller'
 import { PatientService } from './patient.service'
 import { DatabaseModule } from '../database/database.module'
 import { AuthGuardModule } from '../../common/guards/auth/auth.module'
-import { PatientAccessModule } from '../../common/patient-access/patient-access.module'
+import { PatientAccessModule } from '../patient-access/patient-access.module'
 import { DailyScoreModule } from '../daily-score/daily-score.module'
 
 @Module({

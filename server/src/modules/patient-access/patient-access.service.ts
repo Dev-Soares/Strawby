@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { PrismaService } from '../../modules/database/prisma.service';
+import { PrismaService } from '../database/prisma.service';
 
 @Injectable()
 export class PatientAccessService {

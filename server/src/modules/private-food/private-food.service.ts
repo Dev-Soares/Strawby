@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
-import { PatientAccessService } from '../../common/patient-access/patient-access.service';
+import { PatientAccessService } from '../patient-access/patient-access.service';
 import { CreatePrivateFoodDto } from './dto/create-private-food.dto';
 import { UpdatePrivateFoodDto } from './dto/update-private-food.dto';
 import { PrivateFoodPublic, privateFoodSelect } from './types';

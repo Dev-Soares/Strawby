@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
-import { PatientAccessService } from '../../common/patient-access/patient-access.service';
+import { PatientAccessService } from '../patient-access/patient-access.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { parseAppDay, appDayRange } from '../../common/utils/date.util';
 import { CreateDailyScoreDto } from './dto/create-daily-score.dto';

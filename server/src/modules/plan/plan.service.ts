@@ -5,7 +5,7 @@ import { PrismaService } from '../database/prisma.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
-import { PatientAccessService } from '../../common/patient-access/patient-access.service';
+import { PatientAccessService } from '../patient-access/patient-access.service';
 import { MacroDistribution, PlanMacros, PlanPublic, planSelect } from './types';
 import { PdfService } from '../pdf/pdf.service';
 import { MealService } from '../meal/meal.service';

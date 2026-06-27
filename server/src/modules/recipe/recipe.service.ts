@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
-import { PatientAccessService } from '../../common/patient-access/patient-access.service';
+import { PatientAccessService } from '../patient-access/patient-access.service';
 import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddRecipePrivateFoodItemDto } from './dto/add-recipe-private-food-item.dto';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
