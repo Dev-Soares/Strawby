@@ -10,13 +10,14 @@ const getIsEnabled = () =>
   !!localStorage.getItem('fcm_token')
 
 export default function ProfileNotificationsSection() {
-  if (!('Notification' in window)) return null
-
-  const isDenied = Notification.permission === 'denied'
+  
   const [enabled, setEnabled] = useState(getIsEnabled)
 
   const { mutate: enable, isPending: isEnabling } = useRequestNotificationPermission()
   const { mutate: disable, isPending: isDisabling } = useDisableNotifications()
+
+  if (!('Notification' in window)) return null
+   const isDenied = Notification.permission === 'denied'
 
   const isPending = isEnabling || isDisabling
 
