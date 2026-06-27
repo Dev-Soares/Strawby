@@ -22,7 +22,7 @@ const INVALID_TOKEN_CODES = [
 @Injectable()
 export class FirebaseService implements OnModuleInit {
   private readonly logger = new Logger(FirebaseService.name);
-  private messaging!: Messaging;
+  private messaging?: Messaging;
   private clickLink?: string;
 
   constructor(private readonly configService: ConfigService) {}
@@ -33,6 +33,15 @@ export class FirebaseService implements OnModuleInit {
     const privateKey = this.configService
       .get<string>('FIREBASE_PRIVATE_KEY')
       ?.replace(/\\n/g, '\n');
+
+    // Sem credenciais o Firebase não inicializa — push vira no-op em vez de
+    // derrubar o boot da aplicação inteira (notificação é best-effort).
+    if (!projectId || !clientEmail || !privateKey) {
+      this.logger.warn(
+        'Credenciais do Firebase ausentes — notificações push desativadas',
+      );
+      return;
+    }
 
     if (!getApps().length) {
       initializeApp({
@@ -61,6 +70,10 @@ export class FirebaseService implements OnModuleInit {
   }
 
   async send(token: string, payload: NotificationPayload): Promise<void> {
+    if (!this.messaging) {
+      this.logger.warn('Firebase desativado — notificação ignorada');
+      return;
+    }
     try {
       await this.messaging.send({
         token,
@@ -83,6 +96,10 @@ export class FirebaseService implements OnModuleInit {
     payload: NotificationPayload,
   ): Promise<string[]> {
     if (tokens.length === 0) return [];
+    if (!this.messaging) {
+      this.logger.warn('Firebase desativado — notificações ignoradas');
+      return [];
+    }
 
     try {
       const result = await this.messaging.sendEachForMulticast({
