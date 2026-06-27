@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ConnectionRequestService } from './connection-request.service';
 import { CreateConnectionRequestDto } from './dto/create-connection-request.dto';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
@@ -9,7 +18,9 @@ import { Roles } from 'src/common/decorators/roles.decorator';
 @UseGuards(AuthGuard)
 @Controller('connection-request')
 export class ConnectionRequestController {
-  constructor(private readonly connectionRequestService: ConnectionRequestService) {}
+  constructor(
+    private readonly connectionRequestService: ConnectionRequestService,
+  ) {}
 
   @Roles('patient')
   @UseGuards(AuthGuard, RolesGuard)
@@ -38,6 +49,8 @@ export class ConnectionRequestController {
   @UseGuards(AuthGuard, RolesGuard)
   @Get('nutritionist')
   findAllPendingByNutritionist(@Req() req: AuthenticatedRequest) {
-    return this.connectionRequestService.findAllPendingByNutritionist(req.user.sub);
+    return this.connectionRequestService.findAllPendingByNutritionist(
+      req.user.sub,
+    );
   }
 }

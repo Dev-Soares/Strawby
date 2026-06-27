@@ -23,7 +23,7 @@ export const FOOD_SYNONYM_GROUPS: readonly (readonly string[])[] = [
   ['mexilhao', 'marisco'],
   ['mocoto', 'mao de vaca'],
   ['inhame', 'cara'],
-] as const
+] as const;
 
 /**
  * Expande a query normalizada adicionando frases sinônimas conhecidas.
@@ -32,27 +32,27 @@ export const FOOD_SYNONYM_GROUPS: readonly (readonly string[])[] = [
  * (ex: "cara" não casa dentro de "caramelo").
  */
 export function expandQuerySynonyms(normalizedQuery: string): string[] {
-  const result = [normalizedQuery]
-  const seen = new Set(result)
+  const result = [normalizedQuery];
+  const seen = new Set(result);
 
   for (const group of FOOD_SYNONYM_GROUPS) {
-    const matched = group.some((term) => containsAsWord(normalizedQuery, term))
-    if (!matched) continue
+    const matched = group.some((term) => containsAsWord(normalizedQuery, term));
+    if (!matched) continue;
     for (const term of group) {
       if (!seen.has(term)) {
-        seen.add(term)
-        result.push(term)
+        seen.add(term);
+        result.push(term);
       }
     }
   }
-  return result
+  return result;
 }
 
 function containsAsWord(haystack: string, term: string): boolean {
-  if (haystack === term) return true
-  return new RegExp(`(^|\\s)${escapeRegExp(term)}(\\s|$)`).test(haystack)
+  if (haystack === term) return true;
+  return new RegExp(`(^|\\s)${escapeRegExp(term)}(\\s|$)`).test(haystack);
 }
 
 function escapeRegExp(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

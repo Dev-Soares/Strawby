@@ -9,7 +9,14 @@ import { MealModule } from '../meal/meal.module';
 import { PatientModule } from '../patient/patient.module';
 
 @Module({
-  imports: [DatabaseModule, AuthGuardModule, PatientAccessModule, PdfModule, MealModule, forwardRef(() => PatientModule)],
+  imports: [
+    DatabaseModule,
+    AuthGuardModule,
+    PatientAccessModule,
+    PdfModule,
+    MealModule,
+    forwardRef(() => PatientModule),
+  ],
   controllers: [PlanController],
   providers: [PlanService],
   exports: [PlanService],

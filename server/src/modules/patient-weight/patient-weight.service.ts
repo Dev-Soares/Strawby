@@ -12,7 +12,11 @@ export class PatientWeightService {
     private readonly patientAccess: PatientAccessService,
   ) {}
 
-  async insert(callerId: string, patientId: string, dto: CreatePatientWeightDto) {
+  async insert(
+    callerId: string,
+    patientId: string,
+    dto: CreatePatientWeightDto,
+  ) {
     await this.patientAccess.resolve(callerId, patientId);
 
     try {
@@ -23,13 +27,17 @@ export class PatientWeightService {
           patientId,
         },
       });
-    }
-    catch (error) {
+    } catch (error) {
       mapPrismaError(error, 'Erro ao registrar peso do paciente.');
     }
   }
 
-  async edit(callerId: string, patientId: string, recordId: string, dto: UpdatePatientWeightDto) {
+  async edit(
+    callerId: string,
+    patientId: string,
+    recordId: string,
+    dto: UpdatePatientWeightDto,
+  ) {
     await this.patientAccess.resolve(callerId, patientId);
 
     try {
@@ -40,8 +48,7 @@ export class PatientWeightService {
           date: dto.date ? new Date(dto.date) : undefined,
         },
       });
-    }
-    catch (error) {
+    } catch (error) {
       mapPrismaError(error, 'Erro ao atualizar registro de peso do paciente.');
     }
   }
@@ -53,8 +60,7 @@ export class PatientWeightService {
       await this.prisma.patientWeight.delete({
         where: { id: recordId },
       });
-    }
-    catch (error) {
+    } catch (error) {
       mapPrismaError(error, 'Erro ao remover registro de peso do paciente.');
     }
   }

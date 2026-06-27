@@ -17,13 +17,18 @@ export class PatientService {
     private readonly dailyScoreService: DailyScoreService,
   ) {}
 
-  async createFromOnboarding(userId: string, data: CreatePatientDto): Promise<void> {
+  async createFromOnboarding(
+    userId: string,
+    data: CreatePatientDto,
+  ): Promise<void> {
     try {
       await this.prisma.patient.create({
         data: {
           id: userId,
           ...(data.height !== undefined && { height: data.height }),
-          ...(data.birthDate !== undefined && { birthDate: new Date(data.birthDate) }),
+          ...(data.birthDate !== undefined && {
+            birthDate: new Date(data.birthDate),
+          }),
           ...(data.gender !== undefined && { gender: data.gender }),
           ...(data.goal !== undefined && { goal: data.goal }),
         },
@@ -38,25 +43,25 @@ export class PatientService {
     }
   }
 
-  findById( patientId: string) {
+  findById(patientId: string) {
     try {
-    return this.prisma.patient.findUnique({
-      where: { id: patientId },
-      select: {
-        id: true,
-        height: true,
-        birthDate: true, 
-        gender: true,
-        currentStreak: true,
-        bestStreak: true,
-        goal: true,
-        weightRecord: {
-          orderBy: { date: 'desc' },
-          take: 1,
-          select: { weight: true, date: true },
+      return this.prisma.patient.findUnique({
+        where: { id: patientId },
+        select: {
+          id: true,
+          height: true,
+          birthDate: true,
+          gender: true,
+          currentStreak: true,
+          bestStreak: true,
+          goal: true,
+          weightRecord: {
+            orderBy: { date: 'desc' },
+            take: 1,
+            select: { weight: true, date: true },
+          },
         },
-      },
-    });
+      });
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar paciente', {
         p2025: 'Paciente não encontrado',
@@ -91,7 +96,9 @@ export class PatientService {
         where: { id: patientId },
         data: {
           ...(dto.height !== undefined && { height: dto.height }),
-          ...(dto.birthDate !== undefined && { birthDate: new Date(dto.birthDate) }),
+          ...(dto.birthDate !== undefined && {
+            birthDate: new Date(dto.birthDate),
+          }),
           ...(dto.gender !== undefined && { gender: dto.gender }),
           ...(dto.goal !== undefined && { goal: dto.goal }),
         },
@@ -126,7 +133,6 @@ export class PatientService {
     }
   }
 
-  
   async generateStreakForEachUser(): Promise<StreakProcessResult> {
     const yesterdayDate = yesterdayInAppTz();
 
@@ -169,7 +175,7 @@ export class PatientService {
         }
       });
 
-      return { incremented: incrementIds, reset: resetIds }; 
+      return { incremented: incrementIds, reset: resetIds };
     } catch (error) {
       mapPrismaError(error, 'Erro ao processar streak dos pacientes');
     }

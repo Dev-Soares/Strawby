@@ -8,7 +8,13 @@ import { PlanModule } from '../plan/plan.module';
 import { MealModule } from '../meal/meal.module';
 
 @Module({
-  imports: [DatabaseModule, AuthGuardModule, PatientAccessModule, PlanModule, MealModule],
+  imports: [
+    DatabaseModule,
+    AuthGuardModule,
+    PatientAccessModule,
+    PlanModule,
+    MealModule,
+  ],
   controllers: [DailyScoreController],
   providers: [DailyScoreService],
   exports: [DailyScoreService],

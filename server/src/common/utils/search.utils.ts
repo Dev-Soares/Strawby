@@ -10,11 +10,11 @@ export function normalizeForSearch(str: string): string {
     .replace(/[̀-ͯ]/g, '')
     .replace(/[^a-z0-9\s]/g, ' ')
     .replace(/\s+/g, ' ')
-    .trim()
+    .trim();
 }
 
 export function splitSearchWords(query: string): string[] {
-  return query.trim().split(/\s+/).filter(Boolean)
+  return query.trim().split(/\s+/).filter(Boolean);
 }
 
 /**
@@ -32,46 +32,46 @@ export function rankByRelevance<T extends { name: string; priority?: number }>(
   items: T[],
   query: string,
 ): T[] {
-  const q = normalizeForSearch(query)
-  const queryWords = q.split(/\s+/).filter(Boolean)
+  const q = normalizeForSearch(query);
+  const queryWords = q.split(/\s+/).filter(Boolean);
 
   return [...items].sort((a, b) => {
-    const aName = normalizeForSearch(a.name)
-    const bName = normalizeForSearch(b.name)
+    const aName = normalizeForSearch(a.name);
+    const bName = normalizeForSearch(b.name);
 
-    const aExact = aName === q
-    const bExact = bName === q
-    if (aExact !== bExact) return aExact ? -1 : 1
+    const aExact = aName === q;
+    const bExact = bName === q;
+    if (aExact !== bExact) return aExact ? -1 : 1;
 
-    const aStarts = aName.startsWith(q)
-    const bStarts = bName.startsWith(q)
-    if (aStarts !== bStarts) return aStarts ? -1 : 1
+    const aStarts = aName.startsWith(q);
+    const bStarts = bName.startsWith(q);
+    if (aStarts !== bStarts) return aStarts ? -1 : 1;
 
-    const aCover = wordCoverage(aName, queryWords)
-    const bCover = wordCoverage(bName, queryWords)
-    if (aCover !== bCover) return bCover - aCover
+    const aCover = wordCoverage(aName, queryWords);
+    const bCover = wordCoverage(bName, queryWords);
+    if (aCover !== bCover) return bCover - aCover;
 
-    const aPrio = a.priority ?? 0
-    const bPrio = b.priority ?? 0
-    if (aPrio !== bPrio) return bPrio - aPrio
+    const aPrio = a.priority ?? 0;
+    const bPrio = b.priority ?? 0;
+    if (aPrio !== bPrio) return bPrio - aPrio;
 
-    if (aName.length !== bName.length) return aName.length - bName.length
+    if (aName.length !== bName.length) return aName.length - bName.length;
 
-    return aName.localeCompare(bName, 'pt-BR')
-  })
+    return aName.localeCompare(bName, 'pt-BR');
+  });
 }
 
 /**
  * Conta quantas palavras da query aparecem como palavra inteira no nome.
  */
 function wordCoverage(name: string, queryWords: string[]): number {
-  let count = 0
+  let count = 0;
   for (const w of queryWords) {
-    if (new RegExp(`(^|\\s)${escapeRegExp(w)}(\\s|$)`).test(name)) count++
+    if (new RegExp(`(^|\\s)${escapeRegExp(w)}(\\s|$)`).test(name)) count++;
   }
-  return count
+  return count;
 }
 
 function escapeRegExp(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

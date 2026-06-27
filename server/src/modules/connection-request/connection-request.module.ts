@@ -7,7 +7,12 @@ import { ConnectionRequestService } from './connection-request.service';
 import { NotificationModule } from '../notification/send-notification/notification.module';
 
 @Module({
-  imports: [DatabaseModule, AuthGuardModule, NutritionistModule, NotificationModule],
+  imports: [
+    DatabaseModule,
+    AuthGuardModule,
+    NutritionistModule,
+    NotificationModule,
+  ],
   controllers: [ConnectionRequestController],
   providers: [ConnectionRequestService],
 })

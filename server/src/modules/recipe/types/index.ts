@@ -1,6 +1,9 @@
 import { FoodItem, Recipe } from '@prisma/client';
 
-export type FoodItemPublic = Pick<FoodItem, 'id' | 'quantity' | 'calories' | 'protein' | 'carbs' | 'fat'> & {
+export type FoodItemPublic = Pick<
+  FoodItem,
+  'id' | 'quantity' | 'calories' | 'protein' | 'carbs' | 'fat'
+> & {
   food: { id: string; name: string } | null;
   privateFood: { id: string; name: string } | null;
 };
@@ -12,7 +15,10 @@ export type RecipeTotals = {
   fat: number;
 };
 
-export type RecipePublic = Pick<Recipe, 'id' | 'name' | 'patientId' | 'createdAt' | 'updatedAt'> & {
+export type RecipePublic = Pick<
+  Recipe,
+  'id' | 'name' | 'patientId' | 'createdAt' | 'updatedAt'
+> & {
   items: FoodItemPublic[];
   totals: RecipeTotals;
 };

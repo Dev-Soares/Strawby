@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
@@ -52,7 +62,10 @@ export class PlanController {
     @Req() req: AuthenticatedRequest,
     @Param('patientId') patientId: string,
   ) {
-    const { buffer, filename } = await this.planService.getPlanPdf(req.user.sub, patientId);
+    const { buffer, filename } = await this.planService.getPlanPdf(
+      req.user.sub,
+      patientId,
+    );
     return {
       filename,
       contentType: 'application/pdf',

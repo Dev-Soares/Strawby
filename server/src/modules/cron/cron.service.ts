@@ -31,7 +31,8 @@ export class CronService {
   @Cron(CronExpression.EVERY_DAY_AT_3AM, { timeZone: 'America/Sao_Paulo' })
   async updateStreaks() {
     try {
-      const { incremented, reset } = await this.patientService.generateStreakForEachUser();
+      const { incremented, reset } =
+        await this.patientService.generateStreakForEachUser();
 
       await this.notificationService.sendMany(
         incremented,

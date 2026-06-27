@@ -36,12 +36,11 @@ export function mapPrismaError(
           overrides?.p2000 ?? 'Valor excede o tamanho permitido',
         );
       case 'P2002':
-        throw new ConflictException(
-          overrides?.p2002 ?? 'Registro já existe',
-        );
+        throw new ConflictException(overrides?.p2002 ?? 'Registro já existe');
       case 'P2003':
         throw new BadRequestException(
-          overrides?.p2003 ?? 'Referência inválida (registro relacionado não existe)',
+          overrides?.p2003 ??
+            'Referência inválida (registro relacionado não existe)',
         );
       case 'P2011':
         throw new BadRequestException(
@@ -49,7 +48,8 @@ export function mapPrismaError(
         );
       case 'P2014':
         throw new BadRequestException(
-          overrides?.p2014 ?? 'Operação viola relação obrigatória entre registros',
+          overrides?.p2014 ??
+            'Operação viola relação obrigatória entre registros',
         );
       case 'P2025':
         throw new NotFoundException(

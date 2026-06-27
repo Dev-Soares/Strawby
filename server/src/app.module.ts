@@ -24,78 +24,79 @@ import { NotificationModule } from './modules/notification/send-notification/not
 import { PatientWeightModule } from './modules/patient-weight/patient-weight.module';
 
 @Module({
-	imports: [
-		ConfigModule.forRoot({
-			isGlobal: true,
-		}),
-		LoggerModule.forRoot({
-			pinoHttp: {
-				autoLogging: true,
-				level: process.env.LOG_LEVEL ?? (process.env.NODE_ENV === 'production' ? 'info' : 'debug'),
-				serializers: {
-					req: (req) => ({
-						method: req.method,
-						url: req.url,
-					}),
-					res: (res) => ({
-						statusCode: res.statusCode,
-					}),
-				},
-				redact: {
-					paths: [
-						'req.headers.authorization',
-						'req.headers.cookie',
-						'req.body.password',
-						'req.body.token',
-						'res.headers["set-cookie"]',
-					],
-					censor: '[REDACTED]',
-				},
-				...(process.env.NODE_ENV !== 'production' && {
-					transport: {
-						target: 'pino-pretty',
-						options: {
-							colorize: true,
-							translateTime: 'HH:MM:ss',
-							ignore: 'pid,hostname',
-							singleLine: true,
-						},
-					},
-				}),
-			},
-		}),
-		ThrottlerModule.forRoot([
-			{
-				ttl: 60000,
-				limit: 100,
-			},
-		]),
-		DatabaseModule,
-		UserModule,
-		AuthModule,
-		HealthModule,
-		FoodModule,
-		PrivateFoodModule,
-		MealModule,
-		RecipeModule,
-		PlanModule,
-		DailyScoreModule,
-		NutritionistModule,
-		ConnectionRequestModule,
-		PatientModule,
-		CronModule,
-		EmailModule,
-		ScheduleModule.forRoot(),
-		NotificationTokenModule,
-		NotificationModule,
-		PatientWeightModule,
-	],
-	providers: [
-		{
-			provide: APP_GUARD,
-			useClass: ThrottlerGuard,
-		},
-	],
-	
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        autoLogging: true,
+        level:
+          process.env.LOG_LEVEL ??
+          (process.env.NODE_ENV === 'production' ? 'info' : 'debug'),
+        serializers: {
+          req: (req) => ({
+            method: req.method,
+            url: req.url,
+          }),
+          res: (res) => ({
+            statusCode: res.statusCode,
+          }),
+        },
+        redact: {
+          paths: [
+            'req.headers.authorization',
+            'req.headers.cookie',
+            'req.body.password',
+            'req.body.token',
+            'res.headers["set-cookie"]',
+          ],
+          censor: '[REDACTED]',
+        },
+        ...(process.env.NODE_ENV !== 'production' && {
+          transport: {
+            target: 'pino-pretty',
+            options: {
+              colorize: true,
+              translateTime: 'HH:MM:ss',
+              ignore: 'pid,hostname',
+              singleLine: true,
+            },
+          },
+        }),
+      },
+    }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 100,
+      },
+    ]),
+    DatabaseModule,
+    UserModule,
+    AuthModule,
+    HealthModule,
+    FoodModule,
+    PrivateFoodModule,
+    MealModule,
+    RecipeModule,
+    PlanModule,
+    DailyScoreModule,
+    NutritionistModule,
+    ConnectionRequestModule,
+    PatientModule,
+    CronModule,
+    EmailModule,
+    ScheduleModule.forRoot(),
+    NotificationTokenModule,
+    NotificationModule,
+    PatientWeightModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

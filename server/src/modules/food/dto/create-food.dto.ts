@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsNotEmpty, IsNumber, IsString, MaxLength, Min } from 'class-validator';
+import {
+  IsIn,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  MaxLength,
+  Min,
+} from 'class-validator';
 
 export class CreateFoodDto {
   @ApiProperty({ example: 'Frango grelhado' })
@@ -29,6 +36,14 @@ export class CreateFoodDto {
   fat: number;
 
   @ApiProperty({ example: 'MANUAL' })
-  @IsIn(['TACO', 'USDA_FOUNDATION', 'USDA_SR_LEGACY', 'CNF', 'LIVS', 'OFF', 'MANUAL'])
+  @IsIn([
+    'TACO',
+    'USDA_FOUNDATION',
+    'USDA_SR_LEGACY',
+    'CNF',
+    'LIVS',
+    'OFF',
+    'MANUAL',
+  ])
   source: string;
 }

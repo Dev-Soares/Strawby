@@ -15,7 +15,8 @@ export class NutritionistService {
         select: nutritionistSelect,
       });
 
-      if (!nutritionist) throw new NotFoundException('Nutricionista não encontrado');
+      if (!nutritionist)
+        throw new NotFoundException('Nutricionista não encontrado');
 
       return nutritionist;
     } catch (error) {
@@ -30,7 +31,8 @@ export class NutritionistService {
         select: nutritionistSelect,
       });
 
-      if (!nutritionist) throw new NotFoundException('Nutricionista não encontrado');
+      if (!nutritionist)
+        throw new NotFoundException('Nutricionista não encontrado');
 
       return nutritionist;
     } catch (error) {
@@ -75,7 +77,8 @@ export class NutritionistService {
         },
       });
 
-      if (!nutritionist) throw new NotFoundException('Nutricionista não encontrado');
+      if (!nutritionist)
+        throw new NotFoundException('Nutricionista não encontrado');
 
       return nutritionist.patients.map((patient) => ({
         id: patient.id,
@@ -109,13 +112,13 @@ export class NutritionistService {
     }
   }
 
-  async updateCode (nutritionistId: string, dto: CreateCodeDto) {
+  async updateCode(nutritionistId: string, dto: CreateCodeDto) {
     try {
       const updated = await this.prisma.nutritionist.update({
         where: { id: nutritionistId },
         data: { code: dto.code },
         select: nutritionistSelect,
-      })
+      });
 
       return updated;
     } catch (error) {
@@ -123,5 +126,5 @@ export class NutritionistService {
         p2002: 'Código de acesso já existe',
       });
     }
-  }     
+  }
 }

@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import {
   normalizeForSearch,
@@ -86,7 +83,9 @@ export class FoodService {
     const filters: Prisma.Sql[] = [
       Prisma.sql`unaccent(name) % unaccent(${trimmed})`,
       Prisma.join(
-        words.map((w) => Prisma.sql`unaccent(name) ILIKE unaccent(${`%${w}%`})`),
+        words.map(
+          (w) => Prisma.sql`unaccent(name) ILIKE unaccent(${`%${w}%`})`,
+        ),
         ' AND ',
       ),
       Prisma.sql`to_tsvector('portuguese', unaccent(name)) @@ websearch_to_tsquery('portuguese', unaccent(${trimmed}))`,

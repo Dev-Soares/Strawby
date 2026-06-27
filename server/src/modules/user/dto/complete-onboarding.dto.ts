@@ -1,5 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsEnum, IsIn, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsIn,
+  IsISO8601,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 
 export class CompleteOnboardingDto {
   @ApiProperty({ example: true })
@@ -8,7 +19,9 @@ export class CompleteOnboardingDto {
   acceptTerms: boolean;
 
   @ApiProperty({ example: 'patient', enum: ['patient', 'nutritionist'] })
-  @IsEnum(['patient', 'nutritionist'], { message: 'Role deve ser patient ou nutritionist' })
+  @IsEnum(['patient', 'nutritionist'], {
+    message: 'Role deve ser patient ou nutritionist',
+  })
   @IsNotEmpty()
   role: 'patient' | 'nutritionist';
 

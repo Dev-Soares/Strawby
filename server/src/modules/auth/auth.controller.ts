@@ -18,7 +18,10 @@ import { GoogleAuthDto } from './dto/google-auth.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ResendVerificationDto } from './dto/resend-verification.dto';
-import { cookieConfig, refreshCookieConfig } from 'src/common/config/cookie.config';
+import {
+  cookieConfig,
+  refreshCookieConfig,
+} from 'src/common/config/cookie.config';
 import type { SignInResponse, LogoutResponse } from './types';
 
 @ApiTags('auth')
@@ -105,7 +108,10 @@ export class AuthController {
     @Body() dto: ResetPasswordDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.authService.resetPassword(dto.token, dto.newPassword);
+    const result = await this.authService.resetPassword(
+      dto.token,
+      dto.newPassword,
+    );
     res.cookie('access_token', result.access_token, cookieConfig);
     res.cookie('refresh_token', result.refresh_token, refreshCookieConfig);
     return { message: 'Senha redefinida com sucesso' };

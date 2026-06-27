@@ -11,6 +11,7 @@ export class PatientAccessService {
     const linked = await this.prisma.patient.findFirst({
       where: { id: patientId, nutritionistId: callerId },
     });
-    if (!linked) throw new ForbiddenException('Sem permissão para acessar este paciente');
+    if (!linked)
+      throw new ForbiddenException('Sem permissão para acessar este paciente');
   }
 }
