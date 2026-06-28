@@ -1,6 +1,17 @@
 packages:
   - 'client'
   - 'server'
+overrides:
+  path-to-regexp: '^8.4.0'
+  lodash: '^4.17.24'
+  defu: '^6.1.5'
+  fast-uri: '^3.1.1'
+  hono: '^4.12.25'
+  multer: '^2.2.0'
+  '@hono/node-server': '^1.19.13'
+  qs: '^6.15.2'
+  js-yaml: '^4.1.2'
+  '@nestjs/core': '^11.1.18'
 allowBuilds:
   '@firebase/util': true
   '@nestjs/core': true
