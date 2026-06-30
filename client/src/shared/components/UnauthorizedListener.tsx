@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { UNAUTHORIZED_EVENT } from '../../api/axios'
 
-const PUBLIC_PATHS = ['/', '/app/login', '/app/create-account']
+const PUBLIC_PATHS = ['/', '/app/login', '/app/create-account', '/app/google-callback']
 
 const UnauthorizedListener = () => {
   const navigate = useNavigate()
