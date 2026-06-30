@@ -137,20 +137,21 @@ export class PatientService {
     const yesterdayDate = yesterdayInAppTz();
 
     try {
-      const [patientIds, scores] = await Promise.all([
-        this.prisma.patient.findMany({ select: { id: true } }),
+      const [patients, scores] = await Promise.all([
+        this.prisma.patient.findMany({ select: { id: true, currentStreak: true } }),
         this.dailyScoreService.findScoresByDate(yesterdayDate),
       ]);
 
       const scoreMap = new Map(scores.map((s) => [s.patientId, s.score])); //mapeia os scores por patientId para acesso rápido
 
-      const resetIds = patientIds
-        .filter((patient) => (scoreMap.get(patient.id) ?? 0) < 8)
-        .map((patient) => patient.id); // pacientes com score < 8 terão streak resetado
-      const incrementIds = patientIds
-        .filter((patient) => (scoreMap.get(patient.id) ?? 0) >= 8)
+      const resetIds = patients
+        .filter((patient) => (scoreMap.get(patient.id) ?? 0) < 7 && patient.currentStreak !== 0)
+        .map((patient) => patient.id); // pacientes com score < 7 terão streak resetado
+
+      const incrementIds = patients
+        .filter((patient) => (scoreMap.get(patient.id) ?? 0) >= 7)
         .map((patient) => patient.id);
-      // pacientes com score >= 8 terão streak incrementado
+      // pacientes com score >= 7 terão streak incrementado
 
       await this.prisma.$transaction(async (tx) => {
         if (resetIds.length > 0) {
@@ -175,7 +176,7 @@ export class PatientService {
         }
       });
 
-      return { incremented: incrementIds, reset: resetIds };
+      return { incremented: incrementIds, reset: resetIds};
     } catch (error) {
       mapPrismaError(error, 'Erro ao processar streak dos pacientes');
     }
