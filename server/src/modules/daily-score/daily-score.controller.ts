@@ -14,6 +14,7 @@ import type { AuthenticatedRequest } from '../../common/types/req-types';
 import { DailyScoreService } from './daily-score.service';
 import { CreateDailyScoreDto } from './dto/create-daily-score.dto';
 import { QueryDailyScoreDto } from './dto/query-daily-score.dto';
+import { ParseAppDayPipe } from '../../common/pipes/parse-app-day.pipe';
 
 @ApiTags('daily-score')
 @UseGuards(AuthGuard)
@@ -39,7 +40,7 @@ export class DailyScoreController {
   findByDay(
     @Req() req: AuthenticatedRequest,
     @Param('patientId') patientId: string,
-    @Param('day') day: string,
+    @Param('day', ParseAppDayPipe) day: string,
   ) {
     return this.dailyScoreService.findByDay(req.user.sub, patientId, day);
   }
@@ -48,7 +49,7 @@ export class DailyScoreController {
   getLiveScore(
     @Req() req: AuthenticatedRequest,
     @Param('patientId') patientId: string,
-    @Param('day') day: string,
+    @Param('day', ParseAppDayPipe) day: string,
   ) {
     return this.dailyScoreService.getLiveScore(req.user.sub, patientId, day);
   }

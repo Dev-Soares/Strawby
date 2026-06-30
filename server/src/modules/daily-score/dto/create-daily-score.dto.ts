@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
+import { IsAppDay } from '../../../common/decorators/is-app-day.decorator';
 
 export class CreateDailyScoreDto {
   @ApiProperty({ example: '2026-05-20' })
-  @IsDateString()
+  @IsAppDay()
   @IsNotEmpty()
   date: string;
 }

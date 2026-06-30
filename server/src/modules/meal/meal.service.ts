@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { MealKind } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { PatientAccessService } from '../patient-access/patient-access.service';
-import { appDayRange } from '../../common/utils/date.util';
+import { appDayRangeTz } from '../../common/utils/date.util';
 import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
 import { AddMealRecipeDto } from './dto/add-meal-recipe.dto';
@@ -153,7 +153,7 @@ export class MealService {
     kind?: MealKind,
   ): Promise<MealPublic[]> {
     try {
-      const { start, end } = appDayRange(day);
+      const { start, end } = appDayRangeTz(day);
       const meals = await this.prisma.meal.findMany({
         where: {
           patientId,
@@ -174,7 +174,7 @@ export class MealService {
     day: string,
   ): Promise<Map<string, MealPublic[]>> {
     try {
-      const { start, end } = appDayRange(day);
+      const { start, end } = appDayRangeTz(day);
       const meals = await this.prisma.meal.findMany({
         where: {
           patientId: { in: patientIds },
