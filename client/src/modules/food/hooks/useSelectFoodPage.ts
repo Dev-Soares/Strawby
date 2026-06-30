@@ -107,7 +107,6 @@ export const useSelectFoodPage = () => {
 
   const handleConfirm = () => {
     if (!selectedFood || !targetId) {
-      console.error('[useSelectFoodPage] missing targetId or selectedFood', { targetId, selectedFood })
       return
     }
     const q = Number(quantity)
