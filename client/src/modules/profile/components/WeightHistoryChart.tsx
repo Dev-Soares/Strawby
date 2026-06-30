@@ -17,6 +17,7 @@ import { useUpdatePatientWeight } from '@/modules/patient/hooks/useUpdatePatient
 import WeightRecordModal from './WeightRecordModal'
 import type { WeightRecordFormData } from '@/modules/patient/types/weightRecord'
 import { toLocalISODate } from '@/shared/utils/date'
+import { useThemeContext } from '@/shared/contexts/ThemeProvider'
 
 interface CustomTooltipProps {
   active?: boolean
@@ -28,8 +29,8 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload?.length) return null
 
   return (
-    <div className="bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2 shadow-xl">
-      <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-0.5">{label}</p>
+    <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2 shadow-xl">
+      <p className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-0.5">{label}</p>
       <div className="flex items-baseline gap-1">
         <span className="font-display text-xl font-extrabold text-red-400">{payload[0].value}</span>
         <span className="text-xs font-bold text-red-500">kg</span>
@@ -53,6 +54,8 @@ export default function WeightHistoryChart({ patientId }: Props) {
   const { data: records, isPending } = useGetPatientWeightRecords(patientId)
   const createMutation = useCreatePatientWeight(patientId)
   const updateMutation = useUpdatePatientWeight(patientId)
+  const { resolvedTheme } = useThemeContext()
+  const isDark = resolvedTheme === 'dark'
 
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
@@ -145,11 +148,11 @@ export default function WeightHistoryChart({ patientId }: Props) {
         </div>
       </div>
 
-      <div className="rounded-2xl bg-neutral-950 border border-neutral-800 p-4 pt-5">
+      <div className="rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-4 pt-5 transition-colors duration-300">
         {isPending ? (
           <div className="flex flex-col gap-3 animate-pulse">
-            <div className="h-4 w-24 rounded bg-neutral-800" />
-            <div className="h-32 rounded bg-neutral-800" />
+            <div className="h-4 w-24 rounded bg-neutral-100 dark:bg-neutral-800" />
+            <div className="h-32 rounded bg-neutral-100 dark:bg-neutral-800" />
           </div>
         ) : chartData.length === 0 ? (
           <p className="text-sm font-medium text-neutral-500 text-center py-6">
@@ -179,33 +182,33 @@ export default function WeightHistoryChart({ patientId }: Props) {
                   margin={{ top: 0, right: 48, left: 0, bottom: 0 }}
                   barCategoryGap="30%"
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#262626" horizontal={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#262626' : '#e5e5e5'} horizontal={false} />
                   <XAxis
                     type="number"
                     domain={['auto', 'auto']}
-                    tick={{ fill: '#ffffff', fontSize: 10, fontWeight: 600 }}
+                    tick={{ fill: isDark ? '#ffffff' : '#171717', fontSize: 10, fontWeight: 600 }}
                     axisLine={false}
                     tickLine={false}
                   />
                   <YAxis
                     type="category"
                     dataKey="date"
-                    tick={{ fill: '#ffffff', fontSize: 12, fontWeight: 700 }}
+                    tick={{ fill: isDark ? '#ffffff' : '#171717', fontSize: 12, fontWeight: 700 }}
                     axisLine={false}
                     tickLine={false}
                     width={44}
                   />
-                  <Tooltip content={<CustomTooltip />} cursor={{ fill: '#ffffff06' }} />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: isDark ? '#ffffff06' : '#00000008' }} />
                   <Bar dataKey="weight" radius={[0, 2, 2, 0]}>
                     <LabelList
                       dataKey="weight"
                       position="right"
-                      style={{ fill: '#ffffff', fontSize: 11, fontWeight: 700 }}
+                      style={{ fill: isDark ? '#ffffff' : '#171717', fontSize: 11, fontWeight: 700 }}
                     />
                     {chartData.map((_, index) => (
                       <Cell
                         key={index}
-                        fill={index === 0 ? '#ef4444' : '#3f1010'}
+                        fill={index === 0 ? '#ef4444' : isDark ? '#3f1010' : '#fecaca'}
                       />
                     ))}
                   </Bar>

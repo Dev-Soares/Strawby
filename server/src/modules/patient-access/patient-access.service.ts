@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { PrismaService } from '../../modules/database/prisma.service';
+import { PrismaService } from '../database/prisma.service';
 
 @Injectable()
 export class PatientAccessService {
@@ -11,6 +11,7 @@ export class PatientAccessService {
     const linked = await this.prisma.patient.findFirst({
       where: { id: patientId, nutritionistId: callerId },
     });
-    if (!linked) throw new ForbiddenException('Sem permissão para acessar este paciente');
+    if (!linked)
+      throw new ForbiddenException('Sem permissão para acessar este paciente');
   }
 }

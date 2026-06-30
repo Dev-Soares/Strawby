@@ -10,7 +10,13 @@ import { PatientModule } from '../patient/patient.module';
 @Module({
   controllers: [UserController],
   providers: [UserService],
-  imports: [DatabaseModule, HashModule, AuthGuardModule, EmailModule, PatientModule],
+  imports: [
+    DatabaseModule,
+    HashModule,
+    AuthGuardModule,
+    EmailModule,
+    PatientModule,
+  ],
   exports: [UserService],
 })
 export class UserModule {}

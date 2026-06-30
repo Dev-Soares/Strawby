@@ -1,12 +1,14 @@
+import { lazy } from 'react'
 import { Route } from 'react-router-dom'
-import LoginPage from '../pages/LoginPage'
-import SignUpPage from '../pages/SignUpPage'
-import OnboardingPage from '../pages/OnboardingPage'
-import VerifyEmailPage from '../pages/VerifyEmailPage'
-import ResetPasswordPage from '../pages/ResetPasswordPage'
-import GoogleCallbackPage from '../pages/GoogleCallbackPage'
 import PublicOnlyRoute from '../shared/components/PublicOnlyRoute'
 import OnboardingRoute from '../shared/components/OnboardingRoute'
+
+const LoginPage = lazy(() => import('../pages/LoginPage'))
+const SignUpPage = lazy(() => import('../pages/SignUpPage'))
+const OnboardingPage = lazy(() => import('../pages/OnboardingPage'))
+const VerifyEmailPage = lazy(() => import('../pages/VerifyEmailPage'))
+const ResetPasswordPage = lazy(() => import('../pages/ResetPasswordPage'))
+const GoogleCallbackPage = lazy(() => import('../pages/GoogleCallbackPage'))
 
 export const authRoutes = [
   <Route key="login" path="/app/login" element={<PublicOnlyRoute><LoginPage /></PublicOnlyRoute>} />,

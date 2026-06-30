@@ -23,7 +23,6 @@ export class ConnectionRequestService {
     patientId: string,
     dto: CreateConnectionRequestDto,
   ): Promise<ConnectionRequestPublic> {
-
     const nutritionist = await this.nutritionistService.findByCode(dto.code);
 
     try {
@@ -43,13 +42,15 @@ export class ConnectionRequestService {
       );
 
       return connectionRequest;
-
     } catch (error) {
       mapPrismaError(error, 'Erro ao criar solicitação de conexão');
     }
   }
 
-  async reject(id: string, nutritionistId: string): Promise<ConnectionRequestPublic> {
+  async reject(
+    id: string,
+    nutritionistId: string,
+  ): Promise<ConnectionRequestPublic> {
     try {
       return await this.prisma.connectionRequest.update({
         where: { id, nutritionistId },
@@ -63,7 +64,10 @@ export class ConnectionRequestService {
     }
   }
 
-  async accept(id: string, nutritionistId: string): Promise<ConnectionRequestPublic> {
+  async accept(
+    id: string,
+    nutritionistId: string,
+  ): Promise<ConnectionRequestPublic> {
     try {
       const updated = await this.prisma.connectionRequest.update({
         where: { id, nutritionistId },

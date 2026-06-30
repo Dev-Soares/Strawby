@@ -55,32 +55,35 @@ export default function ProfileAccountSection({ id, name, email }: Props) {
                   type="button"
                   onClick={handleSave}
                   disabled={updateUser.isPending || nameValue.trim().length < 2}
-                  className="flex items-center gap-1.5 text-[11px] font-bold text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-lg disabled:opacity-40 transition-colors cursor-pointer shrink-0"
+                  className="flex items-center gap-1.5 text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-3.5 py-2 rounded-xl disabled:opacity-40 transition-colors cursor-pointer shrink-0"
                 >
-                  {updateUser.isPending && <Spinner size={11} />}
+                  {updateUser.isPending && <Spinner size={13} />}
                   {updateUser.isPending ? 'Salvando…' : 'Salvar'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditing(false)}
-                  className="text-[11px] font-bold text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 transition-colors cursor-pointer shrink-0"
+                  className="text-xs font-bold text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 px-2 py-2 transition-colors cursor-pointer shrink-0"
                 >
                   Cancelar
                 </button>
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={() => { setNameValue(name); setEditing(true) }}
-                className="group flex items-center gap-2 w-full cursor-pointer text-left"
-              >
-                <span className="text-sm font-semibold text-neutral-800 dark:text-neutral-100 flex-1 min-w-0 truncate">
-                  {name}
-                </span>
-                <PencilSimple size={12} weight="bold" className="text-neutral-400 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-              </button>
+              <span className="text-sm font-semibold text-neutral-800 dark:text-neutral-100 block truncate">
+                {name}
+              </span>
             )}
           </div>
+          {!editing && (
+            <button
+              type="button"
+              onClick={() => { setNameValue(name); setEditing(true) }}
+              className="flex items-center gap-1.5 text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-3.5 py-2 rounded-xl transition-colors cursor-pointer shrink-0"
+            >
+              <PencilSimple size={14} weight="bold" />
+              Editar
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-3 px-5 py-4 border-b border-neutral-100 dark:border-neutral-800">

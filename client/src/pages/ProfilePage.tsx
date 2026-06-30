@@ -20,6 +20,7 @@ export default function ProfilePage() {
       <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-32 sm:py-10 lg:py-12 transition-colors duration-300">
 
         <motion.div
+          data-tutorial="profile-header"
           className="mb-8 sm:mb-10"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}

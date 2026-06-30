@@ -7,6 +7,8 @@ import { createPatientSteps } from '../config/patientTour'
 import { createNutritionistSteps } from '../config/nutritionistTour'
 
 const TUTORIAL_KEY = 'strawby_show_tutorial'
+const TUTORIAL_ACTIVE_KEY = 'strawby_tutorial_active'
+const NOTIF_AFTER_TUTORIAL_KEY = 'strawby_notif_after_tutorial'
 
 const STYLE_ID = 'strawby-tour-styles'
 
@@ -190,11 +192,17 @@ function buildTour(
   tour.addSteps(steps)
 
   tour.on('complete', () => {
+    sessionStorage.removeItem(TUTORIAL_ACTIVE_KEY)
+    sessionStorage.setItem(NOTIF_AFTER_TUTORIAL_KEY, '1')
     navigate('/app/home')
     removeStyles()
+    window.dispatchEvent(new Event('strawby:tutorial-complete'))
   })
 
-  tour.on('cancel', removeStyles)
+  tour.on('cancel', () => {
+    sessionStorage.removeItem(TUTORIAL_ACTIVE_KEY)
+    removeStyles()
+  })
 
   return tour
 }
@@ -208,6 +216,7 @@ export function useAutoTutorial() {
     if (!sessionStorage.getItem(TUTORIAL_KEY)) return
 
     sessionStorage.removeItem(TUTORIAL_KEY)
+    sessionStorage.setItem(TUTORIAL_ACTIVE_KEY, '1')
     let fired = false
 
     const timer = setTimeout(() => {
@@ -217,7 +226,10 @@ export function useAutoTutorial() {
 
     return () => {
       clearTimeout(timer)
-      if (!fired) sessionStorage.setItem(TUTORIAL_KEY, '1')
+      if (!fired) {
+        sessionStorage.setItem(TUTORIAL_KEY, '1')
+        sessionStorage.removeItem(TUTORIAL_ACTIVE_KEY)
+      }
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 }
@@ -230,6 +242,7 @@ export function useTriggerTutorial() {
     if (!user || user.role === 'user') return
     const isDark = document.documentElement.classList.contains('dark')
     injectStyles(isDark)
+    sessionStorage.setItem(TUTORIAL_ACTIVE_KEY, '1')
     const tour = buildTour(navigate, user.role)
     tour.start()
   }, [navigate, user])

@@ -3,7 +3,7 @@ import { PatientWeightService } from './patient-weight.service';
 import { PatientWeightController } from './patient-weight.controller';
 import { DatabaseModule } from '../database/database.module';
 import { AuthGuardModule } from '../../common/guards/auth/auth.module';
-import { PatientAccessModule } from '../../common/patient-access/patient-access.module';
+import { PatientAccessModule } from '../patient-access/patient-access.module';
 
 @Module({
   imports: [DatabaseModule, AuthGuardModule, PatientAccessModule],

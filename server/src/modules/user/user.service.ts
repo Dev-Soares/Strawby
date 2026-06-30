@@ -44,7 +44,10 @@ export class UserService {
       });
     }
 
-    await this.emailService.sendVerificationEmail(data.email, emailVerificationToken);
+    await this.emailService.sendVerificationEmail(
+      data.email,
+      emailVerificationToken,
+    );
     return user!;
   }
 
@@ -81,7 +84,6 @@ export class UserService {
       }
 
       return user;
-
     } catch (error) {
       mapPrismaError(error, 'Erro ao completar onboarding', {
         p2025: 'Usuário não encontrado',
@@ -95,7 +97,13 @@ export class UserService {
     try {
       return await this.prisma.user.findUnique({
         where: { email },
-        select: { id: true, name: true, password: true, role: true, emailVerified: true },
+        select: {
+          id: true,
+          name: true,
+          password: true,
+          role: true,
+          emailVerified: true,
+        },
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar usuário');
@@ -164,11 +172,13 @@ export class UserService {
 
       await this.prisma.user.update({
         where: { id: user.id },
-        data: { passwordResetToken: resetToken, passwordResetTokenExpiresAt: resetTokenExpiresAt },
+        data: {
+          passwordResetToken: resetToken,
+          passwordResetTokenExpiresAt: resetTokenExpiresAt,
+        },
       });
 
       await this.emailService.sendPasswordResetEmail(email, resetToken);
-
     } catch (error) {
       mapPrismaError(error, 'Erro ao enviar e-mail de redefinição de senha');
     }
@@ -184,15 +194,25 @@ export class UserService {
         select: userSelect,
       });
     } catch (error) {
-      mapPrismaError(error, 'Erro ao buscar usuário por token de redefinição de senha');
+      mapPrismaError(
+        error,
+        'Erro ao buscar usuário por token de redefinição de senha',
+      );
     }
   }
 
-  async resetPassword(userId: string, newPassword: string): Promise<UserPublic>{
+  async resetPassword(
+    userId: string,
+    newPassword: string,
+  ): Promise<UserPublic> {
     try {
       return await this.prisma.user.update({
-        where: { id: userId }, 
-        data: { password: newPassword, passwordResetToken: null, passwordResetTokenExpiresAt: null },
+        where: { id: userId },
+        data: {
+          password: newPassword,
+          passwordResetToken: null,
+          passwordResetTokenExpiresAt: null,
+        },
         select: userSelect,
       });
     } catch (error) {
@@ -201,7 +221,6 @@ export class UserService {
       });
     }
   }
-
 
   async findOneByVerificationToken(token: string): Promise<UserPublic | null> {
     try {
@@ -255,7 +274,6 @@ export class UserService {
       });
 
       await this.emailService.sendVerificationEmail(email, verificationToken);
-
     } catch (error) {
       mapPrismaError(error, 'Erro ao reenviar e-mail de verificação');
     }

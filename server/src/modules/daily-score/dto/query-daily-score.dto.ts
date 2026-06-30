@@ -1,14 +1,15 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsOptional } from 'class-validator';
+import { IsOptional } from 'class-validator';
+import { IsAppDay } from '../../../common/decorators/is-app-day.decorator';
 
 export class QueryDailyScoreDto {
   @ApiPropertyOptional({ example: '2026-05-18' })
-  @IsDateString()
+  @IsAppDay()
   @IsOptional()
   startDate?: string;
 
   @ApiPropertyOptional({ example: '2026-05-24' })
-  @IsDateString()
+  @IsAppDay()
   @IsOptional()
   endDate?: string;
 }

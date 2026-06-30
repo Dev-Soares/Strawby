@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
-import { PatientAccessService } from '../../common/patient-access/patient-access.service';
+import { PatientAccessService } from '../patient-access/patient-access.service';
 import { CreatePatientWeightDto } from './dto/create-patient-weight.dto';
 import { UpdatePatientWeightDto } from './dto/update-patient-weight.dto';
 import { mapPrismaError } from 'src/common/utils/prisma-error.mapper';
@@ -12,7 +12,11 @@ export class PatientWeightService {
     private readonly patientAccess: PatientAccessService,
   ) {}
 
-  async insert(callerId: string, patientId: string, dto: CreatePatientWeightDto) {
+  async insert(
+    callerId: string,
+    patientId: string,
+    dto: CreatePatientWeightDto,
+  ) {
     await this.patientAccess.resolve(callerId, patientId);
 
     try {
@@ -23,25 +27,33 @@ export class PatientWeightService {
           patientId,
         },
       });
-    }
-    catch (error) {
+    } catch (error) {
       mapPrismaError(error, 'Erro ao registrar peso do paciente.');
     }
   }
 
-  async edit(callerId: string, patientId: string, recordId: string, dto: UpdatePatientWeightDto) {
+  async edit(
+    callerId: string,
+    patientId: string,
+    recordId: string,
+    dto: UpdatePatientWeightDto,
+  ) {
     await this.patientAccess.resolve(callerId, patientId);
 
     try {
-      await this.prisma.patientWeight.update({
-        where: { id: recordId },
+      const { count } = await this.prisma.patientWeight.updateMany({
+        where: { id: recordId, patientId },
         data: {
           weight: dto.weight,
           date: dto.date ? new Date(dto.date) : undefined,
         },
       });
-    }
-    catch (error) {
+
+      if (count === 0) {
+        throw new NotFoundException('Registro de peso não encontrado.');
+      }
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
       mapPrismaError(error, 'Erro ao atualizar registro de peso do paciente.');
     }
   }
@@ -50,11 +62,15 @@ export class PatientWeightService {
     await this.patientAccess.resolve(callerId, patientId);
 
     try {
-      await this.prisma.patientWeight.delete({
-        where: { id: recordId },
+      const { count } = await this.prisma.patientWeight.deleteMany({
+        where: { id: recordId, patientId },
       });
-    }
-    catch (error) {
+
+      if (count === 0) {
+        throw new NotFoundException('Registro de peso não encontrado.');
+      }
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
       mapPrismaError(error, 'Erro ao remover registro de peso do paciente.');
     }
   }

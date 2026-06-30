@@ -1,11 +1,16 @@
-import { BadRequestException, Inject, Injectable, forwardRef } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  forwardRef,
+} from '@nestjs/common';
 import { PatientService } from '../patient/patient.service';
 import { MealKind } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
-import { PatientAccessService } from '../../common/patient-access/patient-access.service';
+import { PatientAccessService } from '../patient-access/patient-access.service';
 import { MacroDistribution, PlanMacros, PlanPublic, planSelect } from './types';
 import { PdfService } from '../pdf/pdf.service';
 import { MealService } from '../meal/meal.service';
@@ -30,16 +35,25 @@ export class PlanService {
     private readonly patientService: PatientService,
   ) {}
 
-  async create(callerId: string, patientId: string, dto: CreatePlanDto): Promise<PlanPublic> {
+  async create(
+    callerId: string,
+    patientId: string,
+    dto: CreatePlanDto,
+  ): Promise<PlanPublic> {
     await this.patientAccess.resolve(callerId, patientId);
 
     let planData: PlanMacros;
 
     if (dto.movementLevel) {
-        const patient = await this.patientService.findById(patientId);
-        const lastWeight = patient?.weightRecord[0];
+      const patient = await this.patientService.findById(patientId);
+      const lastWeight = patient?.weightRecord[0];
 
-      if (!lastWeight?.weight || !patient?.height || !patient?.birthDate || !patient?.gender) {
+      if (
+        !lastWeight?.weight ||
+        !patient?.height ||
+        !patient?.birthDate ||
+        !patient?.gender
+      ) {
         throw new BadRequestException(
           'Preencha peso, altura, data de nascimento e sexo antes de gerar um plano automático',
         );
@@ -59,9 +73,16 @@ export class PlanService {
       dto.carbs !== undefined &&
       dto.fat !== undefined
     ) {
-      planData = { calories: dto.calories, protein: dto.protein, carbs: dto.carbs, fat: dto.fat };
+      planData = {
+        calories: dto.calories,
+        protein: dto.protein,
+        carbs: dto.carbs,
+        fat: dto.fat,
+      };
     } else {
-      throw new BadRequestException('Informe as macros manualmente ou os dados para cálculo automático');
+      throw new BadRequestException(
+        'Informe as macros manualmente ou os dados para cálculo automático',
+      );
     }
 
     try {
@@ -70,20 +91,29 @@ export class PlanService {
         select: planSelect,
       });
     } catch (error) {
-      mapPrismaError(error, 'Erro ao criar plano', { p2002: 'Paciente já possui um plano' });
+      mapPrismaError(error, 'Erro ao criar plano', {
+        p2002: 'Paciente já possui um plano',
+      });
     }
   }
 
-  async findByPatient(callerId: string, patientId: string): Promise<PlanPublic | null> {
+  async findByPatient(
+    callerId: string,
+    patientId: string,
+  ): Promise<PlanPublic | null> {
     await this.patientAccess.resolve(callerId, patientId);
     return this.queryPlanByPatient(patientId);
   }
 
-  async getPlanPdf(callerId: string, patientId: string): Promise<{ buffer: Buffer; filename: string }> {
+  async getPlanPdf(
+    callerId: string,
+    patientId: string,
+  ): Promise<{ buffer: Buffer; filename: string }> {
     await this.patientAccess.resolve(callerId, patientId);
 
     const plan = await this.queryPlanByPatient(patientId);
-    if (!plan) throw new BadRequestException('Plano não encontrado para o paciente');
+    if (!plan)
+      throw new BadRequestException('Plano não encontrado para o paciente');
 
     const [patientData, meals] = await Promise.all([
       this.prisma.patient.findUnique({
@@ -102,13 +132,16 @@ export class PlanService {
       plan,
       meals,
       patientName,
-      nutritionistName: patientData?.nutritionist?.user?.name ?? 'Nutricionista',
+      nutritionistName:
+        patientData?.nutritionist?.user?.name ?? 'Nutricionista',
     });
 
     return { buffer, filename: `Plano de ${patientName}.pdf` };
   }
 
-  async queryPlansByPatientsBulk(patientIds: string[]): Promise<Map<string, PlanPublic | null>> {
+  async queryPlansByPatientsBulk(
+    patientIds: string[],
+  ): Promise<Map<string, PlanPublic | null>> {
     try {
       const plans = await this.prisma.plan.findMany({
         where: { patientId: { in: patientIds } },
@@ -125,13 +158,22 @@ export class PlanService {
 
   async queryPlanByPatient(patientId: string): Promise<PlanPublic | null> {
     try {
-      return await this.prisma.plan.findUnique({ where: { patientId }, select: planSelect }) ?? null;
+      return (
+        (await this.prisma.plan.findUnique({
+          where: { patientId },
+          select: planSelect,
+        })) ?? null
+      );
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar plano');
     }
   }
 
-  async update(callerId: string, patientId: string, dto: UpdatePlanDto): Promise<PlanPublic> {
+  async update(
+    callerId: string,
+    patientId: string,
+    dto: UpdatePlanDto,
+  ): Promise<PlanPublic> {
     await this.patientAccess.resolve(callerId, patientId);
     try {
       return await this.prisma.plan.update({
@@ -145,16 +187,23 @@ export class PlanService {
         select: planSelect,
       });
     } catch (error) {
-      mapPrismaError(error, 'Erro ao atualizar plano', { p2025: 'Plano não encontrado' });
+      mapPrismaError(error, 'Erro ao atualizar plano', {
+        p2025: 'Plano não encontrado',
+      });
     }
   }
 
   async remove(callerId: string, patientId: string): Promise<{ id: string }> {
     await this.patientAccess.resolve(callerId, patientId);
     try {
-      return await this.prisma.plan.delete({ where: { patientId }, select: { id: true } });
+      return await this.prisma.plan.delete({
+        where: { patientId },
+        select: { id: true },
+      });
     } catch (error) {
-      mapPrismaError(error, 'Erro ao deletar plano', { p2025: 'Plano não encontrado' });
+      mapPrismaError(error, 'Erro ao deletar plano', {
+        p2025: 'Plano não encontrado',
+      });
     }
   }
 
@@ -167,23 +216,41 @@ export class PlanService {
   }
 
   private generateRecomendedPlan(params: GenerateParams): PlanMacros {
-    const userTmb = this.getUserTmb(params.weight, params.height, params.age, params.gender);
+    const userTmb = this.getUserTmb(
+      params.weight,
+      params.height,
+      params.age,
+      params.gender,
+    );
     const userDailyCalories = userTmb * params.movementLevel;
-    const caloriesForPlan = userDailyCalories - (this.getCaloriesForGoal(params.goal));
-    const macros = this.generateMacrosNumbers(caloriesForPlan, params.goal, params.weight);
+    const caloriesForPlan =
+      userDailyCalories - this.getCaloriesForGoal(params.goal);
+    const macros = this.generateMacrosNumbers(
+      caloriesForPlan,
+      params.goal,
+      params.weight,
+    );
     return { calories: Math.round(caloriesForPlan), ...macros };
   }
 
   private getCaloriesForGoal(goal: string | null): number {
     switch (goal) {
-      case 'lose': return 400;
-      case 'gain': return -400;
-      case 'mantain': return 0;
-      default: return 0;
+      case 'lose':
+        return 400;
+      case 'gain':
+        return -400;
+      case 'mantain':
+        return 0;
+      default:
+        return 0;
     }
   }
 
-  private generateMacrosNumbers(calories: number, goal: string | null, weight: number): MacroDistribution {
+  private generateMacrosNumbers(
+    calories: number,
+    goal: string | null,
+    weight: number,
+  ): MacroDistribution {
     const protein = Math.round(weight * (goal === 'lose' ? 1.8 : 1.6));
     const fat = Math.round(weight * (goal === 'lose' ? 0.8 : 1.0));
     const carbs = Math.round(Math.max(calories - protein * 4 - fat * 9, 0) / 4);
@@ -191,7 +258,12 @@ export class PlanService {
   }
 
   // Mifflin-St Jeor (1990)
-  private getUserTmb(weight: number, height: number, age: number, gender: string) {
+  private getUserTmb(
+    weight: number,
+    height: number,
+    age: number,
+    gender: string,
+  ) {
     const base = 10 * weight + 6.25 * height - 5 * age;
     if (gender === 'male') return base + 5;
     if (gender === 'female') return base - 161;

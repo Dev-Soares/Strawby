@@ -15,7 +15,8 @@ export class NutritionistService {
         select: nutritionistSelect,
       });
 
-      if (!nutritionist) throw new NotFoundException('Nutricionista não encontrado');
+      if (!nutritionist)
+        throw new NotFoundException('Nutricionista não encontrado');
 
       return nutritionist;
     } catch (error) {
@@ -30,7 +31,8 @@ export class NutritionistService {
         select: nutritionistSelect,
       });
 
-      if (!nutritionist) throw new NotFoundException('Nutricionista não encontrado');
+      if (!nutritionist)
+        throw new NotFoundException('Nutricionista não encontrado');
 
       return nutritionist;
     } catch (error) {
@@ -75,12 +77,28 @@ export class NutritionistService {
         },
       });
 
-      if (!nutritionist) throw new NotFoundException('Nutricionista não encontrado');
+      if (!nutritionist)
+        throw new NotFoundException('Nutricionista não encontrado');
 
-      return nutritionist.patients;
+      return nutritionist.patients.map((patient) => ({
+        id: patient.id,
+        height: patient.height,
+        gender: patient.gender,
+        weight: patient.weightRecord[0]?.weight ?? null,
+        age: patient.birthDate ? this.calculateAge(patient.birthDate) : null,
+        user: patient.user,
+      }));
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar pacientes');
     }
+  }
+
+  private calculateAge(birthDate: Date): number {
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+    return age;
   }
 
   async disconnectPatient(patientId: string): Promise<void> {
@@ -94,13 +112,13 @@ export class NutritionistService {
     }
   }
 
-  async updateCode (nutritionistId: string, dto: CreateCodeDto) {
+  async updateCode(nutritionistId: string, dto: CreateCodeDto) {
     try {
       const updated = await this.prisma.nutritionist.update({
         where: { id: nutritionistId },
         data: { code: dto.code },
         select: nutritionistSelect,
-      })
+      });
 
       return updated;
     } catch (error) {
@@ -108,5 +126,5 @@ export class NutritionistService {
         p2002: 'Código de acesso já existe',
       });
     }
-  }     
+  }
 }

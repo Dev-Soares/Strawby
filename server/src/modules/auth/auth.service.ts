@@ -58,7 +58,6 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string): Promise<AuthTokenResponse> {
-    
     if (!refreshToken) {
       throw new UnauthorizedException('Token de atualização não fornecido');
     }
@@ -66,7 +65,6 @@ export class AuthService {
     let payload: { sub: string };
 
     try {
-
       payload = await this.jwtService.verifyAsync(refreshToken, {
         secret: getRefreshTokenConfig(this.configService).secret,
       });
@@ -76,7 +74,6 @@ export class AuthService {
       const access_token = await this.jwtService.signAsync(newPayload);
 
       return { access_token };
-
     } catch {
       throw new UnauthorizedException('Token de atualização inválido');
     }
@@ -103,10 +100,16 @@ export class AuthService {
 
       const { email, name } = googlePayload;
 
-      const existingUser = await this.usersService.findByEmailWithPassword(email);
-      const userForToken = existingUser ?? await this.usersService.createFromGoogle(email, name);
+      const existingUser =
+        await this.usersService.findByEmailWithPassword(email);
+      const userForToken =
+        existingUser ?? (await this.usersService.createFromGoogle(email, name));
 
-      const tokenPayload = { sub: userForToken.id, name: userForToken.name, role: userForToken.role };
+      const tokenPayload = {
+        sub: userForToken.id,
+        name: userForToken.name,
+        role: userForToken.role,
+      };
 
       const access_token = await this.jwtService.signAsync(tokenPayload);
       const refresh_token = await this.jwtService.signAsync(

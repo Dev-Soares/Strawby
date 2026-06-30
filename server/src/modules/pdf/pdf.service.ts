@@ -6,7 +6,8 @@ import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';
 import { buildPlanHtml, type PlanPdfData } from './templates/plan.template';
 
-const WINDOWS_BRAVE_PATH = 'C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe';
+const WINDOWS_BRAVE_PATH =
+  'C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe';
 
 @Injectable()
 export class PdfService implements OnModuleInit {
@@ -22,7 +23,13 @@ export class PdfService implements OnModuleInit {
 
   private getLogoBase64(): string | undefined {
     try {
-      const logoPath = path.join(process.cwd(), '..', 'client', 'public', 'logo.png');
+      const logoPath = path.join(
+        process.cwd(),
+        '..',
+        'client',
+        'public',
+        'logo.png',
+      );
       return fs.readFileSync(logoPath).toString('base64');
     } catch {
       return undefined;
@@ -34,7 +41,9 @@ export class PdfService implements OnModuleInit {
 
     const isWindows = os.platform() === 'win32';
     const browser = await puppeteer.launch({
-      args: isWindows ? ['--no-sandbox', '--disable-setuid-sandbox'] : chromium.args,
+      args: isWindows
+        ? ['--no-sandbox', '--disable-setuid-sandbox']
+        : chromium.args,
       executablePath: this.chromiumExecutablePath,
       headless: true,
     });

@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { UserService } from './user.service';
@@ -8,7 +18,10 @@ import { CompleteOnboardingDto } from './dto/complete-onboarding.dto';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import { OptionalAuthGuard } from 'src/common/guards/auth/optionalAuth.guard';
 import { OwnershipGuard } from 'src/common/guards/auth/ownership.guard';
-import type { AuthenticatedRequest, OptionalAuthRequest } from 'src/common/types/req-types';
+import type {
+  AuthenticatedRequest,
+  OptionalAuthRequest,
+} from 'src/common/types/req-types';
 
 @ApiTags('user')
 @Controller('user')

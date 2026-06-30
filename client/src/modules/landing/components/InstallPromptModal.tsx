@@ -247,7 +247,7 @@ export default function InstallPromptModal({ isOpen, onClose, platform }: Instal
               <button
                 type="button"
                 onClick={onClose}
-                className="w-full py-3.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 text-sm font-bold text-white transition-colors cursor-pointer"
+                className="w-full py-3.5 rounded-xl bg-neutral-950 dark:bg-neutral-100 hover:bg-neutral-800 dark:hover:bg-neutral-200 text-sm font-bold text-white dark:text-neutral-950 transition-colors cursor-pointer"
               >
                 Entendido
               </button>

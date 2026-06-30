@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  Min,
+} from 'class-validator';
 
 export class CreatePrivateFoodDto {
   @ApiProperty({ example: 'Marmita de frango' })
@@ -28,7 +35,11 @@ export class CreatePrivateFoodDto {
   @Min(0)
   fat: number;
 
-  @ApiProperty({ example: '100g', description: 'Porção de referência', required: false })
+  @ApiProperty({
+    example: '100g',
+    description: 'Porção de referência',
+    required: false,
+  })
   @IsString()
   @IsOptional()
   @MaxLength(50)

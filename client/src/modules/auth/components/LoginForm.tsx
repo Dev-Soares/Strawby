@@ -5,6 +5,7 @@ import { useSignIn } from '../hooks/useSignIn'
 import { useGoogleSignIn } from '../hooks/useGoogleSignIn'
 import ForgotPasswordModal from './ForgotPasswordModal'
 import GoogleAuthButton from './GoogleAuthButton'
+import Spinner from '../../../shared/components/Spinner'
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
@@ -21,23 +22,23 @@ export default function LoginForm() {
     <div className="flex flex-col lg:flex-row gap-8 lg:gap-28 items-stretch w-full">
 
       {/* Formulário */}
-      <div className="flex-1 min-w-0 bg-neutral-900 rounded-2xl p-8 md:p-10 lg:p-12 flex flex-col">
+      <div className="flex-1 min-w-0 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm rounded-2xl p-8 md:p-10 lg:p-12 flex flex-col transition-colors duration-300">
 
-        <h1 className="text-4xl md:text-[52px] font-black tracking-tight text-white leading-none mb-10 md:mb-14">
-          Entrar.
+        <h1 className="text-4xl md:text-[52px] font-black tracking-tight text-neutral-900 dark:text-white leading-none mb-10 md:mb-14">
+          Entrar
         </h1>
 
         <form onSubmit={onSubmit} className="flex flex-col gap-8 md:gap-10 flex-1">
 
           <div>
-            <label className="block text-[11px] font-semibold text-neutral-400 mb-3 uppercase tracking-widest">
+            <label className="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-3 uppercase tracking-widest">
               E-mail
             </label>
             <input
               {...register('email')}
               type="email"
               autoComplete="email"
-              className="w-full border-0 border-b-2 border-neutral-700 bg-transparent pb-3 text-[15px] text-white placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200"
+              className="w-full border-0 border-b-2 border-neutral-300 dark:border-neutral-700 bg-transparent pb-3 text-[15px] text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200"
             />
             {errors.email && (
               <p className="text-red-400 text-[11px] mt-2">{errors.email.message}</p>
@@ -45,7 +46,7 @@ export default function LoginForm() {
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold text-neutral-400 mb-3 uppercase tracking-widest">
+            <label className="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-3 uppercase tracking-widest">
               Senha
             </label>
             <div className="relative">
@@ -53,12 +54,12 @@ export default function LoginForm() {
                 {...register('password')}
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
-                className="w-full border-0 border-b-2 border-neutral-700 bg-transparent pb-3 text-[15px] text-white placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200 pr-8"
+                className="w-full border-0 border-b-2 border-neutral-300 dark:border-neutral-700 bg-transparent pb-3 text-[15px] text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200 pr-8"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-0 bottom-3 text-neutral-500 hover:text-white transition-colors cursor-pointer"
+                className="absolute right-0 bottom-3 text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
               >
                 {showPassword
                   ? <EyeSlash size={20} weight="bold" />
@@ -75,7 +76,7 @@ export default function LoginForm() {
             <button
               type="button"
               onClick={() => setShowForgotPassword(true)}
-              className="text-[12px] font-semibold text-neutral-400 hover:text-red-400 transition-colors cursor-pointer"
+              className="text-[12px] font-semibold text-neutral-500 dark:text-neutral-400 hover:text-red-500 dark:hover:text-red-400 transition-colors cursor-pointer"
             >
               Esqueceu a senha?
             </button>
@@ -85,15 +86,16 @@ export default function LoginForm() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full rounded-full bg-red-600 text-white font-bold py-3.5 px-12 text-[14px] hover:bg-red-700 active:bg-red-800 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 rounded-full bg-red-600 text-white font-bold py-3.5 px-12 text-[14px] hover:bg-red-700 active:bg-red-800 transition-colors duration-150 disabled:opacity-50 cursor-pointer"
             >
+              {isPending && <Spinner size={16} />}
               {isPending ? 'Entrando…' : 'Entrar'}
             </button>
 
             <div className="flex items-center gap-3">
-              <div className="h-px flex-1 bg-neutral-700" />
+              <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
               <span className="text-[11px] font-semibold text-neutral-500 uppercase tracking-widest">ou</span>
-              <div className="h-px flex-1 bg-neutral-700" />
+              <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
             </div>
 
             <GoogleAuthButton
@@ -105,7 +107,7 @@ export default function LoginForm() {
               Não tem conta?{' '}
               <Link
                 to="/app/create-account"
-                className="font-semibold text-white underline underline-offset-2 hover:text-red-400 transition-colors"
+                className="font-semibold text-neutral-900 dark:text-white underline underline-offset-2 hover:text-red-500 dark:hover:text-red-400 transition-colors"
               >
                 Cadastre-se agora
               </Link>

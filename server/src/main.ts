@@ -20,10 +20,21 @@ function requireEnv(name: string): string {
 }
 
 function validateRequiredEnvs(): void {
+  // Sempre obrigatórias — app não sobe sem elas
   requireEnv('CORS_ORIGIN');
   requireEnv('JWT_SECRET');
   requireEnv('JWT_REFRESH_SECRET');
   requireEnv('DATABASE_URL');
+
+  // Em produção, features de core (e-mail e push) precisam estar configuradas.
+  // Falha cedo com mensagem clara em vez de quebrar em runtime.
+  if (isProduction) {
+    requireEnv('RESEND_API_KEY');
+    requireEnv('EMAIL_FROM');
+    requireEnv('FIREBASE_PROJECT_ID');
+    requireEnv('FIREBASE_CLIENT_EMAIL');
+    requireEnv('FIREBASE_PRIVATE_KEY');
+  }
 }
 
 function parseOrigins(raw: string | undefined): string | string[] | undefined {

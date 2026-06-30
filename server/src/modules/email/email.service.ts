@@ -24,7 +24,8 @@ export class EmailService {
     await this.sendCodeEmail(to, {
       token,
       title: 'Verifique seu e-mail',
-      description: 'Use o código abaixo para confirmar seu endereço de e-mail e acessar o Strawby.',
+      description:
+        'Use o código abaixo para confirmar seu endereço de e-mail e acessar o Strawby.',
       disclaimer: 'Se você não criou uma conta no Strawby, ignore este e-mail.',
       preheader: `Seu código Strawby: ${token} — expira em 1 hora.`,
     });
@@ -34,13 +35,18 @@ export class EmailService {
     await this.sendCodeEmail(to, {
       token,
       title: 'Redefina sua senha',
-      description: 'Use o código abaixo para criar uma nova senha na sua conta Strawby.',
-      disclaimer: 'Se você não solicitou a redefinição de senha, ignore este e-mail. Sua senha permanece a mesma.',
+      description:
+        'Use o código abaixo para criar uma nova senha na sua conta Strawby.',
+      disclaimer:
+        'Se você não solicitou a redefinição de senha, ignore este e-mail. Sua senha permanece a mesma.',
       preheader: `Código de redefinição Strawby: ${token} — expira em 1 hora.`,
     });
   }
 
-  private async sendCodeEmail(to: string, params: CodeEmailParams): Promise<void> {
+  private async sendCodeEmail(
+    to: string,
+    params: CodeEmailParams,
+  ): Promise<void> {
     const { token, title, description, disclaimer, preheader } = params;
     const year = new Date().getFullYear();
 

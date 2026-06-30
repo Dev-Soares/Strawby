@@ -11,10 +11,10 @@ type Props = {
 
 const buildBodyStats = (patient: NutritionistPatient) => {
   const stats: { Icon: typeof Scales; label: string }[] = []
-  if (patient.weight !== null) stats.push({ Icon: Scales, label: `${patient.weight} kg` })
-  if (patient.height !== null) stats.push({ Icon: ArrowsVertical, label: `${patient.height} cm` })
-  if (patient.age !== null) stats.push({ Icon: Calendar, label: `${patient.age} anos` })
-  if (patient.gender !== null) {
+  if (patient.weight != null) stats.push({ Icon: Scales, label: `${patient.weight} kg` })
+  if (patient.height != null) stats.push({ Icon: ArrowsVertical, label: `${patient.height} cm` })
+  if (patient.age != null) stats.push({ Icon: Calendar, label: `${patient.age} anos` })
+  if (patient.gender != null) {
     stats.push({
       Icon: patient.gender === 'male' ? GenderMale : GenderFemale,
       label: patient.gender === 'male' ? 'Masculino' : 'Feminino',
@@ -42,9 +42,6 @@ export default function PatientHeader({ patient }: Props) {
         <ArrowLeft size={16} weight="bold" />
         Meus pacientes
       </button>
-      <p className="text-xs font-extrabold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-1">
-        Plano do paciente
-      </p>
       <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight">
         {patient?.user.name ?? '—'}
       </h1>

@@ -2,7 +2,16 @@ import { Food } from '@prisma/client';
 
 export type FoodPublic = Pick<
   Food,
-  'id' | 'name' | 'source' | 'priority' | 'calories' | 'protein' | 'carbs' | 'fat' | 'fiber' | 'sodium'
+  | 'id'
+  | 'name'
+  | 'source'
+  | 'priority'
+  | 'calories'
+  | 'protein'
+  | 'carbs'
+  | 'fat'
+  | 'fiber'
+  | 'sodium'
 >;
 
 export const foodSelect = {

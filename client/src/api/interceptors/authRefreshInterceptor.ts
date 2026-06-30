@@ -6,10 +6,10 @@ export const UNAUTHORIZED_EVENT = 'auth:unauthorized'
 type RetryableConfig = InternalAxiosRequestConfig & { _retry?: boolean }
 
 let isRefreshing = false
-let refreshSubscribers: Array<() => void> = []
+let refreshSubscribers: Array<(error?: unknown) => void> = []
 
-const onRefreshed = () => {
-  refreshSubscribers.forEach((subscriber) => subscriber())
+const notifySubscribers = (error?: unknown) => {
+  refreshSubscribers.forEach((subscriber) => subscriber(error))
   refreshSubscribers = []
 }
 
@@ -30,13 +30,21 @@ export const setupAuthRefreshInterceptor = (api: AxiosInstance) => {
       const isRefreshCall = originalRequest?.url === '/auth/refresh'
 
       if (status !== 401 || !originalRequest || isRefreshCall || originalRequest._retry) {
-        if (status === 401) handleUnauthorized()
+        // 401 terminal (já tentou refresh e retry) → desloga. O 401 do próprio
+        // /auth/refresh é tratado no catch abaixo, então não dispara aqui.
+        if (status === 401 && originalRequest?._retry && !isRefreshCall) {
+          handleUnauthorized()
+        }
         return Promise.reject(error)
       }
 
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
-          refreshSubscribers.push(() => {
+          refreshSubscribers.push((refreshError?: unknown) => {
+            if (refreshError) {
+              reject(refreshError)
+              return
+            }
             originalRequest._retry = true
             api(originalRequest).then(resolve).catch(reject)
           })
@@ -49,11 +57,11 @@ export const setupAuthRefreshInterceptor = (api: AxiosInstance) => {
       try {
         await api.post('/auth/refresh')
         isRefreshing = false
-        onRefreshed()
+        notifySubscribers()
         return api(originalRequest)
       } catch (refreshError) {
         isRefreshing = false
-        refreshSubscribers = []
+        notifySubscribers(refreshError)
         handleUnauthorized()
         return Promise.reject(refreshError)
       }

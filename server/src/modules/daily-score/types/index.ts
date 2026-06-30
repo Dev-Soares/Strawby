@@ -5,7 +5,7 @@ export type DailyScorePublic = Pick<
   'id' | 'date' | 'score' | 'patientId' | 'createdAt' | 'updatedAt'
 >;
 
-export type DailyScoreEntry = Pick<DailyScore, 'patientId' | 'score'>
+export type DailyScoreEntry = Pick<DailyScore, 'patientId' | 'score'>;
 
 export const dailyScoreSelect = {
   id: true,

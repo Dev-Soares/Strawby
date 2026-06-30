@@ -1,10 +1,12 @@
+import { lazy } from 'react'
 import { Route } from 'react-router-dom'
-import LandingPage from '../pages/LandingPage'
 import StandaloneRedirect from '../shared/components/StandaloneRedirect'
-import FaqPage from '../pages/FaqPage'
-import PrivacyPage from '../pages/PrivacyPage'
-import TermsPage from '../pages/TermsPage'
-import NotFoundPage from '../pages/NotFoundPage'
+
+const LandingPage = lazy(() => import('../pages/LandingPage'))
+const FaqPage = lazy(() => import('../pages/FaqPage'))
+const PrivacyPage = lazy(() => import('../pages/PrivacyPage'))
+const TermsPage = lazy(() => import('../pages/TermsPage'))
+const NotFoundPage = lazy(() => import('../pages/NotFoundPage'))
 
 export const publicRoutes = [
   <Route key="landing" path="/" element={<StandaloneRedirect><LandingPage /></StandaloneRedirect>} />,

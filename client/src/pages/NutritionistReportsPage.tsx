@@ -22,7 +22,7 @@ export default function NutritionistReportsPage() {
             {new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^\w/, (c) => c.toUpperCase())}
           </p>
           <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-tight tracking-tight mb-2 transition-colors duration-300">
-            Relatórios
+            Resultados
           </h1>
           <p className="text-lg sm:text-xl font-extrabold text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
             Adesão ao <span className="text-red-600">plano alimentar</span>

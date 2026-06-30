@@ -17,7 +17,11 @@ import { SignInDto } from './dto/sign-in.dto';
 import { GoogleAuthDto } from './dto/google-auth.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { cookieConfig, refreshCookieConfig } from 'src/common/config/cookie.config';
+import { ResendVerificationDto } from './dto/resend-verification.dto';
+import {
+  cookieConfig,
+  refreshCookieConfig,
+} from 'src/common/config/cookie.config';
 import type { SignInResponse, LogoutResponse } from './types';
 
 @ApiTags('auth')
@@ -48,6 +52,7 @@ export class AuthController {
     return { message: 'Logout efetuado com sucesso' };
   }
 
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
   async refresh(
@@ -84,12 +89,11 @@ export class AuthController {
     return { message: 'E-mail verificado com sucesso' };
   }
 
+  @Throttle({ default: { limit: 3, ttl: 60000 } })
   @HttpCode(HttpStatus.OK)
   @Post('resend-verification')
-  async resendVerification(
-    @Body('email') email: string,
-  ) {
-    await this.authService.resendVerificationEmail(email);
+  async resendVerification(@Body() dto: ResendVerificationDto) {
+    await this.authService.resendVerificationEmail(dto.email);
   }
 
   @Throttle({ default: { limit: 3, ttl: 60000 } })
@@ -104,7 +108,10 @@ export class AuthController {
     @Body() dto: ResetPasswordDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const result = await this.authService.resetPassword(dto.token, dto.newPassword);
+    const result = await this.authService.resetPassword(
+      dto.token,
+      dto.newPassword,
+    );
     res.cookie('access_token', result.access_token, cookieConfig);
     res.cookie('refresh_token', result.refresh_token, refreshCookieConfig);
     return { message: 'Senha redefinida com sucesso' };
