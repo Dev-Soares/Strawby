@@ -20,11 +20,13 @@ export default function NutritionistContent() {
   useAutoTutorial()
   const { data: patients, isPending: patientsPending, isError: patientsError } = useGetPatients()
   const { data: requests, isPending: requestsPending } = useGetConnectionRequests()
-  const { mutate: accept, isPending: accepting } = useAcceptConnectionRequest()
-  const { mutate: reject, isPending: rejecting } = useRejectConnectionRequest()
+  const accept = useAcceptConnectionRequest()
+  const reject = useRejectConnectionRequest()
 
   const pendingCount = requests?.length ?? 0
-  const isMutating = accepting || rejecting
+
+  const acceptingId = accept.isPending ? accept.variables : null
+  const rejectingId = reject.isPending ? reject.variables : null
 
   return (
     <AppLayout>
@@ -118,9 +120,11 @@ export default function NutritionistContent() {
                     key={request.id}
                     request={request}
                     index={i}
-                    onAccept={accept}
-                    onReject={reject}
-                    isPending={isMutating}
+                    onAccept={accept.mutate}
+                    onReject={reject.mutate}
+                    isAccepting={acceptingId === request.id}
+                    isRejecting={rejectingId === request.id}
+                    disabled={!!acceptingId || !!rejectingId}
                   />
                 ))}
               </div>

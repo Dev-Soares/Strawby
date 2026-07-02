@@ -3,9 +3,10 @@ import { DatabaseModule } from '../database/database.module';
 import { AuthGuardModule } from '../../common/guards/auth/auth.module';
 import { NutritionistController } from './nutritionist.controller';
 import { NutritionistService } from './nutritionist.service';
+import { NotificationModule } from '../notification/send-notification/notification.module';
 
 @Module({
-  imports: [DatabaseModule, AuthGuardModule],
+  imports: [DatabaseModule, AuthGuardModule, NotificationModule],
   controllers: [NutritionistController],
   providers: [NutritionistService],
   exports: [NutritionistService],

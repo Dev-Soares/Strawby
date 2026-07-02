@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Copy, PencilSimple, Stethoscope, Check, CalendarBlank, Users } from '@phosphor-icons/react'
+import { Copy, PencilSimple, Stethoscope, Check, CalendarBlank, Users, ClockCounterClockwise } from '@phosphor-icons/react'
 import { useGetNutritionist } from '@/modules/nutritionist/hooks/useGetNutritionist'
 import { useGetPatients } from '@/modules/nutritionist/hooks/useGetPatients'
 import { useUpdateCode } from '@/modules/nutritionist/hooks/useUpdateCode'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
 import UpdateCodeModal from '@/modules/nutritionist/components/UpdateCodeModal'
+import ConnectionHistoryModal from '@/modules/connection-request/components/ConnectionHistoryModal'
 import toast from 'react-hot-toast'
 
 export default function ProfileInviteCodeSection() {
@@ -13,6 +14,7 @@ export default function ProfileInviteCodeSection() {
   const { data: patients } = useGetPatients()
   const updateCodeMutation = useUpdateCode()
   const [open, setOpen] = useState(false)
+  const [historyOpen, setHistoryOpen] = useState(false)
   const [copied, setCopied] = useState(false)
 
   const handleCopy = () => {
@@ -81,6 +83,15 @@ export default function ProfileInviteCodeSection() {
             </div>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => setHistoryOpen(true)}
+          className="mt-4 w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-neutral-200 dark:border-neutral-800 text-sm font-bold text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 transition-colors duration-150 cursor-pointer"
+        >
+          <ClockCounterClockwise size={16} weight="bold" />
+          Ver histórico de conexões
+        </button>
       </div>
 
       <div className="lg:pl-16">
@@ -131,6 +142,11 @@ export default function ProfileInviteCodeSection() {
         isPending={updateCodeMutation.isPending}
         onClose={() => setOpen(false)}
         onSave={(data) => updateCodeMutation.mutate(data, { onSuccess: () => setOpen(false) })}
+      />
+
+      <ConnectionHistoryModal
+        isOpen={historyOpen}
+        onClose={() => setHistoryOpen(false)}
       />
     </div>
   )

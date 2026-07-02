@@ -61,20 +61,34 @@ export default function PatientPlanSection({
           <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => onOpenCreatePlan('manual')}
-              className="flex items-center justify-center gap-2 flex-1 border-2 border-dashed border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 rounded-2xl py-6 text-sm font-bold text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-all cursor-pointer"
+              className="group flex items-center gap-3 flex-1 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 rounded-2xl p-5 transition-all cursor-pointer text-left active:scale-[0.99]"
             >
-              <PencilSimple size={15} weight="bold" /> Inserir manualmente
+              <div className="w-11 h-11 rounded-xl bg-neutral-100 dark:bg-neutral-800 group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700 flex items-center justify-center shrink-0 transition-colors">
+                <PencilSimple size={20} weight="bold" className="text-neutral-700 dark:text-neutral-200" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-extrabold text-neutral-950 dark:text-neutral-100 leading-tight">Inserir manualmente</p>
+                <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5 leading-tight">Defina as metas de macros você mesmo</p>
+              </div>
             </button>
             <button
               onClick={() => onOpenCreatePlan('generate')}
               disabled={!hasBodyData}
-              className={`flex items-center justify-center gap-2 flex-1 rounded-2xl py-6 text-sm font-bold transition-all ${
+              className={`group flex items-center gap-3 flex-1 rounded-2xl p-5 transition-all text-left ${
                 hasBodyData
-                  ? 'bg-red-600 hover:bg-red-700 text-white cursor-pointer'
-                  : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-300 dark:text-neutral-600 cursor-not-allowed'
+                  ? 'bg-red-600 hover:bg-red-700 cursor-pointer active:scale-[0.99]'
+                  : 'bg-neutral-100 dark:bg-neutral-800 cursor-not-allowed opacity-70'
               }`}
             >
-              <Sparkle size={15} weight="fill" /> Gerar automaticamente
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                hasBodyData ? 'bg-white/20' : 'bg-neutral-200 dark:bg-neutral-700'
+              }`}>
+                <Sparkle size={20} weight="fill" className={hasBodyData ? 'text-white' : 'text-neutral-400 dark:text-neutral-500'} />
+              </div>
+              <div className="min-w-0">
+                <p className={`text-sm font-extrabold leading-tight ${hasBodyData ? 'text-white' : 'text-neutral-400 dark:text-neutral-500'}`}>Gerar automaticamente</p>
+                <p className={`text-xs mt-0.5 leading-tight ${hasBodyData ? 'text-white/70' : 'text-neutral-400 dark:text-neutral-600'}`}>Calcule as metas pelos dados corporais</p>
+              </div>
             </button>
           </div>
           {!hasBodyData && (

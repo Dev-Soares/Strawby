@@ -52,11 +52,19 @@ export class ConnectionRequestService {
     nutritionistId: string,
   ): Promise<ConnectionRequestPublic> {
     try {
-      return await this.prisma.connectionRequest.update({
+      const updated = await this.prisma.connectionRequest.update({
         where: { id, nutritionistId },
         data: { status: 'REJECTED' },
         select: connectionRequestSelect,
       });
+
+      await this.notificationService.sendOne(
+        updated.patientId,
+        'Solicitação de conexão recusada',
+        'Seu nutricionista recusou sua solicitação de conexão.',
+      );
+
+      return updated;
     } catch (error) {
       mapPrismaError(error, 'Erro ao rejeitar solicitação', {
         p2025: 'Solicitação não encontrada',
@@ -103,6 +111,20 @@ export class ConnectionRequestService {
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar solicitações');
+    }
+  }
+
+  async findAllByNutritionist(
+    nutritionistId: string,
+  ): Promise<ConnectionRequestWithPatient[]> {
+    try {
+      return await this.prisma.connectionRequest.findMany({
+        where: { nutritionistId },
+        select: connectionRequestWithPatientSelect,
+        orderBy: { createdAt: 'desc' },
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar histórico de solicitações');
     }
   }
 }

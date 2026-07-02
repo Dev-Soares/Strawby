@@ -53,4 +53,11 @@ export class ConnectionRequestController {
       req.user.sub,
     );
   }
+
+  @Roles('nutritionist')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Get('nutritionist/history')
+  findAllByNutritionist(@Req() req: AuthenticatedRequest) {
+    return this.connectionRequestService.findAllByNutritionist(req.user.sub);
+  }
 }
