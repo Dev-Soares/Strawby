@@ -6,17 +6,10 @@ import { X, FloppyDisk, Target, TrendDown, TrendUp, Minus, ArrowRight } from '@p
 import Spinner from '@/shared/components/Spinner'
 import { targetWeightSchema, type TargetWeightFormData } from '@/modules/patient/types/targetWeight'
 
-const GOALS = [
-  { value: 'lose' as const, label: 'Perder peso', Icon: TrendDown, hint: 'Escolha um valor abaixo do peso atual' },
-  { value: 'gain' as const, label: 'Ganhar massa', Icon: TrendUp, hint: 'Escolha um valor acima do peso atual' },
-  { value: 'mantain' as const, label: 'Manter peso', Icon: Minus, hint: 'Escolha o peso que quer sustentar' },
-]
-
 interface Props {
   isOpen: boolean
   isPending: boolean
   defaultTarget?: number | null
-  defaultGoal?: 'lose' | 'gain' | 'mantain' | null
   currentWeight?: number | null
   onClose: () => void
   onSave: (data: TargetWeightFormData) => void
@@ -26,32 +19,33 @@ export default function TargetWeightModal({
   isOpen,
   isPending,
   defaultTarget,
-  defaultGoal,
   currentWeight,
   onClose,
   onSave,
 }: Props) {
-  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<TargetWeightFormData>({
+  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm<TargetWeightFormData>({
     resolver: zodResolver(targetWeightSchema),
   })
 
   useEffect(() => {
-    if (isOpen) {
-      reset({
-        goal: defaultGoal ?? undefined,
-        targetWeight: defaultTarget ?? undefined,
-      })
-    }
-  }, [isOpen, defaultGoal, defaultTarget, reset])
+    if (isOpen) reset({ targetWeight: defaultTarget ?? undefined })
+  }, [isOpen, defaultTarget, reset])
 
   const onSubmit = handleSubmit((data) => onSave(data))
 
-  const goal = watch('goal')
   const typed = watch('targetWeight')
   const hasTyped = typeof typed === 'number' && !isNaN(typed)
   const diff =
     hasTyped && typeof currentWeight === 'number' ? +(typed - currentWeight).toFixed(1) : null
-  const selectedGoal = GOALS.find((g) => g.value === goal)
+  // objetivo derivado do peso atual vs meta (banda ±1kg)
+  const hint =
+    diff === null
+      ? null
+      : Math.abs(diff) <= 1
+        ? { Icon: Minus, text: 'Manter o peso atual' }
+        : diff < 0
+          ? { Icon: TrendDown, text: `${Math.abs(diff)} kg a perder até a meta` }
+          : { Icon: TrendUp, text: `${Math.abs(diff)} kg a ganhar até a meta` }
 
   return (
     <AnimatePresence>
@@ -66,7 +60,7 @@ export default function TargetWeightModal({
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
           <motion.div
-            className="relative bg-white dark:bg-neutral-900 rounded-3xl shadow-2xl w-full max-w-sm overflow-y-auto max-h-[90vh]"
+            className="relative bg-white dark:bg-neutral-900 rounded-3xl shadow-2xl w-full max-w-sm"
             initial={{ opacity: 0, scale: 0.96, y: 14 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 14 }}
@@ -80,9 +74,9 @@ export default function TargetWeightModal({
                 </div>
                 <div>
                   <h2 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight leading-tight">
-                    Sua meta
+                    Meta de peso
                   </h2>
-                  <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">Objetivo e peso desejado</p>
+                  <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">Peso que você quer alcançar</p>
                 </div>
               </div>
               <button
@@ -95,33 +89,6 @@ export default function TargetWeightModal({
             </div>
 
             <form onSubmit={onSubmit} className="px-7 pb-7 flex flex-col gap-5">
-              {/* Objetivo */}
-              <div>
-                <label className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest block mb-2.5">
-                  Objetivo
-                </label>
-                <div className="flex flex-col gap-2">
-                  {GOALS.map(({ value, label, Icon }) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => setValue('goal', value, { shouldValidate: true })}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all duration-150 cursor-pointer ${
-                        goal === value
-                          ? 'border-orange-500 bg-orange-50 dark:bg-orange-950/30'
-                          : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 bg-neutral-50 dark:bg-neutral-800'
-                      }`}
-                    >
-                      <Icon size={16} weight="bold" className={goal === value ? 'text-orange-600 dark:text-orange-400' : 'text-neutral-400 dark:text-neutral-500'} />
-                      <span className={`text-sm font-bold ${goal === value ? 'text-orange-700 dark:text-orange-300' : 'text-neutral-600 dark:text-neutral-300'}`}>
-                        {label}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-                {errors.goal && <p className="text-[10px] text-red-500 mt-1.5">{errors.goal.message}</p>}
-              </div>
-
               {/* atual → meta */}
               <div className="flex items-stretch gap-2">
                 <div className="flex-1 rounded-2xl bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-100 dark:border-neutral-800 px-4 py-3">
@@ -159,6 +126,7 @@ export default function TargetWeightModal({
                     {...register('targetWeight', { valueAsNumber: true })}
                     type="number"
                     step="0.1"
+                    autoFocus
                     placeholder="Ex.: 72"
                     className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2.5 pr-9 text-sm font-bold text-neutral-900 dark:text-neutral-100 outline-none focus:border-orange-400 dark:focus:border-orange-500 transition-all duration-150 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
@@ -166,15 +134,10 @@ export default function TargetWeightModal({
                 </div>
                 {errors.targetWeight ? (
                   <p className="text-[10px] font-semibold text-red-500 mt-1.5">{errors.targetWeight.message}</p>
-                ) : diff !== null && diff !== 0 ? (
+                ) : hint ? (
                   <p className="text-[10px] font-bold text-orange-500 dark:text-orange-400 mt-1.5 flex items-center gap-1">
-                    {diff < 0 ? <TrendDown size={12} weight="bold" /> : <TrendUp size={12} weight="bold" />}
-                    {Math.abs(diff)} kg {diff < 0 ? 'a perder' : 'a ganhar'} até a meta
-                  </p>
-                ) : selectedGoal ? (
-                  <p className="text-[10px] font-medium text-neutral-400 dark:text-neutral-500 mt-1.5 flex items-center gap-1">
-                    <selectedGoal.Icon size={12} weight="bold" />
-                    {selectedGoal.hint}
+                    <hint.Icon size={12} weight="bold" />
+                    {hint.text}
                   </p>
                 ) : null}
               </div>

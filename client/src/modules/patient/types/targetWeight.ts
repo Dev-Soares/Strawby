@@ -1,7 +1,6 @@
 import { z } from 'zod'
 
 export const targetWeightSchema = z.object({
-  goal: z.enum(['lose', 'gain', 'mantain'], { error: 'Escolha um objetivo' }),
   targetWeight: z
     .number({ error: 'Informe o peso desejado' })
     .min(30, 'Mínimo 30 kg')

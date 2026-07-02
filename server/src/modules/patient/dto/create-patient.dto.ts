@@ -1,7 +1,8 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsIn,
   IsISO8601,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -35,16 +36,10 @@ export class CreatePatientDto {
   @IsOptional()
   gender?: string;
 
-  @ApiPropertyOptional({ example: 'lose', enum: ['lose', 'gain', 'mantain'] })
-  @IsString()
-  @IsIn(['lose', 'gain', 'mantain'])
-  @IsOptional()
-  goal?: 'lose' | 'gain' | 'mantain';
-
-  @ApiPropertyOptional({ example: 72 })
+  @ApiProperty({ example: 72 })
   @IsNumber()
   @Min(30)
   @Max(300)
-  @IsOptional()
-  targetWeight?: number;
+  @IsNotEmpty()
+  targetWeight: number;
 }

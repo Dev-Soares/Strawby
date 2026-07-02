@@ -4,7 +4,6 @@ export type UpdatePatientPayload = {
   height?: number
   birthDate?: string
   gender?: 'male' | 'female'
-  goal?: 'lose' | 'gain' | 'mantain'
   targetWeight?: number
 }
 

@@ -13,7 +13,7 @@ export const onboardingSchema = z
     height: requiredNumber(100, 250, 'Informe a altura').optional(),
     birthDate: z.string().date({ message: 'Informe a data de nascimento' }).optional(),
     gender: z.enum(['male', 'female'], { error: 'Selecione o sexo' }).optional(),
-    goal: z.enum(['lose', 'gain', 'mantain']).optional(),
+    targetWeight: requiredNumber(30, 300, 'Informe o peso desejado').optional(),
   })
   .superRefine((data, ctx) => {
     if (data.role !== 'patient') return
@@ -25,8 +25,8 @@ export const onboardingSchema = z
       ctx.addIssue({ code: 'custom', message: 'Informe a data de nascimento', path: ['birthDate'] })
     if (data.gender === undefined)
       ctx.addIssue({ code: 'custom', message: 'Selecione o sexo', path: ['gender'] })
-    if (data.goal === undefined)
-      ctx.addIssue({ code: 'custom', message: 'Selecione seu objetivo', path: ['goal'] })
+    if (data.targetWeight === undefined)
+      ctx.addIssue({ code: 'custom', message: 'Informe o peso desejado', path: ['targetWeight'] })
   })
 
 export type OnboardingData = z.infer<typeof onboardingSchema>

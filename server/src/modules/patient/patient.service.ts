@@ -1,12 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { PatientAccessService } from '../patient-access/patient-access.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { yesterdayInAppTz } from '../../common/utils/date.util';
 import type { PatientStreakPublic, StreakProcessResult } from './types';
-import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
+import { CompleteOnboardingDto } from '../user/dto/complete-onboarding.dto';
 import { DailyScoreService } from '../daily-score/daily-score.service';
 
 @Injectable()
@@ -19,21 +23,28 @@ export class PatientService {
 
   async createFromOnboarding(
     userId: string,
-    data: CreatePatientDto,
+    data: CompleteOnboardingDto,
   ): Promise<void> {
+    
+    if (
+      data.height === undefined ||
+      data.birthDate === undefined ||
+      data.gender === undefined ||
+      data.targetWeight === undefined
+    ) {
+      throw new BadRequestException(
+        'Dados obrigatórios do paciente ausentes no onboarding',
+      );
+    }
+
     try {
       await this.prisma.patient.create({
         data: {
           id: userId,
-          ...(data.height !== undefined && { height: data.height }),
-          ...(data.birthDate !== undefined && {
-            birthDate: new Date(data.birthDate),
-          }),
-          ...(data.gender !== undefined && { gender: data.gender }),
-          ...(data.goal !== undefined && { goal: data.goal }),
-          ...(data.targetWeight !== undefined && {
-            targetWeight: data.targetWeight,
-          }),
+          height: data.height,
+          birthDate: new Date(data.birthDate),
+          gender: data.gender,
+          targetWeight: data.targetWeight,
         },
       });
       if (data.weight !== undefined) {
@@ -57,10 +68,9 @@ export class PatientService {
           gender: true,
           currentStreak: true,
           bestStreak: true,
-          goal: true,
           targetWeight: true,
           weightRecord: {
-            orderBy: { date: 'desc' },
+            orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
             take: 1,
             select: { weight: true, date: true },
           },
@@ -104,7 +114,6 @@ export class PatientService {
             birthDate: new Date(dto.birthDate),
           }),
           ...(dto.gender !== undefined && { gender: dto.gender }),
-          ...(dto.goal !== undefined && { goal: dto.goal }),
           ...(dto.targetWeight !== undefined && {
             targetWeight: dto.targetWeight,
           }),

@@ -34,12 +34,6 @@ enum Role {
   nutritionist
 }
 
-enum EnumPatientGoal {
-  lose
-  gain
-  mantain
-}
-
 model User {
   id                         String        @id @default(uuid())
   name                       String
@@ -74,11 +68,10 @@ model Patient {
   currentStreak      Int                 @default(0)
   bestStreak         Int                 @default(0)
   weightRecord       PatientWeight[]
-  height             Float?
-  birthDate          DateTime?
-  goal               EnumPatientGoal?
-  targetWeight       Float?
-  gender             String?
+  height             Float
+  birthDate          DateTime
+  targetWeight       Float
+  gender             String
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
 }

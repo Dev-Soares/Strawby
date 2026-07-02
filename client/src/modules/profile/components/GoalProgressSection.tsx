@@ -7,11 +7,12 @@ import GoalProgressSkeleton from '../skeletons/GoalProgressSkeleton'
 import type { Patient } from '@/modules/patient/types/patient'
 import type { TargetWeightFormData } from '@/modules/patient/types/targetWeight'
 
-const GOAL_CONFIG = {
-  lose: { label: 'Perder peso', Icon: TrendDown },
-  gain: { label: 'Ganhar massa', Icon: TrendUp },
-  mantain: { label: 'Manter peso', Icon: Minus },
-} as const
+// Deriva o objetivo do peso atual vs meta (banda ±1kg).
+function deriveGoal(current: number, target: number) {
+  const diff = target - current
+  if (Math.abs(diff) <= 1) return { Icon: Minus }
+  return diff < 0 ? { Icon: TrendDown } : { Icon: TrendUp }
+}
 
 interface Props {
   patientId: string
@@ -25,7 +26,7 @@ export default function GoalProgressSection({ patientId, patient }: Props) {
 
   function handleSave(data: TargetWeightFormData) {
     updatePatient.mutate(
-      { goal: data.goal, targetWeight: data.targetWeight },
+      { targetWeight: data.targetWeight },
       { onSuccess: () => setModalOpen(false) },
     )
   }
@@ -37,7 +38,6 @@ export default function GoalProgressSection({ patientId, patient }: Props) {
       isOpen={modalOpen}
       isPending={updatePatient.isPending}
       defaultTarget={patient.targetWeight}
-      defaultGoal={patient.goal}
       currentWeight={currentWeight}
       onClose={() => setModalOpen(false)}
       onSave={handleSave}
@@ -46,7 +46,6 @@ export default function GoalProgressSection({ patientId, patient }: Props) {
 
   if (isPending) return <GoalProgressSkeleton />
 
-  const goal = patient.goal ? GOAL_CONFIG[patient.goal] : null
   const target = patient.targetWeight
   // records vêm ordenados por data desc — [0] é o mais recente, último é o inicial
   const current = currentWeight
@@ -109,7 +108,7 @@ export default function GoalProgressSection({ patientId, patient }: Props) {
   const walked = start === target ? 0 : (start - current) / (start - target)
   const progress = totalDistance === 0 ? 100 : Math.min(Math.max(walked * 100, 0), 100)
 
-  const GoalIcon = goal?.Icon ?? Target
+  const GoalIcon = deriveGoal(current, target).Icon
 
   return (
     <section className="mb-5">
