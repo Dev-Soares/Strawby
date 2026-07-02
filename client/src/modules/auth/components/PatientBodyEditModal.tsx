@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, FloppyDisk, GenderMale, GenderFemale, Heartbeat } from '@phosphor-icons/react'
+import { X, FloppyDisk, GenderMale, GenderFemale, Heartbeat, ArrowsVertical, Calendar } from '@phosphor-icons/react'
 import Spinner from '../../../shared/components/Spinner'
 
 const optionalNumber = (min: number, max: number) =>
@@ -67,8 +67,8 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
           >
             <div className="flex items-center justify-between px-7 pt-7 pb-5">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
-                  <Heartbeat size={16} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+                <div className="w-9 h-9 rounded-xl bg-red-100 dark:bg-red-950/40 flex items-center justify-center">
+                  <Heartbeat size={16} weight="bold" className="text-red-500 dark:text-red-400" />
                 </div>
                 <div>
                   <h2 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight">Dados corporais</h2>
@@ -81,9 +81,10 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
             </div>
 
             <form onSubmit={onSubmit} className="px-7 pb-7 flex flex-col gap-5">
-              {/* Gender */}
+              {/* Gender — blue */}
               <div>
-                <label className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest block mb-2.5">
+                <label className="flex items-center gap-1.5 text-[10px] font-bold text-blue-500 dark:text-blue-400 uppercase tracking-widest mb-2.5">
+                  <GenderMale size={12} weight="bold" />
                   Sexo biológico
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -97,12 +98,12 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
                       onClick={() => setValue('gender', gender === value ? undefined : value)}
                       className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border-2 transition-all duration-150 cursor-pointer ${
                         gender === value
-                          ? 'border-red-500 bg-red-50 dark:bg-red-950/30'
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
                           : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 bg-neutral-50 dark:bg-neutral-800'
                       }`}
                     >
-                      <Icon size={16} weight="bold" className={gender === value ? 'text-red-600 dark:text-red-400' : 'text-neutral-400 dark:text-neutral-500'} />
-                      <span className={`text-sm font-bold ${gender === value ? 'text-red-700 dark:text-red-300' : 'text-neutral-600 dark:text-neutral-300'}`}>
+                      <Icon size={16} weight="bold" className={gender === value ? 'text-blue-600 dark:text-blue-400' : 'text-neutral-400 dark:text-neutral-500'} />
+                      <span className={`text-sm font-bold ${gender === value ? 'text-blue-700 dark:text-blue-300' : 'text-neutral-600 dark:text-neutral-300'}`}>
                         {label}
                       </span>
                     </button>
@@ -110,9 +111,10 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
                 </div>
               </div>
 
-              {/* Height */}
+              {/* Height — emerald */}
               <div>
-                <label className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest block mb-2">
+                <label className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-widest mb-2">
+                  <ArrowsVertical size={12} weight="bold" />
                   Altura
                 </label>
                 <div className="relative">
@@ -120,23 +122,24 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
                     {...register('height', { valueAsNumber: true })}
                     type="number"
                     placeholder="175"
-                    className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2.5 pr-8 text-sm font-bold text-neutral-900 dark:text-neutral-100 outline-none focus:border-neutral-400 dark:focus:border-neutral-500 transition-all duration-150 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="w-full bg-emerald-50/50 dark:bg-emerald-950/15 border border-emerald-200 dark:border-emerald-900/40 rounded-xl px-3 py-2.5 pr-9 text-sm font-bold text-neutral-900 dark:text-neutral-100 outline-none focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-emerald-50 dark:focus:bg-emerald-950/25 transition-all duration-150 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
-                  <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-neutral-400 font-medium">cm</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-emerald-400 dark:text-emerald-500">cm</span>
                 </div>
                 {errors.height && <p className="text-[10px] text-red-500 mt-1">{errors.height.message}</p>}
               </div>
 
-              {/* Birth Date */}
+              {/* Birth Date — violet */}
               <div>
-                <label className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest block mb-2">
+                <label className="flex items-center gap-1.5 text-[10px] font-bold text-violet-500 dark:text-violet-400 uppercase tracking-widest mb-2">
+                  <Calendar size={12} weight="bold" />
                   Data de nascimento
                 </label>
                 <input
                   {...register('birthDate', { setValueAs: (v: string) => v === '' ? undefined : v })}
                   type="date"
                   max={new Date().toISOString().slice(0, 10)}
-                  className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2.5 text-sm font-bold text-neutral-900 dark:text-neutral-100 outline-none focus:border-neutral-400 dark:focus:border-neutral-500 transition-all duration-150"
+                  className="w-full bg-violet-50/50 dark:bg-violet-950/15 border border-violet-200 dark:border-violet-900/40 rounded-xl px-3 py-2.5 text-sm font-bold text-neutral-900 dark:text-neutral-100 outline-none focus:border-violet-500 dark:focus:border-violet-500 focus:bg-violet-50 dark:focus:bg-violet-950/25 transition-all duration-150 dark:scheme-dark"
                 />
                 {errors.birthDate && <p className="text-[10px] text-red-500 mt-1">{errors.birthDate.message}</p>}
               </div>
