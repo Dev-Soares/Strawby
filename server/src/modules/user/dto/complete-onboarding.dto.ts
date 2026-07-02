@@ -55,4 +55,11 @@ export class CompleteOnboardingDto {
   @IsIn(['lose', 'gain', 'mantain'])
   @IsOptional()
   goal?: 'lose' | 'gain' | 'mantain';
+
+  @ApiPropertyOptional({ example: 72 })
+  @IsNumber()
+  @Min(30)
+  @Max(300)
+  @IsOptional()
+  targetWeight?: number;
 }

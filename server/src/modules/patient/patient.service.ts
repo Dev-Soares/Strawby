@@ -31,6 +31,9 @@ export class PatientService {
           }),
           ...(data.gender !== undefined && { gender: data.gender }),
           ...(data.goal !== undefined && { goal: data.goal }),
+          ...(data.targetWeight !== undefined && {
+            targetWeight: data.targetWeight,
+          }),
         },
       });
       if (data.weight !== undefined) {
@@ -55,6 +58,7 @@ export class PatientService {
           currentStreak: true,
           bestStreak: true,
           goal: true,
+          targetWeight: true,
           weightRecord: {
             orderBy: { date: 'desc' },
             take: 1,
@@ -101,6 +105,9 @@ export class PatientService {
           }),
           ...(dto.gender !== undefined && { gender: dto.gender }),
           ...(dto.goal !== undefined && { goal: dto.goal }),
+          ...(dto.targetWeight !== undefined && {
+            targetWeight: dto.targetWeight,
+          }),
         },
       });
     } catch (error) {

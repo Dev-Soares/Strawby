@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, FloppyDisk, GenderMale, GenderFemale, Heartbeat, TrendDown, TrendUp, Minus } from '@phosphor-icons/react'
+import { X, FloppyDisk, GenderMale, GenderFemale, Heartbeat } from '@phosphor-icons/react'
 import Spinner from '../../../shared/components/Spinner'
 
 const optionalNumber = (min: number, max: number) =>
@@ -11,17 +11,10 @@ const optionalNumber = (min: number, max: number) =>
     .transform(val => (val !== undefined && isNaN(val) ? undefined : val))
     .pipe(z.number().min(min).max(max).optional())
 
-const GOALS = [
-  { value: 'lose' as const, label: 'Perder peso', Icon: TrendDown },
-  { value: 'gain' as const, label: 'Ganhar massa', Icon: TrendUp },
-  { value: 'mantain' as const, label: 'Manter peso', Icon: Minus },
-]
-
 const bodySchema = z.object({
   height: optionalNumber(100, 250),
   birthDate: z.string().date().optional(),
   gender: z.enum(['male', 'female']).optional(),
-  goal: z.enum(['lose', 'gain', 'mantain']).optional(),
 })
 
 type BodyData = z.infer<typeof bodySchema>
@@ -29,7 +22,7 @@ type BodyData = z.infer<typeof bodySchema>
 interface Props {
   isOpen: boolean
   isPending: boolean
-  defaultValues: { height: number | null; birthDate: string | null; gender: string | null; goal: 'lose' | 'gain' | 'mantain' | null }
+  defaultValues: { height: number | null; birthDate: string | null; gender: string | null }
   onClose: () => void
   onSave: (data: BodyData) => void
 }
@@ -40,7 +33,6 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
   })
 
   const gender = watch('gender')
-  const goal = watch('goal')
 
   useEffect(() => {
     if (isOpen) {
@@ -48,7 +40,6 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
         height: defaultValues.height ?? undefined,
         birthDate: defaultValues.birthDate ? defaultValues.birthDate.slice(0, 10) : undefined,
         gender: (defaultValues.gender as 'male' | 'female' | undefined) ?? undefined,
-        goal: defaultValues.goal ?? undefined,
       })
     }
   }, [isOpen, defaultValues])
@@ -148,33 +139,6 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
                   className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2.5 text-sm font-bold text-neutral-900 dark:text-neutral-100 outline-none focus:border-neutral-400 dark:focus:border-neutral-500 transition-all duration-150"
                 />
                 {errors.birthDate && <p className="text-[10px] text-red-500 mt-1">{errors.birthDate.message}</p>}
-              </div>
-
-              {/* Goal */}
-              <div>
-                <label className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest block mb-2.5">
-                  Objetivo
-                </label>
-                <div className="flex flex-col gap-2">
-                  {GOALS.map(({ value, label, Icon }) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => setValue('goal', goal === value ? undefined : value)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all duration-150 cursor-pointer ${
-                        goal === value
-                          ? 'border-red-500 bg-red-50 dark:bg-red-950/30'
-                          : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 bg-neutral-50 dark:bg-neutral-800'
-                      }`}
-                    >
-                      <Icon size={16} weight="bold" className={goal === value ? 'text-red-600 dark:text-red-400' : 'text-neutral-400 dark:text-neutral-500'} />
-                      <span className={`text-sm font-bold ${goal === value ? 'text-red-700 dark:text-red-300' : 'text-neutral-600 dark:text-neutral-300'}`}>
-                        {label}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-                {errors.goal && <p className="text-[10px] text-red-500 mt-1">{errors.goal.message}</p>}
               </div>
 
               <button
