@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { GenderMale, GenderFemale, Heartbeat, Stethoscope, ArrowRight, Target, TrendDown, TrendUp, Minus } from '@phosphor-icons/react'
+import { useState } from 'react'
+import { GenderMale, GenderFemale, Heartbeat, Stethoscope, ArrowRight, TrendDown, TrendUp, Minus } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useCompleteOnboarding } from '../hooks/useCompleteOnboarding'
@@ -22,9 +22,6 @@ const ROLES = [
 
 export default function OnboardingForm() {
   const [step, setStep] = useState(1)
-  const [birthDay, setBirthDay] = useState('')
-  const [birthMonth, setBirthMonth] = useState('')
-  const [birthYear, setBirthYear] = useState('')
 
   const {
     register,
@@ -42,16 +39,6 @@ export default function OnboardingForm() {
   const targetWeight = watch('targetWeight')
   const isPatient = role === 'patient'
   const totalSteps = isPatient ? 3 : 1
-
-  useEffect(() => {
-    if (birthDay && birthMonth && birthYear.length === 4) {
-      const d = birthDay.padStart(2, '0')
-      const m = birthMonth.padStart(2, '0')
-      setValue('birthDate', `${birthYear}-${m}-${d}`, { shouldValidate: true })
-    } else {
-      setValue('birthDate', undefined as unknown as string)
-    }
-  }, [birthDay, birthMonth, birthYear])
 
   const handleStep1 = async () => {
     const valid = await trigger(['role', 'acceptTerms'])
@@ -222,28 +209,13 @@ export default function OnboardingForm() {
               <label className="block text-[11px] font-semibold text-white mb-3 uppercase tracking-widest">
                 Data de nascimento
               </label>
-              <div className="grid grid-cols-3 gap-4">
-                {([
-                  { label: 'Dia', placeholder: 'DD', value: birthDay, min: 1, max: 31, set: setBirthDay },
-                  { label: 'Mês', placeholder: 'MM', value: birthMonth, min: 1, max: 12, set: setBirthMonth },
-                  { label: 'Ano', placeholder: 'AAAA', value: birthYear, min: 1900, max: new Date().getFullYear(), set: setBirthYear },
-                ]).map(({ label, placeholder, value, min, max, set }) => (
-                  <div key={label}>
-                    <label className="block text-[10px] font-semibold text-white/50 mb-3 uppercase tracking-widest">
-                      {label}
-                    </label>
-                    <input
-                      type="number"
-                      placeholder={placeholder}
-                      value={value}
-                      min={min}
-                      max={max}
-                      onChange={e => set(e.target.value)}
-                      className="w-full border-0 border-b-2 border-white/50 bg-transparent pb-3 text-[15px] text-white placeholder-white/30 focus:outline-none focus:border-white transition-colors duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    />
-                  </div>
-                ))}
-              </div>
+              <input
+                {...register('birthDate', { setValueAs: (v: string) => (v === '' ? undefined : v) })}
+                type="date"
+                max={new Date().toISOString().slice(0, 10)}
+                min="1900-01-01"
+                className="w-full border-0 border-b-2 border-white/50 bg-transparent pb-3 text-[15px] text-white placeholder-white/30 focus:outline-none focus:border-white transition-colors duration-200 scheme-dark"
+              />
               {errors.birthDate && <p className="text-yellow-200 text-[11px] mt-2">{errors.birthDate.message}</p>}
             </div>
 
@@ -262,50 +234,51 @@ export default function OnboardingForm() {
         {/* ── Step 3 — Peso desejado (patient only) ── */}
         {step === 3 && (
           <>
-            <div className="flex flex-col gap-6">
-              {/* atual → meta */}
-              <div className="flex items-stretch gap-3">
-                <div className="flex-1 rounded-2xl bg-white/10 border border-white/20 px-4 py-3">
-                  <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest mb-1">Peso atual</p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-black text-white leading-none">
-                      {typeof weight === 'number' && !isNaN(weight) ? weight : '—'}
-                    </span>
-                    <span className="text-xs font-bold text-white/50">kg</span>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <ArrowRight size={18} weight="bold" className="text-white/40" />
-                </div>
-                <div className="flex-1 rounded-2xl bg-white px-4 py-3">
-                  <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1">Meta</p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-black text-neutral-950 leading-none">
-                      {typeof targetWeight === 'number' && !isNaN(targetWeight) ? targetWeight : '—'}
-                    </span>
-                    <span className="text-xs font-bold text-neutral-400">kg</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* input */}
-              <div>
-                <label className="block text-[11px] font-semibold text-white mb-3 uppercase tracking-widest">
-                  Peso desejado <span className="text-white/50 normal-case">(kg)</span>
-                </label>
-                <div className="relative">
+            <div className="flex flex-col gap-8">
+              {/* input protagonista — número grande centralizado */}
+              <div className="flex flex-col items-center">
+                <div className="flex items-baseline gap-2">
                   <input
                     {...register('targetWeight', { valueAsNumber: true })}
                     type="number"
                     step="0.1"
                     autoFocus
                     placeholder="72"
-                    className="w-full border-0 border-b-2 border-white/50 bg-transparent pb-3 text-2xl font-black text-white placeholder-white/30 focus:outline-none focus:border-white transition-colors duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="w-[3.5em] text-center border-0 bg-transparent text-6xl font-black text-white placeholder-white/25 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
-                  <Target size={20} weight="bold" className="absolute right-0 bottom-3 text-white/40" />
+                  <span className="text-2xl font-black text-white/40">kg</span>
                 </div>
-                {errors.targetWeight && <p className="text-yellow-200 text-[11px] mt-2">{errors.targetWeight.message}</p>}
-                {!errors.targetWeight && <GoalHint weight={weight} target={targetWeight} />}
+                <div className="h-0.5 w-40 bg-white/30 rounded-full mt-1" />
+                {errors.targetWeight ? (
+                  <p className="text-yellow-200 text-[11px] mt-3 font-semibold">{errors.targetWeight.message}</p>
+                ) : (
+                  <GoalHint weight={weight} target={targetWeight} />
+                )}
+              </div>
+
+              {/* atual → meta */}
+              <div className="flex items-stretch gap-3">
+                <div className="flex-1 rounded-2xl bg-white/10 border border-white/15 px-4 py-3.5">
+                  <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest mb-1.5">Peso atual</p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-xl font-black text-white leading-none">
+                      {typeof weight === 'number' && !isNaN(weight) ? weight : '—'}
+                    </span>
+                    <span className="text-xs font-bold text-white/40">kg</span>
+                  </div>
+                </div>
+                <div className="flex items-center">
+                  <ArrowRight size={18} weight="bold" className="text-white/40" />
+                </div>
+                <div className="flex-1 rounded-2xl bg-white px-4 py-3.5 shadow-lg shadow-black/10">
+                  <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1.5">Meta</p>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-xl font-black text-neutral-950 leading-none">
+                      {typeof targetWeight === 'number' && !isNaN(targetWeight) ? targetWeight : '—'}
+                    </span>
+                    <span className="text-xs font-bold text-neutral-400">kg</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -329,11 +302,16 @@ export default function OnboardingForm() {
 
 // Deriva o objetivo (perder/ganhar/manter) do peso atual vs meta, banda ±1kg.
 function GoalHint({ weight, target }: { weight?: number; target?: number }) {
-  if (
-    typeof weight !== 'number' || isNaN(weight) ||
-    typeof target !== 'number' || isNaN(target)
-  ) {
-    return null
+  const ready =
+    typeof weight === 'number' && !isNaN(weight) &&
+    typeof target === 'number' && !isNaN(target)
+
+  if (!ready) {
+    return (
+      <p className="mt-4 text-[13px] font-semibold text-white/50">
+        Digite seu peso ideal
+      </p>
+    )
   }
 
   const diff = target - weight
@@ -341,15 +319,15 @@ function GoalHint({ weight, target }: { weight?: number; target?: number }) {
 
   const hint =
     abs <= 1
-      ? { Icon: Minus, label: 'Manter peso' }
+      ? { Icon: Minus, label: 'Manter o peso' }
       : diff < 0
         ? { Icon: TrendDown, label: `Perder ${abs.toFixed(1)} kg` }
         : { Icon: TrendUp, label: `Ganhar ${abs.toFixed(1)} kg` }
 
   return (
-    <p className="mt-3 flex items-center gap-1.5 text-[13px] font-bold text-white">
+    <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-1.5 text-[13px] font-bold text-white">
       <hint.Icon size={15} weight="bold" />
       {hint.label}
-    </p>
+    </span>
   )
 }
