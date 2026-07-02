@@ -12,13 +12,6 @@ interface Props {
 export default function PatientCard({ patient, hasPlan, index }: Props) {
   const navigate = useNavigate()
 
-  const initials = patient.user.name
-    .split(' ')
-    .slice(0, 2)
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-
   return (
     <motion.button
       className="group w-full text-left bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 hover:border-neutral-200 dark:hover:border-neutral-700 shadow-sm hover:shadow-md p-5 flex flex-col gap-4 transition-all duration-200 cursor-pointer"
@@ -29,11 +22,7 @@ export default function PatientCard({ patient, hasPlan, index }: Props) {
     >
       <div className="flex items-start gap-3">
         <div className="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/30 flex items-center justify-center shrink-0 transition-colors duration-300">
-          {initials ? (
-            <span className="text-base font-extrabold text-red-600 dark:text-red-400">{initials}</span>
-          ) : (
-            <User size={18} weight="bold" className="text-red-500" />
-          )}
+          <User size={18} weight="bold" className="text-red-500" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-base font-extrabold text-neutral-900 dark:text-neutral-100 truncate transition-colors duration-300">

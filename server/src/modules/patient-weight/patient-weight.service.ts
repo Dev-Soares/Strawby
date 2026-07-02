@@ -80,7 +80,7 @@ export class PatientWeightService {
 
     return this.prisma.patientWeight.findMany({
       where: { patientId },
-      orderBy: { date: 'desc' },
+      orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
     });
   }
 
@@ -89,7 +89,7 @@ export class PatientWeightService {
 
     return this.prisma.patientWeight.findFirst({
       where: { patientId },
-      orderBy: { date: 'desc' },
+      orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
     });
   }
 }

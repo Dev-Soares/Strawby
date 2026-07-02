@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import { isAxiosError } from 'axios'
 import { signInSchema, type SignInData } from '../types/signIn'
 import { signInService } from '../service/signInService'
+import { getMeService } from '../service/getMeService'
 
 export const useSignIn = () => {
   const navigate = useNavigate()
@@ -19,7 +20,13 @@ export const useSignIn = () => {
     mutationFn: signInService,
     onSuccess: async () => {
       toast.success('Bem-vindo de volta!')
-      await queryClient.refetchQueries({ queryKey: ['user', 'me'], exact: true })
+      // popula o cache antes de navegar para evitar o ProtectedRoute
+      // piscar (skeleton → login → home) com dado velho/ausente
+      await queryClient.fetchQuery({
+        queryKey: ['user', 'me'],
+        queryFn: getMeService,
+        staleTime: 0,
+      })
       navigate('/app/home')
     },
     onError: (error, variables) => {

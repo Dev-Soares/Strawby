@@ -6,6 +6,7 @@ import toast from 'react-hot-toast'
 import { isAxiosError } from 'axios'
 import { verifyEmailSchema, type VerifyEmailData } from '../types/verifyEmail'
 import { verifyEmailService } from '../service/verifyEmailService'
+import { getMeService } from '../service/getMeService'
 
 export const useVerifyEmail = () => {
   const navigate = useNavigate()
@@ -19,7 +20,13 @@ export const useVerifyEmail = () => {
     mutationFn: (data: VerifyEmailData) => verifyEmailService(data.code),
     onSuccess: async () => {
       toast.success('E-mail verificado com sucesso!')
-      await queryClient.refetchQueries({ queryKey: ['user', 'me'], exact: true })
+      // fetchQuery popula o cache mesmo se useAuth não estiver montado nesta
+      // página pública — refetchQueries só refaz queries ativas e não redirecionava.
+      await queryClient.fetchQuery({
+        queryKey: ['user', 'me'],
+        queryFn: getMeService,
+        staleTime: 0,
+      })
       navigate('/app/home')
     },
     onError: (error) => {

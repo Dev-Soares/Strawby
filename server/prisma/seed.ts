@@ -74,7 +74,7 @@ async function main() {
           height: 178,
           birthDate: new Date('1996-03-15'),
           gender: 'male',
-          goal: 'mantain',
+          targetWeight: 78,
           currentStreak: 5,
           bestStreak: 12,
         },

@@ -5,6 +5,7 @@ import { useGetPatient } from '@/modules/patient/hooks/useGetPatient'
 import ProfileInviteCodeSection from '@/modules/profile/components/ProfileInviteCodeSection'
 import ProfileNutritionistSection from '@/modules/profile/components/ProfileNutritionistSection'
 import ProfileBodyDataSection from '@/modules/profile/components/ProfileBodyDataSection'
+import GoalProgressSection from '@/modules/profile/components/GoalProgressSection'
 import WeightHistoryChart from '@/modules/profile/components/WeightHistoryChart'
 
 export default function ProfilePage() {
@@ -39,6 +40,7 @@ export default function ProfilePage() {
               {patient && <ProfileBodyDataSection patient={patient} />}
             </div>
             <div className="lg:pl-16">
+              {patient && <GoalProgressSection patientId={user!.id} patient={patient} />}
               <WeightHistoryChart patientId={user!.id} />
             </div>
           </div>

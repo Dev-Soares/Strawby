@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   forwardRef,
 } from '@nestjs/common';
 import { PatientService } from '../patient/patient.service';
@@ -33,7 +34,7 @@ export class PlanService {
     private readonly mealService: MealService,
     @Inject(forwardRef(() => PatientService))
     private readonly patientService: PatientService,
-  ) {}
+  ) { }
 
   async create(
     callerId: string,
@@ -59,13 +60,18 @@ export class PlanService {
         );
       }
 
+      // sem meta definida → mantém (sem déficit/superávit)
+      const goal = patient.targetWeight != null
+          ? this.getGoal(patient.targetWeight, lastWeight.weight)
+          : 'mantain';
+
       planData = this.generateRecomendedPlan({
         weight: lastWeight.weight,
         height: patient.height,
         age: this.calculateAge(patient.birthDate),
         gender: patient.gender,
         movementLevel: dto.movementLevel,
-        goal: patient.goal,
+        goal: goal,
       });
     } else if (
       dto.calories !== undefined &&
@@ -205,6 +211,14 @@ export class PlanService {
         p2025: 'Plano não encontrado',
       });
     }
+  }
+
+  private getGoal(targetWeight: number, actualWeight: number): string {
+
+    const weightDifference = targetWeight - actualWeight;
+    if (Math.abs(weightDifference) <= 1) return 'mantain';
+    return weightDifference < 0 ? 'lose' : 'gain';
+
   }
 
   private calculateAge(birthDate: Date): number {

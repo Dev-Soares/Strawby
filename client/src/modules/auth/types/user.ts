@@ -7,7 +7,7 @@ export type UserPublic = {
     height: number | null
     birthDate: string | null
     gender: string | null
-    goal: 'lose' | 'gain' | 'mantain' | null
+    targetWeight: number | null
     nutritionistId: string | null
     nutritionist: { user: { name: string } } | null
   } | null
