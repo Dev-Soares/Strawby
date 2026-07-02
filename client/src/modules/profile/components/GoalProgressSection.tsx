@@ -136,9 +136,10 @@ export default function GoalProgressSection({ patientId, patient }: Props) {
           <button
             type="button"
             onClick={() => setModalOpen(true)}
-            className="w-9 h-9 flex items-center justify-center rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors duration-150 cursor-pointer shrink-0"
+            className="group flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-orange-100 dark:bg-orange-950/40 hover:bg-orange-500 dark:hover:bg-orange-500 active:scale-95 transition-all duration-150 cursor-pointer shrink-0"
           >
-            <PencilSimple size={15} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+            <PencilSimple size={14} weight="bold" className="text-orange-500 dark:text-orange-400 group-hover:text-white transition-colors duration-150" />
+            <span className="text-xs font-bold text-orange-600 dark:text-orange-400 group-hover:text-white transition-colors duration-150">Editar meta</span>
           </button>
         </div>
 
