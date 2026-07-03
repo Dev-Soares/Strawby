@@ -172,7 +172,7 @@ export default function MealDetailPage() {
             className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-neutral-700 dark:text-neutral-200 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors duration-200 cursor-pointer mt-6"
           >
             <PencilSimple size={16} weight="bold" />
-            Editar horário
+            Editar refeição
           </button>
         )}
 
@@ -230,6 +230,7 @@ export default function MealDetailPage() {
 
         <EditMealTimeModal
           isOpen={editTimeOpen}
+          currentMealType={meal.mealType}
           currentTime={meal.time ?? displayTime}
           isPending={updateMeal.isPending}
           onClose={() => setEditTimeOpen(false)}

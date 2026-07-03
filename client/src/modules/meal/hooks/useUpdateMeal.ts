@@ -14,10 +14,10 @@ export const useUpdateMeal = (patientId?: string) => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['meal', variables.mealId] })
       queryClient.invalidateQueries({ queryKey: ['meals'] })
-      toast.success('Horário atualizado!')
+      toast.success('Refeição atualizada!')
     },
     onError: () => {
-      toast.error('Erro ao atualizar horário. Tente novamente.')
+      toast.error('Erro ao atualizar refeição. Tente novamente.')
     },
   })
 }
