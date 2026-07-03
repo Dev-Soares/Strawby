@@ -15,6 +15,7 @@ import { PatientAccessService } from '../patient-access/patient-access.service';
 import { MacroDistribution, PlanMacros, PlanPublic, planSelect } from './types';
 import { PdfService } from '../pdf/pdf.service';
 import { MealService } from '../meal/meal.service';
+import { NotificationService } from '../notification/send-notification/notification.service';
 
 type GenerateParams = {
   weight: number;
@@ -32,6 +33,7 @@ export class PlanService {
     private readonly patientAccess: PatientAccessService,
     private readonly pdfService: PdfService,
     private readonly mealService: MealService,
+    private readonly notificationService: NotificationService,
     @Inject(forwardRef(() => PatientService))
     private readonly patientService: PatientService,
   ) { }
@@ -92,10 +94,21 @@ export class PlanService {
     }
 
     try {
-      return await this.prisma.plan.create({
+      const plan = await this.prisma.plan.create({
         data: { ...planData, patientId },
         select: planSelect,
       });
+
+      // notifica o paciente apenas quando o nutricionista cria o plano
+      if (callerId !== patientId) {
+        await this.notificationService.sendOne(
+          patientId,
+          'Novo plano alimentar',
+          'Seu nutricionista criou um plano alimentar para você.',
+        );
+      }
+
+      return plan;
     } catch (error) {
       mapPrismaError(error, 'Erro ao criar plano', {
         p2002: 'Paciente já possui um plano',
@@ -182,7 +195,7 @@ export class PlanService {
   ): Promise<PlanPublic> {
     await this.patientAccess.resolve(callerId, patientId);
     try {
-      return await this.prisma.plan.update({
+      const plan = await this.prisma.plan.update({
         where: { patientId },
         data: {
           ...(dto.calories !== undefined && { calories: dto.calories }),
@@ -192,6 +205,17 @@ export class PlanService {
         },
         select: planSelect,
       });
+
+      // notifica o paciente apenas quando o nutricionista atualiza o plano
+      if (callerId !== patientId) {
+        await this.notificationService.sendOne(
+          patientId,
+          'Plano alimentar atualizado',
+          'Seu nutricionista atualizou seu plano alimentar.',
+        );
+      }
+
+      return plan;
     } catch (error) {
       mapPrismaError(error, 'Erro ao atualizar plano', {
         p2025: 'Plano não encontrado',

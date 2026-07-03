@@ -9,6 +9,10 @@ export type ConnectionRequestWithPatient = ConnectionRequestPublic & {
   patient: { user: { name: string; email: string } };
 };
 
+export type ConnectionRequestWithNutritionist = ConnectionRequestPublic & {
+  nutritionist: { user: { name: string } };
+};
+
 export const connectionRequestSelect = {
   id: true,
   status: true,
@@ -20,4 +24,9 @@ export const connectionRequestSelect = {
 export const connectionRequestWithPatientSelect = {
   ...connectionRequestSelect,
   patient: { select: { user: { select: { name: true, email: true } } } },
+} as const;
+
+export const connectionRequestWithNutritionistSelect = {
+  ...connectionRequestSelect,
+  nutritionist: { select: { user: { select: { name: true } } } },
 } as const;

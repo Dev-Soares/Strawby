@@ -2,27 +2,45 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, Clock, FloppyDisk } from '@phosphor-icons/react'
-import { updateMealSchema, type UpdateMealData } from '../types/updateMeal'
+import { X, PencilSimple, FloppyDisk } from '@phosphor-icons/react'
+import { updateMealSchema, MEAL_TYPES, type UpdateMealData } from '../types/updateMeal'
+import { mealConfig } from '../config/mealConfig'
 import Spinner from '@/shared/components/Spinner'
 
 interface Props {
   isOpen: boolean
+  currentMealType: string | null
   currentTime: string | null
   isPending: boolean
   onClose: () => void
   onSave: (data: UpdateMealData) => void
 }
 
-export default function EditMealTimeModal({ isOpen, currentTime, isPending, onClose, onSave }: Props) {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<UpdateMealData>({
+const FALLBACK_TYPE = 'breakfast'
+
+export default function EditMealTimeModal({ isOpen, currentMealType, currentTime, isPending, onClose, onSave }: Props) {
+  const { register, handleSubmit, watch, setValue, formState: { errors }, reset } = useForm<UpdateMealData>({
     resolver: zodResolver(updateMealSchema),
-    defaultValues: { time: currentTime ?? '' },
+    defaultValues: {
+      mealType: (MEAL_TYPES as readonly string[]).includes(currentMealType ?? '')
+        ? (currentMealType as UpdateMealData['mealType'])
+        : FALLBACK_TYPE,
+      time: currentTime ?? '',
+    },
   })
 
+  const selectedType = watch('mealType')
+
   useEffect(() => {
-    if (isOpen) reset({ time: currentTime ?? '' })
-  }, [isOpen, currentTime])
+    if (isOpen) {
+      reset({
+        mealType: (MEAL_TYPES as readonly string[]).includes(currentMealType ?? '')
+          ? (currentMealType as UpdateMealData['mealType'])
+          : FALLBACK_TYPE,
+        time: currentTime ?? '',
+      })
+    }
+  }, [isOpen, currentMealType, currentTime])
 
   const onSubmit = handleSubmit((data) => onSave(data))
 
@@ -48,11 +66,11 @@ export default function EditMealTimeModal({ isOpen, currentTime, isPending, onCl
             <div className="flex items-center justify-between px-7 pt-7 pb-5">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
-                  <Clock size={16} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+                  <PencilSimple size={16} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
                 </div>
                 <div>
-                  <h2 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight">Horário da refeição</h2>
-                  <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">Ajuste quando você fez esta refeição</p>
+                  <h2 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight">Editar refeição</h2>
+                  <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">Ajuste o tipo e o horário</p>
                 </div>
               </div>
               <button
@@ -64,10 +82,46 @@ export default function EditMealTimeModal({ isOpen, currentTime, isPending, onCl
               </button>
             </div>
 
-            <form onSubmit={onSubmit} className="px-7 pb-7 flex flex-col gap-4">
+            <form onSubmit={onSubmit} className="px-7 pb-7 flex flex-col gap-5">
               <div>
                 <label className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest block mb-2">
-                  Novo horário
+                  Tipo
+                </label>
+                <div className="grid grid-cols-5 gap-2">
+                  {MEAL_TYPES.map((type) => {
+                    const cfg = mealConfig[type]
+                    const Icon = cfg.icon
+                    const active = selectedType === type
+                    return (
+                      <button
+                        key={type}
+                        type="button"
+                        onClick={() => setValue('mealType', type, { shouldValidate: true })}
+                        title={cfg.label}
+                        className={`flex items-center justify-center h-11 rounded-xl border transition-all duration-150 cursor-pointer ${
+                          active
+                            ? 'border-transparent'
+                            : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600'
+                        }`}
+                        style={active ? { backgroundColor: cfg.theme } : undefined}
+                      >
+                        <Icon
+                          size={18}
+                          weight="bold"
+                          className={active ? 'text-white' : 'text-neutral-500 dark:text-neutral-400'}
+                        />
+                      </button>
+                    )
+                  })}
+                </div>
+                <p className="text-xs font-semibold mt-2" style={{ color: mealConfig[selectedType]?.theme }}>
+                  {mealConfig[selectedType]?.label}
+                </p>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest block mb-2">
+                  Horário
                 </label>
                 <input
                   {...register('time')}
@@ -88,7 +142,7 @@ export default function EditMealTimeModal({ isOpen, currentTime, isPending, onCl
                   ? <Spinner size={15} />
                   : <FloppyDisk size={15} weight="bold" />
                 }
-                {isPending ? 'Salvando…' : 'Salvar horário'}
+                {isPending ? 'Salvando…' : 'Salvar'}
               </button>
             </form>
           </motion.div>

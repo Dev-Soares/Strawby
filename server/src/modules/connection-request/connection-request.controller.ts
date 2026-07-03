@@ -1,13 +1,17 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ConnectionRequestService } from './connection-request.service';
 import { CreateConnectionRequestDto } from './dto/create-connection-request.dto';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
@@ -22,6 +26,7 @@ export class ConnectionRequestController {
     private readonly connectionRequestService: ConnectionRequestService,
   ) {}
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Roles('patient')
   @UseGuards(AuthGuard, RolesGuard)
   @Post()
@@ -59,5 +64,20 @@ export class ConnectionRequestController {
   @Get('nutritionist/history')
   findAllByNutritionist(@Req() req: AuthenticatedRequest) {
     return this.connectionRequestService.findAllByNutritionist(req.user.sub);
+  }
+
+  @Roles('patient')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Get('patient')
+  findAllByPatient(@Req() req: AuthenticatedRequest) {
+    return this.connectionRequestService.findAllByPatient(req.user.sub);
+  }
+
+  @Roles('patient')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  cancel(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    return this.connectionRequestService.cancel(id, req.user.sub);
   }
 }

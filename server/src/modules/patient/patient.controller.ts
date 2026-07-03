@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Req,
@@ -38,5 +41,12 @@ export class PatientController {
   @UseGuards(OwnershipGuard)
   update(@Param('id') id: string, @Body() dto: UpdatePatientDto) {
     return this.patientService.update(id, dto);
+  }
+
+  @Delete(':id/nutritionist')
+  @UseGuards(OwnershipGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  removeNutritionist(@Param('id') id: string) {
+    return this.patientService.unlinkFromNutritionist(id);
   }
 }

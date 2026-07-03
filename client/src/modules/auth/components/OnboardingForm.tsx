@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { GenderMale, GenderFemale, Heartbeat, Stethoscope, ArrowRight, TrendDown, TrendUp, Minus } from '@phosphor-icons/react'
+import { GenderMale, GenderFemale, Heartbeat, Stethoscope, ArrowRight, ArrowLeft, TrendDown, TrendUp, Minus } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useCompleteOnboarding } from '../hooks/useCompleteOnboarding'
@@ -219,7 +219,14 @@ export default function OnboardingForm() {
               {errors.birthDate && <p className="text-yellow-200 text-[11px] mt-2">{errors.birthDate.message}</p>}
             </div>
 
-            <div className="flex flex-col gap-5 pt-2 mt-auto">
+            <div className="flex items-center gap-3 pt-2 mt-auto">
+              <button
+                type="button"
+                onClick={() => setStep(1)}
+                className="flex items-center gap-2 w-fit rounded-full bg-white/10 border border-white/25 text-white font-bold py-3.5 px-6 text-[14px] hover:bg-white/15 transition-colors cursor-pointer"
+              >
+                <ArrowLeft size={15} weight="bold" /> Voltar
+              </button>
               <button
                 type="button"
                 onClick={handleStep2}
@@ -282,7 +289,15 @@ export default function OnboardingForm() {
               </div>
             </div>
 
-            <div className="pt-2 mt-auto">
+            <div className="flex items-center gap-3 pt-2 mt-auto">
+              <button
+                type="button"
+                onClick={() => setStep(2)}
+                disabled={isPending}
+                className="flex items-center gap-2 w-fit rounded-full bg-white/10 border border-white/25 text-white font-bold py-3.5 px-6 text-[14px] hover:bg-white/15 transition-colors cursor-pointer disabled:opacity-50"
+              >
+                <ArrowLeft size={15} weight="bold" /> Voltar
+              </button>
               <button
                 type="submit"
                 disabled={isPending}

@@ -448,13 +448,19 @@ export class MealService {
   ): Promise<MealPublic> {
     await this.patientAccess.resolve(callerId, patientId);
     try {
+      const recipe = await this.prisma.recipe.findFirst({
+        where: { id: recipeId, patientId },
+        select: { id: true },
+      });
+      if (!recipe) throw new NotFoundException('Receita não encontrada');
       const meal = await this.prisma.meal.update({
         where: { id: mealId, patientId },
-        data: { recipes: { disconnect: { id: recipeId } } },
+        data: { recipes: { disconnect: { id: recipe.id } } },
         select: mealSelect,
       });
       return this.toMealPublic(meal);
     } catch (error) {
+      if (error instanceof NotFoundException) throw error;
       mapPrismaError(error, 'Erro ao remover receita da refeição', {
         p2025: 'Refeição não encontrada',
       });

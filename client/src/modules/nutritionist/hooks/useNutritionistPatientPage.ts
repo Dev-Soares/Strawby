@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { toLocalISODate } from '@/shared/utils/date'
 import { useGetPatients } from './useGetPatients'
 import { useGetPatientPlan } from './useGetPatientPlan'
@@ -8,11 +9,13 @@ import { useDeletePatientPlan } from './useDeletePatientPlan'
 import { useGetPatientPlanMeals } from './useGetPatientPlanMeals'
 import { useCreatePatientPlanMeal } from './useCreatePatientPlanMeal'
 import { useDeletePatientPlanMeal } from './useDeletePatientPlanMeal'
+import { useRemovePatient } from './useRemovePatient'
 
 export type CreatePlanMode = 'select' | 'manual' | 'generate'
 
 export const useNutritionistPatientPage = (patientId: string) => {
   const id = patientId
+  const navigate = useNavigate()
   const { data: patients } = useGetPatients()
   const patient = patients?.find((p) => p.id === id)
   const hasBodyData = !!(patient?.weight && patient?.height && patient?.age && patient?.gender)
@@ -25,6 +28,7 @@ export const useNutritionistPatientPage = (patientId: string) => {
   const { data: meals, isPending: mealsPending } = useGetPatientPlanMeals(id)
   const createMealMutation = useCreatePatientPlanMeal(id)
   const deleteMealMutation = useDeletePatientPlanMeal(id)
+  const removePatientMutation = useRemovePatient()
 
   const [createPlanOpen, setCreatePlanOpen] = useState(false)
   const [createPlanMode, setCreatePlanMode] = useState<CreatePlanMode>('select')
@@ -32,6 +36,7 @@ export const useNutritionistPatientPage = (patientId: string) => {
   const [confirmDeletePlan, setConfirmDeletePlan] = useState(false)
   const [addMealOpen, setAddMealOpen] = useState(false)
   const [confirmDeleteMealId, setConfirmDeleteMealId] = useState<string | null>(null)
+  const [confirmRemovePatient, setConfirmRemovePatient] = useState(false)
 
   const todayStr = toLocalISODate()
   const [diaryDay, setDiaryDay] = useState(todayStr)
@@ -65,6 +70,15 @@ export const useNutritionistPatientPage = (patientId: string) => {
     deleteMealMutation.mutate(mealId, { onSuccess: () => setConfirmDeleteMealId(null) })
   }
 
+  const handleRemovePatient = () => {
+    removePatientMutation.mutate(id, {
+      onSuccess: () => {
+        setConfirmRemovePatient(false)
+        navigate('/app/home')
+      },
+    })
+  }
+
   return {
     id,
     patient,
@@ -92,6 +106,10 @@ export const useNutritionistPatientPage = (patientId: string) => {
     setConfirmDeleteMealId,
     handleDeletePlan,
     handleDeleteMeal,
+    confirmRemovePatient,
+    setConfirmRemovePatient,
+    handleRemovePatient,
+    removePatientMutation,
     diaryDay,
     prevDay,
     nextDay,
