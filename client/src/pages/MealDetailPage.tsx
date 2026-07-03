@@ -55,8 +55,12 @@ export default function MealDetailPage() {
   const isDark = resolvedTheme === 'dark'
   const cfg = getMealConfig(meal.mealType)
   const MealIcon = cfg.icon
-  const displayTime = meal.time
-    ?? new Date(meal.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+  // Refeição de plano é um template: só mostra horário se foi definido.
+  // Diário deriva do timestamp de registro quando não há hora explícita.
+  const displayTime = isPlan
+    ? meal.time
+    : (meal.time
+      ?? new Date(meal.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }))
 
   const hasItems = meal.items.length > 0
   const hasRecipes = meal.recipes.length > 0
@@ -85,9 +89,11 @@ export default function MealDetailPage() {
               {meal.name}
             </h1>
           </div>
-          <p className="text-sm font-bold mt-1" style={{ color: cfg.theme }}>
-            {displayTime}
-          </p>
+          {displayTime && (
+            <p className="text-sm font-bold mt-1" style={{ color: cfg.theme }}>
+              {displayTime}
+            </p>
+          )}
         </div>
 
         <MealTotalsCard totals={meal.totals} cfg={cfg} />

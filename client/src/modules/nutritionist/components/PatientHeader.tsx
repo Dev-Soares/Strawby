@@ -43,21 +43,11 @@ export default function PatientHeader({ patient, onRemovePatient }: Props) {
         <ArrowLeft size={16} weight="bold" />
         Meus pacientes
       </button>
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight truncate">
-            {patient?.user.name ?? '—'}
-          </h1>
-          <p className="text-sm text-neutral-400 dark:text-neutral-500 mt-1 truncate">{patient?.user.email}</p>
-        </div>
-        <button
-          type="button"
-          onClick={onRemovePatient}
-          className="shrink-0 flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-red-600 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-950/50 transition-colors duration-150 cursor-pointer"
-        >
-          <UserMinus size={15} weight="bold" />
-          <span className="hidden sm:inline">Remover paciente</span>
-        </button>
+      <div className="min-w-0">
+        <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight truncate">
+          {patient?.user.name ?? '—'}
+        </h1>
+        <p className="text-sm text-neutral-400 dark:text-neutral-500 mt-1 truncate">{patient?.user.email}</p>
       </div>
       {bodyStats.length > 0 && (
         <div className="flex flex-wrap gap-2 mt-3">
@@ -69,6 +59,14 @@ export default function PatientHeader({ patient, onRemovePatient }: Props) {
           ))}
         </div>
       )}
+      <button
+        type="button"
+        onClick={onRemovePatient}
+        className="flex items-center gap-2 mt-4 px-4 py-2.5 rounded-xl text-sm font-bold text-red-600 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-950/50 transition-colors duration-150 cursor-pointer"
+      >
+        <UserMinus size={16} weight="bold" />
+        Remover paciente
+      </button>
     </motion.div>
   )
 }
