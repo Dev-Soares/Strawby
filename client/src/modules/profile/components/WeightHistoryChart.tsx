@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Scales, Plus, PencilSimple } from '@phosphor-icons/react'
+import { Scales, Plus, PencilSimple, Trash } from '@phosphor-icons/react'
 import {
   BarChart,
   Bar,
@@ -14,7 +14,9 @@ import {
 import { useGetPatientWeightRecords } from '@/modules/patient/hooks/useGetPatientWeightRecords'
 import { useCreatePatientWeight } from '@/modules/patient/hooks/useCreatePatientWeight'
 import { useUpdatePatientWeight } from '@/modules/patient/hooks/useUpdatePatientWeight'
+import { useDeletePatientWeight } from '@/modules/patient/hooks/useDeletePatientWeight'
 import WeightRecordModal from './WeightRecordModal'
+import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 import type { WeightRecordFormData } from '@/modules/patient/types/weightRecord'
 import { toLocalISODate } from '@/shared/utils/date'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
@@ -54,11 +56,13 @@ export default function WeightHistoryChart({ patientId }: Props) {
   const { data: records, isPending } = useGetPatientWeightRecords(patientId)
   const createMutation = useCreatePatientWeight(patientId)
   const updateMutation = useUpdatePatientWeight(patientId)
+  const deleteMutation = useDeletePatientWeight(patientId)
   const { resolvedTheme } = useThemeContext()
   const isDark = resolvedTheme === 'dark'
 
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
   const chartData = (records ?? []).map((r) => ({
     date: formatDate(r.date),
@@ -88,6 +92,11 @@ export default function WeightHistoryChart({ patientId }: Props) {
       { recordId: records[0].id, data: { weight: data.weight } },
       { onSuccess: () => setEditOpen(false) },
     )
+  }
+
+  function handleDelete() {
+    if (!records?.[0]) return
+    deleteMutation.mutate(records[0].id, { onSuccess: () => setDeleteOpen(false) })
   }
 
   return (
@@ -136,14 +145,24 @@ export default function WeightHistoryChart({ patientId }: Props) {
             <span className="text-sm font-bold text-white whitespace-nowrap">Adicionar novo peso</span>
           </button>
           {records && records.length > 0 && (
-            <button
-              type="button"
-              onClick={() => setEditOpen(true)}
-              className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 active:scale-[0.98] transition-all duration-150 cursor-pointer"
-            >
-              <PencilSimple size={17} weight="bold" className="text-neutral-600 dark:text-neutral-400" />
-              <span className="text-sm font-bold text-neutral-600 dark:text-neutral-400 whitespace-nowrap">Editar peso atual</span>
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => setEditOpen(true)}
+                className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 active:scale-[0.98] transition-all duration-150 cursor-pointer"
+              >
+                <PencilSimple size={17} weight="bold" className="text-neutral-600 dark:text-neutral-400" />
+                <span className="text-sm font-bold text-neutral-600 dark:text-neutral-400 whitespace-nowrap">Editar peso atual</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setDeleteOpen(true)}
+                title="Remover peso atual"
+                className="flex items-center justify-center px-4 py-3.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-red-50 dark:hover:bg-red-950/30 text-neutral-500 hover:text-red-500 active:scale-[0.98] transition-all duration-150 cursor-pointer shrink-0"
+              >
+                <Trash size={17} weight="bold" />
+              </button>
+            </>
           )}
         </div>
       </div>
@@ -234,6 +253,16 @@ export default function WeightHistoryChart({ patientId }: Props) {
         title="Editar medição"
         onClose={() => setEditOpen(false)}
         onSave={handleEdit}
+      />
+
+      <ConfirmDeleteModal
+        isOpen={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        onConfirm={handleDelete}
+        isPending={deleteMutation.isPending}
+        title="Remover peso atual?"
+        description="O registro de peso mais recente será removido permanentemente."
+        confirmLabel="Remover"
       />
     </section>
   )

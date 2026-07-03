@@ -7,6 +7,7 @@ import { PlanService } from './plan.service';
 import { PdfModule } from '../pdf/pdf.module';
 import { MealModule } from '../meal/meal.module';
 import { PatientModule } from '../patient/patient.module';
+import { NotificationModule } from '../notification/send-notification/notification.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { PatientModule } from '../patient/patient.module';
     PatientAccessModule,
     PdfModule,
     MealModule,
+    NotificationModule,
     forwardRef(() => PatientModule),
   ],
   controllers: [PlanController],
