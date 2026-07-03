@@ -5,6 +5,7 @@ import { DatabaseModule } from '../database/database.module';
 import { AuthGuardModule } from '../../common/guards/auth/auth.module';
 import { PatientAccessModule } from '../patient-access/patient-access.module';
 import { DailyScoreModule } from '../daily-score/daily-score.module';
+import { NotificationModule } from '../notification/send-notification/notification.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { DailyScoreModule } from '../daily-score/daily-score.module';
     AuthGuardModule,
     PatientAccessModule,
     DailyScoreModule,
+    NotificationModule,
   ],
   controllers: [PatientController],
   providers: [PatientService],

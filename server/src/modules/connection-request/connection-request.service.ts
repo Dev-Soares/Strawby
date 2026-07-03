@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { NutritionistService } from '../nutritionist/nutritionist.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
@@ -6,8 +6,10 @@ import { CreateConnectionRequestDto } from './dto/create-connection-request.dto'
 import {
   type ConnectionRequestPublic,
   type ConnectionRequestWithPatient,
+  type ConnectionRequestWithNutritionist,
   connectionRequestSelect,
   connectionRequestWithPatientSelect,
+  connectionRequestWithNutritionistSelect,
 } from './types';
 import { NotificationService } from '../notification/send-notification/notification.service';
 
@@ -24,6 +26,21 @@ export class ConnectionRequestService {
     dto: CreateConnectionRequestDto,
   ): Promise<ConnectionRequestPublic> {
     const nutritionist = await this.nutritionistService.findByCode(dto.code);
+
+    // checks if already has one request pending ( prevent spam )
+    const existing = await this.prisma.connectionRequest.findFirst({
+      where: {
+        patientId,
+        nutritionistId: nutritionist.id,
+        status: 'PENDING',
+      },
+      select: { id: true },
+    });
+    if (existing) {
+      throw new ConflictException(
+        'Você já possui uma solicitação pendente para este nutricionista',
+      );
+    }
 
     try {
       const connectionRequest = await this.prisma.connectionRequest.create({
@@ -125,6 +142,20 @@ export class ConnectionRequestService {
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar histórico de solicitações');
+    }
+  }
+
+  async findAllByPatient(
+    patientId: string,
+  ): Promise<ConnectionRequestWithNutritionist[]> {
+    try {
+      return await this.prisma.connectionRequest.findMany({
+        where: { patientId },
+        select: connectionRequestWithNutritionistSelect,
+        orderBy: { createdAt: 'desc' },
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar suas solicitações');
     }
   }
 }

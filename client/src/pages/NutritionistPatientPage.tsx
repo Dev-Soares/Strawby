@@ -9,6 +9,7 @@ import PatientPlanMealsSection from '@/modules/nutritionist/components/PatientPl
 import PatientDiarySection from '@/modules/nutritionist/components/PatientDiarySection'
 import AddPatientMealModal from '@/modules/nutritionist/components/AddPatientMealModal'
 import ConfirmDeletePatientMealModal from '@/modules/nutritionist/components/ConfirmDeletePatientMealModal'
+import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 
 export default function NutritionistPatientPage() {
   const { patientId } = useParams<{ patientId: string }>()
@@ -24,13 +25,14 @@ export default function NutritionistPatientPage() {
     addMealOpen, setAddMealOpen,
     confirmDeleteMealId, setConfirmDeleteMealId,
     handleDeletePlan, handleDeleteMeal,
+    confirmRemovePatient, setConfirmRemovePatient, handleRemovePatient, removePatientMutation,
     diaryDay, prevDay, nextDay, isDiaryToday,
   } = useNutritionistPatientPage(patientId ?? '')
 
   return (
     <AppLayout>
       <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-16 max-w-5xl mx-auto">
-        <PatientHeader patient={patient} />
+        <PatientHeader patient={patient} onRemovePatient={() => setConfirmRemovePatient(true)} />
 
         <PatientPlanSection
           plan={plan}
@@ -94,6 +96,16 @@ export default function NutritionistPatientPage() {
         isPending={deleteMealMutation.isPending}
         onClose={() => setConfirmDeleteMealId(null)}
         onConfirm={handleDeleteMeal}
+      />
+
+      <ConfirmDeleteModal
+        isOpen={confirmRemovePatient}
+        onClose={() => setConfirmRemovePatient(false)}
+        onConfirm={handleRemovePatient}
+        isPending={removePatientMutation.isPending}
+        title="Remover paciente?"
+        description="O paciente será desvinculado de você e perderá o acesso ao plano. Esta ação não pode ser desfeita."
+        confirmLabel="Remover"
       />
     </AppLayout>
   )

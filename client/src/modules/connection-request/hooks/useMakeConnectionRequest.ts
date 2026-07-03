@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { isAxiosError } from 'axios'
 import { makeConnectionRequestService } from '../service/makeConnectionRequestService'
 import toast from 'react-hot-toast'
 
@@ -9,9 +10,14 @@ export const useMakeConnectionRequest = () => {
     mutationFn: (code: string) => makeConnectionRequestService(code),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['me'] })
+      queryClient.invalidateQueries({ queryKey: ['connection-requests'] })
       toast.success('Solicitação enviada ao nutricionista')
     },
-    onError: () => {
+    onError: (error) => {
+      if (isAxiosError(error) && error.response?.status === 409) {
+        toast.error('Você já possui uma solicitação pendente para este nutricionista')
+        return
+      }
       toast.error('Código inválido ou nutricionista não encontrado')
     },
   })
