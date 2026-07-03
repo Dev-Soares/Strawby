@@ -15,7 +15,7 @@ export const useMakeConnectionRequest = () => {
     },
     onError: (error) => {
       if (isAxiosError(error) && error.response?.status === 409) {
-        toast.error('Você já possui uma solicitação pendente para este nutricionista')
+        toast.error('Você já possui uma solicitação de conexão pendente')
         return
       }
       toast.error('Código inválido ou nutricionista não encontrado')

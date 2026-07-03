@@ -1,6 +1,8 @@
-import { Stethoscope, Clock, Check, X } from '@phosphor-icons/react'
+import { Stethoscope, Clock, Check, X, Trash } from '@phosphor-icons/react'
 import { useGetMyConnectionRequests } from '../hooks/useGetMyConnectionRequests'
+import { useCancelConnectionRequest } from '../hooks/useCancelConnectionRequest'
 import MyConnectionRequestsSkeleton from '../skeletons/MyConnectionRequestsSkeleton'
+import Spinner from '@/shared/components/Spinner'
 import type { MyConnectionRequest } from '../types/myConnectionRequest'
 
 const statusConfig: Record<
@@ -32,6 +34,8 @@ const formatDate = (iso: string) =>
 
 export default function MyConnectionRequests() {
   const { data: requests, isPending, isError } = useGetMyConnectionRequests()
+  const cancelMutation = useCancelConnectionRequest()
+  const cancelingId = cancelMutation.isPending ? cancelMutation.variables : null
 
   if (isPending) return <MyConnectionRequestsSkeleton />
   if (isError || !requests || requests.length === 0) return null
@@ -64,6 +68,20 @@ export default function MyConnectionRequests() {
                 <status.Icon size={12} weight="bold" className={status.iconClassName} />
                 {status.label}
               </span>
+              {request.status === 'PENDING' && (
+                <button
+                  type="button"
+                  onClick={() => cancelMutation.mutate(request.id)}
+                  disabled={cancelMutation.isPending}
+                  title="Cancelar solicitação"
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-red-50 dark:hover:bg-red-950/30 text-neutral-400 hover:text-red-500 transition-colors duration-150 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {cancelingId === request.id
+                    ? <Spinner size={13} />
+                    : <Trash size={14} weight="bold" />
+                  }
+                </button>
+              )}
             </div>
           )
         })}

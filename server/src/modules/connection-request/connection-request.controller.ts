@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -68,5 +71,13 @@ export class ConnectionRequestController {
   @Get('patient')
   findAllByPatient(@Req() req: AuthenticatedRequest) {
     return this.connectionRequestService.findAllByPatient(req.user.sub);
+  }
+
+  @Roles('patient')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  cancel(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    return this.connectionRequestService.cancel(id, req.user.sub);
   }
 }

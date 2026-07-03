@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
 import { NutritionistService } from '../nutritionist/nutritionist.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
@@ -25,22 +29,20 @@ export class ConnectionRequestService {
     patientId: string,
     dto: CreateConnectionRequestDto,
   ): Promise<ConnectionRequestPublic> {
-    const nutritionist = await this.nutritionistService.findByCode(dto.code);
-
     // checks if already has one request pending ( prevent spam )
     const existing = await this.prisma.connectionRequest.findFirst({
       where: {
         patientId,
-        nutritionistId: nutritionist.id,
         status: 'PENDING',
       },
       select: { id: true },
     });
     if (existing) {
       throw new ConflictException(
-        'Você já possui uma solicitação pendente para este nutricionista',
+        'Você já possui uma solicitação de conexão pendente',
       );
     }
+    const nutritionist = await this.nutritionistService.findByCode(dto.code);
 
     try {
       const connectionRequest = await this.prisma.connectionRequest.create({
@@ -156,6 +158,21 @@ export class ConnectionRequestService {
       });
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar suas solicitações');
+    }
+  }
+
+  async cancel(id: string, patientId: string): Promise<void> {
+    try {
+      const { count } = await this.prisma.connectionRequest.deleteMany({
+        where: { id, patientId, status: 'PENDING' },
+      });
+
+      if (count === 0) {
+        throw new NotFoundException('Solicitação pendente não encontrada');
+      }
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+      mapPrismaError(error, 'Erro ao cancelar solicitação');
     }
   }
 }
