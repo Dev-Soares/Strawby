@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Inject,
   Injectable,
-  InternalServerErrorException,
   forwardRef,
 } from '@nestjs/common';
 import { PatientService } from '../patient/patient.service';

@@ -5,7 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-
+import type { Request, Response } from 'express';
 import { PinoLogger } from 'nestjs-pino';
 
 const SENSITIVE_KEYS = new Set([
@@ -45,8 +45,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const req = ctx.getRequest();
-    const res = ctx.getResponse();
+    const req = ctx.getRequest<Request>();
+    const res = ctx.getResponse<Response>();
 
     const status =
       exception instanceof HttpException
@@ -61,8 +61,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
       statusCode: status,
     };
 
-    if (isServerError && req.body && Object.keys(req.body).length > 0) {
-      logPayload.requestBody = redact(req.body);
+    if (
+      isServerError &&
+      req.body &&
+      Object.keys(req.body as Record<string, unknown>).length > 0
+    ) {
+      logPayload.requestBody = redact(req.body as Record<string, unknown>);
     }
 
     if (exception instanceof HttpException) {
@@ -70,11 +74,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
       logPayload.errorMessage = exception.message;
       if (isServerError) {
         logPayload.stack = exception.stack;
-        const cause = (exception as any).cause;
-        if (cause instanceof Error) {
-          logPayload.cause = { message: cause.message, stack: cause.stack };
-        } else if (cause !== undefined) {
-          logPayload.cause = cause;
+        if ('cause' in exception && exception.cause !== undefined) {
+          const { cause } = exception;
+          if (cause instanceof Error) {
+            logPayload.cause = { message: cause.message, stack: cause.stack };
+          } else {
+            logPayload.cause = cause;
+          }
         }
       }
     } else if (exception instanceof Error) {

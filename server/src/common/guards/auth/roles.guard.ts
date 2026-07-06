@@ -6,6 +6,8 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import type { Request } from 'express';
+import type { RequestTokenPayload } from 'src/common/types/req-types';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -19,7 +21,9 @@ export class RolesGuard implements CanActivate {
 
     if (!roles || roles.length === 0) return true;
 
-    const request = context.switchToHttp().getRequest();
+    const request = context
+      .switchToHttp()
+      .getRequest<Request & { user?: RequestTokenPayload }>();
     const user = request.user;
 
     if (!user) {
