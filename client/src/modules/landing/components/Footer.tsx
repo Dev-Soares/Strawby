@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, InstagramLogo, XLogo } from '@phosphor-icons/react'
+import { ArrowUpRight, InstagramLogo } from '@phosphor-icons/react'
 
 const productLinks = [
   { label: 'Funcionalidades', href: '#funcionalidades' },
@@ -12,8 +12,7 @@ const legalLinks = [
 ]
 
 const socials = [
-  { icon: InstagramLogo, href: 'https://instagram.com', label: 'Instagram' },
-  { icon: XLogo, href: 'https://x.com', label: 'X' },
+  { icon: InstagramLogo, href: 'https://www.instagram.com/strawbyapp/', label: 'Instagram' },
 ]
 
 export default function Footer() {
