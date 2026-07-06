@@ -1,7 +1,38 @@
+# Dependencies
 **/node_modules
+**/.pnpm-store
+
+# Build outputs
 **/dist
+**/build
+**/.turbo
+
+# Environment and secrets
 **/.env
+**/.env.*
+!**/.env.example
+
+# Logs
 **/*.log
-client
+**/logs
+
+# Version control
 .git
 .gitignore
+**/.gitkeep
+
+# IDE / OS
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Test outputs
+**/coverage
+**/.nyc_output
+
+# Cache
+**/.cache
+**/tmp
