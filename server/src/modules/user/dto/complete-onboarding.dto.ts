@@ -50,9 +50,12 @@ export class CompleteOnboardingDto {
   @IsOptional()
   gender?: string;
 
-  @ApiPropertyOptional({ example: 'lose', enum: ['lose', 'gain', 'mantain'] })
-  @IsString()
-  @IsIn(['lose', 'gain', 'mantain'])
+  // Obrigatório no fluxo de paciente (validado no front); opcional aqui
+  // porque nutricionista completa o onboarding sem meta de peso.
+  @ApiPropertyOptional({ example: 72 })
+  @IsNumber()
+  @Min(30)
+  @Max(300)
   @IsOptional()
-  goal?: 'lose' | 'gain' | 'mantain';
+  targetWeight?: number;
 }

@@ -3,10 +3,16 @@ import { PrismaService } from '../database/prisma.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { NutritionistPublic, nutritionistSelect } from './types';
 import { CreateCodeDto } from './dto/create-code.dto';
+import { NotificationService } from '../notification/send-notification/notification.service';
+import { PatientService } from '../patient/patient.service';
 
 @Injectable()
 export class NutritionistService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationService: NotificationService,
+    private readonly patientService: PatientService,
+  ) {}
 
   async findOne(id: string): Promise<NutritionistPublic> {
     try {
@@ -100,16 +106,18 @@ export class NutritionistService {
     if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
     return age;
   }
+  
+  async removePatient(
+    nutritionistId: string,
+    patientId: string,
+  ): Promise<void> {
+    await this.patientService.unlinkFromNutritionist(nutritionistId, patientId);
 
-  async disconnectPatient(patientId: string): Promise<void> {
-    try {
-      await this.prisma.patient.update({
-        where: { id: patientId },
-        data: { nutritionistId: null },
-      });
-    } catch (error) {
-      mapPrismaError(error, 'Erro ao desconectar nutricionista');
-    }
+    await this.notificationService.sendOne(
+      patientId,
+      'Conexão encerrada',
+      'Seu nutricionista encerrou a conexão com você.',
+    );
   }
 
   async updateCode(nutritionistId: string, dto: CreateCodeDto) {

@@ -67,8 +67,7 @@ const NotificationPermissionPopup = ({ forceOpen, onClose }: NotificationPermiss
         setVisible(false)
         onClose?.()
       },
-      onError: (error) => {
-        console.error('Erro ao ativar notificações:', error)
+      onError: () => {
         toast.error('Erro ao ativar notificações. Tente novamente.')
         setVisible(false)
         onClose?.()

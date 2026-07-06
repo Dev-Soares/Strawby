@@ -28,9 +28,10 @@ export class UpdatePatientDto {
   @IsOptional()
   gender?: string;
 
-  @ApiPropertyOptional({ example: 'lose', enum: ['lose', 'gain', 'mantain'] })
-  @IsString()
-  @IsIn(['lose', 'gain', 'mantain'])
+  @ApiPropertyOptional({ example: 72 })
+  @IsNumber()
+  @Min(30)
+  @Max(300)
   @IsOptional()
-  goal?: 'lose' | 'gain' | 'mantain';
+  targetWeight?: number;
 }

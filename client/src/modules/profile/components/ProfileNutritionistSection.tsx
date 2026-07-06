@@ -3,6 +3,7 @@ import { Stethoscope, Trash, Plus } from '@phosphor-icons/react'
 import { useDisconnectNutritionist } from '@/modules/nutritionist/hooks/useDisconnectNutritionist'
 import { useMakeConnectionRequest } from '@/modules/connection-request/hooks/useMakeConnectionRequest'
 import AddNutritionistModal from '@/modules/connection-request/components/AddNutritionistModal'
+import MyConnectionRequests from '@/modules/connection-request/components/MyConnectionRequests'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 import Spinner from '@/shared/components/Spinner'
 
@@ -59,16 +60,19 @@ export default function ProfileNutritionistSection({ patient }: Props) {
           </button>
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={() => setAddOpen(true)}
-          className="inline-flex items-center gap-3 rounded-2xl bg-red-600 hover:bg-red-700 active:scale-[0.97] transition-all duration-150 cursor-pointer px-5 py-4"
-        >
-          <Plus size={20} weight="bold" className="text-white shrink-0" />
-          <p className="text-sm font-extrabold text-white">
-            Adicionar nutricionista
-          </p>
-        </button>
+        <>
+          <button
+            type="button"
+            onClick={() => setAddOpen(true)}
+            className="inline-flex items-center gap-3 rounded-2xl bg-red-600 hover:bg-red-700 active:scale-[0.97] transition-all duration-150 cursor-pointer px-5 py-4"
+          >
+            <Plus size={20} weight="bold" className="text-white shrink-0" />
+            <p className="text-sm font-extrabold text-white">
+              Adicionar nutricionista
+            </p>
+          </button>
+          <MyConnectionRequests />
+        </>
       )}
 
       <AddNutritionistModal

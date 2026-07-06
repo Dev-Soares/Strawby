@@ -76,7 +76,6 @@ export default function CreateMealForm() {
       {
         onSuccess: async (createdMeal) => {
           if (!createdMeal?.id) {
-            console.error('[CreateMealForm] createdMeal missing id', createdMeal)
             toast.error('Erro ao redirecionar. Tente novamente.')
             return
           }

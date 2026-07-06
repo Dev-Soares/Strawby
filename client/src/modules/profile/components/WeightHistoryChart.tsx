@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Scales, Plus, PencilSimple } from '@phosphor-icons/react'
+import { Scales, Plus, PencilSimple, ClockCounterClockwise } from '@phosphor-icons/react'
 import {
   BarChart,
   Bar,
@@ -15,6 +15,7 @@ import { useGetPatientWeightRecords } from '@/modules/patient/hooks/useGetPatien
 import { useCreatePatientWeight } from '@/modules/patient/hooks/useCreatePatientWeight'
 import { useUpdatePatientWeight } from '@/modules/patient/hooks/useUpdatePatientWeight'
 import WeightRecordModal from './WeightRecordModal'
+import WeightHistoryModal from './WeightHistoryModal'
 import type { WeightRecordFormData } from '@/modules/patient/types/weightRecord'
 import { toLocalISODate } from '@/shared/utils/date'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
@@ -59,6 +60,7 @@ export default function WeightHistoryChart({ patientId }: Props) {
 
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
+  const [historyOpen, setHistoryOpen] = useState(false)
 
   const chartData = (records ?? []).map((r) => ({
     date: formatDate(r.date),
@@ -219,6 +221,17 @@ export default function WeightHistoryChart({ patientId }: Props) {
         )}
       </div>
 
+      {records && records.length > 0 && (
+        <button
+          type="button"
+          onClick={() => setHistoryOpen(true)}
+          className="mt-3 w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-neutral-200 dark:border-neutral-800 text-sm font-bold text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 transition-colors duration-150 cursor-pointer"
+        >
+          <ClockCounterClockwise size={16} weight="bold" />
+          Ver histórico
+        </button>
+      )}
+
       <WeightRecordModal
         isOpen={createOpen}
         isPending={createMutation.isPending}
@@ -234,6 +247,13 @@ export default function WeightHistoryChart({ patientId }: Props) {
         title="Editar medição"
         onClose={() => setEditOpen(false)}
         onSave={handleEdit}
+      />
+
+      <WeightHistoryModal
+        isOpen={historyOpen}
+        patientId={patientId}
+        records={records ?? []}
+        onClose={() => setHistoryOpen(false)}
       />
     </section>
   )

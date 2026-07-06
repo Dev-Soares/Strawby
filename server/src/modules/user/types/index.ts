@@ -5,7 +5,7 @@ export type UserPublic = Pick<User, 'id' | 'name' | 'email' | 'role'> & {
     height: number | null;
     birthDate: Date | null;
     gender: string | null;
-    goal: 'lose' | 'gain' | 'mantain' | null;
+    targetWeight: number | null;
     nutritionistId: string | null;
     nutritionist: { user: { name: string } } | null;
   } | null;
@@ -22,7 +22,7 @@ export const userSelect = {
       height: true,
       birthDate: true,
       gender: true,
-      goal: true,
+      targetWeight: true,
       nutritionistId: true,
       nutritionist: { select: { user: { select: { name: true } } } },
     },

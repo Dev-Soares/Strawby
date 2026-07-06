@@ -34,8 +34,7 @@ export default function ProfileNotificationsSection() {
         onSuccess: (token) => {
           if (token) setEnabled(true)
         },
-        onError: (error) => {
-          console.error('Erro ao ativar notificações:', error)
+        onError: () => {
           toast.error('Erro ao ativar notificações. Tente novamente.')
         },
       })

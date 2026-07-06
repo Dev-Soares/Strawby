@@ -1,10 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsDateString,
-  IsNotEmpty,
-  IsNumber,
-  IsPositive,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { IsAppDay } from '../../../common/decorators/is-app-day.decorator';
 
 export class CreatePatientWeightDto {
   @ApiProperty({ example: 75.5 })
@@ -14,7 +10,7 @@ export class CreatePatientWeightDto {
   weight: number;
 
   @ApiProperty({ example: '2026-06-15' })
-  @IsDateString()
+  @IsAppDay()
   @IsNotEmpty()
   date: string;
 }

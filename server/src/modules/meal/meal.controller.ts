@@ -21,6 +21,7 @@ import { QueryMealDto } from './dto/query-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 import { UpdateFoodItemDto } from './dto/update-food-item.dto';
 import { MealService } from './meal.service';
+import { ParseAppDayPipe } from '../../common/pipes/parse-app-day.pipe';
 
 @ApiTags('meal')
 @UseGuards(AuthGuard)
@@ -54,7 +55,7 @@ export class MealController {
   findAllByDay(
     @Req() req: AuthenticatedRequest,
     @Param('patientId') patientId: string,
-    @Param('day') day: string,
+    @Param('day', ParseAppDayPipe) day: string,
     @Query() query: QueryMealDto,
   ) {
     return this.mealService.findAllByPatientAndDay(

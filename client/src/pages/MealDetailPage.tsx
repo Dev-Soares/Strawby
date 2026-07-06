@@ -1,6 +1,6 @@
 import { useParams, useSearchParams } from 'react-router-dom'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
-import { ArrowLeft, Plus, Trash } from '@phosphor-icons/react'
+import { ArrowLeft, Plus, Trash, PencilSimple } from '@phosphor-icons/react'
 import AppLayout from '@/shared/layouts/AppLayout'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 import Spinner from '@/shared/components/Spinner'
@@ -9,6 +9,7 @@ import MealTotalsCard from '@/modules/meal/components/MealTotalsCard'
 import MealItemRow from '@/modules/meal/components/MealItemRow'
 import MealRecipeRow from '@/modules/meal/components/MealRecipeRow'
 import MealEmptyState from '@/modules/meal/components/MealEmptyState'
+import EditMealTimeModal from '@/modules/meal/components/EditMealTimeModal'
 import { getMealConfig } from '@/modules/meal/config/mealConfig'
 import { useMealDetailPage } from '@/modules/meal/hooks/useMealDetailPage'
 
@@ -20,7 +21,9 @@ export default function MealDetailPage() {
 
   const {
     meal, isLoading, isError, confirm, setConfirm, handleConfirm, isDeletePending,
-    deleteMutation, removeItem, updateItem, removeRecipe, backPath, selectFoodPath, navigate,
+    deleteMutation, removeItem, updateItem, updateMeal, removeRecipe,
+    editTimeOpen, setEditTimeOpen, handleUpdateTime, isPlan,
+    backPath, selectFoodPath, navigate,
   } = useMealDetailPage({ mealId: id ?? '', patientId })
 
   if (isLoading) {
@@ -52,8 +55,12 @@ export default function MealDetailPage() {
   const isDark = resolvedTheme === 'dark'
   const cfg = getMealConfig(meal.mealType)
   const MealIcon = cfg.icon
-  const displayTime = meal.time
-    ?? new Date(meal.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+  // Refeição de plano é um template: só mostra horário se foi definido.
+  // Diário deriva do timestamp de registro quando não há hora explícita.
+  const displayTime = isPlan
+    ? meal.time
+    : (meal.time
+      ?? new Date(meal.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }))
 
   const hasItems = meal.items.length > 0
   const hasRecipes = meal.recipes.length > 0
@@ -82,9 +89,11 @@ export default function MealDetailPage() {
               {meal.name}
             </h1>
           </div>
-          <p className="text-sm font-bold mt-1" style={{ color: cfg.theme }}>
-            {displayTime}
-          </p>
+          {displayTime && (
+            <p className="text-sm font-bold mt-1" style={{ color: cfg.theme }}>
+              {displayTime}
+            </p>
+          )}
         </div>
 
         <MealTotalsCard totals={meal.totals} cfg={cfg} />
@@ -162,7 +171,18 @@ export default function MealDetailPage() {
           />
         )}
 
-        <div className="flex gap-3 mt-6">
+        {!isPlan && (
+          <button
+            type="button"
+            onClick={() => setEditTimeOpen(true)}
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-neutral-700 dark:text-neutral-200 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors duration-200 cursor-pointer mt-6"
+          >
+            <PencilSimple size={16} weight="bold" />
+            Editar refeição
+          </button>
+        )}
+
+        <div className="flex gap-3 mt-3">
           <button
             type="button"
             onClick={() => navigate(selectFoodPath)}
@@ -212,6 +232,15 @@ export default function MealDetailPage() {
           }
           confirmLabel="Remover"
           isPending={isDeletePending}
+        />
+
+        <EditMealTimeModal
+          isOpen={editTimeOpen}
+          currentMealType={meal.mealType}
+          currentTime={meal.time ?? displayTime}
+          isPending={updateMeal.isPending}
+          onClose={() => setEditTimeOpen(false)}
+          onSave={handleUpdateTime}
         />
       </div>
     </AppLayout>

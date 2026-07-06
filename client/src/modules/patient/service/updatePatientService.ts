@@ -4,7 +4,7 @@ export type UpdatePatientPayload = {
   height?: number
   birthDate?: string
   gender?: 'male' | 'female'
-  goal?: 'lose' | 'gain' | 'mantain'
+  targetWeight?: number
 }
 
 export const updatePatientService = async (id: string, data: UpdatePatientPayload): Promise<void> => {

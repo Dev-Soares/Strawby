@@ -47,13 +47,6 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
     })
   }
 
-  const initials = patient?.user.name
-    .split(' ')
-    .slice(0, 2)
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase() ?? ''
-
   return (
     <>
       <AnimatePresence>
@@ -78,11 +71,7 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
               <div className="sticky top-0 bg-white dark:bg-neutral-900 z-10 flex items-center justify-between px-7 pt-7 pb-5 border-b border-neutral-100 dark:border-neutral-800 transition-colors duration-300">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/30 flex items-center justify-center shrink-0">
-                    {initials ? (
-                      <span className="text-sm font-extrabold text-red-600 dark:text-red-400">{initials}</span>
-                    ) : (
-                      <User size={16} weight="bold" className="text-red-500" />
-                    )}
+                    <User size={16} weight="bold" className="text-red-500" />
                   </div>
                   <div className="min-w-0">
                     <h2 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight truncate transition-colors duration-300">

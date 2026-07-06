@@ -14,8 +14,8 @@ const notifySubscribers = (error?: unknown) => {
 }
 
 const handleUnauthorized = () => {
-  // só marca a sessão como nula — NÃO invalida (invalidate refaz o GET /user/me
-  // que volta a dar 401 e cria um loop infinito de refresh)
+  // Marca usuário como deslogado SEM invalidar — invalidar dispararia
+  // refetch de /user/me → 401 → refresh → handleUnauthorized → loop infinito.
   queryClient.setQueryData(['user', 'me'], null)
   window.dispatchEvent(new CustomEvent(UNAUTHORIZED_EVENT))
 }

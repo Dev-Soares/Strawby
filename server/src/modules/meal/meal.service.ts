@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { MealKind } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { PatientAccessService } from '../patient-access/patient-access.service';
-import { appDayRange } from '../../common/utils/date.util';
+import { appDayRangeTz } from '../../common/utils/date.util';
 import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
 import { AddMealRecipeDto } from './dto/add-meal-recipe.dto';
@@ -153,7 +153,7 @@ export class MealService {
     kind?: MealKind,
   ): Promise<MealPublic[]> {
     try {
-      const { start, end } = appDayRange(day);
+      const { start, end } = appDayRangeTz(day);
       const meals = await this.prisma.meal.findMany({
         where: {
           patientId,
@@ -174,7 +174,7 @@ export class MealService {
     day: string,
   ): Promise<Map<string, MealPublic[]>> {
     try {
-      const { start, end } = appDayRange(day);
+      const { start, end } = appDayRangeTz(day);
       const meals = await this.prisma.meal.findMany({
         where: {
           patientId: { in: patientIds },
@@ -448,13 +448,19 @@ export class MealService {
   ): Promise<MealPublic> {
     await this.patientAccess.resolve(callerId, patientId);
     try {
+      const recipe = await this.prisma.recipe.findFirst({
+        where: { id: recipeId, patientId },
+        select: { id: true },
+      });
+      if (!recipe) throw new NotFoundException('Receita não encontrada');
       const meal = await this.prisma.meal.update({
         where: { id: mealId, patientId },
-        data: { recipes: { disconnect: { id: recipeId } } },
+        data: { recipes: { disconnect: { id: recipe.id } } },
         select: mealSelect,
       });
       return this.toMealPublic(meal);
     } catch (error) {
+      if (error instanceof NotFoundException) throw error;
       mapPrismaError(error, 'Erro ao remover receita da refeição', {
         p2025: 'Refeição não encontrada',
       });

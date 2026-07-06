@@ -12,13 +12,6 @@ export default function NutritionistPatientReportPage() {
   const { data: patients } = useGetPatients()
   const patient = patients?.find((p) => p.id === patientId)
 
-  const initials = patient?.user.name
-    .split(' ')
-    .slice(0, 2)
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-
   return (
     <AppLayout>
       <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-16 max-w-3xl mx-auto">
@@ -39,11 +32,7 @@ export default function NutritionistPatientReportPage() {
 
           <div className="flex items-center gap-3.5">
             <div className="w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/30 flex items-center justify-center shrink-0 transition-colors duration-300">
-              {initials ? (
-                <span className="text-lg font-extrabold text-red-600 dark:text-red-400">{initials}</span>
-              ) : (
-                <User size={20} weight="bold" className="text-red-500" />
-              )}
+              <User size={20} weight="bold" className="text-red-500" />
             </div>
             <h1 className="font-display text-2xl sm:text-3xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight truncate min-w-0">
               {patient?.user.name ?? '—'}

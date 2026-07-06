@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -47,11 +48,14 @@ export class NutritionistController {
     return this.nutritionistService.updateCode(req.user.sub, createCodeDto);
   }
 
-  @Roles('patient')
+  @Roles('nutritionist')
   @UseGuards(RolesGuard)
-  @Delete('me')
+  @Delete('me/patients/:patientId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  disconnectNutritionist(@Req() req: AuthenticatedRequest) {
-    return this.nutritionistService.disconnectPatient(req.user.sub);
+  removePatient(
+    @Req() req: AuthenticatedRequest,
+    @Param('patientId') patientId: string,
+  ) {
+    return this.nutritionistService.removePatient(req.user.sub, patientId);
   }
 }

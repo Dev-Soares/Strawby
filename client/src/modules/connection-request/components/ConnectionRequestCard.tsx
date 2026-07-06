@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { User, Check, X } from '@phosphor-icons/react'
+import Spinner from '@/shared/components/Spinner'
 import type { ConnectionRequest } from '../types/connectionRequest'
 
 interface Props {
@@ -7,17 +8,12 @@ interface Props {
   index: number
   onAccept: (id: string) => void
   onReject: (id: string) => void
-  isPending: boolean
+  isAccepting: boolean
+  isRejecting: boolean
+  disabled: boolean
 }
 
-export default function ConnectionRequestCard({ request, index, onAccept, onReject, isPending }: Props) {
-  const initials = request.patient.user.name
-    .split(' ')
-    .slice(0, 2)
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-
+export default function ConnectionRequestCard({ request, index, onAccept, onReject, isAccepting, isRejecting, disabled }: Props) {
   const date = new Date(request.createdAt).toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: 'short',
@@ -33,11 +29,7 @@ export default function ConnectionRequestCard({ request, index, onAccept, onReje
     >
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/30 flex items-center justify-center shrink-0 transition-colors duration-300">
-          {initials ? (
-            <span className="text-sm font-extrabold text-red-600 dark:text-red-400">{initials}</span>
-          ) : (
-            <User size={16} weight="bold" className="text-red-500" />
-          )}
+          <User size={16} weight="bold" className="text-red-500" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate transition-colors duration-300">
@@ -55,19 +47,19 @@ export default function ConnectionRequestCard({ request, index, onAccept, onReje
       <div className="border-t border-neutral-100 dark:border-neutral-800 pt-3 flex gap-2 transition-colors duration-300">
         <button
           onClick={() => onReject(request.id)}
-          disabled={isPending}
+          disabled={disabled}
           className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl border border-neutral-200 dark:border-neutral-700 text-xs font-semibold text-neutral-500 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-neutral-700 dark:hover:text-neutral-200 transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <X size={13} weight="bold" />
-          Recusar
+          {isRejecting ? <Spinner size={13} /> : <X size={13} weight="bold" />}
+          {isRejecting ? 'Recusando…' : 'Recusar'}
         </button>
         <button
           onClick={() => onAccept(request.id)}
-          disabled={isPending}
+          disabled={disabled}
           className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-xs font-semibold text-white transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Check size={13} weight="bold" />
-          Aceitar
+          {isAccepting ? <Spinner size={13} className="border-white/40 border-t-white" /> : <Check size={13} weight="bold" />}
+          {isAccepting ? 'Aceitando…' : 'Aceitar'}
         </button>
       </div>
     </motion.div>

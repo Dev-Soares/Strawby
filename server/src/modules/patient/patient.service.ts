@@ -1,13 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { PatientAccessService } from '../patient-access/patient-access.service';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
-import { yesterdayInAppTz } from '../../common/utils/date.util';
+import {
+  yesterdayInAppTz,
+  todayInAppTz,
+  appDayRangeTz,
+} from '../../common/utils/date.util';
 import type { PatientStreakPublic, StreakProcessResult } from './types';
-import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
+import { CompleteOnboardingDto } from '../user/dto/complete-onboarding.dto';
 import { DailyScoreService } from '../daily-score/daily-score.service';
+import { NotificationService } from '../notification/send-notification/notification.service';
 
 @Injectable()
 export class PatientService {
@@ -15,22 +24,32 @@ export class PatientService {
     private readonly prisma: PrismaService,
     private readonly patientAccessService: PatientAccessService,
     private readonly dailyScoreService: DailyScoreService,
+    private readonly notificationService: NotificationService
   ) {}
 
   async createFromOnboarding(
     userId: string,
-    data: CreatePatientDto,
+    data: CompleteOnboardingDto,
   ): Promise<void> {
+    if (
+      data.height === undefined ||
+      data.birthDate === undefined ||
+      data.gender === undefined ||
+      data.targetWeight === undefined
+    ) {
+      throw new BadRequestException(
+        'Dados obrigatórios do paciente ausentes no onboarding',
+      );
+    }
+
     try {
       await this.prisma.patient.create({
         data: {
           id: userId,
-          ...(data.height !== undefined && { height: data.height }),
-          ...(data.birthDate !== undefined && {
-            birthDate: new Date(data.birthDate),
-          }),
-          ...(data.gender !== undefined && { gender: data.gender }),
-          ...(data.goal !== undefined && { goal: data.goal }),
+          height: data.height,
+          birthDate: new Date(data.birthDate),
+          gender: data.gender,
+          targetWeight: data.targetWeight,
         },
       });
       if (data.weight !== undefined) {
@@ -54,9 +73,9 @@ export class PatientService {
           gender: true,
           currentStreak: true,
           bestStreak: true,
-          goal: true,
+          targetWeight: true,
           weightRecord: {
-            orderBy: { date: 'desc' },
+            orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
             take: 1,
             select: { weight: true, date: true },
           },
@@ -100,7 +119,9 @@ export class PatientService {
             birthDate: new Date(dto.birthDate),
           }),
           ...(dto.gender !== undefined && { gender: dto.gender }),
-          ...(dto.goal !== undefined && { goal: dto.goal }),
+          ...(dto.targetWeight !== undefined && {
+            targetWeight: dto.targetWeight,
+          }),
         },
       });
     } catch (error) {
@@ -110,9 +131,50 @@ export class PatientService {
     }
   }
 
+
+  // bi-functional method, if nutritionist calls it ( through DI at nutritionistService),
+  // pass the id of the nutritionist and checks if it is connected to the patient whose id 
+  // was passed as parameter. if patient calls via controller, just check the ownership and
+  // remove the connection
+  async unlinkFromNutritionist(
+    patientId: string,
+    expectedNutritionistId?: string,
+  ): Promise<string | null> {
+
+     if (expectedNutritionistId) {
+      await this.patientAccessService.resolve(expectedNutritionistId, patientId)
+    }
+    
+    try {
+      const patient = await this.prisma.patient.findUnique({
+        where: { id: patientId },
+        select: { nutritionistId: true },
+      });
+
+      await this.prisma.patient.update({
+        where: { id: patientId },
+        data: { nutritionistId: null },
+      });
+
+      if (expectedNutritionistId) {
+        await this.notificationService.sendOne(
+          patientId,
+          'Conexão encerrada',
+          'Seu nutricionista encerrou a conexão com você.',
+        );
+      }
+
+      return patient?.nutritionistId ?? null;
+    } catch (error) {
+      if (error instanceof NotFoundException) throw error;
+      mapPrismaError(error, 'Erro ao desvincular nutricionista', {
+        p2025: 'Paciente não encontrado',
+      });
+    }
+  }
+
   async findPatientsWithNoMeal() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Define o início do dia
+    const { start, end } = appDayRangeTz(todayInAppTz());
 
     try {
       const patientsIds = await this.prisma.patient.findMany({
@@ -120,7 +182,7 @@ export class PatientService {
           meals: {
             none: {
               kind: 'DAILY',
-              date: { gte: today },
+              date: { gte: start, lt: end },
             },
           },
         },
@@ -137,20 +199,26 @@ export class PatientService {
     const yesterdayDate = yesterdayInAppTz();
 
     try {
-      const [patientIds, scores] = await Promise.all([
-        this.prisma.patient.findMany({ select: { id: true } }),
+      const [patients, scores] = await Promise.all([
+        this.prisma.patient.findMany({
+          select: { id: true, currentStreak: true },
+        }),
         this.dailyScoreService.findScoresByDate(yesterdayDate),
       ]);
 
       const scoreMap = new Map(scores.map((s) => [s.patientId, s.score])); //mapeia os scores por patientId para acesso rápido
 
-      const resetIds = patientIds
-        .filter((patient) => (scoreMap.get(patient.id) ?? 0) < 8)
-        .map((patient) => patient.id); // pacientes com score < 8 terão streak resetado
-      const incrementIds = patientIds
-        .filter((patient) => (scoreMap.get(patient.id) ?? 0) >= 8)
+      const resetIds = patients
+        .filter(
+          (patient) =>
+            (scoreMap.get(patient.id) ?? 0) < 7 && patient.currentStreak !== 0,
+        )
+        .map((patient) => patient.id); // pacientes com score < 7 terão streak resetado
+
+      const incrementIds = patients
+        .filter((patient) => (scoreMap.get(patient.id) ?? 0) >= 7)
         .map((patient) => patient.id);
-      // pacientes com score >= 8 terão streak incrementado
+      // pacientes com score >= 7 terão streak incrementado
 
       await this.prisma.$transaction(async (tx) => {
         if (resetIds.length > 0) {

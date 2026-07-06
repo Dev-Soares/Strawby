@@ -33,13 +33,6 @@ export default function PatientScoreCard({ patient, index }: Props) {
   const color = score != null ? getScoreColor(score) : null
   const pct = score != null ? Math.min((score / 10) * 100, 100) : 0
 
-  const initials = patient.user.name
-    .split(' ')
-    .slice(0, 2)
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-
   return (
     <motion.div
       className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 p-5 flex flex-col gap-4 transition-colors duration-300"
@@ -49,11 +42,7 @@ export default function PatientScoreCard({ patient, index }: Props) {
     >
       <div className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/30 flex items-center justify-center shrink-0 transition-colors duration-300">
-          {initials ? (
-            <span className="text-base font-extrabold text-red-600 dark:text-red-400">{initials}</span>
-          ) : (
-            <User size={18} weight="bold" className="text-red-500" />
-          )}
+          <User size={18} weight="bold" className="text-red-500" />
         </div>
 
         <div className="flex-1 min-w-0">

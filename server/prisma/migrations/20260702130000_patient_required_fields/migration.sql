@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Patient" ALTER COLUMN "height" SET NOT NULL,
+ALTER COLUMN "birthDate" SET NOT NULL,
+ALTER COLUMN "targetWeight" SET NOT NULL,
+ALTER COLUMN "gender" SET NOT NULL;
