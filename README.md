@@ -312,10 +312,11 @@ pnpm --filter server exec prisma generate
 # Seed demo data (patient + nutritionist + plan + 7 days of meals/scores)
 pnpm --filter server seed
 
-# Seed the public food catalog from external sources
-pnpm --filter server seed:foods          # add/update
-pnpm --filter server seed:foods:fresh     # wipe + reload
-pnpm --filter server seed:foods:dry       # dry run
+# Import public food catalog from external sources
+pnpm --filter server import:off         # Open Food Facts Brazil
+pnpm --filter server import:ibge        # IBGE POF 2008-2009
+pnpm --filter server clean:foods        # clean low-quality records
+pnpm --filter server reprioritize:foods # re-run food ranking
 
 # Inspect
 pnpm --filter server exec prisma studio
@@ -485,7 +486,7 @@ pnpm --filter server start:dev    # hot reload
 pnpm --filter server start:prod   # production
 pnpm --filter server test         # Jest
 pnpm --filter server seed         # demo data
-pnpm --filter server seed:foods   # food catalog
+pnpm --filter server import:off   # food catalog
 
 # Client
 pnpm --filter client dev          # Vite dev server

@@ -12,7 +12,7 @@
 - Erros em **pt-BR** via `NotFoundException`, `ConflictException`, `UnauthorizedException`, `ForbiddenException`, `BadRequestException`, `InternalServerErrorException`.
 - Toda Prisma op em `try/catch`. Rethrow NestJS exceptions, fallback `InternalServerErrorException`.
 - `select` em Prisma para excluir campos sensíveis (password, tokens). **NUNCA** retornar entidade Prisma crua.
-- Auth via cookie httpOnly. JWT payload só `{ sub, name }`. **NUNCA** localStorage, **NUNCA** Authorization header, **NUNCA** dados sensíveis no JWT.
+- Auth via cookie httpOnly. JWT payload: `{ sub, name, role }` (`role` necessário para `RolesGuard`). **NUNCA** localStorage, **NUNCA** Authorization header, **NUNCA** dados sensíveis (password, tokens) no JWT.
 - Senha via `HashService` (bcrypt). **NUNCA** bcrypt direto. **NUNCA** plain password em log/storage.
 - Output via `type XPublic = Pick<X, ...>` no topo do service. **NUNCA** retornar `User` cru.
 - `OwnershipGuard` sempre depois de `AuthGuard`: `@UseGuards(AuthGuard, OwnershipGuard)`.
@@ -105,7 +105,7 @@ Rethrow pattern (MANDATORY): NestJS exceptions thrown inside `try` MUST be rethr
 - AuthService: validate credentials, generate JWT, return `{ access_token }`. Does NOT set cookies.
 - AuthController: seta/limpa cookie via `@Res({ passthrough: true })`.
 - HashService (`common/hash/`): `hashPassword()` e `comparePassword()` via bcrypt.
-- JWT payload: `{ sub: user.id, name: user.name }`. NEVER incluir dados sensíveis.
+- JWT payload: `{ sub: user.id, name: user.name, role: user.role }` (role incluído para `RolesGuard`). NEVER incluir dados sensíveis.
 - Cookie config importado de `src/common/config/cookie.config.ts`.
 
 ## 7. Guards
