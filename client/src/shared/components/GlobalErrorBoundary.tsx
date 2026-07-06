@@ -1,5 +1,4 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
-import { errorBootstrap } from './BootstrapDiagnostics'
 
 interface Props {
   children: ReactNode
@@ -20,8 +19,8 @@ export default class GlobalErrorBoundary extends Component<Props, State> {
     return { hasError: true, error }
   }
 
-  componentDidCatch(error: Error, info: ErrorInfo) {
-    errorBootstrap('React ErrorBoundary', `${error.message}\n${info.componentStack ?? ''}`)
+  componentDidCatch(_error: Error, _info: ErrorInfo) {
+    // Erros já são tratados pelo React ErrorBoundary; evita crashar a árvore toda.
   }
 
   render() {
@@ -32,7 +31,7 @@ export default class GlobalErrorBoundary extends Component<Props, State> {
             Algo deu errado
           </h1>
           <p className="text-neutral-600 dark:text-neutral-400 mb-6 max-w-md">
-            Toque no painel de diagnóstico no canto inferior para ver detalhes.
+            Recarregue a página para tentar novamente.
           </p>
           <button
             type="button"

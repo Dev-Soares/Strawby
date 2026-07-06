@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 import { registerSW } from 'virtual:pwa-register'
-import { logBootstrap, warnBootstrap } from '@/shared/components/BootstrapDiagnostics'
 
 const UPDATE_INTERVAL_MS = 15 * 60 * 1000
 
@@ -8,26 +7,19 @@ export const usePwaAutoUpdate = () => {
   const needRefreshRef = useRef(false)
 
   useEffect(() => {
-    if (!('serviceWorker' in navigator)) {
-      warnBootstrap('PWA update', 'serviceWorker não disponível')
-      return
-    }
+    if (!('serviceWorker' in navigator)) return
 
     let updateSW: ((reloadPage?: boolean) => Promise<void>) | undefined
 
     try {
       updateSW = registerSW({
         immediate: true,
-        onRegisterError: (error: unknown) => {
-          warnBootstrap('PWA register error', error instanceof Error ? error.message : String(error))
-        },
+        onRegisterError: () => {},
         onNeedRefresh() {
           needRefreshRef.current = true
         },
       })
-      logBootstrap('PWA registerSW chamado')
-    } catch (error) {
-      warnBootstrap('PWA registerSW falhou', error instanceof Error ? error.message : String(error))
+    } catch {
       return
     }
 
@@ -56,9 +48,7 @@ export const usePwaAutoUpdate = () => {
           void registration.update()
         }, UPDATE_INTERVAL_MS)
       })
-      .catch((error: unknown) => {
-        warnBootstrap('PWA serviceWorker.ready falhou', error instanceof Error ? error.message : String(error))
-      })
+      .catch(() => {})
 
     return () => {
       if (intervalId) clearInterval(intervalId)
