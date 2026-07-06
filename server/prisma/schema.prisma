@@ -156,18 +156,19 @@ model PrivateFood {
 }
 
 model Meal {
-  id        String     @id @default(uuid())
-  name      String
-  kind      MealKind   @default(DAILY)
-  mealType  String?
-  time      String?
-  date      DateTime   @default(now())
-  patientId String
-  patient   Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  items     FoodItem[]
-  recipes   Recipe[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id           String     @id @default(uuid())
+  name         String
+  kind         MealKind   @default(DAILY)
+  mealType     String?
+  time         String?
+  observations String?
+  date         DateTime   @default(now())
+  patientId    String
+  patient      Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  items        FoodItem[]
+  recipes      Recipe[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 
   @@index([patientId, kind, date])
 }

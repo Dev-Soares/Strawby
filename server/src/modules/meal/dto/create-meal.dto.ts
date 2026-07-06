@@ -6,6 +6,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  MaxLength,
 } from 'class-validator';
 
 export class CreateMealDto {
@@ -28,4 +29,10 @@ export class CreateMealDto {
   @IsDateString()
   @IsOptional()
   date?: string;
+
+  @ApiPropertyOptional({ example: 'Sem glúten' })
+  @IsString()
+  @IsOptional()
+  @MaxLength(1000)
+  observations?: string;
 }

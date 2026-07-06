@@ -95,7 +95,7 @@ export default function ProfileInviteCodeSection() {
       </div>
 
       <div className="lg:pl-16">
-        <div className="flex items-start justify-between mb-5 px-1">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5 px-1">
           <div>
             <h2 className="font-display text-xl font-extrabold text-neutral-900 dark:text-white tracking-tight leading-tight transition-colors duration-300">
               Código de convite
@@ -107,7 +107,7 @@ export default function ProfileInviteCodeSection() {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 active:scale-[0.97] transition-all duration-150 cursor-pointer shrink-0"
+            className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white bg-red-600 hover:bg-red-700 active:scale-[0.97] transition-all duration-150 cursor-pointer shrink-0 w-full sm:w-auto"
           >
             <PencilSimple size={14} weight="bold" />
             Alterar

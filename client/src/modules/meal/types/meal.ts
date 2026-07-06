@@ -39,6 +39,7 @@ export type Meal = {
   kind: MealKind
   mealType: string | null
   time: string | null
+  observations: string | null
   date: string
   patientId: string
   items: FoodItem[]
