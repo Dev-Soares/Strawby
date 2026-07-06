@@ -16,12 +16,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CompleteOnboardingDto } from './dto/complete-onboarding.dto';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
-import { OptionalAuthGuard } from 'src/common/guards/auth/optionalAuth.guard';
 import { OwnershipGuard } from 'src/common/guards/auth/ownership.guard';
-import type {
-  AuthenticatedRequest,
-  OptionalAuthRequest,
-} from 'src/common/types/req-types';
+import type { AuthenticatedRequest } from 'src/common/types/req-types';
 
 @ApiTags('user')
 @Controller('user')

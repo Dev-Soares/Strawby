@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, DotsThreeVertical, Export, Plus, Check, ArrowDown, DeviceMobile, Warning } from '@phosphor-icons/react'
+import { X, DotsThreeVertical, Export, Plus, Check, ArrowDown, DeviceMobileSpeaker, Warning } from '@phosphor-icons/react'
 
 type Platform = 'android' | 'ios'
 
@@ -97,7 +97,7 @@ function IosGuide() {
       <div className="flex flex-col gap-3">
         <div className="bg-neutral-50 dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-xl p-3.5 transition-colors duration-300">
           <div className="flex items-center gap-2 mb-1.5">
-            <DeviceMobile size={15} weight="duotone" className="text-red-500 shrink-0" />
+            <DeviceMobileSpeaker size={15} weight="duotone" className="text-red-500 shrink-0" />
             <span className="text-xs font-extrabold uppercase tracking-wider text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
               iOS 16.3 ou anterior
             </span>
@@ -109,7 +109,7 @@ function IosGuide() {
 
         <div className="bg-neutral-50 dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-xl p-3.5 transition-colors duration-300">
           <div className="flex items-center gap-2 mb-1.5">
-            <DeviceMobile size={15} weight="duotone" className="text-emerald-500 shrink-0" />
+            <DeviceMobileSpeaker size={15} weight="duotone" className="text-emerald-500 shrink-0" />
             <span className="text-xs font-extrabold uppercase tracking-wider text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
               iOS 16.4 ou posterior
             </span>

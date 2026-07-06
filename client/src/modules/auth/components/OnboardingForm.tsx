@@ -136,9 +136,9 @@ export default function OnboardingForm() {
                 </div>
                 <span className="text-[12px] text-white/70 leading-relaxed">
                   Li e aceito os{' '}
-                  <Link to="/termos" target="_blank" className="text-white font-semibold underline underline-offset-2">Termos de Uso</Link>
+                  <Link to="/terms" target="_blank" className="text-white font-semibold underline underline-offset-2">Termos de Uso</Link>
                   {' '}e a{' '}
-                  <Link to="/privacidade" target="_blank" className="text-white font-semibold underline underline-offset-2">Política de Privacidade</Link>
+                  <Link to="/privacy" target="_blank" className="text-white font-semibold underline underline-offset-2">Política de Privacidade</Link>
                 </span>
               </label>
               {errors.acceptTerms && <p className="text-yellow-200 text-[11px] -mt-2">{errors.acceptTerms.message}</p>}

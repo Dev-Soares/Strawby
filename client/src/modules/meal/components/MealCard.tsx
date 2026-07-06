@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { CoffeeIcon, ForkKnifeIcon, LeafIcon, MoonIcon, CookieIcon, CaretDown, PencilSimple } from '@phosphor-icons/react'
+import { CoffeeIcon, ForkKnifeIcon, LeafIcon, MoonIcon, CookieIcon, CaretDown, PencilSimple, Note } from '@phosphor-icons/react'
 import type { Icon } from '@phosphor-icons/react'
 import type { Meal } from '../types/meal'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
@@ -90,6 +90,27 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
             </span>
           ))}
         </div>
+
+        {/* Observations */}
+        {meal.observations && (
+          <div
+            className="mt-3 rounded-xl p-3 flex items-start gap-2.5"
+            style={{ backgroundColor: isDark ? `${config.accent}20` : config.accentLight }}
+          >
+            <Note
+              size={16}
+              weight="bold"
+              className="shrink-0 mt-0.5"
+              style={{ color: isDark ? config.accentLight : config.accentText }}
+            />
+            <p
+              className="text-sm font-semibold leading-relaxed"
+              style={{ color: isDark ? config.accentLight : config.accentText }}
+            >
+              {meal.observations}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Footer */}
@@ -122,54 +143,61 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
             transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
             className="overflow-hidden"
           >
-            <div className="border-t border-neutral-100 dark:border-neutral-800 px-4 py-3 flex flex-col gap-2">
+            <div className="border-t border-neutral-100 dark:border-neutral-800 px-4 py-4 flex flex-col gap-4">
               {meal.items && meal.items.length > 0 && (
-                <>
-                  {meal.items.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center gap-3"
-                    >
-                      <div className="min-w-0 flex-1">
+                <div className="flex flex-col gap-2">
+                  <p className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest">
+                    Alimentos
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {meal.items.map((item) => (
+                      <div
+                        key={item.id}
+                        className="bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-100 dark:border-neutral-800 rounded-xl p-3 flex flex-col gap-1"
+                      >
                         <p className="text-sm font-bold text-neutral-900 dark:text-neutral-200 truncate">
                           {(item.food ?? item.privateFood)?.name ?? 'Alimento'}
                         </p>
-                        <p className="text-xs font-bold text-neutral-400 dark:text-neutral-500">
-                          {Math.round(item.quantity)}g
-                        </p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs font-bold text-neutral-400 dark:text-neutral-500">
+                            {Math.round(item.quantity)}g
+                          </p>
+                          <span className="text-sm font-extrabold tabular-nums text-neutral-700 dark:text-neutral-300">
+                            {Math.round(item.calories)} kcal
+                          </span>
+                        </div>
                       </div>
-                      <span className="text-sm font-extrabold tabular-nums text-neutral-700 dark:text-neutral-300 shrink-0">
-                        {Math.round(item.calories)} kcal
-                      </span>
-                    </div>
-                  ))}
-                </>
+                    ))}
+                  </div>
+                </div>
               )}
 
               {meal.recipes && meal.recipes.length > 0 && (
-                <>
-                  {meal.items && meal.items.length > 0 && (
-                    <div className="h-px bg-neutral-100 dark:bg-neutral-800 my-1" />
-                  )}
-                  {meal.recipes.map((recipe) => (
-                    <div
-                      key={recipe.id}
-                      className="flex items-center gap-3"
-                    >
-                      <div className="min-w-0 flex-1">
+                <div className="flex flex-col gap-2">
+                  <p className="text-[10px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-widest">
+                    Receitas
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {meal.recipes.map((recipe) => (
+                      <div
+                        key={recipe.id}
+                        className="bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-100 dark:border-neutral-800 rounded-xl p-3 flex flex-col gap-1"
+                      >
                         <p className="text-sm font-bold text-neutral-900 dark:text-neutral-200 truncate">
                           {recipe.name}
                         </p>
-                        <p className="text-xs font-bold text-neutral-400 dark:text-neutral-500">
-                          Receita
-                        </p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs font-bold text-neutral-400 dark:text-neutral-500">
+                            Receita
+                          </p>
+                          <span className="text-sm font-extrabold tabular-nums text-neutral-700 dark:text-neutral-300">
+                            {Math.round(recipe.calories)} kcal
+                          </span>
+                        </div>
                       </div>
-                      <span className="text-sm font-extrabold tabular-nums text-neutral-700 dark:text-neutral-300 shrink-0">
-                        {Math.round(recipe.calories)} kcal
-                      </span>
-                    </div>
-                  ))}
-                </>
+                    ))}
+                  </div>
+                </div>
               )}
 
               {(!meal.items || meal.items.length === 0) && (!meal.recipes || meal.recipes.length === 0) && (
@@ -179,9 +207,9 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
               <button
                 type="button"
                 onClick={() => navigate(`/app/meals/${meal.id}`)}
-                className="mt-4 w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-base font-bold text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors duration-300 cursor-pointer"
+                className="mt-2 w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors duration-300 cursor-pointer"
               >
-                <PencilSimple size={18} weight="bold" />
+                <PencilSimple size={16} weight="bold" />
                 Editar refeição
               </button>
             </div>

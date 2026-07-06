@@ -7,7 +7,6 @@ import {
   appDayRange,
   todayInAppTz,
 } from '../../common/utils/date.util';
-import { CreateDailyScoreDto } from './dto/create-daily-score.dto';
 import { MealMacros, MealPublic } from '../meal/types';
 import { PlanMacros } from '../plan/types';
 import { PlanService } from '../plan/plan.service';

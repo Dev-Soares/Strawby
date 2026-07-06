@@ -12,11 +12,4 @@ export function registerServiceWorker() {
   })
 
   window.addEventListener('focus', checkForUpdate)
-
-  let reloading = false
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (reloading) return
-    reloading = true
-    window.location.reload()
-  })
 }

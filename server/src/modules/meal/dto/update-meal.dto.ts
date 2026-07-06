@@ -22,4 +22,10 @@ export class UpdateMealDto {
   @IsDateString()
   @IsOptional()
   date?: string;
+
+  @ApiPropertyOptional({ example: 'Sem glúten' })
+  @IsString()
+  @IsOptional()
+  @MaxLength(1000)
+  observations?: string;
 }

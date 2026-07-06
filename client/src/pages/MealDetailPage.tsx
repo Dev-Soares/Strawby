@@ -1,6 +1,6 @@
 import { useParams, useSearchParams } from 'react-router-dom'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
-import { ArrowLeft, Plus, Trash, PencilSimple } from '@phosphor-icons/react'
+import { ArrowLeft, Plus, Trash, PencilSimple, FloppyDisk } from '@phosphor-icons/react'
 import AppLayout from '@/shared/layouts/AppLayout'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 import Spinner from '@/shared/components/Spinner'
@@ -22,7 +22,8 @@ export default function MealDetailPage() {
   const {
     meal, isLoading, isError, confirm, setConfirm, handleConfirm, isDeletePending,
     deleteMutation, removeItem, updateItem, updateMeal, removeRecipe,
-    editTimeOpen, setEditTimeOpen, handleUpdateTime, isPlan,
+    editTimeOpen, setEditTimeOpen, handleUpdateTime,
+    observationsForm, handleUpdateObservations, updateObservations, isPlan,
     backPath, selectFoodPath, navigate,
   } = useMealDetailPage({ mealId: id ?? '', patientId })
 
@@ -94,6 +95,34 @@ export default function MealDetailPage() {
               {displayTime}
             </p>
           )}
+          <form onSubmit={handleUpdateObservations} className="mt-4">
+            <label className="block text-xs font-black text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-2">
+              Observações
+            </label>
+            <textarea
+              {...observationsForm.register('observations')}
+              rows={3}
+              placeholder="Ex: sem glúten, sem lactose..."
+              className="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl px-4 py-3 text-sm font-semibold text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 resize-none outline-none focus:border-neutral-400 dark:focus:border-neutral-500 transition-all duration-200"
+            />
+            {observationsForm.formState.errors.observations && (
+              <p className="text-xs text-red-500 mt-1.5">
+                {observationsForm.formState.errors.observations.message}
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={updateObservations.isPending || !observationsForm.formState.isDirty}
+              className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer"
+            >
+              {updateObservations.isPending ? (
+                <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <FloppyDisk size={13} weight="bold" />
+              )}
+              {updateObservations.isPending ? 'Salvando…' : 'Salvar observações'}
+            </button>
+          </form>
         </div>
 
         <MealTotalsCard totals={meal.totals} cfg={cfg} />
@@ -238,6 +267,7 @@ export default function MealDetailPage() {
           isOpen={editTimeOpen}
           currentMealType={meal.mealType}
           currentTime={meal.time ?? displayTime}
+          currentObservations={meal.observations}
           isPending={updateMeal.isPending}
           onClose={() => setEditTimeOpen(false)}
           onSave={handleUpdateTime}

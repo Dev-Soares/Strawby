@@ -24,7 +24,7 @@ export class PatientService {
     private readonly prisma: PrismaService,
     private readonly patientAccessService: PatientAccessService,
     private readonly dailyScoreService: DailyScoreService,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
   ) {}
 
   async createFromOnboarding(
@@ -131,20 +131,21 @@ export class PatientService {
     }
   }
 
-
   // bi-functional method, if nutritionist calls it ( through DI at nutritionistService),
-  // pass the id of the nutritionist and checks if it is connected to the patient whose id 
+  // pass the id of the nutritionist and checks if it is connected to the patient whose id
   // was passed as parameter. if patient calls via controller, just check the ownership and
   // remove the connection
   async unlinkFromNutritionist(
     patientId: string,
     expectedNutritionistId?: string,
   ): Promise<string | null> {
-
-     if (expectedNutritionistId) {
-      await this.patientAccessService.resolve(expectedNutritionistId, patientId)
+    if (expectedNutritionistId) {
+      await this.patientAccessService.resolve(
+        expectedNutritionistId,
+        patientId,
+      );
     }
-    
+
     try {
       const patient = await this.prisma.patient.findUnique({
         where: { id: patientId },

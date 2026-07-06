@@ -72,6 +72,7 @@ export default function CreateMealForm() {
         mealType: data.mealType,
         time: data.time,
         date: toLocalISODate(),
+        observations: data.observations,
       },
       {
         onSuccess: async (createdMeal) => {
@@ -141,6 +142,20 @@ export default function CreateMealForm() {
           className="font-display text-3xl font-black text-neutral-950 dark:text-neutral-100 bg-transparent outline-none border-b-2 border-neutral-200 dark:border-neutral-700 focus:border-neutral-500 dark:focus:border-neutral-500 pb-1 transition-colors duration-300 tabular-nums cursor-pointer"
         />
         {errors.time && <p className="text-xs text-red-500 mt-2">{errors.time.message}</p>}
+      </div>
+
+      {/* Observations */}
+      <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-6 transition-colors duration-300">
+        <label className="block text-xs font-black text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-3">
+          Observações
+        </label>
+        <textarea
+          {...register('observations')}
+          rows={3}
+          placeholder="Ex: sem glúten, sem lactose..."
+          className="w-full bg-transparent outline-none border-2 border-neutral-200 dark:border-neutral-700 focus:border-neutral-500 dark:focus:border-neutral-500 rounded-xl px-4 py-3 text-sm font-semibold text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 resize-none transition-colors duration-300"
+        />
+        {errors.observations && <p className="text-xs text-red-500 mt-2">{errors.observations.message}</p>}
       </div>
 
       {/* Copy from plan meal — only DAILY */}

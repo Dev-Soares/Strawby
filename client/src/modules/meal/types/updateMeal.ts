@@ -7,6 +7,7 @@ export const updateMealSchema = z.object({
   time: z
     .string()
     .regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Horário inválido'),
+  observations: z.string().max(1000, 'Máximo de 1000 caracteres').optional(),
 })
 
 export type UpdateMealData = z.infer<typeof updateMealSchema>

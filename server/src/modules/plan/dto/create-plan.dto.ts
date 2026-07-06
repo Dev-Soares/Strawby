@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber, Min, IsEnum, IsOptional } from 'class-validator';
+import { IsNumber, Min, IsOptional } from 'class-validator';
 
 export class CreatePlanDto {
   @ApiPropertyOptional({ example: 2000 })

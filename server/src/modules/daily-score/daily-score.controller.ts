@@ -1,18 +1,8 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
 import { DailyScoreService } from './daily-score.service';
-import { CreateDailyScoreDto } from './dto/create-daily-score.dto';
 import { QueryDailyScoreDto } from './dto/query-daily-score.dto';
 import { ParseAppDayPipe } from '../../common/pipes/parse-app-day.pipe';
 

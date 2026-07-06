@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
+import type { Request, Response } from 'express';
 import { DatabaseModule } from './modules/database/database.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -35,11 +36,11 @@ import { PatientWeightModule } from './modules/patient-weight/patient-weight.mod
           process.env.LOG_LEVEL ??
           (process.env.NODE_ENV === 'production' ? 'info' : 'debug'),
         serializers: {
-          req: (req) => ({
+          req: (req: Request) => ({
             method: req.method,
             url: req.url,
           }),
-          res: (res) => ({
+          res: (res: Response) => ({
             statusCode: res.statusCode,
           }),
         },
@@ -69,7 +70,7 @@ import { PatientWeightModule } from './modules/patient-weight/patient-weight.mod
     ThrottlerModule.forRoot([
       {
         ttl: 60000,
-        limit: 100,
+        limit: 1000,
       },
     ]),
     DatabaseModule,

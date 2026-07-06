@@ -1,13 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useQueryClient } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useGetMeal } from './useGetMeal'
 import { useDeleteMeal } from './useDeleteMeal'
 import { useRemoveMealItem } from './useRemoveMealItem'
 import { useUpdateMealItem } from './useUpdateMealItem'
 import { useUpdateMeal } from './useUpdateMeal'
 import { useRemoveMealRecipe } from './useRemoveMealRecipe'
+import { useUpdateMealObservations } from './useUpdateMealObservations'
 import type { UpdateMealData } from '../types/updateMeal'
+import { mealObservationsSchema, type MealObservationsData } from '../types/mealObservations'
 
 export type MealConfirmState =
   | { type: 'meal'; id: string; name: string }
@@ -29,9 +33,21 @@ export const useMealDetailPage = ({ mealId, patientId }: Params) => {
   const removeItem = useRemoveMealItem(patientId)
   const updateItem = useUpdateMealItem(patientId)
   const updateMeal = useUpdateMeal(patientId)
+  const updateObservations = useUpdateMealObservations(patientId)
   const removeRecipe = useRemoveMealRecipe(patientId)
   const [confirm, setConfirm] = useState<MealConfirmState>(null)
   const [editTimeOpen, setEditTimeOpen] = useState(false)
+
+  const observationsForm = useForm<MealObservationsData>({
+    resolver: zodResolver(mealObservationsSchema),
+    defaultValues: { observations: query.data?.observations ?? '' },
+  })
+
+  useEffect(() => {
+    if (query.data) {
+      observationsForm.reset({ observations: query.data.observations ?? '' })
+    }
+  }, [query.data, observationsForm])
 
   const handleUpdateTime = (data: UpdateMealData) => {
     updateMeal.mutate(
@@ -39,6 +55,13 @@ export const useMealDetailPage = ({ mealId, patientId }: Params) => {
       { onSuccess: () => setEditTimeOpen(false) },
     )
   }
+
+  const handleUpdateObservations = observationsForm.handleSubmit((data) => {
+    updateObservations.mutate({
+      mealId,
+      observations: data.observations.trim() || null,
+    })
+  })
 
   const isPlan = query.data?.kind === 'PLAN'
   const backPath = patientId
@@ -97,10 +120,13 @@ export const useMealDetailPage = ({ mealId, patientId }: Params) => {
     removeItem,
     updateItem,
     updateMeal,
+    updateObservations,
     removeRecipe,
     editTimeOpen,
     setEditTimeOpen,
     handleUpdateTime,
+    observationsForm,
+    handleUpdateObservations,
     backPath,
     selectFoodPath,
     isPlan,

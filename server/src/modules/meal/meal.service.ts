@@ -108,7 +108,8 @@ export class MealService {
           kind: dto.kind,
           mealType: dto.mealType,
           time: dto.time,
-          date: dto.date ? new Date(dto.date) : undefined,
+          observations: dto.observations || null,
+          date: dto.date ? appDayRangeTz(dto.date).start : undefined,
           patientId,
         },
         select: mealSelect,
@@ -225,7 +226,12 @@ export class MealService {
           ...(dto.name !== undefined && { name: dto.name }),
           ...(dto.mealType !== undefined && { mealType: dto.mealType }),
           ...(dto.time !== undefined && { time: dto.time }),
-          ...(dto.date !== undefined && { date: new Date(dto.date) }),
+          ...(dto.observations !== undefined && {
+            observations: dto.observations || null,
+          }),
+          ...(dto.date !== undefined && {
+            date: appDayRangeTz(dto.date).start,
+          }),
         },
         select: mealSelect,
       });

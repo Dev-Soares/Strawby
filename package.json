@@ -10,7 +10,13 @@
     "lint": "pnpm -r lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,json}\"",
     "client": "cd client && pnpm run dev",
-    "server": "cd server && pnpm run start:dev"
+    "server": "cd server && pnpm run start:dev",
+    "docker:up": "docker compose up --build -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:dev": "docker compose up --build",
+    "docker:prod": "docker compose -f docker-compose.yml up --build -d",
+    "docker:clean": "docker compose down -v --remove-orphans"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -30,9 +36,5 @@
     "prettier": "^3.4.2",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
-  },
-  "dependencies": {
-    "framer-motion": "^12.38.0",
-    "shepherd.js": "^15.2.2"
   }
 }

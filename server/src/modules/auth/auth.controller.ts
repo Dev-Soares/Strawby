@@ -56,10 +56,10 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
   async refresh(
-    @Req() req: Request,
+    @Req() req: Request & { cookies: { refresh_token?: string } },
     @Res({ passthrough: true }) res: Response,
   ) {
-    const refreshToken = req.cookies?.refresh_token;
+    const refreshToken = req.cookies.refresh_token ?? '';
     const result = await this.authService.refresh(refreshToken);
     res.cookie('access_token', result.access_token, cookieConfig);
     return { message: 'Token renovado' };

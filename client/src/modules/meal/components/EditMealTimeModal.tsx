@@ -11,6 +11,7 @@ interface Props {
   isOpen: boolean
   currentMealType: string | null
   currentTime: string | null
+  currentObservations: string | null
   isPending: boolean
   onClose: () => void
   onSave: (data: UpdateMealData) => void
@@ -18,7 +19,7 @@ interface Props {
 
 const FALLBACK_TYPE = 'breakfast'
 
-export default function EditMealTimeModal({ isOpen, currentMealType, currentTime, isPending, onClose, onSave }: Props) {
+export default function EditMealTimeModal({ isOpen, currentMealType, currentTime, currentObservations, isPending, onClose, onSave }: Props) {
   const { register, handleSubmit, watch, setValue, formState: { errors }, reset } = useForm<UpdateMealData>({
     resolver: zodResolver(updateMealSchema),
     defaultValues: {
@@ -26,6 +27,7 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
         ? (currentMealType as UpdateMealData['mealType'])
         : FALLBACK_TYPE,
       time: currentTime ?? '',
+      observations: currentObservations ?? '',
     },
   })
 
@@ -38,9 +40,10 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
           ? (currentMealType as UpdateMealData['mealType'])
           : FALLBACK_TYPE,
         time: currentTime ?? '',
+        observations: currentObservations ?? '',
       })
     }
-  }, [isOpen, currentMealType, currentTime])
+  }, [isOpen, currentMealType, currentTime, currentObservations])
 
   const onSubmit = handleSubmit((data) => onSave(data))
 
@@ -130,6 +133,21 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
                 />
                 {errors.time && (
                   <p className="text-xs text-red-500 mt-1.5">{errors.time.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest block mb-2">
+                  Observações
+                </label>
+                <textarea
+                  {...register('observations')}
+                  rows={3}
+                  placeholder="Ex: sem glúten, sem lactose..."
+                  className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-4 py-3 text-sm font-semibold text-neutral-900 dark:text-neutral-100 outline-none focus:border-neutral-400 dark:focus:border-neutral-500 focus:bg-white dark:focus:bg-neutral-900 transition-all duration-150 resize-none"
+                />
+                {errors.observations && (
+                  <p className="text-xs text-red-500 mt-1.5">{errors.observations.message}</p>
                 )}
               </div>
 
