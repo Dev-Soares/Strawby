@@ -1,5 +1,5 @@
 import { getToken } from 'firebase/messaging'
-import { messaging } from '@/lib/firebase/firebase'
+import { getMessagingInstance } from '@/lib/firebase/firebase'
 
 // Mesmo scope que o SDK do FCM usa por padrão — register() reaproveita a registration existente
 const FCM_SW_SCOPE = '/firebase-cloud-messaging-push-scope'
@@ -10,6 +10,9 @@ export const requestNotificationPermissionService = async (): Promise<string | n
   const permission = await Notification.requestPermission()
 
   if (permission !== 'granted') return null
+
+  const messaging = await getMessagingInstance()
+  if (!messaging) return null
 
   const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY
 

@@ -12,6 +12,7 @@ export type ThemeState = {
 const STORAGE_KEY = 'strawby-theme-preference'
 
 function getSystemTheme(): 'dark' | 'light' {
+  if (typeof window === 'undefined') return 'light'
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 

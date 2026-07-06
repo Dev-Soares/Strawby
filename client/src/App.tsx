@@ -1,10 +1,11 @@
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Routes } from 'react-router-dom'
 import ScrollToTop from './shared/components/ScrollToTop'
 import UnauthorizedListener from './shared/components/UnauthorizedListener'
 import NotificationTokenRefresher from './modules/notifications/components/NotificationTokenRefresher'
 import PwaAutoUpdate from './modules/pwa/components/PwaAutoUpdate'
 import Spinner from './shared/components/Spinner'
+import { logBootstrap } from './shared/components/BootstrapDiagnostics'
 import { publicRoutes } from './routes/publicRoutes'
 import { authRoutes } from './routes/authRoutes'
 import { homeRoutes } from './routes/homeRoutes'
@@ -17,6 +18,10 @@ import { profileRoutes } from './routes/profileRoutes'
 import { nutritionistRoutes } from './routes/nutritionistRoutes'
 
 export default function App() {
+  useEffect(() => {
+    logBootstrap('App montado')
+  }, [])
+
   return (
     <>
       <ScrollToTop />

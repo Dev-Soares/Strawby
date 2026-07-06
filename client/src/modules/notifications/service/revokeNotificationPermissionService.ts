@@ -1,9 +1,12 @@
 import { deleteToken, getToken } from 'firebase/messaging'
-import { messaging } from '@/lib/firebase/firebase'
+import { getMessagingInstance } from '@/lib/firebase/firebase'
 
 /** Retorna o token atual do FCM (se houver) e invalida a subscription do aparelho. */
 export const revokeNotificationPermissionService = async (): Promise<string | null> => {
   if (!('Notification' in window) || Notification.permission !== 'granted') return null
+
+  const messaging = await getMessagingInstance()
+  if (!messaging) return null
 
   const vapidKey = import.meta.env.VITE_FIREBASE_VAPID_KEY
 

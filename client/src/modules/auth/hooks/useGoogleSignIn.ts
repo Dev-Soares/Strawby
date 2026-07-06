@@ -1,6 +1,6 @@
 import { useGoogleLogin } from '@react-oauth/google'
 import toast from 'react-hot-toast'
-import { GOOGLE_REDIRECT_URI } from '../config/google'
+import { getGoogleRedirectUri } from '../config/google'
 
 const isGoogleEnabled = !!import.meta.env.VITE_GOOGLE_CLIENT_ID
 
@@ -11,7 +11,7 @@ export const useGoogleSignIn = () => {
     ? useGoogleLogin({
         flow: 'auth-code',
         ux_mode: 'redirect',
-        redirect_uri: GOOGLE_REDIRECT_URI,
+        redirect_uri: getGoogleRedirectUri(),
         scope: 'openid email profile',
         onError: () => toast.error('Erro ao autenticar com Google.'),
       })
