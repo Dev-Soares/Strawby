@@ -36,7 +36,7 @@ export class PlanService {
     private readonly notificationService: NotificationService,
     @Inject(forwardRef(() => PatientService))
     private readonly patientService: PatientService,
-  ) { }
+  ) {}
 
   async create(
     callerId: string,
@@ -63,7 +63,8 @@ export class PlanService {
       }
 
       // sem meta definida → mantém (sem déficit/superávit)
-      const goal = patient.targetWeight != null
+      const goal =
+        patient.targetWeight != null
           ? this.getGoal(patient.targetWeight, lastWeight.weight)
           : 'mantain';
 
@@ -238,11 +239,9 @@ export class PlanService {
   }
 
   private getGoal(targetWeight: number, actualWeight: number): string {
-
     const weightDifference = targetWeight - actualWeight;
     if (Math.abs(weightDifference) <= 1) return 'mantain';
     return weightDifference < 0 ? 'lose' : 'gain';
-
   }
 
   private calculateAge(birthDate: Date): number {

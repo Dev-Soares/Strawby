@@ -101,4 +101,4 @@ async function bootstrap() {
 
   Logger.log(`API running on port ${PORT}`);
 }
-bootstrap();
+void bootstrap();

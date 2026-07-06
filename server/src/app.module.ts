@@ -69,7 +69,7 @@ import { PatientWeightModule } from './modules/patient-weight/patient-weight.mod
     ThrottlerModule.forRoot([
       {
         ttl: 60000,
-        limit: 100,
+        limit: 1000,
       },
     ]),
     DatabaseModule,
