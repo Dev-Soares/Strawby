@@ -1,7 +1,13 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, DotsThreeVertical, Export, Plus, Check, ArrowDown, DeviceMobileSpeaker, Warning } from '@phosphor-icons/react'
+import { X, DotsThreeVertical, Export, Plus, Check, ArrowDown, Warning, InstagramLogo } from '@phosphor-icons/react'
 
 type Platform = 'android' | 'ios'
+
+function isInstagramInAppBrowser(): boolean {
+  if (typeof navigator === 'undefined') return false
+  const ua = navigator.userAgent.toLowerCase()
+  return ua.includes('instagram')
+}
 
 interface InstallPromptModalProps {
   isOpen: boolean
@@ -93,32 +99,22 @@ function IosGuide() {
         O iOS não mostra um popup automático. Você precisa adicionar manualmente à tela inicial.
       </p>
 
-      {/* Seletor de versão */}
-      <div className="flex flex-col gap-3">
-        <div className="bg-neutral-50 dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-xl p-3.5 transition-colors duration-300">
-          <div className="flex items-center gap-2 mb-1.5">
-            <DeviceMobileSpeaker size={15} weight="duotone" className="text-red-500 shrink-0" />
-            <span className="text-xs font-extrabold uppercase tracking-wider text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
-              iOS 16.3 ou anterior
-            </span>
+      {/* Aviso para navegador interno do Instagram */}
+      {isInstagramInAppBrowser() && (
+        <div className="flex flex-col gap-3">
+          <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 rounded-xl p-4 transition-colors duration-300">
+            <div className="flex items-center gap-2 mb-2">
+              <InstagramLogo size={18} weight="duotone" className="text-amber-600 dark:text-amber-400 shrink-0" />
+              <span className="text-xs font-extrabold uppercase tracking-wider text-amber-800 dark:text-amber-300 transition-colors duration-300">
+                Você está no Instagram
+              </span>
+            </div>
+            <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed transition-colors duration-300">
+              Para instalar o Strawby, primeiro toque nos três pontinhos <DotsThreeVertical size={16} weight="bold" className="inline align-text-bottom" /> no canto superior direito e escolha <strong>&ldquo;Abrir no Safari&rdquo;</strong> (ou &ldquo;Abrir no navegador externo&rdquo;).
+            </p>
           </div>
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
-            Use obrigatoriamente o <strong className="text-neutral-700 dark:text-neutral-300 transition-colors duration-300">Safari</strong>. Outros navegadores não são suportados.
-          </p>
         </div>
-
-        <div className="bg-neutral-50 dark:bg-neutral-800 border border-neutral-100 dark:border-neutral-700 rounded-xl p-3.5 transition-colors duration-300">
-          <div className="flex items-center gap-2 mb-1.5">
-            <DeviceMobileSpeaker size={15} weight="duotone" className="text-emerald-500 shrink-0" />
-            <span className="text-xs font-extrabold uppercase tracking-wider text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
-              iOS 16.4 ou posterior
-            </span>
-          </div>
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
-            Safari, Chrome, Edge, Firefox e Orion são compatíveis. Abra o site no navegador desejado.
-          </p>
-        </div>
-      </div>
+      )}
 
       <div className="space-y-5">
         <div className="flex items-start gap-4">
