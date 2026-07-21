@@ -73,7 +73,10 @@ export class UserService {
         where: { id: userId },
         data: {
           role: dto.role,
-          ...(dto.acceptTerms && { termsAcceptedAt: new Date() }),
+          ...(dto.acceptTerms && {
+            termsAcceptedAt: new Date(),
+            termsVersion: dto.termsVersion,
+          }),
           ...(dto.role !== 'patient' && { nutritionist: { create: {} } }),
         },
         select: userSelect,

@@ -18,6 +18,11 @@ export class CompleteOnboardingDto {
   @IsNotEmpty()
   acceptTerms: boolean;
 
+  @ApiProperty({ example: '1.0' })
+  @IsString()
+  @IsNotEmpty()
+  termsVersion: string;
+
   @ApiProperty({ example: 'patient', enum: ['patient', 'nutritionist'] })
   @IsEnum(['patient', 'nutritionist'], {
     message: 'Role deve ser patient ou nutritionist',
