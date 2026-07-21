@@ -1,15 +1,7 @@
 import { Users, LinkIcon } from '@phosphor-icons/react'
 import { useNavigate } from 'react-router-dom'
-import PatientCard from './PatientCard'
+import PatientCardWithStatus from './PatientCardWithStatus'
 import type { NutritionistPatient } from '../types/patient'
-import { useGetPatientPlan } from '../hooks/useGetPatientPlan'
-
-function PatientCardWithStatus({ patient, index }: { patient: NutritionistPatient; index: number }) {
-  const { data: plan, isPending } = useGetPatientPlan(patient.id)
-  const hasPlan = isPending ? null : plan !== null && plan !== undefined
-
-  return <PatientCard patient={patient} hasPlan={hasPlan} index={index} />
-}
 
 interface Props {
   patients: NutritionistPatient[]
