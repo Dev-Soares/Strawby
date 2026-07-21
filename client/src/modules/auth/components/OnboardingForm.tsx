@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { GenderMale, GenderFemale, Heartbeat, Stethoscope, ArrowRight, ArrowLeft, TrendDown, TrendUp, Minus } from '@phosphor-icons/react'
+import { GenderMale, GenderFemale, Heartbeat, Stethoscope, ArrowRight, ArrowLeft } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useCompleteOnboarding } from '../hooks/useCompleteOnboarding'
 import Spinner from '../../../shared/components/Spinner'
+import GoalHint from './GoalHint'
 
 const ROLES = [
   {
@@ -312,37 +313,5 @@ export default function OnboardingForm() {
 
       </form>
     </div>
-  )
-}
-
-// Deriva o objetivo (perder/ganhar/manter) do peso atual vs meta, banda ±1kg.
-function GoalHint({ weight, target }: { weight?: number; target?: number }) {
-  const ready =
-    typeof weight === 'number' && !isNaN(weight) &&
-    typeof target === 'number' && !isNaN(target)
-
-  if (!ready) {
-    return (
-      <p className="mt-4 text-[13px] font-semibold text-white/50">
-        Digite seu peso ideal
-      </p>
-    )
-  }
-
-  const diff = target - weight
-  const abs = Math.abs(diff)
-
-  const hint =
-    abs <= 1
-      ? { Icon: Minus, label: 'Manter o peso' }
-      : diff < 0
-        ? { Icon: TrendDown, label: `Perder ${abs.toFixed(1)} kg` }
-        : { Icon: TrendUp, label: `Ganhar ${abs.toFixed(1)} kg` }
-
-  return (
-    <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-1.5 text-[13px] font-bold text-white">
-      <hint.Icon size={15} weight="bold" />
-      {hint.label}
-    </span>
   )
 }

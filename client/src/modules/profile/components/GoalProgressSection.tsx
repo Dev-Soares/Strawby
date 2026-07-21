@@ -6,13 +6,9 @@ import TargetWeightModal from './TargetWeightModal'
 import GoalProgressSkeleton from '../skeletons/GoalProgressSkeleton'
 import type { Patient } from '@/modules/patient/types/patient'
 import type { TargetWeightFormData } from '@/modules/patient/types/targetWeight'
+import { deriveWeightGoal } from '@/shared/utils/deriveWeightGoal'
 
-// Deriva o objetivo do peso atual vs meta (banda ±1kg).
-function deriveGoal(current: number, target: number) {
-  const diff = target - current
-  if (Math.abs(diff) <= 1) return { Icon: Minus }
-  return diff < 0 ? { Icon: TrendDown } : { Icon: TrendUp }
-}
+const GOAL_ICONS = { maintain: Minus, lose: TrendDown, gain: TrendUp } as const
 
 interface Props {
   patientId: string
@@ -108,7 +104,7 @@ export default function GoalProgressSection({ patientId, patient }: Props) {
   const walked = start === target ? 0 : (start - current) / (start - target)
   const progress = totalDistance === 0 ? 100 : Math.min(Math.max(walked * 100, 0), 100)
 
-  const GoalIcon = deriveGoal(current, target).Icon
+  const GoalIcon = GOAL_ICONS[deriveWeightGoal(current, target).direction]
 
   return (
     <section className="mb-5">
