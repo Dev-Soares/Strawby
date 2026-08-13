@@ -5,6 +5,7 @@ import { planSchema, type PlanData } from '../types/plan'
 import { X, Fire, FloppyDisk, PencilSimple } from '@phosphor-icons/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Spinner from '@/shared/components/Spinner'
+import { MACROS } from '@/shared/config/macros'
 
 interface PlanEditModalProps {
   isOpen: boolean
@@ -14,44 +15,7 @@ interface PlanEditModalProps {
   isPending: boolean
 }
 
-const macroConfig = [
-  {
-    label: 'Proteína',
-    field: 'protein' as const,
-    step: 5,
-    max: 500,
-    kcalPerGram: 4,
-    color: '#f59e0b',
-    bg: 'bg-amber-50 dark:bg-amber-950/40',
-    border: 'border-amber-100 dark:border-amber-900/30',
-    textColor: 'text-amber-600 dark:text-amber-400',
-    ringFocus: 'focus:ring-amber-300',
-  },
-  {
-    label: 'Carboidratos',
-    field: 'carbs' as const,
-    step: 5,
-    max: 800,
-    kcalPerGram: 4,
-    color: '#3b82f6',
-    bg: 'bg-blue-50 dark:bg-blue-950/40',
-    border: 'border-blue-100 dark:border-blue-900/30',
-    textColor: 'text-blue-600 dark:text-blue-400',
-    ringFocus: 'focus:ring-blue-300',
-  },
-  {
-    label: 'Gordura',
-    field: 'fat' as const,
-    step: 5,
-    max: 300,
-    kcalPerGram: 9,
-    color: '#a855f7',
-    bg: 'bg-purple-50 dark:bg-purple-950/40',
-    border: 'border-purple-100 dark:border-purple-900/30',
-    textColor: 'text-purple-600 dark:text-purple-400',
-    ringFocus: 'focus:ring-purple-300',
-  },
-]
+
 
 export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, isPending }: PlanEditModalProps) {
   const { handleSubmit, register, watch, setValue } = useForm<PlanData>({
@@ -74,7 +38,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
     setValue('carbs', carbs, { shouldValidate: true, shouldDirty: true })
   }, [calories, protein, fat, setValue])
 
-  const macroKcalTotal = macroConfig.reduce(
+  const macroKcalTotal = MACROS.reduce(
     (acc, m) => acc + (Number(watched[m.field]) || 0) * m.kcalPerGram,
     0,
   )
@@ -143,7 +107,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
 
               {/* Macro cards */}
               <div className="grid grid-cols-3 gap-2 sm:gap-4 mx-5 sm:mx-8 mt-4 sm:mt-5">
-                {macroConfig.map((macro) => {
+                {MACROS.map((macro) => {
                   const macroKcal = (Number(watched[macro.field]) || 0) * macro.kcalPerGram
                   const pct = macroKcalTotal > 0 ? Math.round((macroKcal / macroKcalTotal) * 100) : 0
                   return (

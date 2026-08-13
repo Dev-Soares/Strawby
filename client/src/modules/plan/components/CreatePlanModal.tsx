@@ -19,6 +19,8 @@ import {
   type CreatePlanData,
 } from '../types/createPlan'
 import Spinner from '@/shared/components/Spinner'
+import { MACROS } from '@/shared/config/macros'
+import { ACTIVITY_LEVELS, DEFAULT_ACTIVITY_LEVEL } from '../config/activityLevels'
 
 type Mode = 'select' | 'manual' | 'generate'
 
@@ -31,14 +33,6 @@ interface CreatePlanModalProps {
   isNutritionist?: boolean
 }
 
-const ACTIVITY_OPTIONS = [
-  { value: 1.15, label: 'Sedentário', description: 'Pouca ou nenhuma atividade física' },
-  { value: 1.3, label: 'Levemente ativo', description: 'Exercícios leves 1–3x por semana' },
-  { value: 1.4, label: 'Moderadamente ativo', description: 'Exercícios moderados 3–5x por semana' },
-  { value: 1.5, label: 'Muito ativo', description: 'Exercícios intensos 6–7x por semana' },
-  { value: 1.6, label: 'Extremamente ativo', description: 'Treino diário intenso ou trabalho físico' },
-]
-
 export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, initialMode = 'select', isNutritionist = false }: CreatePlanModalProps) {
   const [mode, setMode] = useState<Mode>(initialMode)
 
@@ -49,21 +43,21 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
 
   const generateForm = useForm<GeneratePlanData>({
     resolver: zodResolver(generatePlanSchema),
-    defaultValues: { movementLevel: 1.4 },
+    defaultValues: { movementLevel: DEFAULT_ACTIVITY_LEVEL },
   })
 
   useEffect(() => {
     if (isOpen) {
       setMode(initialMode)
       manualForm.reset()
-      generateForm.reset({ movementLevel: 1.4 })
+      generateForm.reset({ movementLevel: DEFAULT_ACTIVITY_LEVEL })
     }
   }, [isOpen, initialMode])
 
   const handleClose = () => {
     setMode('select')
     manualForm.reset()
-    generateForm.reset({ movementLevel: 1.4 })
+    generateForm.reset({ movementLevel: DEFAULT_ACTIVITY_LEVEL })
     onClose()
   }
 
@@ -166,11 +160,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                   </div>
 
                   <div className="grid grid-cols-3 gap-3">
-                    {([
-                      { field: 'protein' as const, label: 'Proteína', color: '#f59e0b', bg: 'bg-amber-50 dark:bg-amber-950/30', border: 'border-amber-100 dark:border-amber-900/50' },
-                      { field: 'carbs' as const, label: 'Carboidratos', color: '#3b82f6', bg: 'bg-blue-50 dark:bg-blue-950/30', border: 'border-blue-100 dark:border-blue-900/50' },
-                      { field: 'fat' as const, label: 'Gordura', color: '#a855f7', bg: 'bg-purple-50 dark:bg-purple-950/30', border: 'border-purple-100 dark:border-purple-900/50' },
-                    ]).map((macro) => (
+                    {MACROS.map((macro) => (
                       <div key={macro.field} className={`${macro.bg} ${macro.border} border rounded-2xl p-4 flex flex-col items-center min-w-0`}>
                         <span className="text-[9px] font-extrabold uppercase tracking-[0.14em] mb-2 truncate w-full text-center" style={{ color: macro.color }}>{macro.label}</span>
                         <div className="flex items-end gap-0.5 w-full justify-center min-w-0">
@@ -203,7 +193,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                   <p className="text-sm font-semibold text-neutral-700 dark:text-neutral-300">Nível de atividade física</p>
                   <Controller control={generateForm.control} name="movementLevel" render={({ field }) => (
                     <div className="flex flex-col gap-2">
-                      {ACTIVITY_OPTIONS.map((opt) => (
+                      {ACTIVITY_LEVELS.map((opt) => (
                         <button key={opt.value} type="button" onClick={() => field.onChange(opt.value)}
                           className={`flex items-center gap-3 px-4 py-3.5 border-2 rounded-xl transition-all duration-200 text-left cursor-pointer ${field.value === opt.value ? 'border-red-500 bg-red-50 dark:bg-red-950/30' : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-800'}`}>
                           <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${field.value === opt.value ? 'bg-red-500' : 'bg-neutral-300 dark:bg-neutral-600'}`} />

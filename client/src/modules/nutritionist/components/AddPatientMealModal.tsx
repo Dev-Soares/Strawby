@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { PATIENT_MEAL_TYPES } from '../config/patientMealTypes'
+import { MEAL_TYPE_LIST } from '@/shared/config/mealTypes'
 
 type Props = {
   isOpen: boolean
@@ -32,7 +32,7 @@ export default function AddPatientMealModal({ isOpen, isPending, onClose, onSele
               <button onClick={onClose} className="w-7 h-7 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer text-neutral-600 dark:text-neutral-300 text-xs font-bold">✕</button>
             </div>
             <div className="px-6 py-5 flex flex-col gap-2">
-              {PATIENT_MEAL_TYPES.map(({ value, label, Icon, color }) => (
+              {MEAL_TYPE_LIST.map(({ value, name, Icon, color }) => (
                 <button
                   key={value}
                   onClick={() => onSelect(value)}
@@ -42,7 +42,7 @@ export default function AddPatientMealModal({ isOpen, isPending, onClose, onSele
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${color}20` }}>
                     <Icon size={18} weight="bold" style={{ color }} />
                   </div>
-                  <span className="text-sm font-bold text-neutral-900 dark:text-neutral-100">{label}</span>
+                  <span className="text-sm font-bold text-neutral-900 dark:text-neutral-100">{name}</span>
                 </button>
               ))}
             </div>

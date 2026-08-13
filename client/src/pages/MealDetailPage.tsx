@@ -10,7 +10,7 @@ import MealItemRow from '@/modules/meal/components/MealItemRow'
 import MealRecipeRow from '@/modules/meal/components/MealRecipeRow'
 import MealEmptyState from '@/modules/meal/components/MealEmptyState'
 import EditMealTimeModal from '@/modules/meal/components/EditMealTimeModal'
-import { getMealConfig } from '@/modules/meal/config/mealConfig'
+import { getMealType as getMealConfig } from '@/shared/config/mealTypes'
 import { useMealDetailPage } from '@/modules/meal/hooks/useMealDetailPage'
 
 export default function MealDetailPage() {

@@ -8,12 +8,7 @@ import { useEditPatientPlan } from '../hooks/useEditPatientPlan'
 import { useDeletePatientPlan } from '../hooks/useDeletePatientPlan'
 import CreatePlanModal from '../../plan/components/CreatePlanModal'
 import PlanEditModal from '../../plan/components/PlanEditModal'
-
-const MACROS = [
-  { field: 'protein' as const, label: 'Proteína', color: '#f59e0b', track: '#fef3c7', unit: 'g' },
-  { field: 'carbs' as const, label: 'Carboidratos', color: '#3b82f6', track: '#dbeafe', unit: 'g' },
-  { field: 'fat' as const, label: 'Gordura', color: '#a855f7', track: '#f3e8ff', unit: 'g' },
-]
+import { MACROS } from '@/shared/config/macros'
 
 interface Props {
   patient: NutritionistPatient | null
@@ -204,7 +199,7 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
                                 className="h-full rounded-full"
                                 style={{ backgroundColor: macro.color }}
                                 initial={{ width: 0 }}
-                                animate={{ width: `${Math.min(plan[macro.field] / (macro.field === 'protein' ? 300 : macro.field === 'carbs' ? 600 : 200), 1) * 100}%` }}
+                                animate={{ width: `${Math.min(plan[macro.field] / macro.max, 1) * 100}%` }}
                                 transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
                               />
                             </div>

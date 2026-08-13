@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X, PencilSimple, FloppyDisk } from '@phosphor-icons/react'
 import { updateMealSchema, MEAL_TYPES, type UpdateMealData } from '../types/updateMeal'
-import { mealConfig } from '../config/mealConfig'
+import { MEAL_TYPES as mealConfig } from '@/shared/config/mealTypes'
 import Spinner from '@/shared/components/Spinner'
 
 interface Props {
@@ -100,7 +100,7 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
                         key={type}
                         type="button"
                         onClick={() => setValue('mealType', type, { shouldValidate: true })}
-                        title={cfg.label}
+                        title={cfg.name}
                         className={`flex items-center justify-center h-11 rounded-xl border transition-all duration-150 cursor-pointer ${
                           active
                             ? 'border-transparent'
@@ -118,7 +118,7 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
                   })}
                 </div>
                 <p className="text-xs font-semibold mt-2" style={{ color: mealConfig[selectedType]?.theme }}>
-                  {mealConfig[selectedType]?.label}
+                  {mealConfig[selectedType]?.name}
                 </p>
               </div>
 

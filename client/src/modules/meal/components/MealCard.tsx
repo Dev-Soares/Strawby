@@ -1,33 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { CoffeeIcon, ForkKnifeIcon, LeafIcon, MoonIcon, CookieIcon, CaretDown, PencilSimple, Note } from '@phosphor-icons/react'
-import type { Icon } from '@phosphor-icons/react'
+import { CaretDown, PencilSimple, Note } from '@phosphor-icons/react'
 import type { Meal } from '../types/meal'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
-
-export interface MealTypeConfig {
-  icon: Icon
-  label: string
-  accent: string
-  accentLight: string
-  accentText: string
-}
-
-export const mealTypeConfig: Record<string, MealTypeConfig> = {
-  breakfast: { icon: CoffeeIcon, label: 'MANHÃ', accent: '#ea580c', accentLight: '#fed7aa', accentText: '#c2410c' },
-  lunch: { icon: ForkKnifeIcon, label: 'ALMOÇO', accent: '#16a34a', accentLight: '#bbf7d0', accentText: '#15803d' },
-  snack: { icon: LeafIcon, label: 'LANCHE', accent: '#2563eb', accentLight: '#bfdbfe', accentText: '#1d4ed8' },
-  dinner: { icon: MoonIcon, label: 'JANTAR', accent: '#9333ea', accentLight: '#e9d5ff', accentText: '#7e22ce' },
-  supper: { icon: CookieIcon, label: 'CEIA', accent: '#475569', accentLight: '#cbd5e1', accentText: '#334155' },
-}
-
-export const fallbackConfig: MealTypeConfig = {
-  icon: CoffeeIcon,
-  label: 'REFEIÇÃO',
-  accent: '#475569',
-  accentLight: '#cbd5e1',
-  accentText: '#334155',
-}
+import { getMealType } from '@/shared/config/mealTypes'
 
 export interface MealCardProps {
   meal: Meal
@@ -39,7 +15,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
   const navigate = useNavigate()
   const { resolvedTheme } = useThemeContext()
   const isDark = resolvedTheme === 'dark'
-  const config = mealTypeConfig[meal.mealType ?? ''] || fallbackConfig
+  const config = getMealType(meal.mealType)
   const MealIcon = config.icon
   const totalKcal = Math.round(meal.totals.calories)
 
@@ -127,8 +103,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
           <CaretDown
             size={16}
             weight="bold"
-            className="transition-transform duration-250"
-            style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+            className={`transition-transform duration-250 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
           />
         </button>
       </div>

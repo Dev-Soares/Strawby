@@ -1,23 +1,8 @@
-import { Coffee, ForkKnife, Leaf, Moon, Cookie, X } from '@phosphor-icons/react'
-import type { Icon } from '@phosphor-icons/react'
+import { X } from '@phosphor-icons/react'
 import { useGetPlanMeals } from '../hooks/useGetPlanMeals'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
 import type { Meal } from '../types/meal'
-
-type MealTypeDisplay = {
-  icon: Icon
-  accent: string
-  accentLight: string
-  accentText: string
-}
-
-const mealTypeDisplayMap: Record<string, MealTypeDisplay> = {
-  breakfast: { icon: Coffee, accent: '#ea580c', accentLight: '#fed7aa', accentText: '#c2410c' },
-  lunch: { icon: ForkKnife, accent: '#16a34a', accentLight: '#bbf7d0', accentText: '#15803d' },
-  snack: { icon: Leaf, accent: '#2563eb', accentLight: '#bfdbfe', accentText: '#1d4ed8' },
-  dinner: { icon: Moon, accent: '#9333ea', accentLight: '#e9d5ff', accentText: '#7e22ce' },
-  supper: { icon: Cookie, accent: '#475569', accentLight: '#cbd5e1', accentText: '#334155' },
-}
+import { getMealType } from '@/shared/config/mealTypes'
 
 type Props = {
   onSelect: (meal: Meal) => void
@@ -66,8 +51,8 @@ export default function PlanMealPicker({ onSelect, onClose }: Props) {
 
         {!isPending &&
           planMeals?.map((meal) => {
-            const cfg = meal.mealType ? mealTypeDisplayMap[meal.mealType] : null
-            const Ico = cfg?.icon ?? ForkKnife
+            const cfg = getMealType(meal.mealType)
+            const Ico = cfg.icon
             const allItems = [
               ...meal.items.map((i) => ({ id: i.id, name: (i.food ?? i.privateFood)?.name ?? 'Alimento', detail: `${Math.round(i.quantity)}g` })),
               ...meal.recipes.map((r) => ({ id: r.id, name: r.name, detail: 'Receita' })),
@@ -84,9 +69,9 @@ export default function PlanMealPicker({ onSelect, onClose }: Props) {
                 <div className="flex items-center gap-3">
                   <div
                     className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: isDark ? `${cfg?.accent ?? '#475569'}26` : (cfg?.accentLight ?? '#f3f4f6') }}
+                    style={{ backgroundColor: isDark ? `${cfg.accent}26` : cfg.accentLight }}
                   >
-                    <Ico size={16} weight="bold" style={{ color: isDark ? (cfg?.accentLight ?? '#cbd5e1') : (cfg?.accentText ?? '#9ca3af') }} />
+                    <Ico size={16} weight="bold" style={{ color: isDark ? cfg.accentLight : cfg.accentText }} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100 truncate leading-tight">

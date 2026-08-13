@@ -2,7 +2,9 @@ import { CaretLeft, CaretRight, BookOpen, Fire } from '@phosphor-icons/react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGetPatientDailyMeals } from '../hooks/useGetPatientDailyMeals'
 import PatientDiarySkeleton from '../skeletons/PatientDiarySkeleton'
-import { getPatientMealType } from '../config/patientMealTypes'
+import { getMealType } from '@/shared/config/mealTypes'
+import { MACROS } from '@/shared/config/macros'
+
 type Plan = {
   calories: number
   protein: number
@@ -42,11 +44,11 @@ export default function PatientDiarySection({ patientId, selectedDay, plan, onPr
   const pct = (actual: number, goal: number) =>
     goal > 0 ? Math.min(Math.round((actual / goal) * 100), 100) : 0
 
-  const macros = [
-    { label: 'Proteína', actual: Math.round(totals?.protein ?? 0), goal: plan?.protein, color: '#f59e0b', track: '#fef3c7' },
-    { label: 'Carboidratos', actual: Math.round(totals?.carbs ?? 0), goal: plan?.carbs, color: '#3b82f6', track: '#dbeafe' },
-    { label: 'Gordura', actual: Math.round(totals?.fat ?? 0), goal: plan?.fat, color: '#a855f7', track: '#f3e8ff' },
-  ]
+  const macros = MACROS.map((macro) => ({
+    ...macro,
+    actual: Math.round(totals?.[macro.field] ?? 0),
+    goal: plan?.[macro.field],
+  }))
 
   return (
     <section className="mt-10">
@@ -158,8 +160,8 @@ export default function PatientDiarySection({ patientId, selectedDay, plan, onPr
             {/* Meal cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {meals.map((meal, i) => {
-                const cfg = getPatientMealType(meal.mealType)
-                const MealIcon = cfg.Icon
+                const cfg = getMealType(meal.mealType)
+                const MealIcon = cfg.icon
                 const allItems = [
                   ...meal.items.map((item) => item.food?.name ?? item.privateFood?.name ?? 'Item'),
                   ...meal.recipes.map((r) => r.name),
@@ -194,17 +196,13 @@ export default function PatientDiarySection({ patientId, selectedDay, plan, onPr
                     </div>
 
                     <div className="flex flex-wrap gap-1.5 mb-3">
-                      {[
-                        { l: 'Prot', v: Math.round(meal.totals.protein) },
-                        { l: 'Carb', v: Math.round(meal.totals.carbs) },
-                        { l: 'Gord', v: Math.round(meal.totals.fat) },
-                      ].map(({ l, v }) => (
+                      {MACROS.map(({ short, field }) => (
                         <span
-                          key={l}
+                          key={field}
                           className="text-xs font-bold px-2.5 py-1 rounded-full"
                           style={{ backgroundColor: `${cfg.color}15`, color: cfg.color }}
                         >
-                          {v}g {l}
+                          {Math.round(meal.totals[field])}g {short}
                         </span>
                       ))}
                     </div>

@@ -1,6 +1,6 @@
 import { Fire } from '@phosphor-icons/react'
 import type { MealTotals } from '../types/meal'
-import type { MealTypeConfig } from '../config/mealConfig'
+import type { MealTypeConfig } from '@/shared/config/mealTypes'
 
 type Props = {
   totals: MealTotals

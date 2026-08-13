@@ -2,24 +2,16 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Coffee, ForkKnife, Leaf, Moon, Cookie, FloppyDisk, CopySimple, X } from '@phosphor-icons/react'
+import { FloppyDisk, CopySimple, X } from '@phosphor-icons/react'
 import toast from 'react-hot-toast'
 import { toLocalISODate } from '@/shared/utils/date'
 import { createMealSchema, type CreateMealData } from '../types/createMeal'
-import type { MealType, MealTypeConfig } from '../types/mealTypeConfig'
+import { MEAL_TYPE_LIST } from '@/shared/config/mealTypes'
 import { useCreateMeal } from '../hooks/useCreateMeal'
 import { useCopyMealItems } from '../hooks/useCopyMealItems'
 import type { Meal } from '../types/meal'
 import PlanMealPicker from './PlanMealPicker'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
-
-const mealTypes: Record<MealType, MealTypeConfig> = {
-  breakfast: { icon: Coffee, label: 'MANHÃ', name: 'Café da manhã', accent: '#ea580c', accentLight: '#fed7aa', accentText: '#c2410c' },
-  lunch: { icon: ForkKnife, label: 'ALMOÇO', name: 'Almoço', accent: '#16a34a', accentLight: '#bbf7d0', accentText: '#15803d' },
-  snack: { icon: Leaf, label: 'LANCHE', name: 'Lanche', accent: '#2563eb', accentLight: '#bfdbfe', accentText: '#1d4ed8' },
-  dinner: { icon: Moon, label: 'JANTAR', name: 'Jantar', accent: '#9333ea', accentLight: '#e9d5ff', accentText: '#7e22ce' },
-  supper: { icon: Cookie, label: 'CEIA', name: 'Ceia', accent: '#475569', accentLight: '#cbd5e1', accentText: '#334155' },
-}
 
 export default function CreateMealForm() {
   const navigate = useNavigate()
@@ -56,7 +48,7 @@ export default function CreateMealForm() {
     setSelectedPlanMeal(meal)
     setShowPicker(false)
     if (meal.mealType) {
-      setValue('mealType', meal.mealType as MealType, { shouldValidate: true })
+      setValue('mealType', meal.mealType, { shouldValidate: true })
     }
   }
 
@@ -103,7 +95,8 @@ export default function CreateMealForm() {
           Tipo de refeição
         </p>
         <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-          {(Object.entries(mealTypes) as [MealType, MealTypeConfig][]).map(([key, cfg]) => {
+          {MEAL_TYPE_LIST.map((cfg) => {
+            const key = cfg.value
             const Ico = cfg.icon
             const isSelected = selectedType === key
             return (

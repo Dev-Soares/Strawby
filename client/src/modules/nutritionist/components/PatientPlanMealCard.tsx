@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { PencilSimple, Trash } from '@phosphor-icons/react'
 import { useNavigate } from 'react-router-dom'
 import type { MealSummary } from '../../meal/types/meal'
-import { getPatientMealType } from '../config/patientMealTypes'
+import { getMealType } from '@/shared/config/mealTypes'
 
 type Props = {
   meal: MealSummary
@@ -13,8 +13,8 @@ type Props = {
 
 export default function PatientPlanMealCard({ meal, index, patientId, onAskDelete }: Props) {
   const navigate = useNavigate()
-  const cfg = getPatientMealType(meal.mealType)
-  const MealIcon = cfg.Icon
+  const cfg = getMealType(meal.mealType)
+  const MealIcon = cfg.icon
   const totalKcal = Math.round(meal.totals.calories)
 
   return (

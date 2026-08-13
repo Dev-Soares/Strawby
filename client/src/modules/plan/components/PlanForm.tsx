@@ -3,20 +3,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { planSchema, type PlanData } from '../types/plan'
 import { Fire, FloppyDisk } from '@phosphor-icons/react'
 import toast from 'react-hot-toast'
+import { MACROS } from '@/shared/config/macros'
 
-interface MacroCard {
-  label: string
-  field: keyof Pick<PlanData, 'protein' | 'carbs' | 'fat'>
-  color: string
-  trackColor: string
-  max: number
-}
-
-const macros: MacroCard[] = [
-  { label: 'Proteína', field: 'protein', color: '#f59e0b', trackColor: '#fef3c7', max: 500 },
-  { label: 'Carboidratos', field: 'carbs', color: '#3b82f6', trackColor: '#dbeafe', max: 800 },
-  { label: 'Gordura', field: 'fat', color: '#a855f7', trackColor: '#f3e8ff', max: 300 },
-]
+const macros = MACROS.map(({ field, label, color, track, max }) => ({
+  field,
+  label,
+  color,
+  trackColor: track,
+  max,
+}))
 
 interface PlanFormProps {
   defaultValues: PlanData

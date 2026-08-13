@@ -13,12 +13,7 @@ import { useEditPlan } from '../modules/plan/hooks/useEditPlan'
 import { useCreatePlan } from '../modules/plan/hooks/useCreatePlan'
 import { useDeletePlan } from '../modules/plan/hooks/useDeletePlan'
 import DownloadPlanPdfButton from '../modules/plan/components/DownloadPlanPdfButton'
-
-const macros = [
-  { label: 'Proteína', field: 'protein' as const, color: '#f59e0b', trackColor: '#fef3c7', kcalPerGram: 4 },
-  { label: 'Carboidratos', field: 'carbs' as const, color: '#3b82f6', trackColor: '#dbeafe', kcalPerGram: 4 },
-  { label: 'Gordura', field: 'fat' as const, color: '#a855f7', trackColor: '#f3e8ff', kcalPerGram: 9 },
-]
+import { MACROS } from '@/shared/config/macros'
 
 export default function PlanPage() {
   const { data: plan, isPending, isError } = useGetPlan()
@@ -123,8 +118,8 @@ export default function PlanPage() {
               {/* Right — macro cards stacked */}
               <div className="flex flex-col gap-4">
                 {(() => {
-                  const macroKcalTotal = macros.reduce((acc, m) => acc + plan[m.field] * m.kcalPerGram, 0)
-                  return macros.map((macro, index) => {
+                  const macroKcalTotal = MACROS.reduce((acc, m) => acc + plan[m.field] * m.kcalPerGram, 0)
+                  return MACROS.map((macro, index) => {
                   const value = plan[macro.field]
                   const pct = macroKcalTotal > 0 ? Math.round((value * macro.kcalPerGram / macroKcalTotal) * 100) : 0
                   const progress = Math.min(pct / 100, 1)
@@ -143,7 +138,7 @@ export default function PlanPage() {
                           <span className="text-xs font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest transition-colors duration-300">{macro.label}</span>
                           <span
                             className="text-xs font-bold tabular-nums px-2 py-0.5 rounded-full"
-                            style={{ backgroundColor: macro.color, color: macro.trackColor }}
+                            style={{ backgroundColor: macro.color, color: macro.track }}
                           >
                             {pct}%
                           </span>
@@ -154,7 +149,7 @@ export default function PlanPage() {
                         </div>
                       </div>
 
-                      <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: macro.trackColor }}>
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: macro.track }}>
                         <motion.div
                           className="h-full rounded-full"
                           style={{ backgroundColor: macro.color }}

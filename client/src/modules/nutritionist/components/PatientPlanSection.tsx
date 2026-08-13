@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Fire, PencilSimple, Trash, Sparkle, Warning } from '@phosphor-icons/react'
 import type { Plan } from '../../plan/types/plan'
-import { PLAN_MACROS } from '../config/patientMealTypes'
+import { MACROS } from '@/shared/config/macros'
 import type { CreatePlanMode } from '../hooks/useNutritionistPatientPage'
 import DownloadPlanPdfButton from '../../plan/components/DownloadPlanPdfButton'
 
@@ -120,7 +120,7 @@ export default function PatientPlanSection({
           </div>
 
           <div className="grid grid-cols-3 gap-3">
-            {PLAN_MACROS.map((macro) => (
+            {MACROS.map((macro) => (
               <div key={macro.field} className="bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-2xl p-5 flex flex-col gap-3 transition-colors duration-300">
                 <div className="flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: macro.color }} />

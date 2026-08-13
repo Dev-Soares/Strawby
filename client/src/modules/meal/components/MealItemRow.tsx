@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { X, PencilSimple, Check } from '@phosphor-icons/react'
 import type { FoodItem } from '../types/meal'
-import type { MealTypeConfig } from '../config/mealConfig'
+import type { MealTypeConfig } from '@/shared/config/mealTypes'
 import MacroChipsRow from './MacroChipsRow'
 
 type Props = {
