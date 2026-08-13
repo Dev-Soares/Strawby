@@ -12,6 +12,7 @@ import MealEmptyState from '@/modules/meal/components/MealEmptyState'
 import EditMealTimeModal from '@/modules/meal/components/EditMealTimeModal'
 import { getMealType as getMealConfig } from '@/shared/config/mealTypes'
 import { useMealDetailPage } from '@/modules/meal/hooks/useMealDetailPage'
+import { confirmDeleteText } from '@/shared/utils/confirmDeleteText'
 
 export default function MealDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -20,7 +21,8 @@ export default function MealDetailPage() {
   const { resolvedTheme } = useThemeContext()
 
   const {
-    meal, isLoading, isError, confirm, setConfirm, handleConfirm, isDeletePending,
+    meal, displayTime, hasItems, hasRecipes, isEmpty,
+    isLoading, isError, confirm, setConfirm, handleConfirm, isDeletePending,
     deleteMutation, removeItem, updateItem, updateMeal, removeRecipe,
     editTimeOpen, setEditTimeOpen, handleUpdateTime,
     observationsForm, handleUpdateObservations, updateObservations, isPlan,
@@ -56,16 +58,6 @@ export default function MealDetailPage() {
   const isDark = resolvedTheme === 'dark'
   const cfg = getMealConfig(meal.mealType)
   const MealIcon = cfg.icon
-  // Refeição de plano é um template: só mostra horário se foi definido.
-  // Diário deriva do timestamp de registro quando não há hora explícita.
-  const displayTime = isPlan
-    ? meal.time
-    : (meal.time
-      ?? new Date(meal.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }))
-
-  const hasItems = meal.items.length > 0
-  const hasRecipes = meal.recipes.length > 0
-  const isEmpty = !hasItems && !hasRecipes
 
   return (
     <AppLayout>
@@ -241,24 +233,8 @@ export default function MealDetailPage() {
           isOpen={!!confirm}
           onClose={() => setConfirm(null)}
           onConfirm={handleConfirm}
-          title={
-            confirm?.type === 'meal'
-              ? `Remover refeição "${confirm.name}"?`
-              : confirm?.type === 'mealItem'
-                ? `Remover "${confirm.name}"?`
-                : confirm?.type === 'mealRecipe'
-                  ? `Remover receita "${confirm.name}"?`
-                  : 'Tem certeza?'
-          }
-          description={
-            confirm?.type === 'meal'
-              ? 'A refeição será excluída permanentemente.'
-              : confirm?.type === 'mealItem'
-                ? 'O alimento será removido desta refeição.'
-                : confirm?.type === 'mealRecipe'
-                  ? 'A receita será removida desta refeição.'
-                  : 'Esta ação não pode ser desfeita.'
-          }
+          title={confirmDeleteText(confirm).title}
+          description={confirmDeleteText(confirm).description}
           confirmLabel="Remover"
           isPending={isDeletePending}
         />

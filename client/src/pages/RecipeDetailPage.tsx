@@ -8,6 +8,7 @@ import RecipeTotalsCard from '@/modules/recipe/components/RecipeTotalsCard'
 import RecipeItemRow from '@/modules/recipe/components/RecipeItemRow'
 import RecipeNameEditor from '@/modules/recipe/components/RecipeNameEditor'
 import { useRecipeDetailPage } from '@/modules/recipe/hooks/useRecipeDetailPage'
+import { confirmDeleteText } from '@/shared/utils/confirmDeleteText'
 
 export default function RecipeDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -131,20 +132,8 @@ export default function RecipeDetailPage() {
           isOpen={!!confirm}
           onClose={() => setConfirm(null)}
           onConfirm={handleConfirm}
-          title={
-            confirm?.type === 'recipe'
-              ? `Remover receita "${confirm.name}"?`
-              : confirm?.type === 'recipeItem'
-                ? `Remover "${confirm.name}"?`
-                : 'Tem certeza?'
-          }
-          description={
-            confirm?.type === 'recipe'
-              ? 'A receita será excluída permanentemente.'
-              : confirm?.type === 'recipeItem'
-                ? 'O alimento será removido desta receita.'
-                : 'Esta ação não pode ser desfeita.'
-          }
+          title={confirmDeleteText(confirm).title}
+          description={confirmDeleteText(confirm).description}
           confirmLabel="Remover"
           isPending={isDeletePending}
         />

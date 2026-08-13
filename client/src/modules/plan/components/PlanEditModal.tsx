@@ -6,6 +6,7 @@ import { X, Fire, FloppyDisk, PencilSimple } from '@phosphor-icons/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Spinner from '@/shared/components/Spinner'
 import { MACROS } from '@/shared/config/macros'
+import { balanceCarbs, macroKcalShare } from '@/shared/utils/nutrition'
 
 interface PlanEditModalProps {
   isOpen: boolean
@@ -25,23 +26,14 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
 
   const watched = watch()
 
-  // Carbo = macro de equilíbrio: preenche o restante das calorias após proteína e gordura
   const calories = watch('calories')
   const protein = watch('protein')
   const fat = watch('fat')
   useEffect(() => {
-    const c = Number(calories)
-    const p = Number(protein)
-    const f = Number(fat)
-    if (!Number.isFinite(c) || !Number.isFinite(p) || !Number.isFinite(f)) return
-    const carbs = Math.max(Math.round((c - p * 4 - f * 9) / 4), 0)
+    const carbs = balanceCarbs(calories, protein, fat)
+    if (carbs === null) return
     setValue('carbs', carbs, { shouldValidate: true, shouldDirty: true })
   }, [calories, protein, fat, setValue])
-
-  const macroKcalTotal = MACROS.reduce(
-    (acc, m) => acc + (Number(watched[m.field]) || 0) * m.kcalPerGram,
-    0,
-  )
 
   const onSubmit = handleSubmit((data) => {
     onSave(data)
@@ -108,8 +100,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
               {/* Macro cards */}
               <div className="grid grid-cols-3 gap-2 sm:gap-4 mx-5 sm:mx-8 mt-4 sm:mt-5">
                 {MACROS.map((macro) => {
-                  const macroKcal = (Number(watched[macro.field]) || 0) * macro.kcalPerGram
-                  const pct = macroKcalTotal > 0 ? Math.round((macroKcal / macroKcalTotal) * 100) : 0
+                  const pct = macroKcalShare(macro.field, watched)
                   return (
                   <div
                     key={macro.field}

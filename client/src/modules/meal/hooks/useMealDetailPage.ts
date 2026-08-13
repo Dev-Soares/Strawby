@@ -108,8 +108,26 @@ export const useMealDetailPage = ({ mealId, patientId }: Params) => {
           ? removeRecipe.isPending
           : false
 
+  const meal = query.data
+
+  // Refeição de plano é um template: só mostra horário se foi definido.
+  // Diário deriva do timestamp de registro quando não há hora explícita.
+  const displayTime: string | null = !meal
+    ? null
+    : isPlan
+      ? meal.time
+      : (meal.time ??
+        new Date(meal.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }))
+
+  const hasItems = !!meal && meal.items.length > 0
+  const hasRecipes = !!meal && meal.recipes.length > 0
+
   return {
-    meal: query.data,
+    meal,
+    displayTime,
+    hasItems,
+    hasRecipes,
+    isEmpty: !hasItems && !hasRecipes,
     isLoading: query.isLoading,
     isError: query.isError,
     confirm,

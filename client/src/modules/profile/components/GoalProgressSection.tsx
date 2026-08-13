@@ -1,12 +1,8 @@
-import { useState } from 'react'
 import { Target, TrendDown, TrendUp, Minus, Flag, PencilSimple } from '@phosphor-icons/react'
-import { useGetPatientWeightRecords } from '@/modules/patient/hooks/useGetPatientWeightRecords'
-import { useUpdatePatient } from '@/modules/patient/hooks/useUpdatePatient'
 import TargetWeightModal from './TargetWeightModal'
 import GoalProgressSkeleton from '../skeletons/GoalProgressSkeleton'
 import type { Patient } from '@/modules/patient/types/patient'
-import type { TargetWeightFormData } from '@/modules/patient/types/targetWeight'
-import { deriveWeightGoal } from '@/shared/utils/deriveWeightGoal'
+import { useGoalProgress } from '../hooks/useGoalProgress'
 
 const GOAL_ICONS = { maintain: Minus, lose: TrendDown, gain: TrendUp } as const
 
@@ -16,39 +12,37 @@ interface Props {
 }
 
 export default function GoalProgressSection({ patientId, patient }: Props) {
-  const { data: records, isPending } = useGetPatientWeightRecords(patientId)
-  const updatePatient = useUpdatePatient()
-  const [modalOpen, setModalOpen] = useState(false)
-
-  function handleSave(data: TargetWeightFormData) {
-    updatePatient.mutate(
-      { targetWeight: data.targetWeight },
-      { onSuccess: () => setModalOpen(false) },
-    )
-  }
-
-  const currentWeight = records?.[0]?.weight ?? null
+  const {
+    isPending,
+    current,
+    start,
+    target,
+    hasGoal,
+    hasWeight,
+    progress,
+    goal,
+    modalOpen,
+    openModal,
+    closeModal,
+    saveTarget,
+    isSaving,
+  } = useGoalProgress(patientId, patient)
 
   const modal = (
     <TargetWeightModal
       isOpen={modalOpen}
-      isPending={updatePatient.isPending}
+      isPending={isSaving}
       defaultTarget={patient.targetWeight}
-      currentWeight={currentWeight}
-      onClose={() => setModalOpen(false)}
-      onSave={handleSave}
+      currentWeight={current}
+      onClose={closeModal}
+      onSave={saveTarget}
     />
   )
 
   if (isPending) return <GoalProgressSkeleton />
 
-  const target = patient.targetWeight
-  // records vêm ordenados por data desc — [0] é o mais recente, último é o inicial
-  const current = currentWeight
-  const start = records && records.length > 0 ? records[records.length - 1].weight : null
-
   // Sem meta definida → CTA pra definir
-  if (target === null) {
+  if (!hasGoal) {
     return (
       <section className="mb-5">
         <SectionHeader />
@@ -63,7 +57,7 @@ export default function GoalProgressSection({ patientId, patient }: Props) {
           </div>
           <button
             type="button"
-            onClick={() => setModalOpen(true)}
+            onClick={openModal}
             className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-orange-500 hover:bg-orange-600 active:scale-[0.98] transition-all duration-150 cursor-pointer"
           >
             <Target size={17} weight="bold" className="text-white" />
@@ -76,7 +70,7 @@ export default function GoalProgressSection({ patientId, patient }: Props) {
   }
 
   // Tem meta mas ainda sem peso registrado
-  if (current === null || start === null) {
+  if (!hasWeight) {
     return (
       <section className="mb-5">
         <SectionHeader />
@@ -93,18 +87,14 @@ export default function GoalProgressSection({ patientId, patient }: Props) {
           <p className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 leading-snug">
             Registre seu peso para acompanhar o progresso.
           </p>
-          <EditButton onClick={() => setModalOpen(true)} />
+          <EditButton onClick={openModal} />
         </div>
         {modal}
       </section>
     )
   }
 
-  const totalDistance = Math.abs(target - start)
-  const walked = start === target ? 0 : (start - current) / (start - target)
-  const progress = totalDistance === 0 ? 100 : Math.min(Math.max(walked * 100, 0), 100)
-
-  const GoalIcon = GOAL_ICONS[deriveWeightGoal(current, target).direction]
+  const GoalIcon = GOAL_ICONS[goal?.direction ?? 'maintain']
 
   return (
     <section className="mb-5">
@@ -131,7 +121,7 @@ export default function GoalProgressSection({ patientId, patient }: Props) {
           </div>
           <button
             type="button"
-            onClick={() => setModalOpen(true)}
+            onClick={openModal}
             className="group flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-orange-100 dark:bg-orange-950/40 hover:bg-orange-500 dark:hover:bg-orange-500 active:scale-95 transition-all duration-150 cursor-pointer shrink-0"
           >
             <PencilSimple size={14} weight="bold" className="text-orange-500 dark:text-orange-400 group-hover:text-white transition-colors duration-150" />

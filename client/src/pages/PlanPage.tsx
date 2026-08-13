@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { PencilSimple, Fire, Sparkle } from '@phosphor-icons/react'
 import AppLayout from '../shared/layouts/AppLayout'
@@ -8,36 +7,32 @@ import CreatePlanModal from '../modules/plan/components/CreatePlanModal'
 import ConfirmDeletePlanModal from '../modules/plan/components/ConfirmDeletePlanModal'
 import PlanMealsSection from '../modules/plan/components/PlanMealsSection'
 import PlanSkeleton from '../modules/plan/skeletons/PlanSkeleton'
-import { useGetPlan } from '../modules/plan/hooks/useGetPlan'
-import { useEditPlan } from '../modules/plan/hooks/useEditPlan'
-import { useCreatePlan } from '../modules/plan/hooks/useCreatePlan'
-import { useDeletePlan } from '../modules/plan/hooks/useDeletePlan'
 import DownloadPlanPdfButton from '../modules/plan/components/DownloadPlanPdfButton'
-import { MACROS } from '@/shared/config/macros'
+import { usePlanPage } from '../modules/plan/hooks/usePlanPage'
 
 export default function PlanPage() {
-  const { data: plan, isPending, isError } = useGetPlan()
-  const editMutation = useEditPlan()
-  const createMutation = useCreatePlan()
-  const deleteMutation = useDeletePlan()
-  const [modalOpen, setModalOpen] = useState(false)
-  const [createModalOpen, setCreateModalOpen] = useState(false)
-  const [createInitialMode, setCreateInitialMode] = useState<'select' | 'manual' | 'generate'>('select')
-  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
-
-  const openCreate = (mode: 'select' | 'manual' | 'generate' = 'select') => {
-    setCreateInitialMode(mode)
-    setCreateModalOpen(true)
-  }
-
-  const handleDeleteConfirm = () => {
-    deleteMutation.mutate(undefined, {
-      onSuccess: () => {
-        setConfirmDeleteOpen(false)
-        openCreate('generate')
-      },
-    })
-  }
+  const {
+    plan,
+    isPending,
+    isError,
+    macroRows,
+    editOpen,
+    openEdit,
+    closeEdit,
+    savePlan,
+    isSaving,
+    createOpen,
+    createMode,
+    openCreate,
+    closeCreate,
+    submitCreate,
+    isCreating,
+    confirmDeleteOpen,
+    openConfirmDelete,
+    closeConfirmDelete,
+    confirmDelete,
+    isDeleting,
+  } = usePlanPage()
 
   return (
     <AppLayout>
@@ -76,14 +71,14 @@ export default function PlanPage() {
 
               <div className="flex items-center gap-2 flex-wrap sm:shrink-0">
                 <button
-                  onClick={() => setConfirmDeleteOpen(true)}
+                  onClick={openConfirmDelete}
                   className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer"
                 >
                   <Sparkle size={18} weight="fill" />
                   Gerar plano
                 </button>
                 <button
-                  onClick={() => setModalOpen(true)}
+                  onClick={openEdit}
                   className="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-200 text-sm font-bold px-4 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer"
                 >
                   <PencilSimple size={18} weight="bold" />
@@ -117,14 +112,7 @@ export default function PlanPage() {
 
               {/* Right — macro cards stacked */}
               <div className="flex flex-col gap-4">
-                {(() => {
-                  const macroKcalTotal = MACROS.reduce((acc, m) => acc + plan[m.field] * m.kcalPerGram, 0)
-                  return MACROS.map((macro, index) => {
-                  const value = plan[macro.field]
-                  const pct = macroKcalTotal > 0 ? Math.round((value * macro.kcalPerGram / macroKcalTotal) * 100) : 0
-                  const progress = Math.min(pct / 100, 1)
-
-                  return (
+                {macroRows.map((macro, index) => (
                     <motion.div
                       key={macro.field}
                       className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm px-6 py-5 transition-colors duration-300"
@@ -140,11 +128,11 @@ export default function PlanPage() {
                             className="text-xs font-bold tabular-nums px-2 py-0.5 rounded-full"
                             style={{ backgroundColor: macro.color, color: macro.track }}
                           >
-                            {pct}%
+                            {macro.pct}%
                           </span>
                         </div>
                         <div className="flex items-baseline gap-1">
-                          <span className="text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tabular-nums transition-colors duration-300">{value}</span>
+                          <span className="text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tabular-nums transition-colors duration-300">{macro.value}</span>
                           <span className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 transition-colors duration-300">g</span>
                         </div>
                       </div>
@@ -154,14 +142,12 @@ export default function PlanPage() {
                           className="h-full rounded-full"
                           style={{ backgroundColor: macro.color }}
                           initial={{ width: 0 }}
-                          animate={{ width: `${progress * 100}%` }}
+                          animate={{ width: `${macro.pct}%` }}
                           transition={{ duration: 0.8, ease: 'easeOut', delay: 0.4 + index * 0.1 }}
                         />
                       </div>
                     </motion.div>
-                  )
-                  })
-                })()}
+                ))}
               </div>
             </div>
           </div>
@@ -172,33 +158,33 @@ export default function PlanPage() {
           <PlanMealsSection />
 
           <PlanEditModal
-            isOpen={modalOpen}
-            onClose={() => setModalOpen(false)}
+            isOpen={editOpen}
+            onClose={closeEdit}
             defaultValues={{
               calories: plan.calories,
               protein: plan.protein,
               carbs: plan.carbs,
               fat: plan.fat,
             }}
-            isPending={editMutation.isPending}
-            onSave={(data) => editMutation.mutate(data, { onSuccess: () => setModalOpen(false) })}
+            isPending={isSaving}
+            onSave={savePlan}
           />
         </>
       )}
 
       <CreatePlanModal
-        isOpen={createModalOpen}
-        onClose={() => setCreateModalOpen(false)}
-        onSubmit={(data) => createMutation.mutate(data, { onSuccess: () => setCreateModalOpen(false) })}
-        isPending={createMutation.isPending}
-        initialMode={createInitialMode}
+        isOpen={createOpen}
+        onClose={closeCreate}
+        onSubmit={submitCreate}
+        isPending={isCreating}
+        initialMode={createMode}
       />
 
       <ConfirmDeletePlanModal
         isOpen={confirmDeleteOpen}
-        onClose={() => setConfirmDeleteOpen(false)}
-        onConfirm={handleDeleteConfirm}
-        isPending={deleteMutation.isPending}
+        onClose={closeConfirmDelete}
+        onConfirm={confirmDelete}
+        isPending={isDeleting}
       />
     </AppLayout>
   )

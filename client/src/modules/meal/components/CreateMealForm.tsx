@@ -1,91 +1,28 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate, useSearchParams } from 'react-router-dom'
 import { FloppyDisk, CopySimple, X } from '@phosphor-icons/react'
-import toast from 'react-hot-toast'
-import { toLocalISODate } from '@/shared/utils/date'
-import { createMealSchema, type CreateMealData } from '../types/createMeal'
 import { MEAL_TYPE_LIST } from '@/shared/config/mealTypes'
-import { useCreateMeal } from '../hooks/useCreateMeal'
-import { useCopyMealItems } from '../hooks/useCopyMealItems'
-import type { Meal } from '../types/meal'
+import { useCreateMealForm } from '../hooks/useCreateMealForm'
 import PlanMealPicker from './PlanMealPicker'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
 
 export default function CreateMealForm() {
-  const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
-  const type = searchParams.get('type') ?? 'meal'
-  const isPlan = type === 'plan-meal'
-  const kind = isPlan ? 'PLAN' : 'DAILY'
-  const dateParam = searchParams.get('date')
-  const mealDate = dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam) ? dateParam : toLocalISODate()
-
-  const [showPicker, setShowPicker] = useState(false)
-  const [selectedPlanMeal, setSelectedPlanMeal] = useState<Meal | null>(null)
-
-  const createMeal = useCreateMeal()
-  const copyMealItems = useCopyMealItems()
-
   const {
     register,
-    handleSubmit,
-    watch,
     setValue,
-    formState: { errors },
-  } = useForm<CreateMealData>({
-    resolver: zodResolver(createMealSchema),
-    defaultValues: { time: '07:00', kind },
-  })
+    errors,
+    selectedType,
+    onSubmit,
+    isPlan,
+    showPicker,
+    selectedPlanMeal,
+    selectPlanMeal,
+    clearPlanMeal,
+    togglePicker,
+    closePicker,
+    isSubmitting,
+  } = useCreateMealForm()
 
   const { resolvedTheme } = useThemeContext()
   const isDark = resolvedTheme === 'dark'
-
-  const selectedType = watch('mealType')
-
-  const handlePlanMealSelect = (meal: Meal) => {
-    setSelectedPlanMeal(meal)
-    setShowPicker(false)
-    if (meal.mealType) {
-      setValue('mealType', meal.mealType, { shouldValidate: true })
-    }
-  }
-
-  const handleClearPlanMeal = () => {
-    setSelectedPlanMeal(null)
-    setShowPicker(false)
-  }
-
-  const isSubmitting = createMeal.isPending || copyMealItems.isPending
-
-  const onSubmit = handleSubmit((data) => {
-    createMeal.mutate(
-      {
-        kind,
-        mealType: data.mealType,
-        time: data.time,
-        date: mealDate,
-        observations: data.observations,
-      },
-      {
-        onSuccess: async (createdMeal) => {
-          if (!createdMeal?.id) {
-            toast.error('Erro ao redirecionar. Tente novamente.')
-            return
-          }
-          if (selectedPlanMeal) {
-            try {
-              await copyMealItems.mutateAsync({ targetId: createdMeal.id, sourceMeal: selectedPlanMeal })
-            } catch {
-              toast.error('Refeição criada, mas erro ao copiar itens do plano.')
-            }
-          }
-          navigate(`/app/meals/${createdMeal.id}`)
-        },
-      },
-    )
-  })
 
   return (
     <form onSubmit={onSubmit} className="space-y-6 max-w-2xl">
@@ -172,7 +109,7 @@ export default function CreateMealForm() {
               </div>
               <button
                 type="button"
-                onClick={handleClearPlanMeal}
+                onClick={clearPlanMeal}
                 className="w-8 h-8 flex items-center justify-center rounded-xl text-neutral-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors duration-200 cursor-pointer shrink-0"
               >
                 <X size={15} weight="bold" />
@@ -181,7 +118,7 @@ export default function CreateMealForm() {
           ) : (
             <button
               type="button"
-              onClick={() => setShowPicker((v) => !v)}
+              onClick={togglePicker}
               className="flex items-center justify-center gap-2 py-3.5 rounded-2xl border border-dashed border-neutral-300 dark:border-neutral-700 text-sm font-semibold text-neutral-500 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-600 hover:text-neutral-700 dark:hover:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-all duration-200 cursor-pointer"
             >
               <CopySimple size={16} weight="bold" />
@@ -190,7 +127,7 @@ export default function CreateMealForm() {
           )}
 
           {showPicker && !selectedPlanMeal && (
-            <PlanMealPicker onSelect={handlePlanMealSelect} onClose={() => setShowPicker(false)} />
+            <PlanMealPicker onSelect={selectPlanMeal} onClose={closePicker} />
           )}
         </div>
       )}
