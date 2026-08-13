@@ -13,6 +13,7 @@ import {
   recipeSelect,
 } from './types';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
+import { parseServingSize } from '../../common/utils/serving-size.util';
 
 @Injectable()
 export class RecipeService {
@@ -191,12 +192,7 @@ export class RecipeService {
       });
       if (!privateFood)
         throw new NotFoundException('Alimento privado não encontrado');
-      const rawServing = privateFood.servingSize
-        ? Number(privateFood.servingSize)
-        : NaN;
-      const servingSize =
-        Number.isFinite(rawServing) && rawServing > 0 ? rawServing : 100;
-      const ratio = dto.quantity / servingSize;
+      const ratio = dto.quantity / parseServingSize(privateFood.servingSize);
       const recipe = await this.prisma.recipe.findFirst({
         where: { id: recipeId, patientId },
         select: { id: true },

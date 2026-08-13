@@ -30,17 +30,21 @@ export class ConnectionRequestService {
     dto: CreateConnectionRequestDto,
   ): Promise<ConnectionRequestPublic> {
     // checks if already has one request pending ( prevent spam )
-    const existing = await this.prisma.connectionRequest.findFirst({
-      where: {
-        patientId,
-        status: 'PENDING',
-      },
-      select: { id: true },
-    });
-    if (existing) {
-      throw new ConflictException(
-        'Você já possui uma solicitação de conexão pendente',
-      );
+    try {
+      const existing = await this.prisma.connectionRequest.findFirst({
+        where: {
+          patientId,
+          status: 'PENDING',
+        },
+        select: { id: true },
+      });
+      if (existing) {
+        throw new ConflictException(
+          'Você já possui uma solicitação de conexão pendente',
+        );
+      }
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao verificar solicitações pendentes');
     }
     const nutritionist = await this.nutritionistService.findByCode(dto.code);
 

@@ -111,13 +111,8 @@ export class NutritionistService {
     nutritionistId: string,
     patientId: string,
   ): Promise<void> {
-    await this.patientService.unlinkFromNutritionist(nutritionistId, patientId);
-
-    await this.notificationService.sendOne(
-      patientId,
-      'Conexão encerrada',
-      'Seu nutricionista encerrou a conexão com você.',
-    );
+    // unlinkFromNutritionist já valida o vínculo e notifica o paciente
+    await this.patientService.unlinkFromNutritionist(patientId, nutritionistId);
   }
 
   async updateCode(nutritionistId: string, dto: CreateCodeDto) {

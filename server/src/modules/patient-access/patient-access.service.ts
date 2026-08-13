@@ -1,5 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
+import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 
 @Injectable()
 export class PatientAccessService {
@@ -8,10 +9,15 @@ export class PatientAccessService {
   async resolve(callerId: string, patientId: string): Promise<void> {
     if (callerId === patientId) return;
 
-    const linked = await this.prisma.patient.findFirst({
-      where: { id: patientId, nutritionistId: callerId },
-    });
-    if (!linked)
-      throw new ForbiddenException('Sem permissão para acessar este paciente');
+    try {
+      const linked = await this.prisma.patient.findFirst({
+        where: { id: patientId, nutritionistId: callerId },
+        select: { id: true },
+      });
+      if (!linked)
+        throw new ForbiddenException('Sem permissão para acessar este paciente');
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao verificar acesso ao paciente');
+    }
   }
 }

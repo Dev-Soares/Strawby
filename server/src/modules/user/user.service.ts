@@ -283,23 +283,27 @@ export class UserService {
   }
 
   async clearExpiredTokens(): Promise<void> {
-    await this.prisma.user.updateMany({
-      where: {
-        emailVerified: false,
-        verificationTokenExpiresAt: { lt: new Date() },
-      },
-      data: {
-        verificationToken: null,
-        verificationTokenExpiresAt: null,
-      },
-    });
+    try {
+      await this.prisma.user.updateMany({
+        where: {
+          emailVerified: false,
+          verificationTokenExpiresAt: { lt: new Date() },
+        },
+        data: {
+          verificationToken: null,
+          verificationTokenExpiresAt: null,
+        },
+      });
 
-    await this.prisma.user.updateMany({
-      where: { passwordResetTokenExpiresAt: { lt: new Date() } },
-      data: {
-        passwordResetToken: null,
-        passwordResetTokenExpiresAt: null,
-      },
-    });
+      await this.prisma.user.updateMany({
+        where: { passwordResetTokenExpiresAt: { lt: new Date() } },
+        data: {
+          passwordResetToken: null,
+          passwordResetTokenExpiresAt: null,
+        },
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao limpar tokens expirados');
+    }
   }
 }

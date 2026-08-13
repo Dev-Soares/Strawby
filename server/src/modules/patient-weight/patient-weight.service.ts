@@ -78,18 +78,26 @@ export class PatientWeightService {
   async getAllByPatient(callerId: string, patientId: string) {
     await this.patientAccess.resolve(callerId, patientId);
 
-    return this.prisma.patientWeight.findMany({
-      where: { patientId },
-      orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
-    });
+    try {
+      return await this.prisma.patientWeight.findMany({
+        where: { patientId },
+        orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar registros de peso do paciente');
+    }
   }
 
   async getLastRegister(callerId: string, patientId: string) {
     await this.patientAccess.resolve(callerId, patientId);
 
-    return this.prisma.patientWeight.findFirst({
-      where: { patientId },
-      orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
-    });
+    try {
+      return await this.prisma.patientWeight.findFirst({
+        where: { patientId },
+        orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
+      });
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar último registro de peso');
+    }
   }
 }

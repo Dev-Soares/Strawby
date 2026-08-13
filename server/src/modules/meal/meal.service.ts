@@ -18,6 +18,7 @@ import {
   mealSelect,
 } from './types';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
+import { parseServingSize } from '../../common/utils/serving-size.util';
 
 @Injectable()
 export class MealService {
@@ -325,10 +326,7 @@ export class MealService {
       });
       if (!privateFood)
         throw new NotFoundException('Alimento privado não encontrado');
-      const servingSize = privateFood.servingSize
-        ? Number(privateFood.servingSize)
-        : 100;
-      const ratio = dto.quantity / servingSize;
+      const ratio = dto.quantity / parseServingSize(privateFood.servingSize);
       const meal = await this.prisma.meal.findFirst({
         where: { id: mealId, patientId },
         select: { id: true },
@@ -381,10 +379,8 @@ export class MealService {
       if (!item) throw new NotFoundException('Item não encontrado na refeição');
       const base = item.food ?? item.privateFood;
       if (!base) throw new NotFoundException('Alimento base não encontrado');
-      const servingSize = item.privateFood?.servingSize
-        ? Number(item.privateFood.servingSize)
-        : 100;
-      const ratio = dto.quantity / servingSize;
+      const ratio =
+        dto.quantity / parseServingSize(item.privateFood?.servingSize);
       return await this.prisma.foodItem.update({
         where: { id: itemId },
         data: {
