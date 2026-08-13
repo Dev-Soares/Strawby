@@ -27,6 +27,8 @@ export default function CreateMealForm() {
   const type = searchParams.get('type') ?? 'meal'
   const isPlan = type === 'plan-meal'
   const kind = isPlan ? 'PLAN' : 'DAILY'
+  const dateParam = searchParams.get('date')
+  const mealDate = dateParam && /^\d{4}-\d{2}-\d{2}$/.test(dateParam) ? dateParam : toLocalISODate()
 
   const [showPicker, setShowPicker] = useState(false)
   const [selectedPlanMeal, setSelectedPlanMeal] = useState<Meal | null>(null)
@@ -71,7 +73,7 @@ export default function CreateMealForm() {
         kind,
         mealType: data.mealType,
         time: data.time,
-        date: toLocalISODate(),
+        date: mealDate,
         observations: data.observations,
       },
       {

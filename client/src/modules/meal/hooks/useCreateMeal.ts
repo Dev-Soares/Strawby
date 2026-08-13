@@ -10,9 +10,11 @@ export const useCreateMeal = () => {
   const { data: user } = useAuth()
   return useMutation({
     mutationFn: (dto: CreateMealData) => createMealService(user!.id, dto),
-    onSuccess: async () => {
+    onSuccess: async (_data, dto) => {
       await queryClient.refetchQueries({ queryKey: ['meals'], type: 'all' })
-      queryClient.invalidateQueries({ queryKey: ['daily-score-live', toLocalISODate()] })
+      queryClient.invalidateQueries({
+        queryKey: ['daily-score-live', dto.date ?? toLocalISODate()],
+      })
       queryClient.invalidateQueries({ queryKey: ['daily-scores'] })
       toast.success('Refeição criada com sucesso!')
     },

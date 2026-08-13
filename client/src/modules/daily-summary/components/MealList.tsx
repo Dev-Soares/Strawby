@@ -25,17 +25,21 @@ const item = {
 
 export default function MealList({ meals }: MealListProps) {
   const navigate = useNavigate()
-  const { isToday } = useDay()
+  const { selectedDay, isToday } = useDay()
   const totalKcal = meals.reduce((sum, m) => sum + m.totals.calories, 0)
   const [openId, setOpenId] = useState<string | null>(null)
 
   const toggle = (id: string) => setOpenId((prev) => (prev === id ? null : id))
 
+  const goToCreateMeal = () => navigate(`/app/meals/new?type=meal&date=${selectedDay}`)
+
   return (
     <div>
       <div className="flex items-end justify-between mb-5 sm:mb-7 px-1 gap-2 mt-5 sm:mt-7">
         <div className="min-w-0">
-          <h2 className="text-lg sm:text-xl font-extrabold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">Refeições de hoje</h2>
+          <h2 className="text-lg sm:text-xl font-extrabold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
+            {isToday ? 'Refeições de hoje' : 'Refeições do dia'}
+          </h2>
           <p className="text-xs sm:text-sm text-neutral-400 dark:text-neutral-500 mt-0.5 transition-colors duration-300">
             Seu histórico do dia
           </p>
@@ -61,18 +65,16 @@ export default function MealList({ meals }: MealListProps) {
           <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-5 max-w-50 leading-relaxed transition-colors duration-300">
             {isToday
               ? 'Registre o que você comeu para acompanhar seus macros'
-              : 'Nenhuma refeição foi registrada neste dia'}
+              : 'Registre o que você comeu neste dia para acompanhar seus macros'}
           </p>
-          {isToday && (
-            <button
-              type="button"
-              onClick={() => navigate('/app/meals/new?type=meal')}
-              className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer"
-            >
-              <PlusIcon size={15} weight="bold" />
-              Adicionar refeição
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={goToCreateMeal}
+            className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer"
+          >
+            <PlusIcon size={15} weight="bold" />
+            Adicionar refeição
+          </button>
         </motion.div>
       ) : (
         <motion.div
@@ -91,17 +93,15 @@ export default function MealList({ meals }: MealListProps) {
             </motion.div>
           ))}
 
-          {isToday && (
-            <motion.button
-              type="button"
-              onClick={() => navigate('/app/meals/new?type=meal')}
-              className="flex items-center justify-center gap-2 py-3.5 sm:py-4 rounded-2xl sm:rounded-3xl bg-red-600 text-white text-sm sm:text-base font-bold hover:bg-red-700 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mt-1"
-              variants={item}
-            >
-              <PlusIcon size={18} weight="bold" />
-              Adicionar refeição
-            </motion.button>
-          )}
+          <motion.button
+            type="button"
+            onClick={goToCreateMeal}
+            className="flex items-center justify-center gap-2 py-3.5 sm:py-4 rounded-2xl sm:rounded-3xl bg-red-600 text-white text-sm sm:text-base font-bold hover:bg-red-700 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mt-1"
+            variants={item}
+          >
+            <PlusIcon size={18} weight="bold" />
+            Adicionar refeição
+          </motion.button>
         </motion.div>
       )}
     </div>
