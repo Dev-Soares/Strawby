@@ -17,6 +17,8 @@ export type MacroConfig = {
   border: string
   textColor: string
   ringFocus: string
+  /** Borda inferior do input: estado normal + foco */
+  inputBorder: string
 }
 
 export const MACROS: MacroConfig[] = [
@@ -34,6 +36,7 @@ export const MACROS: MacroConfig[] = [
     border: 'border-amber-100 dark:border-amber-900/30',
     textColor: 'text-amber-600 dark:text-amber-400',
     ringFocus: 'focus:ring-amber-300',
+    inputBorder: 'border-amber-300/60 focus:border-amber-500',
   },
   {
     field: 'carbs',
@@ -49,6 +52,7 @@ export const MACROS: MacroConfig[] = [
     border: 'border-blue-100 dark:border-blue-900/30',
     textColor: 'text-blue-600 dark:text-blue-400',
     ringFocus: 'focus:ring-blue-300',
+    inputBorder: 'border-blue-300/60 focus:border-blue-500',
   },
   {
     field: 'fat',
@@ -64,6 +68,7 @@ export const MACROS: MacroConfig[] = [
     border: 'border-purple-100 dark:border-purple-900/30',
     textColor: 'text-purple-600 dark:text-purple-400',
     ringFocus: 'focus:ring-purple-300',
+    inputBorder: 'border-purple-300/60 focus:border-purple-500',
   },
 ]
 

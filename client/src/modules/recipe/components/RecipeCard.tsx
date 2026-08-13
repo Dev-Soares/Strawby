@@ -65,8 +65,7 @@ export default function RecipeCard({ recipe, isOpen, onToggle }: RecipeCardProps
           <CaretDown
             size={16}
             weight="bold"
-            className="transition-transform duration-250"
-            style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}
+            className={`transition-transform duration-250 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
           />
         </button>
       </div>

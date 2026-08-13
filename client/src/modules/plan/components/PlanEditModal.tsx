@@ -117,14 +117,11 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
                         readOnly={macro.field === 'carbs'}
                         tabIndex={macro.field === 'carbs' ? -1 : undefined}
                         disabled={isPending}
-                        className={`font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed ${macro.field === 'carbs' ? 'cursor-default' : 'cursor-text'}`}
-                        style={{ borderBottomColor: `${macro.color}55` }}
-                        onFocus={(e) => { if (!isPending && macro.field !== 'carbs') e.currentTarget.style.borderBottomColor = macro.color }}
-                        onBlur={(e) => { e.currentTarget.style.borderBottomColor = `${macro.color}55` }}
+                        className={`font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed ${macro.inputBorder} ${macro.field === 'carbs' ? 'cursor-default' : 'cursor-text'}`}
                       />
                       <span className="text-sm sm:text-base font-bold text-neutral-400 dark:text-neutral-500 pb-1 shrink-0 transition-colors duration-300">g</span>
                       {macro.field !== 'carbs' && (
-                        <PencilSimple size={14} weight="bold" className="shrink-0 mb-1.5" style={{ color: `${macro.color}aa` }} />
+                        <PencilSimple size={14} weight="bold" className={`shrink-0 mb-1.5 ${macro.textColor}`} />
                       )}
                     </div>
 

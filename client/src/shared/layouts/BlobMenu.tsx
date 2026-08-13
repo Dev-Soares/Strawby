@@ -41,7 +41,7 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
           style={{ willChange: 'transform', touchAction: 'none' }}
           onClick={onClose}
         >
-          <div className="absolute inset-0 pointer-events-none" style={{ transform: 'translateZ(0)' }}>
+          <div className="absolute inset-0 pointer-events-none transform-gpu">
             <svg
               className="w-full h-full"
               viewBox="0 0 100 100"

@@ -8,6 +8,7 @@ import {
 } from '@phosphor-icons/react'
 import type { CreatePrivateFoodData } from '../types/privateFood'
 import Spinner from '@/shared/components/Spinner'
+import { MACROS } from '@/shared/config/macros'
 
 export interface PrivateFoodFormProps {
   register: UseFormRegister<CreatePrivateFoodData>
@@ -106,68 +107,31 @@ export default function PrivateFoodForm({
 
         {/* Macros */}
         <div className="grid grid-cols-3 gap-2 sm:gap-4">
-          {/* Proteína */}
-          <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-900 rounded-2xl px-2 sm:px-5 py-4 sm:py-5 flex flex-col items-center transition-colors duration-300">
-            <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-[0.14em] text-amber-600 mb-3 sm:mb-4 transition-colors duration-300">
-              Proteína
-            </span>
-            <div className="flex items-end justify-center gap-0.5 sm:gap-1 mb-1 w-full">
-              <input
-                {...register('protein', { valueAsNumber: true })}
-                type="number"
-                disabled={isPending}
-                className="font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ borderBottomColor: '#f59e0b55' }}
-                onFocus={(e) => { if (!isPending) e.currentTarget.style.borderBottomColor = '#f59e0b' }}
-                onBlur={(e) => { e.currentTarget.style.borderBottomColor = '#f59e0b55' }}
-              />
-              <span className="text-sm sm:text-base font-bold text-neutral-400 dark:text-neutral-500 pb-1 shrink-0 transition-colors duration-300">g</span>
-              <PencilSimple size={14} weight="bold" className="shrink-0 mb-1.5" style={{ color: '#f59e0baa' }} />
+          {MACROS.map((macro) => (
+            <div
+              key={macro.field}
+              className={`${macro.bg} ${macro.border} border rounded-2xl px-2 sm:px-5 py-4 sm:py-5 flex flex-col items-center transition-colors duration-300`}
+            >
+              <span className={`text-[8px] sm:text-[9px] font-extrabold uppercase tracking-[0.14em] ${macro.textColor} mb-3 sm:mb-4 transition-colors duration-300`}>
+                {macro.label}
+              </span>
+              <div className="flex items-end justify-center gap-0.5 sm:gap-1 mb-1 w-full">
+                <input
+                  {...register(macro.field, { valueAsNumber: true })}
+                  type="number"
+                  disabled={isPending}
+                  className={`font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed ${macro.inputBorder}`}
+                />
+                <span className="text-sm sm:text-base font-bold text-neutral-400 dark:text-neutral-500 pb-1 shrink-0 transition-colors duration-300">
+                  {macro.unit}
+                </span>
+                <PencilSimple size={14} weight="bold" className={`shrink-0 mb-1.5 ${macro.textColor}`} />
+              </div>
+              {errors[macro.field] && (
+                <p className="text-[10px] font-bold text-red-500 mt-1">{errors[macro.field]?.message}</p>
+              )}
             </div>
-            {errors.protein && <p className="text-[10px] font-bold text-red-500 mt-1">{errors.protein.message}</p>}
-          </div>
-
-          {/* Carboidratos */}
-          <div className="bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900 rounded-2xl px-2 sm:px-5 py-4 sm:py-5 flex flex-col items-center transition-colors duration-300">
-            <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-[0.14em] text-blue-600 mb-3 sm:mb-4 transition-colors duration-300">
-              Carboidratos
-            </span>
-            <div className="flex items-end justify-center gap-0.5 sm:gap-1 mb-1 w-full">
-              <input
-                {...register('carbs', { valueAsNumber: true })}
-                type="number"
-                disabled={isPending}
-                className="font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ borderBottomColor: '#3b82f655' }}
-                onFocus={(e) => { if (!isPending) e.currentTarget.style.borderBottomColor = '#3b82f6' }}
-                onBlur={(e) => { e.currentTarget.style.borderBottomColor = '#3b82f655' }}
-              />
-              <span className="text-sm sm:text-base font-bold text-neutral-400 dark:text-neutral-500 pb-1 shrink-0 transition-colors duration-300">g</span>
-              <PencilSimple size={14} weight="bold" className="shrink-0 mb-1.5" style={{ color: '#3b82f6aa' }} />
-            </div>
-            {errors.carbs && <p className="text-[10px] font-bold text-red-500 mt-1">{errors.carbs.message}</p>}
-          </div>
-
-          {/* Gordura */}
-          <div className="bg-purple-50 dark:bg-purple-950/40 border border-purple-100 dark:border-purple-900 rounded-2xl px-2 sm:px-5 py-4 sm:py-5 flex flex-col items-center transition-colors duration-300">
-            <span className="text-[8px] sm:text-[9px] font-extrabold uppercase tracking-[0.14em] text-purple-600 mb-3 sm:mb-4 transition-colors duration-300">
-              Gordura
-            </span>
-            <div className="flex items-end justify-center gap-0.5 sm:gap-1 mb-1 w-full">
-              <input
-                {...register('fat', { valueAsNumber: true })}
-                type="number"
-                disabled={isPending}
-                className="font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ borderBottomColor: '#a855f755' }}
-                onFocus={(e) => { if (!isPending) e.currentTarget.style.borderBottomColor = '#a855f7' }}
-                onBlur={(e) => { e.currentTarget.style.borderBottomColor = '#a855f755' }}
-              />
-              <span className="text-sm sm:text-base font-bold text-neutral-400 dark:text-neutral-500 pb-1 shrink-0 transition-colors duration-300">g</span>
-              <PencilSimple size={14} weight="bold" className="shrink-0 mb-1.5" style={{ color: '#a855f7aa' }} />
-            </div>
-            {errors.fat && <p className="text-[10px] font-bold text-red-500 mt-1">{errors.fat.message}</p>}
-          </div>
+          ))}
         </div>
 
         {/* Footer */}

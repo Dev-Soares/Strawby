@@ -62,12 +62,7 @@ const Hero = () => {
           {Array.from({ length: 6 }).map((_, i) => (
             <span
               key={i}
-              className="font-display font-black tracking-[-0.05em] leading-[0.8] whitespace-nowrap pr-[0.15em]"
-              style={{
-                fontSize: 'clamp(140px, 22vw, 360px)',
-                WebkitTextStroke: '2px rgba(220, 38, 38, 0.5)',
-                color: 'transparent',
-              }}
+              className="font-display font-black tracking-[-0.05em] leading-[0.8] whitespace-nowrap pr-[0.15em] text-[clamp(140px,22vw,360px)] text-transparent [-webkit-text-stroke:2px_rgba(220,38,38,0.5)]"
             >
               STRAWBY ·
             </span>

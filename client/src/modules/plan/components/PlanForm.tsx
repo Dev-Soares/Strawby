@@ -5,12 +5,13 @@ import { Fire, FloppyDisk } from '@phosphor-icons/react'
 import toast from 'react-hot-toast'
 import { MACROS } from '@/shared/config/macros'
 
-const macros = MACROS.map(({ field, label, color, track, max }) => ({
+const macros = MACROS.map(({ field, label, color, track, max, inputBorder }) => ({
   field,
   label,
   color,
   trackColor: track,
   max,
+  inputBorder,
 }))
 
 interface PlanFormProps {
@@ -84,10 +85,7 @@ export default function PlanForm({ defaultValues }: PlanFormProps) {
                 <input
                   {...register(macro.field, { valueAsNumber: true })}
                   type="number"
-                  className="w-full text-4xl font-extrabold text-neutral-950 dark:text-neutral-100 bg-transparent outline-none border-b-2 border-neutral-200 dark:border-neutral-700 focus:border-neutral-400 pb-0.5 transition-colors duration-200"
-                  style={{ borderBottomColor: `${macro.color}40` }}
-                  onFocus={(e) => e.currentTarget.style.borderBottomColor = macro.color}
-                  onBlur={(e) => e.currentTarget.style.borderBottomColor = `${macro.color}40`}
+                  className={`w-full text-4xl font-extrabold text-neutral-950 dark:text-neutral-100 bg-transparent outline-none border-b-2 pb-0.5 transition-colors duration-200 ${macro.inputBorder}`}
                 />
                 <span className="text-base font-semibold text-neutral-400 dark:text-neutral-500 pb-1.5 transition-colors duration-300">g</span>
               </div>

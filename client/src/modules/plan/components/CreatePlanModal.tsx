@@ -167,10 +167,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                           <input
                             {...manualForm.register(macro.field, { valueAsNumber: true })}
                             type="number"
-                            className="min-w-0 w-full text-2xl font-extrabold text-neutral-950 dark:text-neutral-50 bg-transparent outline-none text-center border-b-2 pb-0.5 transition-colors duration-150 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                            style={{ borderBottomColor: `${macro.color}55` }}
-                            onFocus={(e) => { e.currentTarget.style.borderBottomColor = macro.color }}
-                            onBlur={(e) => { e.currentTarget.style.borderBottomColor = `${macro.color}55` }}
+                            className={`min-w-0 w-full text-2xl font-extrabold text-neutral-950 dark:text-neutral-50 bg-transparent outline-none text-center border-b-2 pb-0.5 transition-colors duration-150 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${macro.inputBorder}`}
                           />
                           <span className="text-sm font-bold text-neutral-400 dark:text-neutral-500 pb-0.5 shrink-0">g</span>
                         </div>
