@@ -64,25 +64,25 @@ export default function DailyScoreDashboard() {
           </div>
           <div className="lg:pl-16">
             <DailyScoreCard />
-            <hr className="border-neutral-100 dark:border-neutral-800 my-8 transition-colors duration-300" />
-            <BestStreakCard />
           </div>
         </div>
       ) : (
         <div
-          // max-w evita que as 7 colunas se espalhem em tela larga: sem o card
-          // de score ao lado, o calendário ocuparia a largura toda e os dias
-          // ficariam distantes demais uns dos outros.
-          className={`max-w-xl transition-opacity duration-200 ${
+          className={`grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-0 items-start transition-opacity duration-200 ${
             isFetching ? 'opacity-40 pointer-events-none' : 'opacity-100'
           }`}
         >
-          <MonthlyCalendar
-            data={monthly}
-            todayDate={todayDate}
-            onPrevMonth={() => setMonthOffset((o) => o - 1)}
-            onNextMonth={() => setMonthOffset((o) => o + 1)}
-          />
+          <div className="lg:pr-16 lg:border-r border-neutral-100 dark:border-neutral-800">
+            <MonthlyCalendar
+              data={monthly}
+              todayDate={todayDate}
+              onPrevMonth={() => setMonthOffset((o) => o - 1)}
+              onNextMonth={() => setMonthOffset((o) => o + 1)}
+            />
+          </div>
+          <div className="lg:pl-16">
+            <BestStreakCard />
+          </div>
         </div>
       )}
     </div>
