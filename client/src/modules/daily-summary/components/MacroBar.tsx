@@ -4,6 +4,7 @@ import type { MacroRing } from '../types/dailySummary'
 export default function MacroBar({ label, value, max, unit, color, trackColor }: MacroRing) {
   const progress = max > 0 ? Math.min(value / max, 1) : 0
   const displayValue = unit === 'kcal' ? value.toLocaleString('pt-BR') : value
+  const displayMax = unit === 'kcal' ? max.toLocaleString('pt-BR') : max
 
   return (
     <div className="flex flex-col min-w-0">
@@ -14,6 +15,11 @@ export default function MacroBar({ label, value, max, unit, color, trackColor }:
         <span className="text-xl sm:text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tabular-nums leading-none transition-colors duration-300">
           {displayValue}
         </span>
+        {max > 0 && (
+          <span className="text-sm sm:text-base font-bold text-neutral-400 dark:text-neutral-500 tabular-nums leading-none transition-colors duration-300">
+            /{displayMax}
+          </span>
+        )}
         <span className="text-[10px] sm:text-xs font-bold text-neutral-400 dark:text-neutral-500 uppercase transition-colors duration-300">
           {unit}
         </span>
