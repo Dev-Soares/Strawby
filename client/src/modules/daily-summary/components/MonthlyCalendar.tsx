@@ -9,7 +9,9 @@ interface MonthlyCalendarProps {
   onNextMonth: () => void
 }
 
-const weekDayLabels = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']
+// Abreviação de 3 letras em vez de inicial: "S" e "Q" sozinhos são ambíguos
+// (segunda/sexta/sábado, quarta/quinta).
+const weekDayLabels = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
 
 export default function MonthlyCalendar({ data, todayDate, onPrevMonth, onNextMonth }: MonthlyCalendarProps) {
   return (
@@ -47,7 +49,7 @@ export default function MonthlyCalendar({ data, todayDate, onPrevMonth, onNextMo
         {weekDayLabels.map((label, idx) => (
           <span
             key={idx}
-            className="text-center text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-400 dark:text-neutral-500 transition-colors duration-300"
+            className="text-center text-[9px] sm:text-[10px] font-bold tracking-[0.12em] text-red-600 dark:text-red-500 transition-colors duration-300"
           >
             {label}
           </span>
