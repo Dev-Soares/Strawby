@@ -78,6 +78,11 @@ export class FoodService {
     // query como primeiro item — fica só com as alternativas adicionais.
     const synonymPhrases = expandQuerySynonyms(normalized).slice(1);
 
+    // Espelha normalizeForSearch() em SQL: minúsculo, sem acento, pontuação
+    // virando espaço. Necessário para comparar com `normalized` — TACO grava
+    // "Feijão, carioca, cru" e a vírgula quebraria a igualdade.
+    const nameNormalized = Prisma.sql`btrim(regexp_replace(regexp_replace(lower(unaccent(name)), '[^a-z0-9]+', ' ', 'g'), '\\s+', ' ', 'g'))`;
+
     // Filtro (indexado/barato): trigram OU todas as palavras via ILIKE OU
     // full-text search OU qualquer frase sinônima.
     const filters: Prisma.Sql[] = [
@@ -95,8 +100,13 @@ export class FoodService {
     ];
 
     try {
-      // Ordena os candidatos combinando relevância full-text (ts_rank),
-      // similaridade trigram (tolera erro de digitação) e priority da fonte.
+      // A ordenação SQL precisa espelhar a hierarquia de rankByRelevance, não
+      // só filtrar: o LIMIT corta antes do ranking em TS rodar, então um item
+      // relevante que fique fora da janela nunca é recuperado depois.
+      //
+      // ts_rank NÃO entra aqui: em nome de alimento o termo aparece uma única
+      // vez, então o valor é constante (~0.0608) e o critério nunca desempata —
+      // como primeiro item do ORDER BY ele só mascarava priority.
       const results = await this.prisma.$queryRaw<FoodPublic[]>`
         SELECT id, name, source::text AS source, priority, calories, protein, carbs, fat, fiber, sodium
         FROM "Food"
@@ -104,12 +114,11 @@ export class FoodService {
           filters.map((f) => Prisma.sql`(${f})`),
           ' OR ',
         )}
-        ORDER BY ts_rank(
-                   to_tsvector('portuguese', unaccent(name)),
-                   websearch_to_tsquery('portuguese', unaccent(${trimmed}))
-                 ) DESC,
-                 priority DESC,
+        ORDER BY priority DESC,
+                 (${nameNormalized} = ${normalized}) DESC,
+                 (${nameNormalized} LIKE ${normalized} || '%') DESC,
                  similarity(unaccent(name), unaccent(${trimmed})) DESC,
+                 length(name) ASC,
                  name ASC
         LIMIT 60
       `;

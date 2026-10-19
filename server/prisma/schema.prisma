@@ -8,6 +8,7 @@ datasource db {
 
 enum FoodSource {
   TACO
+  TBCA
   USDA_FOUNDATION
   USDA_SR_LEGACY
   CNF
@@ -127,13 +128,36 @@ model Food {
   fiber        Float?
   sodium       Float?
   servingSize  String?
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   foodItems    FoodItem[]
+  measures     FoodMeasure[]
 
   @@unique([source, sourceId])
   @@index([priority(sort: Desc), name])
   @@index([name(ops: raw("gin_trgm_ops"))], type: Gin)
+}
+
+/// Medida caseira de um alimento ("fatia" = 25g, "1 pote" = 90g). Traduz a
+/// unidade que o paciente entende para os gramas que o cálculo de macros usa:
+/// o usuário não sabe quantas fatias de pão de forma dão 50g.
+///
+/// `unit` guarda a unidade de origem — rótulo informa volume (mL) para líquido
+/// e massa (g) para sólido, e tratar mL como g distorceria macro de bebida.
+/// `grams` é sempre o valor na unidade de `unit`, não uma conversão.
+model FoodMeasure {
+  id        String   @id @default(uuid())
+  foodId    String
+  food      Food     @relation(fields: [foodId], references: [id], onDelete: Cascade)
+  label     String
+  grams     Float
+  unit      String   @default("g")
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([foodId, label])
+  @@index([foodId])
 }
 
 model PrivateFood {

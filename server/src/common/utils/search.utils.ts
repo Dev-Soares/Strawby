@@ -18,15 +18,19 @@ export function splitSearchWords(query: string): string[] {
 }
 
 /**
- * Reordena resultados já filtrados pelo banco, aplicando uma hierarquia de
- * relevância que o ranking SQL (FTS + trigram + priority) não captura sozinho:
+ * Reordena resultados já filtrados pelo banco. A hierarquia espelha o ORDER BY
+ * de FoodService.search() — se divergir, esta função desfaz a ordenação do SQL:
  *
- *   1. Match exato (nome normalizado === query) ganha
- *   2. Nome que começa com a query ganha
- *   3. Cobertura: nome que contém mais palavras da query ganha
- *   4. Priority maior ganha (TACO=100 > IBGE_POF=95 > OFF=90)
+ *   1. Priority maior ganha (TACO=100 > IBGE_POF=95 > OFF=90)
+ *   2. Match exato (nome normalizado === query) ganha
+ *   3. Nome que começa com a query ganha
+ *   4. Cobertura: nome que contém mais palavras da query ganha
  *   5. Nome mais curto ganha (mais específico, menos "ruído")
  *   6. Alfabético pt-BR
+ *
+ * Priority vem antes do match exato de propósito: fonte curada (TACO) tem macro
+ * confiável, enquanto um rótulo genérico de OFF ("Feijão", sem variedade) casa
+ * exato mas entrega dado pior.
  */
 export function rankByRelevance<T extends { name: string; priority?: number }>(
   items: T[],
@@ -39,6 +43,10 @@ export function rankByRelevance<T extends { name: string; priority?: number }>(
     const aName = normalizeForSearch(a.name);
     const bName = normalizeForSearch(b.name);
 
+    const aPrio = a.priority ?? 0;
+    const bPrio = b.priority ?? 0;
+    if (aPrio !== bPrio) return bPrio - aPrio;
+
     const aExact = aName === q;
     const bExact = bName === q;
     if (aExact !== bExact) return aExact ? -1 : 1;
@@ -50,10 +58,6 @@ export function rankByRelevance<T extends { name: string; priority?: number }>(
     const aCover = wordCoverage(aName, queryWords);
     const bCover = wordCoverage(bName, queryWords);
     if (aCover !== bCover) return bCover - aCover;
-
-    const aPrio = a.priority ?? 0;
-    const bPrio = b.priority ?? 0;
-    if (aPrio !== bPrio) return bPrio - aPrio;
 
     if (aName.length !== bName.length) return aName.length - bName.length;
 
