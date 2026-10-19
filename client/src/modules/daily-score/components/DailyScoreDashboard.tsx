@@ -70,7 +70,10 @@ export default function DailyScoreDashboard() {
         </div>
       ) : (
         <div
-          className={`transition-opacity duration-200 ${
+          // max-w evita que as 7 colunas se espalhem em tela larga: sem o card
+          // de score ao lado, o calendário ocuparia a largura toda e os dias
+          // ficariam distantes demais uns dos outros.
+          className={`max-w-xl transition-opacity duration-200 ${
             isFetching ? 'opacity-40 pointer-events-none' : 'opacity-100'
           }`}
         >
