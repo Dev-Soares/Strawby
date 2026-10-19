@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useGetDailyScores } from '../hooks/useGetDailyScores'
 import DailyScoreSkeleton from '../skeletons/DailyScoreSkeleton'
 import DailyScoreCard from './DailyScoreCard'
-import TotalScoreCard from './TotalScoreCard'
 import MonthlyCalendar from '../../daily-summary/components/MonthlyCalendar'
 import PatientStreakCard from '../../patient/components/PatientStreakCard'
 import BestStreakCard from '../../patient/components/BestStreakCard'
@@ -71,21 +70,16 @@ export default function DailyScoreDashboard() {
         </div>
       ) : (
         <div
-          className={`grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-0 items-start transition-opacity duration-200 ${
+          className={`transition-opacity duration-200 ${
             isFetching ? 'opacity-40 pointer-events-none' : 'opacity-100'
           }`}
         >
-          <div className="lg:pr-16 lg:border-r border-neutral-100 dark:border-neutral-800">
-            <MonthlyCalendar
-              data={monthly}
-              todayDate={todayDate}
-              onPrevMonth={() => setMonthOffset((o) => o - 1)}
-              onNextMonth={() => setMonthOffset((o) => o + 1)}
-            />
-          </div>
-          <div className="lg:pl-16">
-            <TotalScoreCard />
-          </div>
+          <MonthlyCalendar
+            data={monthly}
+            todayDate={todayDate}
+            onPrevMonth={() => setMonthOffset((o) => o - 1)}
+            onNextMonth={() => setMonthOffset((o) => o + 1)}
+          />
         </div>
       )}
     </div>
