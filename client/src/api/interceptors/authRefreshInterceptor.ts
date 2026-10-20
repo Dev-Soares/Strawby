@@ -2,8 +2,16 @@ import type { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axio
 import { queryClient } from '../queryClient'
 
 export const UNAUTHORIZED_EVENT = 'auth:unauthorized'
+export const NETWORK_ERROR_EVENT = 'network:error'
+export const NETWORK_OK_EVENT = 'network:ok'
 
 type RetryableConfig = InternalAxiosRequestConfig & { _retry?: boolean }
+
+// `navigator.onLine` é otimista — reporta true em wi-fi sem saída (portal
+// cativo, 4G sem dados). Uma request que falhou sem resposta é o único sinal
+// confiável de que o app está realmente sem rede.
+const isNetworkError = (error: AxiosError) =>
+  !error.response && error.code !== 'ERR_CANCELED'
 
 let isRefreshing = false
 let refreshSubscribers: Array<(error?: unknown) => void> = []
@@ -22,10 +30,18 @@ const handleUnauthorized = () => {
 
 export const setupAuthRefreshInterceptor = (api: AxiosInstance) => {
   api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      window.dispatchEvent(new CustomEvent(NETWORK_OK_EVENT))
+      return response
+    },
     async (error: AxiosError) => {
       const originalRequest = error.config as RetryableConfig | undefined
       const status = error.response?.status
+
+      if (isNetworkError(error)) {
+        window.dispatchEvent(new CustomEvent(NETWORK_ERROR_EVENT))
+        return Promise.reject(error)
+      }
 
       const isRefreshCall = originalRequest?.url === '/auth/refresh'
 

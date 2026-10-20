@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>Sem conexão — Strawby</title>
+    <link rel="icon" type="image/webp" href="/logo.webp" />
+    <!--
+      Página de fallback do service worker (workbox navigateFallback).
+      Precisa ser autossuficiente: é servida quando uma navegação falha sem
+      rede, cenário em que nenhum bundle, fonte remota ou CSS externo carrega.
+      Por isso o CSS é inline e não há import de Tailwind aqui.
+    -->
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      body {
+        min-height: 100svh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        font-family:
+          'Satoshi', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+          sans-serif;
+        color: #171717;
+        background:
+          radial-gradient(circle at top right, rgba(244, 63, 94, 0.12), transparent 28%),
+          radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.9), transparent 35%),
+          #ffffff;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 32rem;
+        padding: 2.5rem 1.75rem;
+        text-align: center;
+        border: 1px solid #e5e5e5;
+        border-radius: 2rem;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 18px 50px -34px rgba(0, 0, 0, 0.28);
+        backdrop-filter: blur(8px);
+      }
+
+      .icon {
+        width: 4rem;
+        height: 4rem;
+        margin: 0 auto 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9999px;
+        color: #dc2626;
+        background: #fef2f2;
+      }
+
+      .eyebrow {
+        margin-bottom: 0.75rem;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: #dc2626;
+      }
+
+      h1 {
+        font-family: 'Cabinet Grotesk', 'Satoshi', ui-sans-serif, system-ui, sans-serif;
+        font-size: 2.25rem;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        line-height: 0.92;
+      }
+
+      h1 span {
+        display: block;
+        color: #dc2626;
+      }
+
+      p {
+        margin-top: 1.25rem;
+        font-size: 15px;
+        line-height: 1.75;
+        color: #525252;
+      }
+
+      .actions {
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      button,
+      a.btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.25rem;
+        border: 0;
+        border-radius: 9999px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 200ms, transform 200ms, border-color 200ms;
+      }
+
+      .btn-primary {
+        color: #ffffff;
+        background: #dc2626;
+      }
+
+      .btn-primary:hover {
+        background: #b91c1c;
+        transform: translateY(-2px);
+      }
+
+      .btn-ghost {
+        color: #404040;
+        background: #ffffff;
+        border: 1px solid #e5e5e5;
+        font-weight: 500;
+      }
+
+      .btn-ghost:hover {
+        color: #dc2626;
+        border-color: #fecdd3;
+        transform: translateY(-2px);
+      }
+
+      button:focus-visible,
+      a.btn:focus-visible {
+        outline: 2px solid #dc2626;
+        outline-offset: 2px;
+      }
+
+      .status {
+        margin-top: 1.5rem;
+        font-size: 13px;
+        font-weight: 600;
+        color: #a3a3a3;
+      }
+
+      .status[data-online='true'] {
+        color: #059669;
+      }
+
+      @media (min-width: 640px) {
+        h1 {
+          font-size: 3rem;
+        }
+
+        .actions {
+          flex-direction: row;
+          justify-content: center;
+        }
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          color: #f5f5f5;
+          background:
+            radial-gradient(circle at top right, rgba(127, 29, 29, 0.35), transparent 24%),
+            #09090b;
+        }
+
+        .card {
+          border-color: #262626;
+          background: rgba(23, 23, 23, 0.9);
+        }
+
+        .icon {
+          color: #fca5a5;
+          background: rgba(69, 10, 10, 0.4);
+        }
+
+        p {
+          color: #a3a3a3;
+        }
+
+        .btn-ghost {
+          color: #d4d4d4;
+          background: #171717;
+          border-color: #404040;
+        }
+
+        .btn-ghost:hover {
+          color: #fca5a5;
+          border-color: rgba(127, 29, 29, 0.5);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <div class="icon" aria-hidden="true">
+        <!-- Phosphor WifiSlash, inline: ícones do bundle não carregam offline -->
+        <svg width="36" height="36" viewBox="0 0 256 256" fill="currentColor">
+          <path
+            d="M53.92,34.62A8,8,0,1,0,42.08,45.38L61.32,66.55C25.14,88.483,3.2,113.63,2.1,114.91a8,8,0,0,0,.72,11.29,8,8,0,0,0,11.29-.72c.3-.35,25.27-28.7,61.56-48.21l19.7,21.67C62.81,109.57,41.82,131.5,40.78,132.72a8,8,0,0,0,12.16,10.4c.26-.3,22.68-23.64,54.57-33.42l21.62,23.78C104.6,139.9,85.4,155.2,84.3,156.1a8,8,0,0,0,10.1,12.42c.25-.2,21.6-17.14,46.45-20.9l61.23,67.36a8,8,0,1,0,11.84-10.76Zm74.08,153.4a12,12,0,1,0,12,12A12,12,0,0,0,128,188Zm125.9-73.11c-1-1.17-18.4-21.13-48.5-41.06a8,8,0,0,0-8.84,13.34,222.7,222.7,0,0,1,35.76,28.73,8,8,0,0,0,11.29.72A8,8,0,0,0,253.9,114.91ZM128,64c4.37,0,8.69.17,12.95.48a8,8,0,0,0,1.18-15.95C137.43,48.18,132.76,48,128,48a221.1,221.1,0,0,0-24.68,1.38,8,8,0,0,0,1.78,15.9A205.2,205.2,0,0,1,128,64Z"
+          />
+        </svg>
+      </div>
+
+      <p class="eyebrow">Sem conexão</p>
+
+      <h1>
+        Você está
+        <span>offline.</span>
+      </h1>
+
+      <p>
+        Não conseguimos carregar o Strawby porque seu dispositivo está sem
+        internet. Verifique o wi-fi ou os dados móveis e tente novamente.
+      </p>
+
+      <div class="actions">
+        <button type="button" class="btn-primary" id="retry">Tentar novamente</button>
+        <a class="btn btn-ghost" href="/app/home">Ir para o início</a>
+      </div>
+
+      <p class="status" id="status" data-online="false">Aguardando conexão…</p>
+    </main>
+
+    <script>
+      ;(function () {
+        var status = document.getElementById('status')
+        var retry = document.getElementById('retry')
+
+        function reload() {
+          window.location.reload()
+        }
+
+        retry.addEventListener('click', function () {
+          status.textContent = 'Verificando…'
+          reload()
+        })
+
+        // Recarrega sozinho quando a rede voltar — o usuário não precisa agir.
+        window.addEventListener('online', function () {
+          status.dataset.online = 'true'
+          status.textContent = 'Conexão restabelecida. Recarregando…'
+          setTimeout(reload, 600)
+        })
+
+        if (navigator.onLine) {
+          status.textContent = 'Rede detectada, mas o servidor não respondeu.'
+        }
+      })()
+    </script>
+  </body>
+</html>
