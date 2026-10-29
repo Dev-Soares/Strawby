@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -47,7 +48,7 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
 
   const onSubmit = handleSubmit((data) => onSave(data))
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -166,6 +167,7 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   )
 }

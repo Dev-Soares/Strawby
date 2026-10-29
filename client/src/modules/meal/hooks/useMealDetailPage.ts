@@ -7,10 +7,8 @@ import { useGetMeal } from './useGetMeal'
 import { useDeleteMeal } from './useDeleteMeal'
 import { useRemoveMealItem } from './useRemoveMealItem'
 import { useUpdateMealItem } from './useUpdateMealItem'
-import { useUpdateMeal } from './useUpdateMeal'
 import { useRemoveMealRecipe } from './useRemoveMealRecipe'
 import { useUpdateMealObservations } from './useUpdateMealObservations'
-import type { UpdateMealData } from '../types/updateMeal'
 import { mealObservationsSchema, type MealObservationsData } from '../types/mealObservations'
 
 export type MealConfirmState =
@@ -32,11 +30,9 @@ export const useMealDetailPage = ({ mealId, patientId }: Params) => {
   const deleteMutation = useDeleteMeal(patientId)
   const removeItem = useRemoveMealItem(patientId)
   const updateItem = useUpdateMealItem(patientId)
-  const updateMeal = useUpdateMeal(patientId)
   const updateObservations = useUpdateMealObservations(patientId)
   const removeRecipe = useRemoveMealRecipe(patientId)
   const [confirm, setConfirm] = useState<MealConfirmState>(null)
-  const [editTimeOpen, setEditTimeOpen] = useState(false)
 
   const observationsForm = useForm<MealObservationsData>({
     resolver: zodResolver(mealObservationsSchema),
@@ -48,13 +44,6 @@ export const useMealDetailPage = ({ mealId, patientId }: Params) => {
       observationsForm.reset({ observations: query.data.observations ?? '' })
     }
   }, [query.data, observationsForm])
-
-  const handleUpdateTime = (data: UpdateMealData) => {
-    updateMeal.mutate(
-      { mealId, data },
-      { onSuccess: () => setEditTimeOpen(false) },
-    )
-  }
 
   const handleUpdateObservations = observationsForm.handleSubmit((data) => {
     updateObservations.mutate({
@@ -137,12 +126,8 @@ export const useMealDetailPage = ({ mealId, patientId }: Params) => {
     deleteMutation,
     removeItem,
     updateItem,
-    updateMeal,
     updateObservations,
     removeRecipe,
-    editTimeOpen,
-    setEditTimeOpen,
-    handleUpdateTime,
     observationsForm,
     handleUpdateObservations,
     backPath,
