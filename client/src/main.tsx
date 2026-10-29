@@ -10,13 +10,8 @@ import { queryClient } from './api/queryClient'
 import ThemeProvider from './shared/contexts/ThemeProvider'
 import StrawbyToaster from './shared/components/StrawbyToaster'
 import GlobalErrorBoundary from './shared/components/GlobalErrorBoundary'
-import { registerServiceWorker } from './shared/utils/registerServiceWorker'
 
-try {
-  registerServiceWorker()
-} catch {
-  // WebViews restritos (ex: Instagram no iOS) podem bloquear service workers.
-}
+// Registro e checagem do service worker vivem em modules/pwa (PwaAutoUpdate).
 
 const rootElement = document.getElementById('root')
 if (rootElement) {

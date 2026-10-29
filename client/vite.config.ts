@@ -13,8 +13,9 @@ export default defineConfig({
       injectRegister: false,
       manifest: false,
       workbox: {
-        skipWaiting: true,
-        clientsClaim: true,
+        // Sem skipWaiting/clientsClaim: o SW novo fica em "waiting" e a troca é
+        // controlada pelo app (modules/pwa). Ativar na hora derruba os chunks da
+        // sessão atual (cleanupOutdatedCaches limpa os antigos) e quebra a navegação.
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
       },
