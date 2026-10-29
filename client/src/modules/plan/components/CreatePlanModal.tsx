@@ -21,6 +21,7 @@ import {
 import Spinner from '@/shared/components/Spinner'
 import { MACROS } from '@/shared/config/macros'
 import { ACTIVITY_LEVELS, DEFAULT_ACTIVITY_LEVEL } from '../config/activityLevels'
+import { nonNegativeInputProps } from '@/shared/utils/nonNegativeInputProps'
 
 type Mode = 'select' | 'manual' | 'generate'
 
@@ -152,6 +153,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                       <input
                         {...manualForm.register('calories', { valueAsNumber: true })}
                         type="number"
+                        {...nonNegativeInputProps}
                         className="min-w-0 flex-1 text-center text-4xl font-extrabold text-neutral-950 dark:text-neutral-50 bg-transparent outline-none border-b-2 border-red-200 dark:border-red-800 focus:border-red-500 dark:focus:border-red-400 pb-1 transition-colors duration-150 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                       />
                       <span className="text-base font-semibold text-neutral-400 dark:text-neutral-500 pb-1.5 shrink-0">kcal</span>
@@ -167,6 +169,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                           <input
                             {...manualForm.register(macro.field, { valueAsNumber: true })}
                             type="number"
+                            {...nonNegativeInputProps}
                             className={`min-w-0 w-full text-2xl font-extrabold text-neutral-950 dark:text-neutral-50 bg-transparent outline-none text-center border-b-2 pb-0.5 transition-colors duration-150 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${macro.inputBorder}`}
                           />
                           <span className="text-sm font-bold text-neutral-400 dark:text-neutral-500 pb-0.5 shrink-0">g</span>

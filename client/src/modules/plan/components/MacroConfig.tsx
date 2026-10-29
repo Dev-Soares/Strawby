@@ -1,6 +1,7 @@
 import type { UseFormRegister, FieldErrors } from 'react-hook-form'
 import type { PlanData } from '../types/plan'
 import { MACROS } from '@/shared/config/macros'
+import { nonNegativeInputProps } from '@/shared/utils/nonNegativeInputProps'
 
 const macroRows = MACROS.map(({ field, label, color, track, max }) => ({
   fieldName: field,
@@ -38,6 +39,7 @@ export default function MacroConfig({ register, errors, watchValues }: MacroConf
                 <input
                   {...register(row.fieldName, { valueAsNumber: true })}
                   type="number"
+                  {...nonNegativeInputProps}
                   className="w-16 text-right text-sm font-bold text-neutral-900 dark:text-neutral-200 bg-transparent outline-none border-b-2 border-neutral-200 dark:border-neutral-700 focus:border-red-400 transition-colors duration-200 pb-0.5"
                 />
                 <span className="text-xs text-neutral-400 dark:text-neutral-500 transition-colors duration-300">g</span>

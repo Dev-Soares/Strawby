@@ -3,6 +3,7 @@ import { X, PencilSimple, Check } from '@phosphor-icons/react'
 import type { FoodItem } from '../types/meal'
 import type { MealTypeConfig } from '@/shared/config/mealTypes'
 import MacroChipsRow from './MacroChipsRow'
+import { nonNegativeInputProps } from '@/shared/utils/nonNegativeInputProps'
 
 type Props = {
   item: FoodItem
@@ -39,11 +40,13 @@ export default function MealItemRow({ item, cfg, onRemove, onUpdateQuantity, isR
             <div className="flex items-center gap-1.5 mt-1.5">
               <input
                 type="number"
+                {...nonNegativeInputProps}
                 value={value}
                 autoFocus
                 min={1}
                 onChange={(e) => setValue(e.target.value)}
                 onKeyDown={(e) => {
+                  nonNegativeInputProps.onKeyDown(e)
                   if (e.key === 'Enter') save()
                   if (e.key === 'Escape') setEditing(false)
                 }}

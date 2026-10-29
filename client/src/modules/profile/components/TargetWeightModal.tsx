@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { X, FloppyDisk, Target, TrendDown, TrendUp, Minus, ArrowRight } from '@phosphor-icons/react'
 import Spinner from '@/shared/components/Spinner'
 import { targetWeightSchema, type TargetWeightFormData } from '@/modules/patient/types/targetWeight'
+import { nonNegativeInputProps } from '@/shared/utils/nonNegativeInputProps'
 
 interface Props {
   isOpen: boolean
@@ -125,6 +126,7 @@ export default function TargetWeightModal({
                   <input
                     {...register('targetWeight', { valueAsNumber: true })}
                     type="number"
+                    {...nonNegativeInputProps}
                     step="0.1"
                     autoFocus
                     placeholder="Ex.: 72"
