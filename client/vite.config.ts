@@ -18,6 +18,9 @@ export default defineConfig({
         // sessão atual (cleanupOutdatedCaches limpa os antigos) e quebra a navegação.
         cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // Arquivos para crawlers/LLMs são navegações diretas: sem isso o
+        // navigateFallback do SW devolve o index.html (SPA) no lugar do texto.
+        navigateFallbackDenylist: [/^\/robots\.txt$/, /^\/llms\.txt$/, /^\/sitemap\.xml$/],
       },
     }),
   ],
