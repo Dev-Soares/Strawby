@@ -1,35 +1,23 @@
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { AnimatePresence, motion } from 'framer-motion'
 import { X, FloppyDisk, GenderMale, GenderFemale, Heartbeat, ArrowsVertical, Calendar } from '@phosphor-icons/react'
 import Spinner from '../../../shared/components/Spinner'
-
-const optionalNumber = (min: number, max: number) =>
-  z.number().optional()
-    .transform(val => (val !== undefined && isNaN(val) ? undefined : val))
-    .pipe(z.number().min(min).max(max).optional())
-
-const bodySchema = z.object({
-  height: optionalNumber(100, 250),
-  birthDate: z.string().date().optional(),
-  gender: z.enum(['male', 'female']).optional(),
-})
-
-type BodyData = z.infer<typeof bodySchema>
+import { nonNegativeInputProps } from '../../../shared/utils/nonNegativeInputProps'
+import { patientBodySchema, type PatientBodyData } from '../types/patientBody'
 
 interface Props {
   isOpen: boolean
   isPending: boolean
   defaultValues: { height: number | null; birthDate: string | null; gender: string | null }
   onClose: () => void
-  onSave: (data: BodyData) => void
+  onSave: (data: PatientBodyData) => void
 }
 
 export default function PatientBodyEditModal({ isOpen, isPending, defaultValues, onClose, onSave }: Props) {
-  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<BodyData>({
-    resolver: zodResolver(bodySchema),
+  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<PatientBodyData>({
+    resolver: zodResolver(patientBodySchema),
   })
 
   const gender = watch('gender')
@@ -121,6 +109,7 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
                   <input
                     {...register('height', { valueAsNumber: true })}
                     type="number"
+                    {...nonNegativeInputProps}
                     placeholder="175"
                     className="w-full bg-emerald-50/50 dark:bg-emerald-950/15 border border-emerald-200 dark:border-emerald-900/40 rounded-xl px-3 py-2.5 pr-9 text-sm font-bold text-neutral-900 dark:text-neutral-100 outline-none focus:border-emerald-500 dark:focus:border-emerald-500 focus:bg-emerald-50 dark:focus:bg-emerald-950/25 transition-all duration-150 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
