@@ -51,6 +51,7 @@ export default function MealList({ meals }: MealListProps) {
 
       {meals.length === 0 ? (
         <motion.div
+          key={`empty-${selectedDay}`}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
@@ -78,6 +79,7 @@ export default function MealList({ meals }: MealListProps) {
         </motion.div>
       ) : (
         <motion.div
+          key={`list-${selectedDay}`}
           className="flex flex-col gap-2.5 sm:gap-3"
           variants={container}
           initial="hidden"
