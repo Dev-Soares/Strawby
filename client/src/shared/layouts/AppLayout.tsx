@@ -26,11 +26,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <div className={`sticky top-0 z-70 pt-3 sm:pt-4 transition-colors duration-300 ${menuOpen ? 'bg-transparent' : 'bg-neutral-50/80 dark:bg-neutral-950/80 backdrop-blur-md'}`}>
         <header className="flex items-center justify-between px-5 sm:px-8 h-14 sm:h-16 md:h-20">
           <div
-            className={`flex items-center gap-1 transition-opacity duration-200 ${
+            className={`flex items-center gap-1 select-none transition-opacity duration-200 ${
               menuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
             }`}
           >
-            <img src="/logo.webp" alt="" className="w-9 h-9 sm:w-10 sm:h-10 object-contain" />
+            <img draggable={false} src="/logo.webp" alt="" className="w-9 h-9 sm:w-10 sm:h-10 object-contain" />
             <span className="font-display text-neutral-950 dark:text-neutral-100 text-lg sm:text-xl md:text-2xl tracking-tighter font-extrabold transition-colors duration-300">
               Strawby
             </span>

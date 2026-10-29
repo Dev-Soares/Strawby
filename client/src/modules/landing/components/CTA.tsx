@@ -13,6 +13,7 @@ export default function CTA() {
         transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
       >
         <img
+          draggable={false}
           src="/logo.webp"
           alt=""
           className="select-none"
