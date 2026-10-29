@@ -18,7 +18,7 @@ export default function ProfilePage() {
 
   return (
     <AppLayout>
-      <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-32 sm:py-10 lg:py-12 transition-colors duration-300">
+      <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-32 sm:py-10 lg:py-12 transition-colors duration-300">
 
         <motion.div
           data-tutorial="profile-header"
@@ -28,7 +28,7 @@ export default function ProfilePage() {
           transition={{ duration: 0.5 }}
         >
           <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-tight tracking-tight transition-colors duration-300">
-            Seu perfil
+            Meu perfil
           </h1>
         </motion.div>
 

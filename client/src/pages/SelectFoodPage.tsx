@@ -26,7 +26,7 @@ export default function SelectFoodPage() {
 
   return (
     <AppLayout>
-      <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12 max-w-5xl mx-auto">
+      <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-8 sm:py-12 max-w-5xl mx-auto">
         <div className="mb-8">
           <button
             onClick={handleBack}

@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { MealKind } from '@prisma/client';
+import { Meal, MealKind } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { PatientAccessService } from '../patient-access/patient-access.service';
-import { appDayRangeTz } from '../../common/utils/date.util';
+import { appDayRangeTz, todayInAppTz } from '../../common/utils/date.util';
 import { AddFoodItemDto } from './dto/add-food-item.dto';
 import { AddMealPrivateFoodItemDto } from './dto/add-meal-private-food-item.dto';
 import { AddMealRecipeDto } from './dto/add-meal-recipe.dto';
@@ -16,6 +16,7 @@ import {
   RecipeInMeal,
   foodItemSelect,
   mealSelect,
+  MealData,
 } from './types';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { parseServingSize } from '../../common/utils/serving-size.util';
@@ -25,7 +26,7 @@ export class MealService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly patientAccess: PatientAccessService,
-  ) {}
+  ) { }
 
   private computeTotals(
     items: FoodItemPublic[],
@@ -467,5 +468,48 @@ export class MealService {
         p2025: 'Refeição não encontrada',
       });
     }
+  }
+
+  async findMissingMealByTime(
+    startTime: string,
+    endTime: string,
+  ): Promise<MealData[]> {
+    try {
+      const plannedMeals = await this.prisma.meal.findMany({
+        where: {
+          kind: MealKind.PLAN,
+          time: { gte: startTime, lt: endTime },
+        },
+        select: { patientId: true, mealType: true },
+        orderBy: { time: 'asc' },
+      });
+
+      if (plannedMeals.length === 0) return [];
+
+      const { start, end } = appDayRangeTz(todayInAppTz());
+
+      const loggedMeals = await this.prisma.meal.findMany({
+        where: {
+          kind: MealKind.DAILY,
+          date: { gte: start, lt: end },
+          patientId: { in: plannedMeals.map((meal) => meal.patientId) },
+        },
+        select: { patientId: true, mealType: true },
+      });
+
+      const missingMeals = plannedMeals.filter(
+        (planned) =>
+          !loggedMeals.some(
+            (logged) =>
+              logged.patientId === planned.patientId &&
+              logged.mealType === planned.mealType,
+          ),
+      );
+
+      return missingMeals;
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar refeições por horário');
+    }
+
   }
 }

@@ -14,7 +14,7 @@ const BENEFITS = [
 
 export default function PlanEmptyState({ onGenerate }: PlanEmptyStateProps) {
   return (
-    <div className="px-4 sm:px-10 lg:px-16 py-16 sm:py-24 flex flex-col items-center text-center">
+    <div className="px-4 sm:px-10 lg:px-16 xl:px-24 py-16 sm:py-24 flex flex-col items-center text-center">
 
       
 

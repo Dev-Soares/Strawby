@@ -1,6 +1,6 @@
 export default function HomeSkeleton() {
   return (
-    <div className="animate-pulse px-6 sm:px-10 lg:px-16 py-10 sm:py-12 min-h-screen space-y-5">
+    <div className="animate-pulse px-6 sm:px-10 lg:px-16 xl:px-24 py-10 sm:py-12 min-h-screen space-y-5">
       <div className="space-y-2 mb-10">
         <div className="h-3 w-24 rounded-full bg-neutral-200 dark:bg-neutral-800" />
         <div className="h-12 w-64 rounded-full bg-neutral-200 dark:bg-neutral-800" />

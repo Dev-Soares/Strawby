@@ -28,12 +28,8 @@ export class NotificationService {
   }
 
   async sendMany(userIds: string[], title: string, body: string) {
-    const allTokens = await Promise.all(
-      userIds.map((userId) =>
-        this.notificationTokenService.getTokensByUserId(userId),
-      ),
-    );
-    const tokens = allTokens.flat();
+    const tokens =
+      await this.notificationTokenService.getTokensByUserIds(userIds);
 
     if (tokens.length === 0) return;
 

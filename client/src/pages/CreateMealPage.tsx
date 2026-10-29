@@ -11,7 +11,7 @@ export default function CreateMealPage() {
 
   return (
     <AppLayout>
-      <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-32 sm:pt-12">
+      <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-32 sm:pt-12">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <button

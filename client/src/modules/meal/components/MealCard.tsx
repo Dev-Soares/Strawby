@@ -1,9 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { CaretDown, PencilSimple, Note } from '@phosphor-icons/react'
+import { CaretDown, PencilSimple, Note, Clock, Plus } from '@phosphor-icons/react'
 import type { Meal } from '../types/meal'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
 import { getMealType } from '@/shared/config/mealTypes'
+import EditMealTimeModal from './EditMealTimeModal'
+import { useEditMealModal } from '../hooks/useEditMealModal'
 
 export interface MealCardProps {
   meal: Meal
@@ -18,6 +20,15 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
   const config = getMealType(meal.mealType)
   const MealIcon = config.icon
   const totalKcal = Math.round(meal.totals.calories)
+  const editModal = useEditMealModal({ mealId: meal.id })
+
+  // Refeição de plano é template: só mostra hora definida.
+  // Diário deriva do timestamp de registro quando não há hora explícita.
+  const displayTime =
+    meal.kind === 'PLAN'
+      ? meal.time
+      : (meal.time ??
+        new Date(meal.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }))
 
   return (
     <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 shadow-sm rounded-2xl overflow-hidden transition-shadow duration-200 hover:shadow-md transition-colors duration-300">
@@ -37,6 +48,22 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
           >
             {meal.name}
           </span>
+
+          {/* Hora — destaque */}
+          {displayTime && (
+            <div
+              className="ml-auto shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl"
+              style={{ backgroundColor: isDark ? `${config.accent}26` : config.accentLight }}
+            >
+              <Clock size={16} weight="fill" style={{ color: config.accent }} />
+              <span
+                className="font-display text-base font-extrabold leading-none tabular-nums"
+                style={{ color: isDark ? config.accentLight : config.accentText }}
+              >
+                {displayTime}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Kcal */}
@@ -179,18 +206,40 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
                 <p className="text-sm font-medium text-neutral-400 dark:text-neutral-500 py-2">Nenhum alimento adicionado</p>
               )}
 
-              <button
-                type="button"
-                onClick={() => navigate(`/app/meals/${meal.id}`)}
-                className="mt-2 w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors duration-300 cursor-pointer"
-              >
-                <PencilSimple size={16} weight="bold" />
-                Editar refeição
-              </button>
+              <div className="mt-2 flex flex-col sm:flex-row gap-2">
+                <button
+                  type="button"
+                  onClick={editModal.open}
+                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-neutral-700 dark:text-neutral-200 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors duration-200 cursor-pointer"
+                >
+                  <PencilSimple size={16} weight="bold" />
+                  Editar refeição
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate(`/app/meals/${meal.id}`)}
+                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white shadow-sm hover:shadow-md hover:brightness-110 transition-all duration-200 cursor-pointer"
+                  style={{ backgroundColor: config.accent }}
+                >
+                  <Plus size={16} weight="bold" />
+                  Adicionar alimento
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      <EditMealTimeModal
+        isOpen={editModal.isOpen}
+        currentMealType={meal.mealType}
+        currentTime={meal.time ?? displayTime}
+        currentObservations={meal.observations}
+        isPending={editModal.isPending}
+        onClose={editModal.close}
+        onSave={editModal.handleSave}
+      />
     </div>
   )
 }

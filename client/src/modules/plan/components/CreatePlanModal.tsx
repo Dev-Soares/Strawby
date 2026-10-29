@@ -132,7 +132,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                     <div>
                       <p className="text-sm font-bold text-white">Gerar plano recomendado</p>
                       <p className="text-xs text-red-200 mt-0.5">
-                        {isNutritionist ? 'Calculado com base no perfil do paciente' : 'Calculado com base no seu perfil'}
+                        {isNutritionist ? 'Calculado com base no perfil do paciente' : 'Calculado com base no meu perfil'}
                       </p>
                     </div>
                     <ArrowRight size={16} weight="bold" className="text-red-300 ml-auto shrink-0" />

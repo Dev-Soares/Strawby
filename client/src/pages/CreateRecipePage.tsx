@@ -8,7 +8,7 @@ export default function CreateRecipePage() {
 
   return (
     <AppLayout>
-      <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-32 sm:pt-12">
+      <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-32 sm:pt-12">
         <div className="mb-8">
           <button
             onClick={() => navigate('/app/foods')}

@@ -5,6 +5,34 @@ export function toLocalISODate(date = new Date()): string {
   return `${year}-${month}-${day}`
 }
 
+/** Converte 'YYYY-MM-DD' em Date local (sem deslocamento de fuso). */
+export function parseLocalISODate(iso: string): Date {
+  const [year, month, day] = iso.split('-').map(Number)
+  return new Date(year, month - 1, day)
+}
+
+export type CalendarDay = {
+  iso: string
+  day: number
+  inMonth: boolean
+}
+
+/**
+ * Grade do mês com 6 semanas fixas (42 células, domingo a sábado).
+ * Altura constante evita o popover "pular" ao trocar de mês.
+ */
+export function buildMonthGrid(year: number, month: number): CalendarDay[] {
+  const firstWeekday = new Date(year, month, 1).getDay()
+  return Array.from({ length: 42 }, (_, index) => {
+    const date = new Date(year, month, 1 - firstWeekday + index)
+    return {
+      iso: toLocalISODate(date),
+      day: date.getDate(),
+      inMonth: date.getMonth() === month,
+    }
+  })
+}
+
 export function formatBirthDate(birthDate: string): string {
   const d = new Date(birthDate)
   const day = String(d.getUTCDate()).padStart(2, '0')

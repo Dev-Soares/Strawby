@@ -23,8 +23,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr_1fr] gap-12 lg:gap-16 pb-16 border-b border-neutral-200 dark:border-neutral-800 transition-colors duration-300">
 
           <div>
-            <a href="/" className="inline-flex items-center gap-2.5 mb-10 group">
-              <img src="/logo.webp" alt="Strawby" className="w-10 h-10 object-contain" />
+            <a href="/" className="inline-flex items-center gap-2.5 mb-10 group select-none">
+              <img draggable={false} src="/logo.webp" alt="Strawby" className="w-10 h-10 object-contain" />
                <span className="font-display text-neutral-950 dark:text-neutral-100 text-xl tracking-tighter font-extrabold transition-colors duration-300">
                 Strawby
               </span>

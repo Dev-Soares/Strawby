@@ -11,8 +11,8 @@ export default function SignUpPage() {
         className="w-full max-w-5xl flex flex-col gap-24"
       >
         <div className="flex flex-col gap-6">
-          <div className="flex items-center gap-3">
-            <img src="/logo.webp" alt="Strawby" className="w-14 h-14 object-contain" />
+          <div className="flex items-center gap-3 select-none">
+            <img draggable={false} src="/logo.webp" alt="Strawby" className="w-14 h-14 object-contain" />
             <span className="text-neutral-900 dark:text-neutral-100 text-[28px] font-black tracking-tighter transition-colors duration-300">
               Strawby
             </span>

@@ -39,7 +39,7 @@ export default function PlanPage() {
       {isPending && <PlanSkeleton />}
 
       {isError && (
-        <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8">
+        <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-8">
           <p className="text-red-500 font-medium">Erro ao carregar plano</p>
         </div>
       )}
@@ -54,7 +54,7 @@ export default function PlanPage() {
 
       {plan && (
         <>
-          <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12">
+          <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-8 sm:py-12">
             {/* Header */}
             <motion.div
               className="flex flex-col gap-4 mb-8 sm:flex-row sm:items-start sm:justify-between"
