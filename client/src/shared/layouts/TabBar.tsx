@@ -80,10 +80,10 @@ export default function TabBar({ hidden = false }: TabBarProps) {
 
       {/* Desktop — pill flutuante centralizada */}
       <nav
-        className={`hidden sm:block fixed bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 z-50 transition-opacity duration-200 ${visibility}`}
+        className={`hidden sm:flex fixed bottom-6 lg:bottom-8 inset-x-0 justify-center pointer-events-none z-50 transition-opacity duration-200 ${visibility}`}
       >
         <LayoutGroup id="pill-nav">
-          <div className="flex items-center gap-1 p-1.5 rounded-full border border-neutral-200/80 dark:border-neutral-800 bg-white/85 dark:bg-neutral-900/85 backdrop-blur-xl shadow-lg shadow-neutral-900/10 dark:shadow-black/50">
+          <div className={`${hidden ? 'pointer-events-none' : 'pointer-events-auto'} flex items-center gap-1 p-1.5 rounded-full border border-neutral-200/80 dark:border-neutral-800 bg-white/85 dark:bg-neutral-900/85 backdrop-blur-xl shadow-lg shadow-neutral-900/10 dark:shadow-black/50`}>
             {tabs.map((tab) => {
               const Icon = tab.icon
               const active = pathname === tab.href
