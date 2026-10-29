@@ -78,7 +78,7 @@ export const createPatientSteps = (
     id: 'profile',
     beforeShowPromise: goTo(navigate, '/app/profile'),
     attachTo: { element: '[data-tutorial="profile-header"]', on: 'bottom-start' },
-    title: `${progress(7)}Seu perfil`,
+    title: `${progress(7)}Meu perfil`,
     text: 'Na aba Perfil mantenha seus dados corporais atualizados para cálculos mais precisos, acompanhe seu histórico de peso e veja o nutricionista vinculado.',
     buttons: navButtons(tour),
   },

@@ -62,7 +62,7 @@ export const createNutritionistSteps = (
     id: 'profile',
     beforeShowPromise: goTo(navigate, '/app/profile'),
     attachTo: { element: '[data-tutorial="profile-header"]', on: 'bottom-start' },
-    title: `${progress(5)}Seu perfil`,
+    title: `${progress(5)}Meu perfil`,
     text: 'Na aba Perfil fica o seu código de convite — compartilhe com novos pacientes para que eles se vinculem a você.',
     buttons: navButtons(tour),
   },
