@@ -1,7 +1,8 @@
-import { useRef, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { CalendarBlank, CaretLeft, CaretRight } from '@phosphor-icons/react'
 import { toLocalISODate } from '@/shared/utils/date'
+import DatePickerPopover from '@/shared/components/DatePickerPopover'
 import { useDay } from '../contexts/DayContext'
 
 function iso(d: Date) {
@@ -10,7 +11,7 @@ function iso(d: Date) {
 
 export default function DaySelector() {
   const { selectedDay, setSelectedDay } = useDay()
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [pickerOpen, setPickerOpen] = useState(false)
   const todayIso = useMemo(() => iso(new Date()), [])
 
   const goPrevDay = () => {
@@ -54,23 +55,26 @@ export default function DaySelector() {
           <CaretLeft size={18} weight="bold" />
         </button>
 
-          <button
-            type="button"
-            onClick={() => inputRef.current?.showPicker?.()}
-            className="flex items-center gap-2 sm:gap-2.5 text-left cursor-pointer group"
-          >
-            <CalendarBlank size={16} weight="bold" className="text-red-500" />
-            <span className="text-sm sm:text-base font-extrabold text-neutral-900 dark:text-neutral-100 group-hover:text-red-600 transition-colors duration-150">
-              {formattedHeader}
-            </span>
-            <input
-              ref={inputRef}
-              type="date"
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setPickerOpen((open) => !open)}
+              aria-expanded={pickerOpen}
+              className="flex items-center gap-2 sm:gap-2.5 text-left cursor-pointer group"
+            >
+              <CalendarBlank size={16} weight="bold" className="text-red-500" />
+              <span className="text-sm sm:text-base font-extrabold text-neutral-900 dark:text-neutral-100 group-hover:text-red-600 transition-colors duration-150">
+                {formattedHeader}
+              </span>
+            </button>
+
+            <DatePickerPopover
+              isOpen={pickerOpen}
               value={selectedDay}
-              onChange={(e) => e.target.value && setSelectedDay(e.target.value)}
-              className="absolute opacity-0 w-0 h-0"
+              onChange={setSelectedDay}
+              onClose={() => setPickerOpen(false)}
             />
-          </button>
+          </div>
 
         <button
           type="button"
