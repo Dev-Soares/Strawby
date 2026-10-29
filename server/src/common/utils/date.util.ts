@@ -59,6 +59,42 @@ export function todayInAppTz(): string {
   return new Date().toLocaleDateString('en-CA', { timeZone: APP_TIMEZONE });
 }
 
+/**
+ * Hora atual no fuso de São Paulo no formato 'HH:MM' (24h).
+ *
+ * USO: comparar com Meal.time, que é string 'HH:MM'. Esse formato é
+ * ordenável lexicograficamente, então funciona em filtros gte/lt do Prisma.
+ */
+export function appTimeHHmm(date: Date = new Date()): string {
+  return date.toLocaleTimeString('en-GB', {
+    timeZone: APP_TIMEZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+}
+
+/**
+ * Janela ['HH:MM', 'HH:MM') a partir de agora, com duração em minutos.
+ *
+ * USO: cron que busca refeições planejadas na próxima fatia de tempo.
+ * Se a janela passar da meia-noite, `end` vira '24:00' — maior que qualquer
+ * hora válida — e o restante é coberto pela execução seguinte do cron.
+ */
+export function appTimeWindow(minutes: number): {
+  startTime: string;
+  endTime: string;
+} {
+  const now = new Date();
+  const startTime = appTimeHHmm(now);
+  const end = new Date(now.getTime() + minutes * 60 * 1000);
+  const endTime = appTimeHHmm(end);
+  return {
+    startTime,
+    endTime: endTime <= startTime ? '24:00' : endTime,
+  };
+}
+
 export function yesterdayInAppTz(): string {
   const now = new Date();
   const todayStr = now.toLocaleDateString('en-CA', { timeZone: APP_TIMEZONE });

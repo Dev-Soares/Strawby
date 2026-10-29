@@ -25,25 +25,23 @@ const nutritionistTabs = [
 
 const spring = { type: 'spring', stiffness: 380, damping: 32, mass: 0.8 } as const
 
-interface TopTabBarProps {
+interface TabBarProps {
   hidden?: boolean
-  variant?: 'top' | 'bottom'
 }
 
-export default function TopTabBar({ hidden = false, variant = 'top' }: TopTabBarProps) {
-  
+export default function TabBar({ hidden = false }: TabBarProps) {
   const { pathname } = useLocation()
   const { data: user } = useAuth()
 
   const tabs = user?.role === 'nutritionist' ? nutritionistTabs : patientTabs
   const cols = tabs.length === 2 ? 'grid-cols-2' : tabs.length === 3 ? 'grid-cols-3' : tabs.length === 4 ? 'grid-cols-4' : 'grid-cols-5'
+  const visibility = hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'
 
-  if (variant === 'bottom') {
-    return (
+  return (
+    <>
+      {/* Mobile — barra fixa na borda inferior */}
       <nav
-        className={`fixed bottom-0 inset-x-0 sm:hidden z-50 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 transition-opacity duration-200 ${
-          hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'
-        }`}
+        className={`fixed bottom-0 inset-x-0 sm:hidden z-50 bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 transition-opacity duration-200 ${visibility}`}
       >
         <LayoutGroup id="bottom-nav">
           <div className={`grid ${cols} pb-4`}>
@@ -79,14 +77,13 @@ export default function TopTabBar({ hidden = false, variant = 'top' }: TopTabBar
           </div>
         </LayoutGroup>
       </nav>
-    )
-  }
 
-  return (
-    <nav className={`transition-opacity duration-200 ${hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-      <div className="px-4 sm:px-10 lg:px-16">
-        <LayoutGroup id="top-nav">
-          <div className={`grid ${cols} sm:flex sm:items-center sm:gap-2`}>
+      {/* Desktop — pill flutuante centralizada */}
+      <nav
+        className={`hidden sm:block fixed bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 z-50 transition-opacity duration-200 ${visibility}`}
+      >
+        <LayoutGroup id="pill-nav">
+          <div className="flex items-center gap-1 p-1.5 rounded-full border border-neutral-200/80 dark:border-neutral-800 bg-white/85 dark:bg-neutral-900/85 backdrop-blur-xl shadow-lg shadow-neutral-900/10 dark:shadow-black/50">
             {tabs.map((tab) => {
               const Icon = tab.icon
               const active = pathname === tab.href
@@ -95,34 +92,42 @@ export default function TopTabBar({ hidden = false, variant = 'top' }: TopTabBar
                   key={tab.href}
                   to={tab.href}
                   {...(tab.tourId ? { 'data-tour': tab.tourId } : {})}
-                  className="group relative flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3.5 min-w-0"
+                  className={`group relative flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-full transition-colors duration-200 ${
+                    active ? '' : 'hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                  }`}
                 >
-                  <Icon
-                    size={18}
-                    weight={active ? 'fill' : 'regular'}
-                    className={`shrink-0 transition-colors duration-200 ${
-                      active ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-800 dark:group-hover:text-neutral-200'
-                    }`}
-                  />
-                  <span className={`text-[11px] sm:text-sm font-extrabold tracking-tight transition-colors duration-200 max-w-full ${
-                    active ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-neutral-200'
-                  }`}>
-                    {tab.label}
-                  </span>
                   {active && (
                     <motion.span
-                      layoutId="top-indicator"
+                      layoutId="pill-indicator"
                       initial={false}
                       transition={spring}
-                      className="absolute left-3 right-3 sm:left-2 sm:right-2 -bottom-px h-0.75 bg-red-600 rounded-full"
+                      className="absolute inset-0 rounded-full bg-red-50 dark:bg-red-950/50"
                     />
                   )}
+                  <Icon
+                    size={19}
+                    weight={active ? 'fill' : 'regular'}
+                    className={`relative shrink-0 transition-colors duration-200 ${
+                      active
+                        ? 'text-red-600'
+                        : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-neutral-200'
+                    }`}
+                  />
+                  <span
+                    className={`relative text-sm font-extrabold tracking-tight transition-colors duration-200 ${
+                      active
+                        ? 'text-red-600'
+                        : 'text-neutral-500 dark:text-neutral-400 group-hover:text-neutral-900 dark:group-hover:text-neutral-200'
+                    }`}
+                  >
+                    {tab.label}
+                  </span>
                 </Link>
               )
             })}
           </div>
         </LayoutGroup>
-      </div>
-    </nav>
+      </nav>
+    </>
   )
 }

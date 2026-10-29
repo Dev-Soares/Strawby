@@ -65,4 +65,17 @@ export class NotificationTokenService {
       mapPrismaError(error, 'Erro ao buscar tokens de notificação por usuário');
     }
   }
+
+  async getTokensByUserIds(userIds: string[]): Promise<string[]> {
+    if (userIds.length === 0) return [];
+    try {
+      const tokens = await this.prisma.notificationToken.findMany({
+        where: { userId: { in: userIds } },
+        select: { token: true },
+      });
+      return tokens.map((t) => t.token);
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar tokens de notificação por usuário');
+    }
+  }
 }

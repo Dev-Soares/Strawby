@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: strawby-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: strawby
+    ports:
+      - '5440:5432'
+    volumes:
+      - strawby_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d strawby']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  strawby_pgdata:

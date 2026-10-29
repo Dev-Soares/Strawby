@@ -195,6 +195,7 @@ model Meal {
   updatedAt    DateTime   @updatedAt
 
   @@index([patientId, kind, date])
+  @@index([kind, time])
 }
 
 model FoodItem {

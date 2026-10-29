@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import BlobMenu from './BlobMenu'
-import TopTabBar from './TopTabBar'
+import TabBar from './TabBar'
 import NotificationPermissionPopup from '@/modules/notifications/components/NotificationPermissionPopup'
 
 interface AppLayoutProps {
@@ -46,17 +46,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <span className={`block h-0.75 transition-all duration-300 origin-center rounded-full ${menuOpen ? 'w-7 sm:w-8 bg-white -rotate-45 -translate-y-2.5 sm:-translate-y-3' : 'w-6 sm:w-7 bg-neutral-950 dark:bg-neutral-100'}`} />
           </button>
         </header>
-
-        <div className="hidden sm:block">
-          <TopTabBar hidden={menuOpen} />
-        </div>
       </div>
 
-      <TopTabBar variant="bottom" hidden={menuOpen} />
+      <TabBar hidden={menuOpen} />
 
       <BlobMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
-      <main className="pb-24 sm:pb-0">{children}</main>
+      <main className="pb-24 sm:pb-28 lg:pb-32">{children}</main>
 
       <NotificationPermissionPopup />
     </div>
