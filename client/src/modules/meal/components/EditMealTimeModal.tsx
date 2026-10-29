@@ -130,7 +130,7 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
                 <input
                   {...register('time')}
                   type="time"
-                  className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-4 py-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 outline-none focus:border-neutral-400 dark:focus:border-neutral-500 focus:bg-white dark:focus:bg-neutral-900 transition-all duration-150"
+                  className="w-full min-w-0 max-w-full appearance-none bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-4 py-3 text-sm font-bold text-neutral-900 dark:text-neutral-100 outline-none focus:border-neutral-400 dark:focus:border-neutral-500 focus:bg-white dark:focus:bg-neutral-900 transition-all duration-150"
                 />
                 {errors.time && (
                   <p className="text-xs text-red-500 mt-1.5">{errors.time.message}</p>
