@@ -1,8 +1,19 @@
-import { usePwaAutoUpdate } from '../hooks/usePwaAutoUpdate'
+import { usePwaUpdate } from '../hooks/usePwaUpdate'
+import { usePwaPreloadErrorRecovery } from '../hooks/usePwaPreloadErrorRecovery'
+import PwaUpdateBanner from './PwaUpdateBanner'
 
 const PwaAutoUpdate = () => {
-  usePwaAutoUpdate()
-  return null
+  const { needRefresh, isUpdating, applyUpdate, dismiss } = usePwaUpdate()
+  usePwaPreloadErrorRecovery()
+
+  return (
+    <PwaUpdateBanner
+      isVisible={needRefresh}
+      isUpdating={isUpdating}
+      onUpdate={applyUpdate}
+      onDismiss={dismiss}
+    />
+  )
 }
 
 export default PwaAutoUpdate

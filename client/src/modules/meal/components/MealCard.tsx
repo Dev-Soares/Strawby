@@ -43,7 +43,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
             <MealIcon size={20} weight="bold" style={{ color: isDark ? config.accentLight : config.accentText }} />
           </div>
           <span
-            className="text-lg font-extrabold truncate"
+            className="flex-1 min-w-0 text-lg font-extrabold truncate"
             style={{ color: isDark ? config.accentLight : config.accentText }}
           >
             {meal.name}
