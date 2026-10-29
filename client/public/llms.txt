@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Allow: /faq
+Allow: /privacy
+Allow: /terms
+Disallow: /app/
+
+Sitemap: https://strawby.com/sitemap.xml

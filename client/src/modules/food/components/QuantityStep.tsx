@@ -1,5 +1,6 @@
 import { Fire } from '@phosphor-icons/react'
 import type { SelectableFood } from '../types/selectableItem'
+import { nonNegativeInputProps } from '@/shared/utils/nonNegativeInputProps'
 
 const macros = [
   { key: 'protein' as const, label: 'Prot', colorClass: 'text-amber-500' },
@@ -64,6 +65,7 @@ export default function QuantityStep({
         <div className="relative">
           <input
             type="number"
+            {...nonNegativeInputProps}
             value={quantity}
             onChange={(e) => onQuantityChange(e.target.value)}
             min={1}

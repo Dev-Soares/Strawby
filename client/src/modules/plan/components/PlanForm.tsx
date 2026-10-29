@@ -4,6 +4,7 @@ import { planSchema, type PlanData } from '../types/plan'
 import { Fire, FloppyDisk } from '@phosphor-icons/react'
 import toast from 'react-hot-toast'
 import { MACROS } from '@/shared/config/macros'
+import { nonNegativeInputProps } from '@/shared/utils/nonNegativeInputProps'
 
 const macros = MACROS.map(({ field, label, color, track, max, inputBorder }) => ({
   field,
@@ -47,6 +48,7 @@ export default function PlanForm({ defaultValues }: PlanFormProps) {
               <input
                 {...register('calories', { valueAsNumber: true })}
                 type="number"
+                {...nonNegativeInputProps}
                 className="w-36 text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 bg-transparent outline-none text-right border-b-2 border-neutral-200 dark:border-neutral-700 focus:border-red-500 pb-1 transition-colors duration-200"
               />
               <span className="text-lg font-semibold text-neutral-400 dark:text-neutral-500 pb-1.5 transition-colors duration-300">kcal</span>
@@ -85,6 +87,7 @@ export default function PlanForm({ defaultValues }: PlanFormProps) {
                 <input
                   {...register(macro.field, { valueAsNumber: true })}
                   type="number"
+                  {...nonNegativeInputProps}
                   className={`w-full text-4xl font-extrabold text-neutral-950 dark:text-neutral-100 bg-transparent outline-none border-b-2 pb-0.5 transition-colors duration-200 ${macro.inputBorder}`}
                 />
                 <span className="text-base font-semibold text-neutral-400 dark:text-neutral-500 pb-1.5 transition-colors duration-300">g</span>

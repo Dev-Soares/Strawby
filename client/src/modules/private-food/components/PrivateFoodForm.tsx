@@ -9,6 +9,7 @@ import {
 import type { CreatePrivateFoodData } from '../types/privateFood'
 import Spinner from '@/shared/components/Spinner'
 import { MACROS } from '@/shared/config/macros'
+import { nonNegativeInputProps } from '@/shared/utils/nonNegativeInputProps'
 
 export interface PrivateFoodFormProps {
   register: UseFormRegister<CreatePrivateFoodData>
@@ -97,6 +98,7 @@ export default function PrivateFoodForm({
             <input
               {...register('calories', { valueAsNumber: true })}
               type="number"
+              {...nonNegativeInputProps}
               disabled={isPending}
               className="font-display text-5xl sm:text-7xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-300 focus:border-red-500 pb-1 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
             />
@@ -119,6 +121,7 @@ export default function PrivateFoodForm({
                 <input
                   {...register(macro.field, { valueAsNumber: true })}
                   type="number"
+                  {...nonNegativeInputProps}
                   disabled={isPending}
                   className={`font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed ${macro.inputBorder}`}
                 />

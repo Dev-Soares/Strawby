@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import Spinner from '@/shared/components/Spinner'
 import { MACROS } from '@/shared/config/macros'
 import { balanceCarbs, macroKcalShare } from '@/shared/utils/nutrition'
+import { nonNegativeInputProps } from '@/shared/utils/nonNegativeInputProps'
 
 interface PlanEditModalProps {
   isOpen: boolean
@@ -87,6 +88,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
                       <input
                         {...register('calories', { valueAsNumber: true })}
                         type="number"
+                        {...nonNegativeInputProps}
                         disabled={isPending}
                         className="font-display text-5xl sm:text-7xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-300 focus:border-red-500 pb-1 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                       />
@@ -114,6 +116,7 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
                       <input
                         {...register(macro.field, { valueAsNumber: true })}
                         type="number"
+                        {...nonNegativeInputProps}
                         readOnly={macro.field === 'carbs'}
                         tabIndex={macro.field === 'carbs' ? -1 : undefined}
                         disabled={isPending}

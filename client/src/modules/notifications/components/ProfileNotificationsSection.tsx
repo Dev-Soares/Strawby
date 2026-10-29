@@ -53,7 +53,7 @@ export default function ProfileNotificationsSection() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
-              Push notifications
+              Notificações push
             </p>
             <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
               {isDenied

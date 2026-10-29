@@ -11,9 +11,9 @@ export default function OnboardingPage() {
         transition={{ duration: 0.45, ease: 'easeOut' }}
         className="w-full max-w-2xl flex flex-col gap-12"
       >
-        <Link to="/" className="flex items-center gap-3 w-fit select-none">
-          <img draggable={false} src="/logo.webp" alt="Strawby" className="w-12 h-12 object-contain" />
-          <span className="text-neutral-900 dark:text-neutral-100 text-[24px] font-black tracking-tighter transition-colors duration-300">
+        <Link to="/" className="flex items-center gap-1 w-fit select-none">
+          <img draggable={false} src="/logo.webp" alt="Strawby" className="w-11 h-11 sm:w-12 sm:h-12 object-contain shrink-0 -ml-2" />
+          <span className="text-neutral-900 dark:text-neutral-100 text-[24px] font-black tracking-tighter leading-none translate-y-[0.04em] transition-colors duration-300">
             Strawby
           </span>
         </Link>

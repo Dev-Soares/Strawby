@@ -30,8 +30,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
               menuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
             }`}
           >
-            <img draggable={false} src="/logo.webp" alt="" className="w-9 h-9 sm:w-10 sm:h-10 object-contain" />
-            <span className="font-display text-neutral-950 dark:text-neutral-100 text-lg sm:text-xl md:text-2xl tracking-tighter font-extrabold transition-colors duration-300">
+            <img draggable={false} src="/logo.webp" alt="" className="w-9 h-9 sm:w-10 sm:h-10 object-contain shrink-0 -ml-1.5 sm:-ml-2" />
+            <span className="font-display text-neutral-950 dark:text-neutral-100 text-lg sm:text-xl md:text-2xl tracking-tighter font-extrabold leading-none translate-y-[0.04em] transition-colors duration-300">
               Strawby
             </span>
           </div>

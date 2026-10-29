@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { X, FloppyDisk, Scales } from '@phosphor-icons/react'
 import { weightRecordSchema, type WeightRecordFormData } from '@/modules/patient/types/weightRecord'
 import Spinner from '@/shared/components/Spinner'
+import { nonNegativeInputProps } from '@/shared/utils/nonNegativeInputProps'
 
 interface Props {
   isOpen: boolean
@@ -87,6 +88,7 @@ export default function WeightRecordModal({
                 <input
                   {...register('weight', { valueAsNumber: true })}
                   type="number"
+                  {...nonNegativeInputProps}
                   step="0.1"
                   placeholder="75.5"
                   className="w-full bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2.5 text-sm font-bold text-neutral-900 dark:text-neutral-100 outline-none focus:border-neutral-400 dark:focus:border-neutral-500 transition-all duration-150 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"

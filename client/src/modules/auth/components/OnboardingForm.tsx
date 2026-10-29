@@ -1,16 +1,17 @@
-import { useState } from 'react'
+import { useState, type ChangeEvent } from 'react'
 import { GenderMale, GenderFemale, Heartbeat, Stethoscope, ArrowRight, ArrowLeft } from '@phosphor-icons/react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useCompleteOnboarding } from '../hooks/useCompleteOnboarding'
 import Spinner from '../../../shared/components/Spinner'
+import { clampNumericValue } from '../../../shared/utils/clampNumericValue'
 import GoalHint from './GoalHint'
 
 const ROLES = [
   {
     value: 'patient' as const,
-    label: 'Paciente',
-    description: 'Acompanhe sua nutrição e alcance seus objetivos',
+    label: 'Usuário',
+    description: 'Acompanhe minha nutrição e alcance meus objetivos',
     Icon: Heartbeat,
   },
   {
@@ -40,6 +41,22 @@ export default function OnboardingForm() {
   const targetWeight = watch('targetWeight')
   const isPatient = role === 'patient'
   const totalSteps = isPatient ? 3 : 1
+
+  // Campo numérico de no máximo 3 dígitos inteiros — o texto é cortado enquanto
+  // o usuário digita, antes de chegar ao estado do formulário.
+  const registerMeasure = (field: 'weight' | 'height' | 'targetWeight', maxDecimals: number) => {
+    const { onChange, ...rest } = register(field, { valueAsNumber: true })
+
+    return {
+      ...rest,
+      type: 'text',
+      inputMode: maxDecimals > 0 ? ('decimal' as const) : ('numeric' as const),
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        event.target.value = clampNumericValue(event.target.value, { maxDecimals })
+        return onChange(event)
+      },
+    }
+  }
 
   const handleStep1 = async () => {
     const valid = await trigger(['role', 'acceptTerms'])
@@ -188,18 +205,17 @@ export default function OnboardingForm() {
 
             <div className="grid grid-cols-2 gap-4">
               {([
-                { field: 'weight' as const, label: 'Peso', unit: 'kg', placeholder: '70' },
-                { field: 'height' as const, label: 'Altura', unit: 'cm', placeholder: '175' },
-              ]).map(({ field, label, unit, placeholder }) => (
+                { field: 'weight' as const, label: 'Peso', unit: 'kg', placeholder: '70', maxDecimals: 1 },
+                { field: 'height' as const, label: 'Altura', unit: 'cm', placeholder: '175', maxDecimals: 0 },
+              ]).map(({ field, label, unit, placeholder, maxDecimals }) => (
                 <div key={field}>
                   <label className="block text-[11px] font-semibold text-white mb-3 uppercase tracking-widest">
                     {label} <span className="text-white/50 normal-case">({unit})</span>
                   </label>
                   <input
-                    {...register(field, { valueAsNumber: true })}
-                    type="number"
+                    {...registerMeasure(field, maxDecimals)}
                     placeholder={placeholder}
-                    className="w-full border-0 border-b-2 border-white/50 bg-transparent pb-3 text-[15px] text-white placeholder-white/30 focus:outline-none focus:border-white transition-colors duration-200 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="w-full border-0 border-b-2 border-white/50 bg-transparent pb-3 text-[15px] text-white placeholder-white/30 focus:outline-none focus:border-white transition-colors duration-200"
                   />
                   {errors[field] && <p className="text-yellow-200 text-[11px] mt-2">{errors[field]?.message}</p>}
                 </div>
@@ -247,12 +263,10 @@ export default function OnboardingForm() {
               <div className="flex flex-col items-center">
                 <div className="flex items-baseline gap-2">
                   <input
-                    {...register('targetWeight', { valueAsNumber: true })}
-                    type="number"
-                    step="0.1"
+                    {...registerMeasure('targetWeight', 1)}
                     autoFocus
                     placeholder="72"
-                    className="w-[3.5em] text-center border-0 bg-transparent text-6xl font-black text-white placeholder-white/25 focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="w-[3.5em] text-center border-0 bg-transparent text-6xl font-black text-white placeholder-white/25 focus:outline-none"
                   />
                   <span className="text-2xl font-black text-white/40">kg</span>
                 </div>
