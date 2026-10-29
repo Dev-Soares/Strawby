@@ -1,8 +1,73 @@
+# Strawby — app de nutrição para acompanhar calorias, macros e refeições (pt-BR)
+# Descrição completa para IAs: https://strawby.com/llms.txt
+
 User-agent: *
 Allow: /
 Allow: /faq
 Allow: /privacy
 Allow: /terms
+Allow: /llms.txt
+Disallow: /app/
+
+# Crawlers de IA — liberados nas páginas públicas, bloqueados na área autenticada
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+Disallow: /app/
+
+User-agent: OAI-SearchBot
+Allow: /
+Allow: /llms.txt
+Disallow: /app/
+
+User-agent: ChatGPT-User
+Allow: /
+Allow: /llms.txt
+Disallow: /app/
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /llms.txt
+Disallow: /app/
+
+User-agent: Claude-SearchBot
+Allow: /
+Allow: /llms.txt
+Disallow: /app/
+
+User-agent: Claude-User
+Allow: /
+Allow: /llms.txt
+Disallow: /app/
+
+User-agent: Google-Extended
+Allow: /
+Allow: /llms.txt
+Disallow: /app/
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /llms.txt
+Disallow: /app/
+
+User-agent: Applebot-Extended
+Allow: /
+Allow: /llms.txt
+Disallow: /app/
+
+User-agent: meta-externalagent
+Allow: /
+Allow: /llms.txt
+Disallow: /app/
+
+User-agent: Bytespider
+Allow: /
+Allow: /llms.txt
+Disallow: /app/
+
+User-agent: CCBot
+Allow: /
+Allow: /llms.txt
 Disallow: /app/
 
 Sitemap: https://strawby.com/sitemap.xml

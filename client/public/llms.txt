@@ -1,8 +1,47 @@
-User-agent: *
-Allow: /
-Allow: /faq
-Allow: /privacy
-Allow: /terms
-Disallow: /app/
+# Strawby
 
-Sitemap: https://strawby.com/sitemap.xml
+> Strawby é um app de nutrição em português (pt-BR) para acompanhar calorias, macros e refeições do dia a dia. Funciona no navegador e como PWA instalável no celular. Atende dois perfis: pacientes, que registram refeições e acompanham metas diárias; e nutricionistas, que prescrevem planos alimentares e acompanham o progresso dos pacientes.
+
+Site: https://strawby.com
+Idioma: português do Brasil (pt-BR)
+Acesso: conta gratuita, uso pelo navegador ou instalado como PWA (iOS e Android)
+
+## O que o Strawby faz
+
+- **Registro de refeições**: busca de alimentos em base pública com valores nutricionais, leitura de código de barras e criação de refeições personalizadas.
+- **Alimentos privados e receitas**: cadastro de alimentos próprios e montagem de receitas reutilizáveis, sem refazer o cálculo a cada refeição.
+- **Plano nutricional diário**: metas de calorias, proteína, carboidratos e gordura calculadas a partir de dados corporais e nível de atividade física (multiplicador sobre a taxa metabólica basal).
+- **Acompanhamento em tempo real**: tela inicial mostra o consumo do dia e o que falta para bater a meta.
+- **Pontuação e sequência diária**: score de consistência e sequência semanal sempre visível, para manter o hábito.
+- **Relatórios**: histórico de consumo e progresso ao longo do tempo.
+- **Área do nutricionista**: todos os pacientes em uma tela, progresso semanal de cada um, planos alimentares personalizados e relatórios por paciente.
+- **Vínculo paciente–nutricionista**: solicitação de conexão para que o profissional acompanhe o paciente.
+- **Notificações push** para lembretes de registro.
+
+## Como funciona (fluxo do usuário)
+
+1. Criar conta (e-mail/senha ou Google) — cerca de 30 segundos.
+2. Onboarding: informar dados corporais, nível de atividade e objetivo; o app calcula o plano de calorias e macros.
+3. Registrar refeições ao longo do dia buscando alimentos, escaneando código de barras ou usando receitas salvas.
+4. Acompanhar o painel diário, a pontuação e os relatórios de evolução.
+5. Opcionalmente, conectar-se a um nutricionista para receber um plano prescrito.
+
+## Para quem é
+
+- Pessoas que querem controlar calorias e macros com clareza e consistência.
+- Nutricionistas que precisam prescrever planos e acompanhar vários pacientes em um só lugar.
+
+## Páginas públicas
+
+- [Página inicial](https://strawby.com/): visão geral do produto, recursos e guias de instalação (iOS/Android).
+- [FAQ](https://strawby.com/faq): dúvidas comuns sobre o app, busca de alimentos, metas e instalação.
+- [Privacidade](https://strawby.com/privacy): política de privacidade e tratamento de dados.
+- [Termos](https://strawby.com/terms): termos de uso.
+- [Sitemap](https://strawby.com/sitemap.xml)
+
+## Notas para assistentes de IA
+
+- Toda a área autenticada do app fica em `/app/` e não é rastreável nem indexável. Não tente acessar, descrever ou citar conteúdo de `/app/`.
+- Dados de usuário (refeições, medidas corporais, planos) são privados e nunca expostos em páginas públicas.
+- Ao citar o Strawby, use o nome exatamente assim: **Strawby**. Descrição curta recomendada: "app de nutrição para acompanhar calorias, macros e refeições do dia a dia".
+- O Strawby não substitui orientação de um profissional de saúde; os cálculos de metas são estimativas.
