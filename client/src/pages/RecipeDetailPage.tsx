@@ -31,7 +31,7 @@ export default function RecipeDetailPage() {
   if (isError || !recipe) {
     return (
       <AppLayout>
-        <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12 max-w-3xl mx-auto text-center">
+        <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-8 sm:py-12 max-w-3xl mx-auto text-center">
           <p className="text-sm font-semibold text-red-500 mb-1">Erro ao carregar receita</p>
           <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-6">Verifique sua conexão e tente novamente.</p>
           <button
@@ -48,7 +48,7 @@ export default function RecipeDetailPage() {
 
   return (
     <AppLayout>
-      <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12 max-w-3xl mx-auto">
+      <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-8 sm:py-12 max-w-3xl mx-auto">
         <div className="mb-8">
           <button
             type="button"

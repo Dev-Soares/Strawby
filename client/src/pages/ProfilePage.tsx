@@ -18,7 +18,7 @@ export default function ProfilePage() {
 
   return (
     <AppLayout>
-      <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-32 sm:py-10 lg:py-12 transition-colors duration-300">
+      <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-32 sm:py-10 lg:py-12 transition-colors duration-300">
 
         <motion.div
           data-tutorial="profile-header"

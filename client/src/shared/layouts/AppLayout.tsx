@@ -24,7 +24,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 transition-colors duration-300">
       <div className={`sticky top-0 z-70 pt-3 sm:pt-4 transition-colors duration-300 ${menuOpen ? 'bg-transparent' : 'bg-neutral-50/80 dark:bg-neutral-950/80 backdrop-blur-md'}`}>
-        <header className="flex items-center justify-between px-5 sm:px-8 h-14 sm:h-16 md:h-20">
+        <header className="flex items-center justify-between px-5 sm:px-8 lg:px-13 xl:px-21 h-14 sm:h-16 md:h-20">
           <div
             className={`flex items-center gap-1 select-none transition-opacity duration-200 ${
               menuOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'

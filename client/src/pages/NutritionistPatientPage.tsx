@@ -31,7 +31,7 @@ export default function NutritionistPatientPage() {
 
   return (
     <AppLayout>
-      <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-16 max-w-5xl mx-auto">
+      <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-16 max-w-5xl mx-auto">
         <PatientHeader patient={patient} onRemovePatient={() => setConfirmRemovePatient(true)} />
 
         <PatientPlanSection

@@ -17,7 +17,7 @@ export default function SettingsPage() {
 
   return (
     <AppLayout>
-      <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-32 max-w-2xl mx-auto">
+      <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-32 max-w-2xl mx-auto">
 
         <h1 data-tutorial="settings-header" className="text-3xl sm:text-4xl font-extrabold text-neutral-900 dark:text-neutral-100 mb-8 transition-colors duration-300">
           Ajustes

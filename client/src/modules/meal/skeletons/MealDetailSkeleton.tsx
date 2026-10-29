@@ -1,6 +1,6 @@
 export default function MealDetailSkeleton() {
   return (
-    <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12 max-w-3xl mx-auto">
+    <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-8 sm:py-12 max-w-3xl mx-auto">
       {/* Header skeleton */}
       <div className="flex items-center gap-4 mb-8">
         <div className="w-10 h-10 rounded-xl bg-neutral-200 dark:bg-neutral-800 animate-pulse" />

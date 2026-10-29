@@ -14,7 +14,7 @@ export default function NutritionistPatientReportPage() {
 
   return (
     <AppLayout>
-      <div className="px-4 sm:px-10 lg:px-16 pt-10 pb-16 max-w-3xl mx-auto">
+      <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-16 max-w-3xl mx-auto">
         <motion.div
           className="mb-8"
           initial={{ opacity: 0, y: -8 }}

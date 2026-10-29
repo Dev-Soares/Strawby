@@ -1,5 +1,5 @@
 const RecipeDetailSkeleton = () => (
-  <div className="animate-pulse px-4 sm:px-10 lg:px-16 pt-10 pb-8 sm:py-12 max-w-3xl mx-auto">
+  <div className="animate-pulse px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-8 sm:py-12 max-w-3xl mx-auto">
     <div className="flex items-center gap-4 mb-8">
       <div className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 shrink-0" />
       <div className="flex-1">
