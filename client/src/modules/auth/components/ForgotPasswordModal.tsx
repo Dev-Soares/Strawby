@@ -1,4 +1,4 @@
-import { EnvelopeSimple } from '@phosphor-icons/react'
+import { Mail } from 'lucide-react'
 import { useForgotPassword } from '../hooks/useForgotPassword'
 import Spinner from '../../../shared/components/Spinner'
 
@@ -22,7 +22,7 @@ export default function ForgotPasswordModal({ onClose }: Props) {
 
         <div className="flex items-center gap-3 mb-5">
           <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/40 flex items-center justify-center shrink-0">
-            <EnvelopeSimple size={20} weight="bold" className="text-red-600" />
+            <Mail size={20} className="text-red-600" />
           </div>
           <div>
             <h2 className="text-[15px] font-black text-neutral-900 dark:text-neutral-100 transition-colors duration-300">

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Eye, EyeSlash } from '@phosphor-icons/react'
+import { Eye, EyeOff } from 'lucide-react'
 import { useSignIn } from '../hooks/useSignIn'
 import { useGoogleSignIn } from '../hooks/useGoogleSignIn'
 import ForgotPasswordModal from './ForgotPasswordModal'
@@ -62,8 +62,8 @@ export default function LoginForm() {
                 className="absolute right-0 bottom-3 text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
               >
                 {showPassword
-                  ? <EyeSlash size={20} weight="bold" />
-                  : <Eye size={20} weight="bold" />
+                  ? <EyeOff size={20} />
+                  : <Eye size={20} />
                 }
               </button>
             </div>

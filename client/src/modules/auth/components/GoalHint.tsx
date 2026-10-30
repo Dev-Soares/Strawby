@@ -1,4 +1,4 @@
-import { TrendDown, TrendUp, Minus } from '@phosphor-icons/react'
+import { Minus, TrendingDown, TrendingUp } from 'lucide-react'
 import { deriveWeightGoal } from '../../../shared/utils/deriveWeightGoal'
 
 export default function GoalHint({ weight, target }: { weight?: number; target?: number }) {
@@ -20,12 +20,12 @@ export default function GoalHint({ weight, target }: { weight?: number; target?:
     direction === 'maintain'
       ? { Icon: Minus, label: 'Manter o peso' }
       : direction === 'lose'
-        ? { Icon: TrendDown, label: `Perder ${absDiff.toFixed(1)} kg` }
-        : { Icon: TrendUp, label: `Ganhar ${absDiff.toFixed(1)} kg` }
+        ? { Icon: TrendingDown, label: `Perder ${absDiff.toFixed(1)} kg` }
+        : { Icon: TrendingUp, label: `Ganhar ${absDiff.toFixed(1)} kg` }
 
   return (
     <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-1.5 text-[13px] font-bold text-white">
-      <hint.Icon size={15} weight="bold" />
+      <hint.Icon size={15} />
       {hint.label}
     </span>
   )

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useLocation, Link } from 'react-router-dom'
-import { LockKey, Eye, EyeSlash } from '@phosphor-icons/react'
+import { Eye, EyeOff, Lock } from 'lucide-react'
 import { useResetPassword } from '../hooks/useResetPassword'
 import { useResendResetPassword } from '../hooks/useResendResetPassword'
 import Spinner from '../../../shared/components/Spinner'
@@ -83,7 +83,7 @@ export default function ResetPasswordForm() {
                 onClick={() => setShowPassword((v) => !v)}
                 className="absolute right-0 bottom-3 text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
               >
-                {showPassword ? <EyeSlash size={20} weight="bold" /> : <Eye size={20} weight="bold" />}
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
             {errors.newPassword && (
@@ -107,7 +107,7 @@ export default function ResetPasswordForm() {
                 onClick={() => setShowConfirm((v) => !v)}
                 className="absolute right-0 bottom-3 text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer"
               >
-                {showConfirm ? <EyeSlash size={20} weight="bold" /> : <Eye size={20} weight="bold" />}
+                {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
             {errors.confirmPassword && (
@@ -153,7 +153,7 @@ export default function ResetPasswordForm() {
 
       <div className="lg:w-96 shrink-0 bg-red-600 rounded-2xl p-6 md:p-8 lg:p-10 text-white flex flex-col justify-between">
         <div className="flex flex-col gap-4">
-          <LockKey size={40} weight="bold" className="text-red-200" />
+          <Lock size={40} className="text-red-200" />
           <h2 className="text-[22px] font-bold leading-snug">
             Crie uma senha forte
           </h2>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Eye, EyeSlash, ArrowLeft } from '@phosphor-icons/react'
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
 import { useSignUp } from '../hooks/useSignUp'
 import { useGoogleSignIn } from '../hooks/useGoogleSignIn'
 import Spinner from '../../../shared/components/Spinner'
@@ -115,7 +115,7 @@ export default function SignUpForm() {
                     className="w-full border-0 border-b-2 border-neutral-300 dark:border-neutral-700 bg-transparent pb-3 text-[15px] text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200 pr-8"
                   />
                   <button type="button" onClick={() => setShowPassword(v => !v)} className="absolute right-0 bottom-3 text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer">
-                    {showPassword ? <EyeSlash size={20} weight="bold" /> : <Eye size={20} weight="bold" />}
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
                 {errors.password && <p className="text-red-400 text-[11px] mt-2">{errors.password.message}</p>}
@@ -131,7 +131,7 @@ export default function SignUpForm() {
                     className="w-full border-0 border-b-2 border-neutral-300 dark:border-neutral-700 bg-transparent pb-3 text-[15px] text-neutral-900 dark:text-white placeholder-neutral-400 dark:placeholder-neutral-600 focus:outline-none focus:border-red-500 transition-colors duration-200 pr-8"
                   />
                   <button type="button" onClick={() => setShowConfirmPassword(v => !v)} className="absolute right-0 bottom-3 text-neutral-500 hover:text-neutral-900 dark:hover:text-white transition-colors cursor-pointer">
-                    {showConfirmPassword ? <EyeSlash size={20} weight="bold" /> : <Eye size={20} weight="bold" />}
+                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
                 {errors.confirmPassword && <p className="text-red-400 text-[11px] mt-2">{errors.confirmPassword.message}</p>}
@@ -160,7 +160,7 @@ export default function SignUpForm() {
 
                 <div className="flex items-center gap-4">
                   <button type="button" onClick={() => setStep(1)} className="flex items-center justify-center w-11 h-11 rounded-full border-2 border-neutral-300 dark:border-neutral-600 text-neutral-900 dark:text-white hover:border-neutral-400 transition-colors cursor-pointer shrink-0">
-                    <ArrowLeft size={16} weight="bold" />
+                    <ArrowLeft size={16} />
                   </button>
                   <button
                     type="submit"

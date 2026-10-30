@@ -3,8 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, Key, PaperPlaneTilt, ChatCircleText } from '@phosphor-icons/react'
-
+import { Key, MessageCircle, Send, X } from 'lucide-react'
 const schema = z.object({
   code: z.string().min(1, 'Código obrigatório'),
 })
@@ -50,7 +49,7 @@ export default function AddNutritionistModal({ isOpen, isPending, onClose, onSen
             <div className="flex items-center justify-between px-7 pt-7 pb-5">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/30 flex items-center justify-center">
-                  <Key size={16} weight="bold" className="text-red-600 dark:text-red-400" />
+                  <Key size={16} className="text-red-600 dark:text-red-400" />
                 </div>
                 <div>
                   <h2 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight">
@@ -66,14 +65,14 @@ export default function AddNutritionistModal({ isOpen, isPending, onClose, onSen
                 onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
               >
-                <X size={13} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+                <X size={13} className="text-neutral-600 dark:text-neutral-300" />
               </button>
             </div>
 
             <form onSubmit={onSubmit} className="px-7 pb-7 flex flex-col gap-5">
 
               <div className="rounded-2xl bg-red-600/10 border border-red-600/20 px-4 py-4 flex items-start gap-3">
-                <ChatCircleText size={20} weight="fill" className="text-red-500 shrink-0 mt-0.5" />
+                <MessageCircle size={20} className="text-red-500 shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm font-bold text-red-500 mb-1">Não sabe o código?</p>
                   <p className="text-xs font-medium text-neutral-300 leading-relaxed">
@@ -105,7 +104,7 @@ export default function AddNutritionistModal({ isOpen, isPending, onClose, onSen
               >
                 {isPending
                   ? <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  : <PaperPlaneTilt size={15} weight="bold" />
+                  : <Send size={15} />
                 }
                 {isPending ? 'Enviando…' : 'Enviar solicitação'}
               </button>
