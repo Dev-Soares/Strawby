@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowLeft } from '@phosphor-icons/react'
+import { ArrowLeft } from 'lucide-react'
 import AppLayout from '../shared/layouts/AppLayout'
 import CreateMealForm from '../modules/meal/components/CreateMealForm'
 
@@ -18,7 +18,7 @@ export default function CreateMealPage() {
             onClick={() => navigate(isPlan ? '/app/plan' : '/app/home')}
             className="w-10 h-10 flex items-center justify-center rounded-xl bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/60 transition-colors duration-300 cursor-pointer shrink-0"
           >
-            <ArrowLeft size={18} weight="bold" className="text-red-600" />
+            <ArrowLeft size={18} className="text-red-600" />
           </button>
           <div>
             <h1 className="font-display text-4xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight leading-none">

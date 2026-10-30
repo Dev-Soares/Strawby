@@ -1,6 +1,6 @@
 import { useParams, useSearchParams } from 'react-router-dom'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
-import { ArrowLeft, Plus, Trash, FloppyDisk } from '@phosphor-icons/react'
+import { ArrowLeft, ChefHat, Clock, Plus, Save, StickyNote, Trash2, Utensils } from 'lucide-react'
 import AppLayout from '@/shared/layouts/AppLayout'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 import Spinner from '@/shared/components/Spinner'
@@ -9,7 +9,7 @@ import MealTotalsCard from '@/modules/meal/components/MealTotalsCard'
 import MealItemRow from '@/modules/meal/components/MealItemRow'
 import MealRecipeRow from '@/modules/meal/components/MealRecipeRow'
 import MealEmptyState from '@/modules/meal/components/MealEmptyState'
-import { getMealType as getMealConfig } from '@/shared/config/mealTypes'
+import { getMealAccent, getMealType as getMealConfig } from '@/shared/config/mealTypes'
 import { useMealDetailPage } from '@/modules/meal/hooks/useMealDetailPage'
 import { confirmDeleteText } from '@/shared/utils/confirmDeleteText'
 
@@ -53,9 +53,9 @@ export default function MealDetailPage() {
     )
   }
 
-  const isDark = resolvedTheme === 'dark'
   const cfg = getMealConfig(meal.mealType)
   const MealIcon = cfg.icon
+  const accent = getMealAccent(cfg, resolvedTheme === 'dark')
 
   return (
     <AppLayout>
@@ -64,63 +64,90 @@ export default function MealDetailPage() {
           <button
             type="button"
             onClick={() => navigate(backPath)}
-            className="flex items-center gap-2 mb-4 text-sm font-bold text-neutral-500 dark:text-neutral-400 hover:text-red-600 transition-colors duration-300 cursor-pointer"
+            className="mb-5 flex cursor-pointer items-center gap-2 text-sm font-bold text-neutral-500 transition-colors duration-200 hover:text-red-600 dark:text-neutral-400"
           >
-            <ArrowLeft size={18} weight="bold" />
+            <ArrowLeft size={18} />
             Voltar
           </button>
-          <div className="flex items-center gap-3 mb-0.5">
-            <div
-              className="w-11 h-11 rounded-xl flex items-center justify-center"
-              style={{ backgroundColor: isDark ? `${cfg.theme}26` : cfg.themeLight }}
+
+          <div className="flex items-center gap-3">
+            <span
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+              style={{ backgroundColor: accent.surface }}
             >
-              <MealIcon size={22} weight="bold" style={{ color: cfg.theme }} />
-            </div>
-            <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight leading-none truncate">
+              <MealIcon size={22} style={{ color: accent.ink }} />
+            </span>
+            <h1 className="min-w-0 flex-1 truncate font-display text-3xl font-extrabold leading-none tracking-tight text-neutral-950 dark:text-neutral-100 sm:text-4xl">
               {meal.name}
             </h1>
+            {displayTime && (
+              <span
+                className="flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5"
+                style={{ backgroundColor: accent.surface }}
+              >
+                <Clock size={16} style={{ color: accent.strong }} />
+                <span
+                  className="text-sm font-extrabold leading-none tabular-nums"
+                  style={{ color: accent.ink }}
+                >
+                  {displayTime}
+                </span>
+              </span>
+            )}
           </div>
-          {displayTime && (
-            <p className="text-sm font-bold mt-1" style={{ color: cfg.theme }}>
-              {displayTime}
-            </p>
-          )}
-          <form onSubmit={handleUpdateObservations} className="mt-4">
-            <label className="block text-xs font-black text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-2">
+        </div>
+
+        <section className="mb-8">
+          <div className="mb-4 flex items-center gap-2.5">
+            <span
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+              style={{ backgroundColor: accent.surface }}
+            >
+              <StickyNote size={18} style={{ color: accent.ink }} />
+            </span>
+            <span className="text-base font-bold tracking-tight" style={{ color: accent.ink }}>
               Observações
-            </label>
+            </span>
+          </div>
+
+          <form onSubmit={handleUpdateObservations}>
             <textarea
               {...observationsForm.register('observations')}
               rows={3}
               placeholder="Ex: sem glúten, sem lactose..."
-              className="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl px-4 py-3 text-sm font-semibold text-neutral-900 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 resize-none outline-none focus:border-neutral-400 dark:focus:border-neutral-500 transition-all duration-200"
+              className="w-full resize-none rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-neutral-900 shadow-sm outline-none transition-colors duration-200 placeholder:text-neutral-400 focus:border-neutral-400 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:border-neutral-500"
             />
             {observationsForm.formState.errors.observations && (
-              <p className="text-xs text-red-500 mt-1.5">
+              <p className="mt-1.5 text-xs text-red-500">
                 {observationsForm.formState.errors.observations.message}
               </p>
             )}
             <button
               type="submit"
               disabled={updateObservations.isPending || !observationsForm.formState.isDirty}
-              className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 cursor-pointer"
+              className="mt-3 flex cursor-pointer items-center gap-2 rounded-xl bg-neutral-100 px-4 py-2.5 text-sm font-bold text-neutral-700 transition-colors duration-200 hover:bg-neutral-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700"
             >
-              {updateObservations.isPending ? (
-                <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <FloppyDisk size={13} weight="bold" />
-              )}
+              {updateObservations.isPending ? <Spinner size={16} /> : <Save size={18} />}
               {updateObservations.isPending ? 'Salvando…' : 'Salvar observações'}
             </button>
           </form>
-        </div>
+        </section>
 
         <MealTotalsCard totals={meal.totals} cfg={cfg} />
 
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-black text-neutral-900 dark:text-neutral-200 uppercase tracking-widest">
-            Alimentos ({meal.items.length})
-          </h2>
+        <div className="mb-4 flex items-center gap-2.5">
+          <span
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+            style={{ backgroundColor: accent.surface }}
+          >
+            <Utensils size={18} style={{ color: accent.ink }} />
+          </span>
+          <span className="text-base font-bold tracking-tight" style={{ color: accent.ink }}>
+            Alimentos
+          </span>
+          <span className="text-sm font-bold tabular-nums text-neutral-400 dark:text-neutral-500">
+            {meal.items.length}
+          </span>
         </div>
 
         {!hasItems && hasRecipes ? (
@@ -156,10 +183,19 @@ export default function MealDetailPage() {
 
         {hasRecipes && (
           <>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-sm font-black text-neutral-900 dark:text-neutral-200 uppercase tracking-widest">
-                Receitas ({meal.recipes.length})
-              </h2>
+            <div className="mb-4 flex items-center gap-2.5">
+              <span
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+                style={{ backgroundColor: accent.surface }}
+              >
+                <ChefHat size={18} style={{ color: accent.ink }} />
+              </span>
+              <span className="text-base font-bold tracking-tight" style={{ color: accent.ink }}>
+                Receitas
+              </span>
+              <span className="text-sm font-bold tabular-nums text-neutral-400 dark:text-neutral-500">
+                {meal.recipes.length}
+              </span>
             </div>
             <div className="flex flex-col gap-3 mb-6">
               {meal.recipes.map((recipe) => (
@@ -190,14 +226,14 @@ export default function MealDetailPage() {
           />
         )}
 
-        <div className="flex gap-3 mt-6">
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <button
             type="button"
             onClick={() => navigate(selectFoodPath)}
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white shadow-md transition-colors duration-300 cursor-pointer hover:brightness-110"
-            style={{ backgroundColor: cfg.theme }}
+            className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:brightness-110"
+            style={{ backgroundColor: cfg.accent }}
           >
-            <Plus size={16} weight="bold" />
+            <Plus size={18} />
             Adicionar item
           </button>
 
@@ -205,13 +241,9 @@ export default function MealDetailPage() {
             type="button"
             onClick={() => setConfirm({ type: 'meal', id: meal.id, name: meal.name })}
             disabled={deleteMutation.isPending}
-            className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white bg-red-500 hover:bg-red-600 shadow-md transition-colors duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-neutral-100 py-3 text-sm font-bold text-red-600 transition-colors duration-200 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-800 dark:text-red-400 dark:hover:bg-red-950/40"
           >
-            {deleteMutation.isPending ? (
-              <Spinner size={16} className="border-white/40 border-t-white" />
-            ) : (
-              <Trash size={16} weight="bold" />
-            )}
+            {deleteMutation.isPending ? <Spinner size={16} /> : <Trash2 size={18} />}
             {deleteMutation.isPending ? 'Removendo…' : 'Remover refeição'}
           </button>
         </div>

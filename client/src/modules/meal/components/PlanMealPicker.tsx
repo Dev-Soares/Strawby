@@ -1,4 +1,4 @@
-import { X } from '@phosphor-icons/react'
+import { X } from 'lucide-react'
 import { useGetPlanMeals } from '../hooks/useGetPlanMeals'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
 import type { Meal } from '../types/meal'
@@ -25,7 +25,7 @@ export default function PlanMealPicker({ onSelect, onClose }: Props) {
           onClick={onClose}
           className="w-7 h-7 flex items-center justify-center rounded-lg text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200 cursor-pointer"
         >
-          <X size={14} weight="bold" />
+          <X size={14} />
         </button>
       </div>
 
@@ -71,7 +71,7 @@ export default function PlanMealPicker({ onSelect, onClose }: Props) {
                     className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
                     style={{ backgroundColor: isDark ? `${cfg.accent}26` : cfg.accentLight }}
                   >
-                    <Ico size={16} weight="bold" style={{ color: isDark ? cfg.accentLight : cfg.accentText }} />
+                    <Ico size={16} style={{ color: isDark ? cfg.accentLight : cfg.accentText }} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100 truncate leading-tight">
