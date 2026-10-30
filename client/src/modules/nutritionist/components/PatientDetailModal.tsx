@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, User, Fire, PencilSimple, Trash, Plus, Sparkle, Warning } from '@phosphor-icons/react'
+import { Flame, Pencil, Plus, Sparkles, Trash2, TriangleAlert, User, X } from 'lucide-react'
 import type { NutritionistPatient } from '../types/patient'
 import { useGetPatientPlan } from '../hooks/useGetPatientPlan'
 import { useCreatePatientPlan } from '../hooks/useCreatePatientPlan'
@@ -66,7 +66,7 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
               <div className="sticky top-0 bg-white dark:bg-neutral-900 z-10 flex items-center justify-between px-7 pt-7 pb-5 border-b border-neutral-100 dark:border-neutral-800 transition-colors duration-300">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/30 flex items-center justify-center shrink-0">
-                    <User size={16} weight="bold" className="text-red-500" />
+                    <User size={16} className="text-red-500" />
                   </div>
                   <div className="min-w-0">
                     <h2 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight truncate transition-colors duration-300">
@@ -82,7 +82,7 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
                   onClick={handleClose}
                   className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer shrink-0"
                 >
-                  <X size={13} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+                  <X size={13} className="text-neutral-600 dark:text-neutral-300" />
                 </button>
               </div>
 
@@ -101,14 +101,14 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
                           onClick={() => setEditOpen(true)}
                           className="flex items-center gap-1.5 text-xs font-bold text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-xl px-3 py-2 transition-all duration-200 cursor-pointer"
                         >
-                          <PencilSimple size={12} weight="bold" />
+                          <Pencil size={12} />
                           Editar
                         </button>
                         <button
                           onClick={() => setConfirmDelete(true)}
                           className="flex items-center gap-1.5 text-xs font-bold text-red-500 hover:text-red-600 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-950/50 rounded-xl px-3 py-2 transition-all duration-200 cursor-pointer"
                         >
-                          <Trash size={12} weight="bold" />
+                          <Trash2 size={12} />
                           Remover
                         </button>
                       </div>
@@ -127,7 +127,7 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
                   {!planPending && !plan && (
                     <div className="flex flex-col items-center text-center py-8 px-4">
                       <div className="w-14 h-14 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4">
-                        <Fire size={22} weight="fill" className="text-neutral-300 dark:text-neutral-600" />
+                        <Flame size={22} className="text-neutral-300 dark:text-neutral-600" />
                       </div>
                       <p className="text-sm font-bold text-neutral-700 dark:text-neutral-300 mb-1 transition-colors duration-300">
                         Nenhum plano definido
@@ -140,14 +140,14 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
                           onClick={() => { setCreateMode('manual'); setCreateOpen(true) }}
                           className="flex items-center gap-2 text-xs font-bold text-neutral-700 dark:text-neutral-300 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 px-4 py-2.5 rounded-xl transition-all duration-200 cursor-pointer"
                         >
-                          <PencilSimple size={13} weight="bold" />
+                          <Pencil size={13} />
                           Manual
                         </button>
                         <button
                           onClick={() => { setCreateMode('generate'); setCreateOpen(true) }}
                           className="flex items-center gap-2 text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-4 py-2.5 rounded-xl transition-all duration-200 cursor-pointer"
                         >
-                          <Sparkle size={13} weight="fill" />
+                          <Sparkles size={13} />
                           Gerar automaticamente
                         </button>
                       </div>
@@ -164,7 +164,7 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
                       {/* Calories */}
                       <div className="bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 rounded-2xl px-6 py-5 transition-colors duration-300">
                         <div className="flex items-center gap-2 mb-2">
-                          <Fire size={14} weight="fill" className="text-red-500" />
+                          <Flame size={14} className="text-red-500" />
                           <span className="text-[10px] font-extrabold text-red-600 dark:text-red-400 uppercase tracking-widest">Meta calórica diária</span>
                         </div>
                         <div className="flex items-baseline gap-1.5">
@@ -216,7 +216,7 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
                     onClick={() => { setCreateMode('select'); setCreateOpen(true) }}
                     className="flex items-center justify-center gap-2 w-full border-2 border-dashed border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 rounded-2xl py-4 text-sm font-bold text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-all duration-200 cursor-pointer"
                   >
-                    <Plus size={15} weight="bold" />
+                    <Plus size={15} />
                     Criar plano alimentar
                   </button>
                 )}
@@ -232,7 +232,7 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
                       transition={{ duration: 0.2 }}
                     >
                       <div className="flex items-start gap-3">
-                        <Warning size={18} weight="fill" className="text-red-500 shrink-0 mt-0.5" />
+                        <TriangleAlert size={18} className="text-red-500 shrink-0 mt-0.5" />
                         <div>
                           <p className="text-sm font-bold text-red-700 dark:text-red-400">Remover plano?</p>
                           <p className="text-xs text-red-500 dark:text-red-500 mt-0.5">Esta ação não pode ser desfeita.</p>
@@ -252,7 +252,7 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
                         >
                           {deleteMutation.isPending
                             ? <span className="inline-block w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            : <Trash size={12} weight="bold" />
+                            : <Trash2 size={12} />
                           }
                           Remover
                         </button>

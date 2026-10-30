@@ -21,7 +21,7 @@ export default function PatientWeightReport({ patientId }: Props) {
         </p>
       </div>
 
-      <div className="flex items-center gap-4 px-4 py-4 rounded-2xl mb-1">
+      <div className="mb-4 flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-900">
         <CurrentWeightBadge latestWeight={latestWeight} isPending={isPending} />
       </div>
 

@@ -1,7 +1,5 @@
 import { motion } from 'framer-motion'
-import {
-  ArrowLeft, Scales, ArrowsVertical, Calendar, GenderMale, GenderFemale, UserMinus,
-} from '@phosphor-icons/react'
+import { ArrowLeft, ArrowUpDown, Calendar, Mars, Scale, UserMinus, Venus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import type { NutritionistPatient } from '../types/patient'
 
@@ -11,13 +9,13 @@ type Props = {
 }
 
 const buildBodyStats = (patient: NutritionistPatient) => {
-  const stats: { Icon: typeof Scales; label: string }[] = []
-  if (patient.weight != null) stats.push({ Icon: Scales, label: `${patient.weight} kg` })
-  if (patient.height != null) stats.push({ Icon: ArrowsVertical, label: `${patient.height} cm` })
+  const stats: { Icon: typeof Scale; label: string }[] = []
+  if (patient.weight != null) stats.push({ Icon: Scale, label: `${patient.weight} kg` })
+  if (patient.height != null) stats.push({ Icon: ArrowUpDown, label: `${patient.height} cm` })
   if (patient.age != null) stats.push({ Icon: Calendar, label: `${patient.age} anos` })
   if (patient.gender != null) {
     stats.push({
-      Icon: patient.gender === 'male' ? GenderMale : GenderFemale,
+      Icon: patient.gender === 'male' ? Mars : Venus,
       label: patient.gender === 'male' ? 'Masculino' : 'Feminino',
     })
   }
@@ -40,7 +38,7 @@ export default function PatientHeader({ patient, onRemovePatient }: Props) {
         onClick={() => navigate('/app/home')}
         className="flex items-center gap-2 mb-4 text-sm font-bold text-neutral-500 dark:text-neutral-400 hover:text-red-600 transition-colors cursor-pointer"
       >
-        <ArrowLeft size={16} weight="bold" />
+        <ArrowLeft size={16} />
         Meus pacientes
       </button>
       <div className="min-w-0">
@@ -53,7 +51,7 @@ export default function PatientHeader({ patient, onRemovePatient }: Props) {
         <div className="flex flex-wrap gap-2 mt-3">
           {bodyStats.map(({ Icon, label }) => (
             <div key={label} className="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-800 rounded-xl px-4 py-2">
-              <Icon size={15} weight="bold" className="text-neutral-400 dark:text-neutral-500 shrink-0" />
+              <Icon size={15} className="text-neutral-400 dark:text-neutral-500 shrink-0" />
               <span className="text-sm font-bold text-neutral-600 dark:text-neutral-300">{label}</span>
             </div>
           ))}
@@ -64,7 +62,7 @@ export default function PatientHeader({ patient, onRemovePatient }: Props) {
         onClick={onRemovePatient}
         className="flex items-center gap-2 mt-4 px-4 py-2.5 rounded-xl text-sm font-bold text-red-600 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-950/50 transition-colors duration-150 cursor-pointer"
       >
-        <UserMinus size={16} weight="bold" />
+        <UserMinus size={16} />
         Remover paciente
       </button>
     </motion.div>
