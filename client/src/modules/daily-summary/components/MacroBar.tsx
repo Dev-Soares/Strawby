@@ -10,10 +10,10 @@ export default function MacroBar({ label, icon: Icon, value, max, unit, color, t
     <div className="flex min-w-0 flex-col gap-2.5">
       <div className="flex items-center gap-2">
         <span
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
           style={{ backgroundColor: trackColor }}
         >
-          <Icon size={16} style={{ color }} />
+          <Icon size={20} style={{ color }} />
         </span>
         <span className="min-w-0 truncate text-base font-bold tracking-tight sm:text-lg" style={{ color }}>
           {label}
