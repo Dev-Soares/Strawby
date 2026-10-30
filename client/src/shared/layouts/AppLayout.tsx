@@ -24,7 +24,20 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 transition-colors duration-300">
-      <div className={`sticky top-0 z-70 pt-3 sm:pt-4 transition-colors duration-300 ${menuOpen ? 'bg-transparent' : 'bg-neutral-50/80 dark:bg-neutral-950/80 backdrop-blur-md'}`}>
+      {/* Sem backdrop-blur: o Safari re-rasteriza o backdrop-filter a cada frame
+          de scroll na largura toda do viewport, e o header e sticky em todas as
+          telas do app — era a causa do scroll travado no iOS. O degrade pro
+          transparente da o mesmo "conteudo sumindo atras do header" com um
+          paint estatico no lugar do blur por frame. */}
+      <div className={`sticky top-0 z-70 pt-3 sm:pt-4 ${menuOpen ? 'bg-transparent' : 'bg-neutral-50 dark:bg-neutral-950'}`}>
+        {/* O degrade mora num overlay ancorado em top-full, fora do fluxo: assim
+            ele desce abaixo do header sem empurrar o conteudo da pagina. */}
+        {!menuOpen && (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-full h-10 sm:h-12 bg-linear-to-b from-neutral-50 to-transparent dark:from-neutral-950"
+          />
+        )}
         <header className="flex items-center justify-between px-5 sm:px-8 lg:px-13 xl:px-21 h-14 sm:h-16 md:h-20">
           <Link
             to="/app/home"

@@ -83,9 +83,12 @@
   --profile-since-light: #4c1d95;
 }
 
+/* Sem scroll-behavior: smooth global. window.scrollTo(0, 0) sem behavior
+   obedece o CSS, entao o ScrollToTop animava a subida em cada troca de rota --
+   no Safari isso deixa a navegacao visivelmente lenta. Quem quer scroll suave
+   pede explicito (PlanMealsSection). */
 html, body {
   max-width: 100%;
-  scroll-behavior: smooth;
   background: none;
 }
 
