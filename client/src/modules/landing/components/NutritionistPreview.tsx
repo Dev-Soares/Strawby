@@ -1,4 +1,4 @@
-import { ArrowUpIcon, ArrowDownIcon } from '@phosphor-icons/react'
+import { ArrowDown, ArrowUp } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const patients = [
@@ -37,7 +37,7 @@ export default function NutritionistPreview() {
           </div>
 
           <div className={`flex items-center gap-0.5 shrink-0 ${p.trend === 'up' ? 'text-emerald-600' : 'text-red-500'}`}>
-            {p.trend === 'up' ? <ArrowUpIcon size={9} weight="bold" /> : <ArrowDownIcon size={9} weight="bold" />}
+            {p.trend === 'up' ? <ArrowUp size={9} /> : <ArrowDown size={9} />}
             <span className="text-[9px] font-black">{p.label}</span>
           </div>
         </motion.div>

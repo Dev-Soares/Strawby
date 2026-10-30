@@ -1,4 +1,4 @@
-import { ArrowRight } from '@phosphor-icons/react'
+import { ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const ease = [0.34, 1.05, 0.64, 1] as const
@@ -45,7 +45,7 @@ const Hero = () => {
               className="bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold px-8 py-4 rounded-xl transition-colors duration-150 flex items-center gap-2 text-[15px] cursor-pointer"
             >
               Começar agora
-              <ArrowRight size={17} weight="bold" />
+              <ArrowRight size={17} />
             </a>
           </motion.div>
         </div>

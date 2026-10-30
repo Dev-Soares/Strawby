@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, ArrowRight } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import PageSEO from '@/shared/components/PageSEO'
 import AccordionItem from '@/shared/components/AccordionItem'
 
@@ -113,7 +113,7 @@ export default function FaqPage() {
               to="/"
               className="inline-flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-red-200 hover:text-red-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-red-900/50 dark:hover:text-red-300"
             >
-              <ArrowLeft size={16} weight="bold" />
+              <ArrowLeft size={16} />
               Voltar para a home
             </Link>
 
@@ -150,7 +150,7 @@ export default function FaqPage() {
               className="mt-8 inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-700"
             >
               Criar conta
-              <ArrowRight size={16} weight="bold" />
+              <ArrowRight size={16} />
             </Link>
           </section>
 

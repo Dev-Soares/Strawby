@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, InstagramLogo } from '@phosphor-icons/react'
-
+import { ArrowUpRight } from 'lucide-react'
+import { InstagramLogo } from '@phosphor-icons/react'
 const productLinks = [
   { label: 'Funcionalidades', href: '#funcionalidades' },
   { label: 'FAQ', href: '/faq' },
@@ -40,7 +40,7 @@ export default function Footer() {
               className="group inline-flex hover:-translate-y-0.5 items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3.5 rounded-full transition-all duration-200 text-sm"
             >
               Começar grátis
-              <ArrowUpRight size={16} weight="bold" className="group-hover:rotate-45 transition-transform duration-200" />
+              <ArrowUpRight size={16} className="group-hover:rotate-45 transition-transform duration-200" />
             </a>
           </div>
 
@@ -103,7 +103,7 @@ export default function Footer() {
                     aria-label={label}
                     className="flex w-10 h-10 items-center justify-center rounded-full border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-red-600 hover:border-red-600 hover:text-white transition-colors duration-200"
                   >
-                    <Icon size={16} weight="bold" />
+                    <Icon size={16} />
                   </a>
                 </li>
               ))}

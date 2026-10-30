@@ -1,4 +1,4 @@
-import { ArrowRight } from '@phosphor-icons/react'
+import { ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export default function CTA() {
@@ -74,7 +74,6 @@ export default function CTA() {
             <span className="flex items-center justify-center w-9 h-9 rounded-full bg-white text-red-600 transition-colors duration-300">
               <ArrowRight
                 size={16}
-                weight="bold"
                 className="group-hover:translate-x-0.5 transition-transform duration-200"
               />
             </span>
