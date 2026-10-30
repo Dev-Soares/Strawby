@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { PencilSimple, Fire, Sparkle } from '@phosphor-icons/react'
+import { Flame, Pencil, Sparkles } from 'lucide-react'
 import AppLayout from '../shared/layouts/AppLayout'
 import PlanEditModal from '../modules/plan/components/PlanEditModal'
 import PlanEmptyState from '../modules/plan/components/PlanEmptyState'
@@ -74,14 +74,14 @@ export default function PlanPage() {
                   onClick={openConfirmDelete}
                   className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer"
                 >
-                  <Sparkle size={18} weight="fill" />
+                  <Sparkles size={18} />
                   Gerar plano
                 </button>
                 <button
                   onClick={openEdit}
                   className="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-200 text-sm font-bold px-4 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer"
                 >
-                  <PencilSimple size={18} weight="bold" />
+                  <Pencil size={18} />
                   Editar
                 </button>
                 <DownloadPlanPdfButton patientId={plan.patientId} compact />
@@ -97,58 +97,73 @@ export default function PlanPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <div className="flex items-center gap-2 mb-6">
-                  <Fire size={16} weight="fill" className="text-red-500" />
-                  <span className="text-xs font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest transition-colors duration-300">Meta calórica diária</span>
-                </div>
-
-                <div className="mb-2">
-                  <span className="font-display text-8xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums transition-colors duration-300">
-                    {plan.calories.toLocaleString('pt-BR')}
+                <div className="flex items-center gap-2.5 mb-6">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-(--macro-calories-light)">
+                    <Flame size={18} className="text-(--macro-calories)" />
+                  </span>
+                  <span className="text-base font-bold tracking-tight text-(--macro-calories)">
+                    Meta calórica diária
                   </span>
                 </div>
-                <p className="text-base font-semibold text-neutral-500 dark:text-neutral-400 transition-colors duration-300">kcal por dia</p>
+
+                <div className="flex items-baseline gap-2">
+                  <span className="font-display text-7xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums transition-colors duration-300 sm:text-8xl">
+                    {plan.calories.toLocaleString('pt-BR')}
+                  </span>
+                  <span className="text-base font-semibold text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
+                    kcal
+                  </span>
+                </div>
+                <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
+                  É o total que as refeições do dia devem somar.
+                </p>
               </motion.div>
 
-              {/* Right — macro cards stacked */}
-              <div className="flex flex-col gap-4">
+              {/* Right — macros do plano */}
+              <motion.div
+                className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm divide-y divide-neutral-100 dark:divide-neutral-800 transition-colors duration-300"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
+              >
                 {macroRows.map((macro, index) => (
-                    <motion.div
-                      key={macro.field}
-                      className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm px-6 py-5 transition-colors duration-300"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.4, delay: 0.2 + index * 0.08 }}
-                    >
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2.5">
-                          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: macro.color }} />
-                          <span className="text-xs font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest transition-colors duration-300">{macro.label}</span>
-                          <span
-                            className="text-xs font-bold tabular-nums px-2 py-0.5 rounded-full"
-                            style={{ backgroundColor: macro.color, color: macro.track }}
-                          >
-                            {macro.pct}%
-                          </span>
-                        </div>
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tabular-nums transition-colors duration-300">{macro.value}</span>
-                          <span className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 transition-colors duration-300">g</span>
-                        </div>
-                      </div>
+                  <div key={macro.field} className="px-6 py-5">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <span
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+                        style={{ backgroundColor: macro.track }}
+                      >
+                        <macro.icon size={17} style={{ color: macro.color }} />
+                      </span>
+                      <span
+                        className="min-w-0 truncate text-base font-bold tracking-tight"
+                        style={{ color: macro.color }}
+                      >
+                        {macro.label}
+                      </span>
+                      <span className="shrink-0 text-xs font-bold tabular-nums text-neutral-400 dark:text-neutral-500">
+                        {macro.pct}% das calorias
+                      </span>
+                      <span className="ml-auto flex shrink-0 items-baseline gap-1">
+                        <span className="font-display text-2xl font-extrabold tabular-nums leading-none text-neutral-950 dark:text-neutral-100 transition-colors duration-300">
+                          {macro.value}
+                        </span>
+                        <span className="text-sm font-semibold text-neutral-400 dark:text-neutral-500">g</span>
+                      </span>
+                    </div>
 
-                      <div className="h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: macro.track }}>
-                        <motion.div
-                          className="h-full rounded-full"
-                          style={{ backgroundColor: macro.color }}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${macro.pct}%` }}
-                          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.4 + index * 0.1 }}
-                        />
-                      </div>
-                    </motion.div>
+                    <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: macro.track }}>
+                      <motion.div
+                        className="h-full rounded-full"
+                        style={{ backgroundColor: macro.color }}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${macro.pct}%` }}
+                        transition={{ duration: 0.8, ease: 'easeOut', delay: 0.4 + index * 0.1 }}
+                      />
+                    </div>
+                  </div>
                 ))}
-              </div>
+              </motion.div>
             </div>
           </div>
 

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { AnimatePresence, motion } from 'framer-motion'
 import { planSchema, type PlanData } from '../types/plan'
-import { X, Fire, FloppyDisk, PencilSimple } from '@phosphor-icons/react'
+import { Flame, Pencil, Save, X } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Spinner from '@/shared/components/Spinner'
 import { MACROS } from '@/shared/config/macros'
@@ -70,49 +70,69 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
                 onClick={onClose}
                 className="w-9 h-9 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
               >
-                <X size={15} weight="bold" className="text-neutral-600 dark:text-neutral-400 transition-colors duration-300" />
+                <X size={15} className="text-neutral-600 dark:text-neutral-400 transition-colors duration-300" />
               </button>
             </div>
 
             <form onSubmit={onSubmit} className="max-h-[70vh] sm:max-h-none overflow-y-auto">
               {/* Calorie section */}
-              <div className="mx-5 sm:mx-8 rounded-2xl bg-linear-to-br from-red-50 to-red-100/40 dark:from-red-950/30 dark:to-red-900/20 border border-red-100 dark:border-red-900/30 px-4 sm:px-8 py-5 sm:py-7 transition-colors duration-300">
-                <div className="flex items-center gap-2 mb-4 sm:mb-6">
-                  <Fire size={14} weight="fill" className="text-red-500" />
-                  <span className="text-[10px] font-extrabold text-red-600 dark:text-red-400 uppercase tracking-[0.12em] transition-colors duration-300">Meta calórica diária</span>
+              <div className="mx-5 sm:mx-8 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-5 transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-800/40 sm:px-8 sm:py-7">
+                <div className="mb-5 flex items-center gap-2.5 sm:mb-6">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-(--macro-calories-light)">
+                    <Flame size={18} className="text-(--macro-calories)" />
+                  </span>
+                  <span className="text-base font-bold tracking-tight text-(--macro-calories)">
+                    Meta calórica diária
+                  </span>
                 </div>
 
-                <div className="flex items-center justify-center gap-3 sm:gap-5">
-                  <div className="text-center flex-1 min-w-0">
-                    <div className="flex items-center justify-center gap-2">
-                      <input
-                        {...register('calories', { valueAsNumber: true })}
-                        type="number"
-                        {...nonNegativeInputProps}
-                        disabled={isPending}
-                        className="font-display text-5xl sm:text-7xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 border-red-300 focus:border-red-500 pb-1 cursor-text transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
-                      />
-                      <PencilSimple size={18} weight="bold" className="text-red-400 shrink-0 -mb-1" />
-                    </div>
-                    <p className="text-xs sm:text-sm font-semibold text-neutral-400 dark:text-neutral-500 mt-2 transition-colors duration-300">kcal / dia · mín 1000 · máx 5000</p>
-                  </div>
+                <div className="flex items-end justify-center gap-2">
+                  <input
+                    {...register('calories', { valueAsNumber: true })}
+                    type="number"
+                    {...nonNegativeInputProps}
+                    disabled={isPending}
+                    className="min-w-0 flex-1 cursor-text border-b-2 border-(--macro-calories-light) bg-transparent pb-1 text-center font-display text-5xl font-extrabold leading-none tabular-nums text-neutral-950 outline-none transition-colors duration-150 [appearance:textfield] focus:border-(--macro-calories) disabled:cursor-not-allowed disabled:opacity-50 dark:text-neutral-100 sm:text-7xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  />
+                  <span className="shrink-0 pb-2 text-base font-semibold text-neutral-400 transition-colors duration-300 dark:text-neutral-500">
+                    kcal
+                  </span>
+                  <Pencil size={18} className="mb-2.5 shrink-0 text-(--macro-calories)" />
                 </div>
+                <p className="mt-3 text-center text-sm text-neutral-500 transition-colors duration-300 dark:text-neutral-400">
+                  mín 1000 · máx 5000 kcal por dia
+                </p>
               </div>
 
               {/* Macro cards */}
               <div className="grid grid-cols-3 gap-2 sm:gap-4 mx-5 sm:mx-8 mt-4 sm:mt-5">
                 {MACROS.map((macro) => {
                   const pct = macroKcalShare(macro.field, watched)
+                  // CSS vars no lugar do hex do config: o hex é sempre o tom claro.
+                  const color = `var(--macro-${macro.field})`
+                  const track = `var(--macro-${macro.field}-light)`
+                  const MacroIcon = macro.icon
                   return (
                   <div
                     key={macro.field}
-                    className={`${macro.bg} ${macro.border} border rounded-2xl px-2 sm:px-5 py-4 sm:py-5 flex flex-col items-center`}
+                    className="flex flex-col items-center rounded-2xl border border-neutral-200 bg-neutral-50 px-2 py-4 transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-800/40 sm:px-5 sm:py-5"
                   >
-                    <span className={`text-[8px] sm:text-[9px] font-extrabold uppercase tracking-[0.14em] ${macro.textColor} mb-3 sm:mb-4`}>
-                      {macro.label}
-                    </span>
+                    <div className="mb-3 flex w-full min-w-0 items-center justify-center gap-2 sm:mb-4">
+                      <span
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+                        style={{ backgroundColor: track }}
+                      >
+                        <MacroIcon size={17} style={{ color }} />
+                      </span>
+                      <span
+                        className="min-w-0 truncate text-sm font-bold tracking-tight"
+                        style={{ color }}
+                      >
+                        {macro.label}
+                      </span>
+                    </div>
 
-                    <div className="flex items-end justify-center gap-0.5 sm:gap-1 mb-3 w-full">
+                    <div className="mb-3 flex w-full items-end justify-center gap-0.5 sm:gap-1">
                       <input
                         {...register(macro.field, { valueAsNumber: true })}
                         type="number"
@@ -120,28 +140,31 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
                         readOnly={macro.field === 'carbs'}
                         tabIndex={macro.field === 'carbs' ? -1 : undefined}
                         disabled={isPending}
-                        className={`font-display text-3xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums bg-transparent outline-none text-center min-w-0 flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-b-2 pb-0.5 transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed ${macro.inputBorder} ${macro.field === 'carbs' ? 'cursor-default' : 'cursor-text'}`}
+                        style={{ borderColor: track }}
+                        className={`min-w-0 flex-1 border-b-2 bg-transparent pb-0.5 text-center font-display text-3xl font-extrabold leading-none tabular-nums text-neutral-950 outline-none transition-colors duration-150 [appearance:textfield] disabled:cursor-not-allowed disabled:opacity-50 dark:text-neutral-100 sm:text-5xl [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${macro.field === 'carbs' ? 'cursor-default' : 'cursor-text'}`}
                       />
-                      <span className="text-sm sm:text-base font-bold text-neutral-400 dark:text-neutral-500 pb-1 shrink-0 transition-colors duration-300">g</span>
+                      <span className="shrink-0 pb-1 text-sm font-semibold text-neutral-400 transition-colors duration-300 dark:text-neutral-500 sm:text-base">
+                        g
+                      </span>
                       {macro.field !== 'carbs' && (
-                        <PencilSimple size={14} weight="bold" className={`shrink-0 mb-1.5 ${macro.textColor}`} />
+                        <Pencil size={14} className="mb-1.5 shrink-0" style={{ color }} />
                       )}
                     </div>
 
                     <div
-                      className="flex items-baseline gap-1 px-2.5 py-1 rounded-full"
-                      style={{ backgroundColor: `${macro.color}1f` }}
+                      className="flex items-baseline gap-1 rounded-full px-3 py-1"
+                      style={{ backgroundColor: track }}
                     >
-                      <span className="text-xs sm:text-sm font-extrabold tabular-nums" style={{ color: macro.color }}>
+                      <span className="text-xs font-extrabold tabular-nums sm:text-sm" style={{ color }}>
                         {pct}%
                       </span>
-                      <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wide" style={{ color: macro.color }}>
+                      <span className="text-[10px] font-bold sm:text-xs" style={{ color }}>
                         kcal
                       </span>
                     </div>
 
                     {macro.field === 'carbs' && (
-                      <p className="text-[8px] sm:text-[9px] text-neutral-400 dark:text-neutral-500 mt-2 text-center transition-colors duration-300">
+                      <p className="mt-2 text-center text-[10px] text-neutral-400 transition-colors duration-300 dark:text-neutral-500">
                         ajusta automaticamente
                       </p>
                     )}
@@ -163,12 +186,12 @@ export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, 
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="flex-1 py-3.5 rounded-xl bg-neutral-950 hover:bg-neutral-800 dark:bg-neutral-100 dark:hover:bg-neutral-200 text-sm font-bold text-white dark:text-neutral-950 flex items-center justify-center gap-2 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl bg-red-600 py-3.5 text-sm font-bold text-white transition-colors duration-200 hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {isPending ? (
                     <Spinner size={16} />
                   ) : (
-                    <FloppyDisk size={16} weight="bold" />
+                    <Save size={16} />
                   )}
                   {isPending ? 'Salvando…' : 'Salvar plano'}
                 </button>

@@ -1,5 +1,4 @@
-import type { Icon } from '@phosphor-icons/react'
-
+import type { LucideIcon as Icon } from 'lucide-react'
 export interface MealTypeConfig {
   icon: Icon
   label: string

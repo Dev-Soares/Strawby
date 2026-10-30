@@ -45,6 +45,9 @@ export const usePlanPage = () => {
   const macroRows = plan
     ? MACROS.map((macro) => ({
         ...macro,
+        // CSS vars no lugar do hex do config: o hex é sempre o tom claro.
+        color: `var(--macro-${macro.field})`,
+        track: `var(--macro-${macro.field}-light)`,
         value: plan[macro.field],
         pct: macroKcalShare(macro.field, plan),
       }))

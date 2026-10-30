@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { planSchema, type PlanData } from '../types/plan'
-import { Fire, FloppyDisk } from '@phosphor-icons/react'
+import { Flame, Save } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { MACROS } from '@/shared/config/macros'
 import { nonNegativeInputProps } from '@/shared/utils/nonNegativeInputProps'
@@ -37,7 +37,7 @@ export default function PlanForm({ defaultValues }: PlanFormProps) {
         <div className="flex items-start justify-between gap-6">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <Fire size={16} weight="fill" className="text-red-500" />
+              <Flame size={16} className="text-red-500" />
               <h2 className="text-sm font-bold text-neutral-900 dark:text-neutral-200 transition-colors duration-300">Meta calórica diária</h2>
             </div>
             <p className="text-xs text-neutral-400 dark:text-neutral-500 transition-colors duration-300">Energia total consumida por dia</p>
@@ -113,7 +113,7 @@ export default function PlanForm({ defaultValues }: PlanFormProps) {
         type="submit"
         className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-2xl transition-colors duration-200 cursor-pointer"
       >
-        <FloppyDisk size={18} weight="bold" />
+        <Save size={18} />
         Salvar Plano
       </button>
     </form>

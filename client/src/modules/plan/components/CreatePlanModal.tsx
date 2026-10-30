@@ -2,15 +2,7 @@ import { useState, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
-import {
-  X,
-  Fire,
-  PencilSimple,
-  Sparkle,
-  ArrowLeft,
-  ArrowRight,
-  FloppyDisk,
-} from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight, Flame, Pencil, Save, Sparkles, X } from 'lucide-react'
 import {
   manualPlanSchema,
   generatePlanSchema,
@@ -96,7 +88,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
               <div className="flex items-center gap-3">
                 {showBack && (
                   <button type="button" onClick={handleBack} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer">
-                    <ArrowLeft size={15} weight="bold" className="text-neutral-600 dark:text-neutral-400" />
+                    <ArrowLeft size={15} className="text-neutral-600 dark:text-neutral-400" />
                   </button>
                 )}
                 <div>
@@ -104,7 +96,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                 </div>
               </div>
               <button type="button" onClick={handleClose} className="w-9 h-9 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer">
-                <X size={15} weight="bold" className="text-neutral-600 dark:text-neutral-400" />
+                <X size={15} className="text-neutral-600 dark:text-neutral-400" />
               </button>
             </div>
 
@@ -116,19 +108,19 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                   <button type="button" onClick={() => setMode('manual')}
                     className="group flex items-center gap-4 p-5 border border-neutral-200 dark:border-neutral-700 rounded-2xl hover:border-neutral-300 dark:hover:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all duration-200 text-left cursor-pointer">
                     <div className="w-11 h-11 rounded-xl bg-neutral-100 dark:bg-neutral-800 group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700 flex items-center justify-center shrink-0 transition-colors duration-200">
-                      <PencilSimple size={20} weight="bold" className="text-neutral-700 dark:text-neutral-300" />
+                      <Pencil size={20} className="text-neutral-700 dark:text-neutral-300" />
                     </div>
                     <div>
                       <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100">Inserir manualmente</p>
                       <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5">Já sei os valores e quero inserir direto</p>
                     </div>
-                    <ArrowRight size={16} weight="bold" className="text-neutral-300 dark:text-neutral-600 ml-auto shrink-0" />
+                    <ArrowRight size={16} className="text-neutral-300 dark:text-neutral-600 ml-auto shrink-0" />
                   </button>
 
                   <button type="button" onClick={() => setMode('generate')}
                     className="group flex items-center gap-4 p-5 bg-red-600 hover:bg-red-700 rounded-2xl transition-all duration-200 text-left cursor-pointer">
                     <div className="w-11 h-11 rounded-xl bg-red-500 group-hover:bg-red-600 flex items-center justify-center shrink-0 transition-colors duration-200">
-                      <Sparkle size={20} weight="fill" className="text-white" />
+                      <Sparkles size={20} className="text-white" />
                     </div>
                     <div>
                       <p className="text-sm font-bold text-white">Gerar plano recomendado</p>
@@ -136,7 +128,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                         {isNutritionist ? 'Calculado com base no perfil do paciente' : 'Calculado com base no meu perfil'}
                       </p>
                     </div>
-                    <ArrowRight size={16} weight="bold" className="text-red-300 ml-auto shrink-0" />
+                    <ArrowRight size={16} className="text-red-300 ml-auto shrink-0" />
                   </button>
                 </div>
               )}
@@ -146,7 +138,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                 <form onSubmit={handleManualSubmit} className="flex flex-col gap-4">
                   <div className="bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/50 rounded-2xl px-5 py-4">
                     <div className="flex items-center gap-2 mb-3">
-                      <Fire size={14} weight="fill" className="text-red-500" />
+                      <Flame size={14} className="text-red-500" />
                       <span className="text-[10px] font-extrabold text-red-600 dark:text-red-400 uppercase tracking-[0.12em]">Meta calórica</span>
                     </div>
                     <div className="flex items-end gap-2 w-full">
@@ -181,7 +173,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
 
                   <button type="submit" disabled={isPending}
                     className="w-full flex items-center justify-center gap-2 bg-neutral-950 dark:bg-neutral-50 hover:bg-neutral-800 dark:hover:bg-neutral-200 text-white dark:text-neutral-950 text-sm font-bold py-3.5 rounded-xl transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-1">
-                    {isPending ? <Spinner size={16} className="border-white/30 dark:border-neutral-950/30 border-t-white dark:border-t-neutral-950" /> : <FloppyDisk size={16} weight="bold" />}
+                    {isPending ? <Spinner size={16} className="border-white/30 dark:border-neutral-950/30 border-t-white dark:border-t-neutral-950" /> : <Save size={16} />}
                     {isPending ? 'Salvando…' : 'Salvar plano'}
                   </button>
                 </form>
@@ -208,7 +200,7 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
 
                   <button type="button" onClick={handleGenerateSubmit} disabled={isPending}
                     className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold py-3.5 rounded-xl transition-colors duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2">
-                    {isPending ? <Spinner size={16} /> : <Sparkle size={16} weight="fill" />}
+                    {isPending ? <Spinner size={16} /> : <Sparkles size={16} />}
                     {isPending ? 'Gerando…' : isNutritionist ? 'Gerar plano' : 'Gerar meu plano'}
                   </button>
                 </div>

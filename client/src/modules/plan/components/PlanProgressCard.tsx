@@ -1,4 +1,4 @@
-import { Target, Check } from '@phosphor-icons/react'
+import { Check, Target } from 'lucide-react'
 import { usePlanProgress } from '../hooks/usePlanProgress'
 import PlanProgressCardSkeleton from '../skeletons/PlanProgressCardSkeleton'
 
@@ -18,7 +18,7 @@ export default function PlanProgressCard() {
       <div className="flex items-start justify-between gap-4 mb-6">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/40 flex items-center justify-center shrink-0">
-            <Target size={18} weight="fill" className="text-red-500" />
+            <Target size={18} className="text-red-500" />
           </div>
           <div>
             <h3 className="font-display text-lg font-extrabold text-neutral-950 dark:text-neutral-100 leading-tight tracking-tight transition-colors duration-300">
@@ -46,14 +46,22 @@ export default function PlanProgressCard() {
               className="rounded-2xl border border-neutral-100 dark:border-neutral-800 bg-neutral-50/70 dark:bg-neutral-800/30 p-4 transition-colors duration-300"
             >
               <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: row.color }} />
-                  <span className="text-xs font-bold text-neutral-500 dark:text-neutral-400 uppercase tracking-wide transition-colors duration-300">
+                <div className="flex min-w-0 items-center gap-2">
+                  <span
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+                    style={{ backgroundColor: row.trackColor }}
+                  >
+                    <row.icon size={16} style={{ color: row.color }} />
+                  </span>
+                  <span
+                    className="min-w-0 truncate text-base font-bold tracking-tight"
+                    style={{ color: row.color }}
+                  >
                     {row.label}
                   </span>
                 </div>
                 {done && (
-                  <Check size={14} weight="bold" className="text-green-600 dark:text-green-500" />
+                  <Check size={14} className="text-green-600 dark:text-green-500" />
                 )}
               </div>
 

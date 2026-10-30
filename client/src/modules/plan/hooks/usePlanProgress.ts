@@ -3,13 +3,16 @@ import { useGetPlanMeals } from '../../meal/hooks/useGetPlanMeals'
 import type { PlanProgressKey, PlanProgressRow } from '../types/planProgress'
 import { NUTRIENTS } from '@/shared/config/macros'
 
-const config: Array<Pick<PlanProgressRow, 'key' | 'label' | 'unit' | 'color' | 'trackColor'>> =
-  NUTRIENTS.map(({ field, label, unit, color, track }) => ({
+// Cor vem das CSS vars (`--macro-*`), não do hex do config: as vars trocam de
+// tom no tema escuro, o hex é sempre o tom claro.
+const config: Array<Pick<PlanProgressRow, 'key' | 'label' | 'icon' | 'unit' | 'color' | 'trackColor'>> =
+  NUTRIENTS.map(({ field, label, icon, unit }) => ({
     key: field as PlanProgressKey,
     label,
+    icon,
     unit,
-    color,
-    trackColor: track,
+    color: `var(--macro-${field})`,
+    trackColor: `var(--macro-${field}-light)`,
   }))
 
 export const usePlanProgress = () => {
