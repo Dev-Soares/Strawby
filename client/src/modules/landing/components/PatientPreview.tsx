@@ -4,7 +4,7 @@ import StatusDot from './StatusDot'
 const week = ['good', 'warn', 'bad', 'good', 'empty', 'empty', 'empty'] as const
 const days = ['S', 'T', 'Q', 'Q', 'S', 'S', 'D']
 const macros = [
-  { label: 'Proteína', value: 82,  max: 150, color: '#f59e0b' },
+  { label: 'Proteína', value: 82,  max: 150, color: '#10b981' },
   { label: 'Carbos',   value: 200, max: 280, color: '#3b82f6' },
   { label: 'Gordura',  value: 48,  max: 73,  color: '#a855f7' },
 ]
