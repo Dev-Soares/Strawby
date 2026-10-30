@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { CaretLeft, CaretRight } from '@phosphor-icons/react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useDatePicker } from '../hooks/useDatePicker'
 
 interface DatePickerPanelProps {
@@ -42,7 +42,7 @@ export default function DatePickerPanel({ value, onChange, onClose, align }: Dat
           aria-label="Mês anterior"
           className="w-8 h-8 rounded-xl flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors duration-150 cursor-pointer"
         >
-          <CaretLeft size={15} weight="bold" />
+          <ChevronLeft size={15} />
         </button>
 
         <span className="text-sm font-extrabold text-neutral-900 dark:text-neutral-100 tracking-tight">
@@ -55,7 +55,7 @@ export default function DatePickerPanel({ value, onChange, onClose, align }: Dat
           aria-label="Próximo mês"
           className="w-8 h-8 rounded-xl flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors duration-150 cursor-pointer"
         >
-          <CaretRight size={15} weight="bold" />
+          <ChevronRight size={15} />
         </button>
       </div>
 

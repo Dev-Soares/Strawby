@@ -1,10 +1,9 @@
 import { Toaster, toast, resolveValue } from 'react-hot-toast'
 import { AnimatePresence, motion } from 'framer-motion'
-import { CheckCircle, WarningCircle, Info, X } from '@phosphor-icons/react'
-
-const typeIcon: Record<string, { icon: string; Icon: typeof CheckCircle }> = {
-  success: { icon: 'text-emerald-500', Icon: CheckCircle },
-  error: { icon: 'text-red-500', Icon: WarningCircle },
+import { CircleAlert, CircleCheck, Info, X } from 'lucide-react'
+const typeIcon: Record<string, { icon: string; Icon: typeof CircleCheck }> = {
+  success: { icon: 'text-emerald-500', Icon: CircleCheck },
+  error: { icon: 'text-red-500', Icon: CircleAlert },
   blank: { icon: 'text-neutral-400', Icon: Info },
 }
 
@@ -34,7 +33,7 @@ export default function StrawbyToaster() {
                 className="flex items-center gap-2.5 max-w-sm rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-lg px-4 py-3"
               >
                 {t.type !== 'loading' && (
-                  <cfg.Icon size={20} weight="fill" className={`shrink-0 ${cfg.icon}`} />
+                  <cfg.Icon size={20} className={`shrink-0 ${cfg.icon}`} />
                 )}
 
                 <span className="flex-1 text-sm font-bold text-neutral-900 dark:text-neutral-100 leading-snug">
@@ -47,7 +46,7 @@ export default function StrawbyToaster() {
                     onClick={() => toast.dismiss(t.id)}
                     className="shrink-0 -mr-1 w-6 h-6 flex items-center justify-center rounded-full text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
                   >
-                    <X size={12} weight="bold" />
+                    <X size={12} />
                   </button>
                 )}
               </motion.div>

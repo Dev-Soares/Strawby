@@ -1,5 +1,4 @@
-import { Scales } from '@phosphor-icons/react'
-
+import { Scale } from 'lucide-react'
 interface CurrentWeightBadgeProps {
   latestWeight: number | null
   isPending: boolean
@@ -9,7 +8,7 @@ export default function CurrentWeightBadge({ latestWeight, isPending }: CurrentW
   return (
     <div className="flex-1 min-w-0 flex items-center gap-4">
       <div className="w-12 h-12 rounded-2xl bg-red-600 flex items-center justify-center shrink-0">
-        <Scales size={22} weight="bold" className="text-white" />
+        <Scale size={22} className="text-white" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-[10px] font-black text-red-400 dark:text-red-500 uppercase tracking-widest mb-0.5">
