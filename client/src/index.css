@@ -48,10 +48,25 @@
 }
 
 html, body {
-  overflow-x: clip;
   max-width: 100%;
   scroll-behavior: smooth;
   background: none;
+}
+
+/* O clip fica no body, nao no html: overflow nao-visible no root cancela a
+   propagacao do overflow/scrollbar-gutter pro viewport, e ai a regra abaixo
+   nao reserva calha nenhuma. */
+body {
+  overflow-x: clip;
+}
+
+/* Reserva a calha da scrollbar sempre, mesmo em página curta. Elemento fixed
+   se posiciona pelo bloco de contenção inicial, que exclui a scrollbar (12px
+   aqui, não é overlay) -- sem isso a TabBar centralizada desloca 6px entre
+   página com e sem scroll, e o layout todo pula ao abrir modal que trava o
+   scroll do body. */
+html {
+  scrollbar-gutter: stable;
 }
 
 .dark html,

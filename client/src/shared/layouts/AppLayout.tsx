@@ -41,7 +41,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
           <button
             onClick={() => setMenuOpen((o) => !o)}
-            className={`flex flex-col gap-1.5 sm:gap-2 cursor-pointer p-3 shrink-0 ${menuOpen ? 'fixed top-3 sm:top-4 right-4 sm:right-7 z-80' : 'relative'}`}
+            className="relative z-80 flex flex-col gap-1.5 sm:gap-2 cursor-pointer p-3 shrink-0"
             aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
           >
             <span className={`block h-0.75 transition-all duration-300 origin-center rounded-full ${menuOpen ? 'w-7 sm:w-8 bg-white rotate-45 translate-y-2.5 sm:translate-y-3' : 'w-7 sm:w-8 bg-neutral-950 dark:bg-neutral-100'}`} />
