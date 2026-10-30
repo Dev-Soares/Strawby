@@ -1,4 +1,4 @@
-import { CookingPot } from '@phosphor-icons/react'
+import { CookingPot } from 'lucide-react'
 import type { SelectFoodTab } from '../types/selectableItem'
 
 type TabDef = { key: SelectFoodTab; label: string; icon?: typeof CookingPot }
@@ -29,7 +29,7 @@ export default function SelectFoodTabs({ tab, onChange, includeRecipes }: Props)
               : 'text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300'
           }`}
         >
-          {t.icon && <t.icon size={16} weight="bold" />}
+          {t.icon && <t.icon size={16} />}
           {t.label}
         </button>
       ))}

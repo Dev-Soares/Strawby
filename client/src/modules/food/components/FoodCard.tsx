@@ -1,4 +1,4 @@
-import { Fire } from '@phosphor-icons/react'
+import { Flame } from 'lucide-react'
 import type { Food } from '../types/food'
 
 interface FoodCardProps {
@@ -22,7 +22,7 @@ export default function FoodCard({ food }: FoodCardProps) {
       </div>
 
       <div className="flex items-center gap-1.5 mb-4">
-        <Fire size={13} weight="fill" className="text-red-500 shrink-0" />
+        <Flame size={13} className="text-red-500 shrink-0" />
         <span className="text-xl font-extrabold text-neutral-900 dark:text-neutral-200 tabular-nums leading-none transition-colors duration-300">
           {Math.round(food.calories)}
         </span>

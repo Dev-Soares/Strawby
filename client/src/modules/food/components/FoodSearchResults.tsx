@@ -1,4 +1,4 @@
-import { MagnifyingGlass } from '@phosphor-icons/react'
+import { Search } from 'lucide-react'
 import FoodGrid from './FoodGrid'
 import FoodSkeleton from '../skeletons/FoodSkeleton'
 import { canSearch } from '../config/search'
@@ -18,7 +18,7 @@ export default function FoodSearchResults({ search, foods, isPending, isError }:
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
         <div className="w-16 h-16 rounded-2xl bg-red-50 dark:bg-red-950/40 flex items-center justify-center mb-5 transition-colors duration-300">
-          <MagnifyingGlass size={26} weight="bold" className="text-red-400" />
+          <Search size={26} className="text-red-400" />
         </div>
         <p className="text-base font-semibold text-neutral-700 dark:text-neutral-300 mb-1 transition-colors duration-300">
           Busque um alimento
