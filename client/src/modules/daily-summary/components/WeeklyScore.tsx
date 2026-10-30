@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion'
-import { Trophy } from '@phosphor-icons/react'
-
+import { Trophy } from 'lucide-react'
 interface WeeklyScoreProps {
   score: number
   maxScore: number
@@ -41,7 +40,7 @@ export default function WeeklyScore({ score, maxScore }: WeeklyScoreProps) {
         <div className="absolute left-0 top-5 bottom-4 sm:top-7 sm:bottom-6 w-1 bg-red-600 rounded-r-full" />
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="hidden sm:flex w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-950/40 items-center justify-center shrink-0 transition-colors duration-300">
-            <Trophy size={22} weight="duotone" className="text-red-600" />
+            <Trophy size={22} className="text-red-600" />
           </div>
           <div className="min-w-0">
             <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-[0.22em] sm:tracking-[0.3em] text-neutral-400 dark:text-neutral-500 transition-colors duration-300">

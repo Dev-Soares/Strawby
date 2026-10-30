@@ -1,14 +1,10 @@
 import { motion } from 'framer-motion'
+import { Gauge } from 'lucide-react'
 import { useGetDailyLiveScore } from '../hooks/useGetDailyLiveScore'
 import DailyScoreCardSkeleton from '../skeletons/DailyScoreCardSkeleton'
 import ScoreCircle from './ScoreCircle'
 import { toLocalISODate } from '@/shared/utils/date'
-
-function getScoreColor(score: number) {
-  if (score >= 8) return '#10b981'
-  if (score >= 5) return '#f59e0b'
-  return '#dc2626'
-}
+import { getScoreTier } from '@/shared/config/score'
 
 export default function DailyScoreCard() {
   const today = toLocalISODate()
@@ -17,27 +13,45 @@ export default function DailyScoreCard() {
   if (isPending) return <DailyScoreCardSkeleton />
   if (isError || score === undefined) return null
 
-  const color = getScoreColor(score)
+  const tier = getScoreTier(score)
+  const TierIcon = tier.icon
 
   return (
-    <section className="mb-5">
-      <div className="mb-5 px-1">
-        <h2 className="font-display text-xl font-extrabold text-neutral-900 dark:text-white tracking-tight leading-tight transition-colors duration-300">
-          Score do dia
-        </h2>
-        <p className="font-display text-sm font-medium text-neutral-400 dark:text-neutral-500 mt-0.5 transition-colors duration-300">
-          Calculado a partir dos seus registros de hoje
-        </p>
+    <motion.div
+      className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-6 sm:p-8 transition-colors duration-300"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.1 }}
+    >
+      <div className="flex items-center gap-2.5 mb-6">
+        <span
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+          style={{ backgroundColor: tier.track }}
+        >
+          <Gauge size={18} style={{ color: tier.color }} />
+        </span>
+        <span className="text-base font-bold tracking-tight" style={{ color: tier.color }}>
+          Score de hoje
+        </span>
       </div>
 
-      <motion.div
-        className="flex flex-col items-center text-center py-2"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <ScoreCircle score={score} color={color} />
-      </motion.div>
-    </section>
+      <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center sm:gap-8">
+        <ScoreCircle score={score} color={tier.color} track={tier.track} />
+
+        <div className="min-w-0 flex-1 text-center sm:text-left">
+          <span
+            className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold tracking-tight"
+            style={{ backgroundColor: tier.track, color: tier.color }}
+          >
+            <TierIcon size={14} />
+            {tier.label}
+          </span>
+
+          <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
+            {tier.description}
+          </p>
+        </div>
+      </div>
+    </motion.div>
   )
 }

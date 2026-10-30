@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { CalendarBlank, CaretLeft, CaretRight } from '@phosphor-icons/react'
+import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
 import { toLocalISODate } from '@/shared/utils/date'
 import DatePickerPopover from '@/shared/components/DatePickerPopover'
 import { useDay } from '../contexts/DayContext'
@@ -52,7 +52,7 @@ export default function DaySelector() {
           className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 transition-all duration-150 cursor-pointer shrink-0"
           aria-label="Dia anterior"
         >
-          <CaretLeft size={18} weight="bold" />
+          <ChevronLeft size={18} />
         </button>
 
           <div className="relative">
@@ -62,7 +62,7 @@ export default function DaySelector() {
               aria-expanded={pickerOpen}
               className="flex items-center gap-2 sm:gap-2.5 text-left cursor-pointer group"
             >
-              <CalendarBlank size={16} weight="bold" className="text-red-500" />
+              <Calendar size={16} className="text-red-500" />
               <span className="text-sm sm:text-base font-extrabold text-neutral-900 dark:text-neutral-100 group-hover:text-red-600 transition-colors duration-150">
                 {formattedHeader}
               </span>
@@ -82,7 +82,7 @@ export default function DaySelector() {
           className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 transition-all duration-150 cursor-pointer shrink-0"
           aria-label="Próximo dia"
         >
-          <CaretRight size={18} weight="bold" />
+          <ChevronRight size={18} />
         </button>
       </div>
 
