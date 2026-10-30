@@ -1,4 +1,4 @@
-import { CookingPot, PencilSimple, Check } from '@phosphor-icons/react'
+import { Check, CookingPot, Pencil } from 'lucide-react'
 import Spinner from '@/shared/components/Spinner'
 
 type Props = {
@@ -18,7 +18,7 @@ export default function RecipeNameEditor({
   return (
     <div className="flex items-center gap-3">
       <div className="w-11 h-11 rounded-xl flex items-center justify-center bg-rose-50 dark:bg-rose-950/40 transition-colors duration-300">
-        <CookingPot size={22} weight="bold" className="text-rose-600" />
+        <CookingPot size={22} className="text-rose-600" />
       </div>
       {isEditing ? (
         <div className="flex items-center gap-2 flex-1">
@@ -43,7 +43,7 @@ export default function RecipeNameEditor({
             {isPending ? (
               <Spinner size={16} className="border-rose-300 border-t-rose-600" />
             ) : (
-              <Check size={16} weight="bold" className="text-rose-600" />
+              <Check size={16} className="text-rose-600" />
             )}
           </button>
         </div>
@@ -57,7 +57,7 @@ export default function RecipeNameEditor({
             onClick={onStart}
             className="w-8 h-8 rounded-xl hover:bg-neutral-100 dark:hover:bg-neutral-800 flex items-center justify-center transition-colors duration-300 cursor-pointer shrink-0"
           >
-            <PencilSimple size={14} weight="bold" className="text-neutral-400 dark:text-neutral-500" />
+            <Pencil size={14} className="text-neutral-400 dark:text-neutral-500" />
           </button>
         </div>
       )}

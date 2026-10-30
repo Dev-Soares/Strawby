@@ -1,4 +1,4 @@
-import { Fire } from '@phosphor-icons/react'
+import { Flame } from 'lucide-react'
 import type { RecipeTotals } from '../types/recipe'
 
 type Props = { totals: RecipeTotals }
@@ -14,7 +14,7 @@ export default function RecipeTotalsCard({ totals }: Props) {
   return (
     <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-5 sm:p-6 mb-6 transition-colors duration-300">
       <div className="flex items-center gap-2 mb-5">
-        <Fire size={18} weight="fill" className="text-rose-500" />
+        <Flame size={18} className="text-rose-500" />
         <h2 className="text-sm font-black uppercase tracking-widest text-rose-600">
           Totais da receita
         </h2>

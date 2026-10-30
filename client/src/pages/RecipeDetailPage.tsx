@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom'
-import { ArrowLeft, Plus, Trash } from '@phosphor-icons/react'
+import { ArrowLeft, Plus, Trash2 } from 'lucide-react'
 import AppLayout from '@/shared/layouts/AppLayout'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 import Spinner from '@/shared/components/Spinner'
@@ -55,7 +55,7 @@ export default function RecipeDetailPage() {
             onClick={() => navigate('/app/foods')}
             className="flex items-center gap-2 mb-4 text-sm font-bold text-neutral-500 dark:text-neutral-400 hover:text-red-600 transition-colors duration-150 cursor-pointer"
           >
-            <ArrowLeft size={18} weight="bold" />
+            <ArrowLeft size={18} />
             Voltar
           </button>
           <RecipeNameEditor
@@ -109,7 +109,7 @@ export default function RecipeDetailPage() {
             onClick={() => navigate(`/app/foods/select?recipeId=${recipe.id}`)}
             className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-2xl text-sm font-bold text-white shadow-md transition-colors duration-150 cursor-pointer hover:brightness-110 bg-rose-600"
           >
-            <Plus size={16} weight="bold" />
+            <Plus size={16} />
             Adicionar alimento
           </button>
 
@@ -122,7 +122,7 @@ export default function RecipeDetailPage() {
             {deleteMutation.isPending ? (
               <Spinner size={16} className="border-white/40 border-t-white" />
             ) : (
-              <Trash size={16} weight="bold" />
+              <Trash2 size={16} />
             )}
             {deleteMutation.isPending ? 'Removendo…' : 'Remover receita'}
           </button>

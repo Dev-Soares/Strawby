@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FloppyDisk } from '@phosphor-icons/react'
+import { Save } from 'lucide-react'
 import { createRecipeSchema, type CreateRecipeData } from '../types/createRecipe'
 import { useCreateRecipe } from '../hooks/useCreateRecipe'
 import Spinner from '@/shared/components/Spinner'
@@ -51,7 +51,7 @@ export default function RecipeForm({ onSuccess }: RecipeFormProps) {
         {createRecipe.isPending ? (
           <Spinner size={17} />
         ) : (
-          <FloppyDisk size={17} weight="bold" />
+          <Save size={17} />
         )}
         {createRecipe.isPending ? 'Salvando…' : 'Salvar receita'}
       </button>

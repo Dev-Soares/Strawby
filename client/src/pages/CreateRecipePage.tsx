@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft } from '@phosphor-icons/react'
+import { ArrowLeft } from 'lucide-react'
 import AppLayout from '../shared/layouts/AppLayout'
 import RecipeForm from '../modules/recipe/components/RecipeForm'
 
@@ -14,7 +14,7 @@ export default function CreateRecipePage() {
             onClick={() => navigate('/app/foods')}
             className="flex items-center gap-2 mb-4 text-sm font-bold text-neutral-500 dark:text-neutral-400 hover:text-red-600 transition-colors duration-150 cursor-pointer"
           >
-            <ArrowLeft size={18} weight="bold" />
+            <ArrowLeft size={18} />
             Voltar
           </button>
           <h1             className="font-display text-4xl sm:text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight leading-none">

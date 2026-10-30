@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Plus, CookingPot } from '@phosphor-icons/react'
+import { CookingPot, Plus } from 'lucide-react'
 import RecipeCard from './RecipeCard'
 import RecipeCardSkeleton from '../skeletons/RecipeCardSkeleton'
 import { useGetRecipes } from '../hooks/useGetRecipes'
@@ -28,7 +28,7 @@ export default function RecipeList() {
 
   if (isPending) {
     return (
-      <div className="flex flex-col gap-2.5 sm:gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-start">
         {Array.from({ length: 6 }).map((_, i) => (
           <RecipeCardSkeleton key={i} />
         ))}
@@ -49,7 +49,7 @@ export default function RecipeList() {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
         <div className="w-16 h-16 rounded-2xl bg-neutral-200 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 flex items-center justify-center mb-4 transition-colors duration-300">
-          <CookingPot size={28} weight="duotone" className="text-neutral-500 dark:text-neutral-300" />
+          <CookingPot size={28} className="text-neutral-500 dark:text-neutral-300" />
         </div>
         <p className="text-base font-bold text-neutral-800 dark:text-neutral-100 mb-1">Nenhuma receita ainda</p>
         <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-6 max-w-xs">
@@ -59,7 +59,7 @@ export default function RecipeList() {
           onClick={() => navigate('/app/recipes/new')}
           className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-3 rounded-2xl transition-colors duration-200 cursor-pointer"
         >
-          <Plus size={16} weight="bold" />
+          <Plus size={16} />
           Criar receita
         </button>
       </div>
@@ -68,7 +68,7 @@ export default function RecipeList() {
 
   return (
     <motion.div
-      className="flex flex-col gap-2.5 sm:gap-3"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 items-start"
       variants={container}
       initial="hidden"
       animate="show"
