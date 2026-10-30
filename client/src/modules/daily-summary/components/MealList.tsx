@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { PlusIcon, ForkKnifeIcon } from '@phosphor-icons/react'
+import { Plus, Utensils } from 'lucide-react'
 import type { Meal } from '../../meal/types/meal'
 import MealCard from '../../meal/components/MealCard'
 import { useDay } from '../contexts/DayContext'
@@ -26,7 +26,6 @@ const item = {
 export default function MealList({ meals }: MealListProps) {
   const navigate = useNavigate()
   const { selectedDay, isToday } = useDay()
-  const totalKcal = meals.reduce((sum, m) => sum + m.totals.calories, 0)
   const [openId, setOpenId] = useState<string | null>(null)
 
   const toggle = (id: string) => setOpenId((prev) => (prev === id ? null : id))
@@ -35,18 +34,13 @@ export default function MealList({ meals }: MealListProps) {
 
   return (
     <div>
-      <div className="flex items-end justify-between mb-5 sm:mb-7 px-1 gap-2 mt-5 sm:mt-7">
-        <div className="min-w-0">
-          <h2 className="text-lg sm:text-xl font-extrabold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
-            {isToday ? 'Refeições de hoje' : 'Refeições do dia'}
-          </h2>
-          <p className="text-xs sm:text-sm text-neutral-400 dark:text-neutral-500 mt-0.5 transition-colors duration-300">
-            Seu histórico do dia
-          </p>
-        </div>
-        <span className="text-xl sm:text-2xl font-extrabold text-red-600 tabular-nums shrink-0 leading-none mb-0.5">
-          {Math.round(totalKcal).toLocaleString('pt-BR')} kcal
-        </span>
+      <div className="mb-5 sm:mb-7 px-1 mt-5 sm:mt-7">
+        <h2 className="text-lg sm:text-xl font-extrabold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
+          {isToday ? 'Refeições de hoje' : 'Refeições do dia'}
+        </h2>
+        <p className="text-xs sm:text-sm text-neutral-400 dark:text-neutral-500 mt-0.5 transition-colors duration-300">
+          Seu histórico do dia
+        </p>
       </div>
 
       {meals.length === 0 ? (
@@ -58,7 +52,7 @@ export default function MealList({ meals }: MealListProps) {
           className="flex flex-col items-center text-center py-10 px-4"
         >
           <div className="w-16 h-16 rounded-2xl bg-neutral-200 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 flex items-center justify-center mb-4 transition-colors duration-300">
-            <ForkKnifeIcon size={26} weight="duotone" className="text-neutral-500 dark:text-neutral-300" />
+            <Utensils size={26} className="text-neutral-500 dark:text-neutral-300" />
           </div>
           <p className="text-base font-bold text-neutral-800 dark:text-neutral-100 mb-1 transition-colors duration-300">
             {isToday ? 'Nenhuma refeição hoje' : 'Sem refeições neste dia'}
@@ -73,7 +67,7 @@ export default function MealList({ meals }: MealListProps) {
             onClick={goToCreateMeal}
             className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer"
           >
-            <PlusIcon size={15} weight="bold" />
+            <Plus size={15} />
             Adicionar refeição
           </button>
         </motion.div>
@@ -101,7 +95,7 @@ export default function MealList({ meals }: MealListProps) {
             className="flex items-center justify-center gap-2 py-3.5 sm:py-4 rounded-2xl sm:rounded-3xl bg-red-600 text-white text-sm sm:text-base font-bold hover:bg-red-700 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer mt-1"
             variants={item}
           >
-            <PlusIcon size={18} weight="bold" />
+            <Plus size={18} />
             Adicionar refeição
           </motion.button>
         </motion.div>

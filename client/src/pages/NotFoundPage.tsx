@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, ArrowRight, SmileyMelting } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight, Frown } from 'lucide-react'
 import PageSEO from '@/shared/components/PageSEO'
 
 export default function NotFoundPage() {
@@ -21,7 +21,7 @@ export default function NotFoundPage() {
           >
             <div className="flex justify-center mb-6">
               <span className="flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-300">
-                <SmileyMelting size={36} weight="duotone" />
+                <Frown size={36} />
               </span>
             </div>
 
@@ -43,7 +43,7 @@ export default function NotFoundPage() {
                 to="/login"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-neutral-200 bg-white px-5 py-3 text-sm font-medium text-neutral-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-red-200 hover:text-red-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-red-900/50 dark:hover:text-red-300"
               >
-                <ArrowLeft size={16} weight="bold" />
+                <ArrowLeft size={16} />
                 Login
               </Link>
 
@@ -52,7 +52,7 @@ export default function NotFoundPage() {
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-700"
               >
                 Abrir app
-                <ArrowRight size={16} weight="bold" />
+                <ArrowRight size={16} />
               </Link>
             </div>
           </motion.div>

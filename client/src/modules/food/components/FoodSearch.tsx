@@ -1,5 +1,4 @@
-import { MagnifyingGlass } from '@phosphor-icons/react'
-
+import { Search } from 'lucide-react'
 interface FoodSearchProps {
   value: string
   onChange: (value: string) => void
@@ -8,9 +7,8 @@ interface FoodSearchProps {
 export default function FoodSearch({ value, onChange }: FoodSearchProps) {
   return (
     <div className="relative">
-      <MagnifyingGlass
+      <Search
         size={18}
-        weight="bold"
         className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
       />
       <input

@@ -1,5 +1,5 @@
 import { useLocation, Link } from 'react-router-dom'
-import { EnvelopeSimple } from '@phosphor-icons/react'
+import { Mail } from 'lucide-react'
 import { useVerifyEmail } from '../hooks/useVerifyEmail'
 import { useResendVerification } from '../hooks/useResendVerification'
 import Spinner from '../../../shared/components/Spinner'
@@ -103,7 +103,7 @@ export default function VerifyEmailForm() {
 
       <div className="lg:w-96 shrink-0 bg-red-600 rounded-2xl p-6 md:p-8 lg:p-10 text-white flex flex-col justify-between">
         <div className="flex flex-col gap-4">
-          <EnvelopeSimple size={40} weight="bold" className="text-red-200" />
+          <Mail size={40} className="text-red-200" />
           <h2 className="text-[22px] font-bold leading-snug">
             Verifique sua caixa de entrada
           </h2>

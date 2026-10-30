@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { CaretDown } from '@phosphor-icons/react'
-
+import { ChevronDown } from 'lucide-react'
 type Props = {
   question: string
   answer: string
@@ -26,7 +25,7 @@ export default function AccordionItem({ question, answer }: Props) {
           transition={{ duration: 0.25, ease: 'easeOut' }}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-300"
         >
-          <CaretDown size={16} weight="bold" />
+          <ChevronDown size={16} />
         </motion.span>
       </button>
 

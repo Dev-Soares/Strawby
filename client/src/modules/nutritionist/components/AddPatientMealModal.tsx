@@ -40,7 +40,7 @@ export default function AddPatientMealModal({ isOpen, isPending, onClose, onSele
                   className="flex items-center gap-4 p-4 rounded-2xl border border-neutral-100 dark:border-neutral-800 hover:border-neutral-200 dark:hover:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all cursor-pointer disabled:opacity-50 text-left"
                 >
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: `${color}20` }}>
-                    <Icon size={18} weight="bold" style={{ color }} />
+                    <Icon size={18} style={{ color }} />
                   </div>
                   <span className="text-sm font-bold text-neutral-900 dark:text-neutral-100">{name}</span>
                 </button>

@@ -1,5 +1,4 @@
-import { DotsThreeVertical, Check } from '@phosphor-icons/react'
-
+import { Check, EllipsisVertical } from 'lucide-react'
 export default function AndroidGuide() {
   return (
     <div className="space-y-5">
@@ -17,7 +16,7 @@ export default function AndroidGuide() {
               Abra o menu do Chrome
             </p>
             <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
-              Toque nos três pontinhos <DotsThreeVertical size={18} weight="bold" className="inline align-text-bottom text-neutral-800 dark:text-neutral-200 transition-colors duration-300" /> no canto superior direito da tela.
+              Toque nos três pontinhos <EllipsisVertical size={18} className="inline align-text-bottom text-neutral-800 dark:text-neutral-200 transition-colors duration-300" /> no canto superior direito da tela.
             </p>
           </div>
         </div>
@@ -55,7 +54,7 @@ export default function AndroidGuide() {
 
         <div className="flex items-start gap-4">
           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 text-sm font-extrabold shrink-0">
-            <Check size={16} weight="bold" />
+            <Check size={16} />
           </div>
           <div className="space-y-1">
             <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">

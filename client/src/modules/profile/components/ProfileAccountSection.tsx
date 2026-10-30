@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { EnvelopeSimple, Calendar, PencilSimple, Trash, LockKey } from '@phosphor-icons/react'
+import { Calendar, Lock, Mail, Pencil, Trash2 } from 'lucide-react'
 import { useUpdateUser } from '@/modules/auth/hooks/useUpdateUser'
 import { useSendResetPasswordEmail } from '@/modules/auth/hooks/useSendResetPasswordEmail'
 import DeleteAccountModal from './DeleteAccountModal'
@@ -35,7 +35,7 @@ export default function ProfileAccountSection({ id, name, email }: Props) {
         {/* Nome editável */}
         <div className="flex items-center gap-3 px-5 py-4 border-b border-neutral-100 dark:border-neutral-800">
           <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-            <PencilSimple size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
+            <Pencil size={15} className="text-neutral-500 dark:text-neutral-400" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[11px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider mb-0.5">Nome</p>
@@ -80,7 +80,7 @@ export default function ProfileAccountSection({ id, name, email }: Props) {
               onClick={() => { setNameValue(name); setEditing(true) }}
               className="flex items-center gap-1.5 text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-3.5 py-2 rounded-xl transition-colors cursor-pointer shrink-0"
             >
-              <PencilSimple size={14} weight="bold" />
+              <Pencil size={14} />
               Editar
             </button>
           )}
@@ -88,7 +88,7 @@ export default function ProfileAccountSection({ id, name, email }: Props) {
 
         <div className="flex items-center gap-3 px-5 py-4 border-b border-neutral-100 dark:border-neutral-800">
           <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-            <EnvelopeSimple size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
+            <Mail size={15} className="text-neutral-500 dark:text-neutral-400" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[11px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">E-mail</p>
@@ -98,7 +98,7 @@ export default function ProfileAccountSection({ id, name, email }: Props) {
 
         <div className="flex items-center gap-3 px-5 py-4 border-b border-neutral-100 dark:border-neutral-800">
           <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-            <Calendar size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
+            <Calendar size={15} className="text-neutral-500 dark:text-neutral-400" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[11px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">Membro desde</p>
@@ -114,7 +114,7 @@ export default function ProfileAccountSection({ id, name, email }: Props) {
           className="flex items-center gap-3 px-5 py-4 w-full text-left hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-150 cursor-pointer border-b border-neutral-100 dark:border-neutral-800"
         >
           <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-            <LockKey size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
+            <Lock size={15} className="text-neutral-500 dark:text-neutral-400" />
           </div>
           <span className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
             Redefinir senha
@@ -127,7 +127,7 @@ export default function ProfileAccountSection({ id, name, email }: Props) {
           className="flex items-center gap-3 px-5 py-4 w-full text-left hover:bg-red-50 dark:hover:bg-red-950/20 transition-colors duration-150 cursor-pointer group"
         >
           <div className="w-8 h-8 rounded-xl bg-red-100 dark:bg-red-950/40 flex items-center justify-center shrink-0">
-            <Trash size={15} weight="bold" className="text-red-600" />
+            <Trash2 size={15} className="text-red-600" />
           </div>
           <span className="text-sm font-semibold text-red-600">Deletar conta</span>
         </button>

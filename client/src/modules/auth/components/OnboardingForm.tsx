@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent } from 'react'
-import { GenderMale, GenderFemale, Heartbeat, Stethoscope, ArrowRight, ArrowLeft } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight, HeartPulse, Mars, Stethoscope, Venus } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useCompleteOnboarding } from '../hooks/useCompleteOnboarding'
@@ -12,7 +12,7 @@ const ROLES = [
     value: 'patient' as const,
     label: 'Usuário',
     description: 'Acompanhe minha nutrição e alcance meus objetivos',
-    Icon: Heartbeat,
+    Icon: HeartPulse,
   },
   {
     value: 'nutritionist' as const,
@@ -117,7 +117,7 @@ export default function OnboardingForm() {
                     }`}
                   >
                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 transition-colors duration-200 ${selected ? 'bg-red-600' : 'bg-white/15'}`}>
-                      <Icon size={26} weight={selected ? 'fill' : 'bold'} className="text-white" />
+                      <Icon size={26} strokeWidth={selected ? 2.6 : 1.9} className="text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className={`text-[15px] font-extrabold tracking-tight leading-tight transition-colors duration-200 ${selected ? 'text-neutral-950' : 'text-white'}`}>
@@ -167,7 +167,7 @@ export default function OnboardingForm() {
                 disabled={!role || (isPending && !isPatient)}
                 className="flex items-center gap-2 w-fit rounded-full bg-white text-red-600 font-bold py-3.5 px-10 text-[14px] hover:bg-neutral-100 active:bg-neutral-200 transition-colors duration-150 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {isPending && !isPatient ? 'Salvando…' : 'Continuar'} <ArrowRight size={15} weight="bold" />
+                {isPending && !isPatient ? 'Salvando…' : 'Continuar'} <ArrowRight size={15} />
               </button>
             </div>
           </>
@@ -182,8 +182,8 @@ export default function OnboardingForm() {
               </label>
               <div className="grid grid-cols-2 gap-3">
                 {([
-                  { value: 'male' as const, label: 'Masculino', Icon: GenderMale },
-                  { value: 'female' as const, label: 'Feminino', Icon: GenderFemale },
+                  { value: 'male' as const, label: 'Masculino', Icon: Mars },
+                  { value: 'female' as const, label: 'Feminino', Icon: Venus },
                 ]).map(({ value, label, Icon }) => (
                   <button
                     key={value}
@@ -195,7 +195,7 @@ export default function OnboardingForm() {
                         : 'bg-transparent border-white/50 hover:border-white text-white'
                     }`}
                   >
-                    <Icon size={22} weight="bold" />
+                    <Icon size={22} />
                     <span className="text-[13px] font-semibold">{label}</span>
                   </button>
                 ))}
@@ -242,14 +242,14 @@ export default function OnboardingForm() {
                 onClick={() => setStep(1)}
                 className="flex items-center gap-2 w-fit rounded-full bg-white/10 border border-white/25 text-white font-bold py-3.5 px-6 text-[14px] hover:bg-white/15 transition-colors cursor-pointer"
               >
-                <ArrowLeft size={15} weight="bold" /> Voltar
+                <ArrowLeft size={15} /> Voltar
               </button>
               <button
                 type="button"
                 onClick={handleStep2}
                 className="flex items-center gap-2 w-fit rounded-full bg-white text-red-600 font-bold py-3.5 px-10 text-[14px] hover:bg-neutral-100 transition-colors cursor-pointer"
               >
-                Continuar <ArrowRight size={15} weight="bold" />
+                Continuar <ArrowRight size={15} />
               </button>
             </div>
           </>
@@ -290,7 +290,7 @@ export default function OnboardingForm() {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <ArrowRight size={18} weight="bold" className="text-white/40" />
+                  <ArrowRight size={18} className="text-white/40" />
                 </div>
                 <div className="flex-1 rounded-2xl bg-white px-4 py-3.5 shadow-lg shadow-black/10">
                   <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1.5">Meta</p>
@@ -311,7 +311,7 @@ export default function OnboardingForm() {
                 disabled={isPending}
                 className="flex items-center gap-2 w-fit rounded-full bg-white/10 border border-white/25 text-white font-bold py-3.5 px-6 text-[14px] hover:bg-white/15 transition-colors cursor-pointer disabled:opacity-50"
               >
-                <ArrowLeft size={15} weight="bold" /> Voltar
+                <ArrowLeft size={15} /> Voltar
               </button>
               <button
                 type="submit"

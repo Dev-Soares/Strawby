@@ -1,4 +1,5 @@
-import { DotsThreeVertical, Export, Plus, Check, ArrowDown, Warning, InstagramLogo } from '@phosphor-icons/react'
+import { ArrowDown, Check, EllipsisVertical, Plus, Share, TriangleAlert } from 'lucide-react'
+import { InstagramLogo } from '@phosphor-icons/react'
 import { isInstagramInAppBrowser } from '@/shared/utils/browser'
 
 export default function IosGuide() {
@@ -13,13 +14,13 @@ export default function IosGuide() {
         <div className="flex flex-col gap-3">
           <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 rounded-xl p-4 transition-colors duration-300">
             <div className="flex items-center gap-2 mb-2">
-              <InstagramLogo size={18} weight="duotone" className="text-amber-600 dark:text-amber-400 shrink-0" />
+              <InstagramLogo size={18} className="text-amber-600 dark:text-amber-400 shrink-0" />
               <span className="text-xs font-extrabold uppercase tracking-wider text-amber-800 dark:text-amber-300 transition-colors duration-300">
                 Você está no Instagram
               </span>
             </div>
             <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed transition-colors duration-300">
-              Para instalar o Strawby, primeiro toque nos três pontinhos <DotsThreeVertical size={16} weight="bold" className="inline align-text-bottom" /> no canto superior direito e escolha <strong>&ldquo;Abrir no Safari&rdquo;</strong> (ou &ldquo;Abrir no navegador externo&rdquo;).
+              Para instalar o Strawby, primeiro toque nos três pontinhos <EllipsisVertical size={16} className="inline align-text-bottom" /> no canto superior direito e escolha <strong>&ldquo;Abrir no Safari&rdquo;</strong> (ou &ldquo;Abrir no navegador externo&rdquo;).
             </p>
           </div>
         </div>
@@ -35,7 +36,7 @@ export default function IosGuide() {
               Toque no botão Compartilhar
             </p>
             <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
-              Na barra de ferramentas do navegador (geralmente embaixo da tela), toque no ícone <Export size={18} weight="bold" className="inline align-text-bottom text-neutral-800 dark:text-neutral-200 transition-colors duration-300" /> <strong className="text-neutral-800 dark:text-neutral-200 transition-colors duration-300">Compartilhar</strong>.
+              Na barra de ferramentas do navegador (geralmente embaixo da tela), toque no ícone <Share size={18} className="inline align-text-bottom text-neutral-800 dark:text-neutral-200 transition-colors duration-300" /> <strong className="text-neutral-800 dark:text-neutral-200 transition-colors duration-300">Compartilhar</strong>.
             </p>
           </div>
         </div>
@@ -49,7 +50,7 @@ export default function IosGuide() {
               Role para baixo na lista
             </p>
             <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
-              A lista de opções aparecerá. Deslize o dedo para cima <ArrowDown size={18} weight="bold" className="inline align-text-bottom text-neutral-800 dark:text-neutral-200 transition-colors duration-300" /> até encontrar mais opções.
+              A lista de opções aparecerá. Deslize o dedo para cima <ArrowDown size={18} className="inline align-text-bottom text-neutral-800 dark:text-neutral-200 transition-colors duration-300" /> até encontrar mais opções.
             </p>
           </div>
         </div>
@@ -63,7 +64,7 @@ export default function IosGuide() {
               Toque em &ldquo;Adicionar à Tela de Início&rdquo;
             </p>
             <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
-              Procure o ícone <Plus size={18} weight="bold" className="inline align-text-bottom text-neutral-800 dark:text-neutral-200 transition-colors duration-300" /> <strong className="text-neutral-800 dark:text-neutral-200 transition-colors duration-300">&ldquo;Adicionar à Tela de Início&rdquo;</strong> e toque nele.
+              Procure o ícone <Plus size={18} className="inline align-text-bottom text-neutral-800 dark:text-neutral-200 transition-colors duration-300" /> <strong className="text-neutral-800 dark:text-neutral-200 transition-colors duration-300">&ldquo;Adicionar à Tela de Início&rdquo;</strong> e toque nele.
             </p>
           </div>
         </div>
@@ -84,7 +85,7 @@ export default function IosGuide() {
 
         <div className="flex items-start gap-4">
           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 text-sm font-extrabold shrink-0 transition-colors duration-300">
-            <Check size={16} weight="bold" />
+            <Check size={16} />
           </div>
           <div className="space-y-1">
             <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
@@ -99,7 +100,7 @@ export default function IosGuide() {
 
       <div className="bg-amber-50 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-900/50 rounded-xl p-4 transition-colors duration-300">
         <div className="flex items-start gap-2.5">
-          <Warning size={16} weight="bold" className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 transition-colors duration-300" />
+          <TriangleAlert size={16} className="text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 transition-colors duration-300" />
           <p className="text-xs text-amber-800 dark:text-amber-300 leading-relaxed transition-colors duration-300">
             <strong>Importante:</strong> PWAs no iOS têm algumas limitações em relação a apps nativos, como armazenamento offline limitado (geralmente até 50 MB) e sem sincronização em segundo plano. Além disso, o Strawby não está disponível na Apple App Store — ele é distribuído diretamente pela web.
           </p>

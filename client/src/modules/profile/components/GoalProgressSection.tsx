@@ -1,10 +1,14 @@
-import { Target, TrendDown, TrendUp, Minus, Flag, PencilSimple } from '@phosphor-icons/react'
+import { motion } from 'framer-motion'
+import { Minus, Pencil, Target, TrendingDown, TrendingUp } from 'lucide-react'
 import TargetWeightModal from './TargetWeightModal'
 import GoalProgressSkeleton from '../skeletons/GoalProgressSkeleton'
 import type { Patient } from '@/modules/patient/types/patient'
 import { useGoalProgress } from '../hooks/useGoalProgress'
+import { PROFILE_ACCENTS } from '../config/profileAccents'
 
-const GOAL_ICONS = { maintain: Minus, lose: TrendDown, gain: TrendUp } as const
+const { color, track } = PROFILE_ACCENTS.goal
+
+const GOAL_ICONS = { maintain: Minus, lose: TrendingDown, gain: TrendingUp } as const
 
 interface Props {
   patientId: string
@@ -28,156 +32,161 @@ export default function GoalProgressSection({ patientId, patient }: Props) {
     isSaving,
   } = useGoalProgress(patientId, patient)
 
-  const modal = (
-    <TargetWeightModal
-      isOpen={modalOpen}
-      isPending={isSaving}
-      defaultTarget={patient.targetWeight}
-      currentWeight={current}
-      onClose={closeModal}
-      onSave={saveTarget}
-    />
-  )
-
   if (isPending) return <GoalProgressSkeleton />
 
-  // Sem meta definida → CTA pra definir
-  if (!hasGoal) {
-    return (
-      <section className="mb-5">
-        <SectionHeader />
-        <div className="rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-5 flex flex-col gap-4 transition-colors duration-300">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-              <Flag size={20} weight="bold" className="text-neutral-400 dark:text-neutral-500" />
-            </div>
-            <p className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 leading-snug">
-              Defina um peso desejado para acompanhar seu progresso rumo à meta.
-            </p>
-          </div>
+  const direction = goal?.direction ?? 'maintain'
+  const GoalIcon = GOAL_ICONS[direction]
+  const isMaintaining = direction === 'maintain'
+  const remaining = (goal?.absDiff ?? 0).toFixed(1).replace('.', ',')
+
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+    >
+      <div className="flex items-center gap-2.5 mb-6">
+        <span
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+          style={{ backgroundColor: track }}
+        >
+          <Target size={18} style={{ color }} />
+        </span>
+        <span className="text-base font-bold tracking-tight" style={{ color }}>
+          Progresso da meta
+        </span>
+
+        {hasGoal && (
           <button
             type="button"
             onClick={openModal}
-            className="w-full flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-orange-500 hover:bg-orange-600 active:scale-[0.98] transition-all duration-150 cursor-pointer"
+            className="ml-auto flex shrink-0 items-center gap-1.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 px-3 py-2 text-xs font-bold text-neutral-600 dark:text-neutral-300 active:scale-95 transition-all duration-150 cursor-pointer"
           >
-            <Target size={17} weight="bold" className="text-white" />
+            <Pencil size={14} />
+            Editar
+          </button>
+        )}
+      </div>
+
+      {!hasGoal && (
+        <>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
+            Defina um peso desejado para acompanhar o quanto já avançou rumo à meta.
+          </p>
+
+          <button
+            type="button"
+            onClick={openModal}
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 hover:bg-red-700 py-3 active:scale-[0.98] transition-all duration-150 cursor-pointer"
+          >
+            <Target size={17} className="text-white" />
             <span className="text-sm font-bold text-white">Definir meta de peso</span>
           </button>
-        </div>
-        {modal}
-      </section>
-    )
-  }
+        </>
+      )}
 
-  // Tem meta mas ainda sem peso registrado
-  if (!hasWeight) {
-    return (
-      <section className="mb-5">
-        <SectionHeader />
-        <div className="rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-5 flex flex-col gap-4 transition-colors duration-300">
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-orange-500 flex items-center justify-center shrink-0 shadow-md shadow-orange-200 dark:shadow-orange-950/40">
-              <Target size={20} weight="bold" className="text-white" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-orange-400 dark:text-orange-500 uppercase tracking-widest mb-0.5">Meta</p>
-              <span className="font-display text-2xl font-extrabold text-neutral-900 dark:text-white leading-none">{target} kg</span>
-            </div>
+      {hasGoal && !hasWeight && (
+        <>
+          <div className="flex items-baseline gap-2">
+            <span className="font-display text-4xl font-extrabold leading-none tabular-nums tracking-tight text-neutral-950 dark:text-neutral-100 transition-colors duration-300">
+              {target}
+            </span>
+            <span className="text-sm font-semibold text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
+              kg
+            </span>
           </div>
-          <p className="text-sm font-semibold text-neutral-500 dark:text-neutral-400 leading-snug">
-            Registre seu peso para acompanhar o progresso.
+
+          <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
+            Registre seu peso para começar a acompanhar o progresso.
           </p>
-          <EditButton onClick={openModal} />
-        </div>
-        {modal}
-      </section>
-    )
-  }
+        </>
+      )}
 
-  const GoalIcon = GOAL_ICONS[goal?.direction ?? 'maintain']
+      {hasGoal && hasWeight && (
+        <>
+          <div className="flex items-baseline gap-2">
+            <span
+              className="font-display text-4xl font-extrabold leading-none tabular-nums tracking-tight"
+              style={{ color }}
+            >
+              {Math.round(progress)}%
+            </span>
+            <span className="text-sm font-semibold text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
+              da meta
+            </span>
+          </div>
 
-  return (
-    <section className="mb-5">
-      <SectionHeader />
+          <div
+            className="mt-5 h-2 overflow-hidden rounded-full"
+            style={{ backgroundColor: track }}
+          >
+            <motion.div
+              className="h-full rounded-full"
+              style={{ backgroundColor: color }}
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.8, ease: 'easeOut', delay: 0.4 }}
+            />
+          </div>
 
-      <div className="rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-5 transition-colors duration-300">
-        {/* topo: objetivo/meta + editar */}
-        <div className="flex items-center justify-between gap-3 mb-6">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-11 h-11 rounded-2xl bg-orange-500 flex items-center justify-center shrink-0 shadow-md shadow-orange-200 dark:shadow-orange-950/40">
-              <GoalIcon size={20} weight="bold" className="text-white" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[10px] font-black text-orange-400 dark:text-orange-500 uppercase tracking-widest mb-0.5">
-                Meta
+          <div className="mt-2.5 flex items-baseline justify-between text-sm font-semibold tabular-nums">
+            <span className="text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
+              {start} kg
+            </span>
+            <span style={{ color }}>{target} kg</span>
+          </div>
+
+          <div className="mt-5 rounded-2xl p-4 transition-colors duration-300" style={{ backgroundColor: track }}>
+            {isMaintaining ? (
+              <p
+                className="font-display text-lg font-extrabold leading-tight tracking-tight"
+                style={{ color }}
+              >
+                Você está na faixa da meta
               </p>
-              <div className="flex items-baseline gap-1">
-                <span className="font-display text-xl font-extrabold text-neutral-900 dark:text-white leading-none">
-                  {target}
+            ) : (
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-base font-bold" style={{ color }}>
+                  Faltam
                 </span>
-                <span className="text-sm font-bold text-neutral-400 dark:text-neutral-500">kg</span>
+                <span
+                  className="font-display text-2xl font-extrabold leading-none tabular-nums tracking-tight"
+                  style={{ color }}
+                >
+                  {remaining}
+                </span>
+                <span className="text-base font-bold" style={{ color }}>
+                  kg para a meta
+                </span>
               </div>
+            )}
+
+            <div className="mt-3 flex items-center gap-2 border-t border-black/5 dark:border-white/10 pt-3">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-white/60 dark:bg-white/10">
+                <GoalIcon size={13} style={{ color }} />
+              </span>
+              <span className="text-sm font-medium text-neutral-600 dark:text-neutral-300 transition-colors duration-300">
+                Peso atual
+              </span>
+              <span className="ml-auto flex shrink-0 items-baseline gap-1">
+                <span className="font-display text-lg font-extrabold leading-none tabular-nums text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
+                  {current}
+                </span>
+                <span className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">kg</span>
+              </span>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={openModal}
-            className="group flex items-center gap-1.5 h-9 px-3.5 rounded-xl bg-orange-100 dark:bg-orange-950/40 hover:bg-orange-500 dark:hover:bg-orange-500 active:scale-95 transition-all duration-150 cursor-pointer shrink-0"
-          >
-            <PencilSimple size={14} weight="bold" className="text-orange-500 dark:text-orange-400 group-hover:text-white transition-colors duration-150" />
-            <span className="text-xs font-bold text-orange-600 dark:text-orange-400 group-hover:text-white transition-colors duration-150">Editar meta</span>
-          </button>
-        </div>
+        </>
+      )}
 
-        {/* progresso */}
-        <div className="mb-2 flex items-baseline justify-between">
-          <span className="text-sm font-bold text-amber-500 dark:text-amber-400 tracking-tight">Progresso</span>
-          <span className="font-display text-lg font-extrabold text-amber-500 dark:text-amber-400 leading-none tabular-nums">
-            {Math.round(progress)}%
-          </span>
-        </div>
-
-        {/* barra de progresso */}
-        <div className="h-3 w-full rounded-full bg-neutral-100 dark:bg-neutral-800 overflow-hidden mb-2">
-          <div
-            className="h-full rounded-full bg-orange-500 transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-
-        {/* eixos start → meta */}
-        <div className="flex items-center justify-between text-sm font-bold text-neutral-900 dark:text-white">
-          <span>{start} kg</span>
-          <span>{target} kg</span>
-        </div>
-      </div>
-      {modal}
-    </section>
-  )
-}
-
-function SectionHeader() {
-  return (
-    <div className="px-1 mb-4">
-      <h2 className="font-display text-xl font-extrabold text-neutral-900 dark:text-white tracking-tight leading-tight transition-colors duration-300">
-        Progresso da meta
-      </h2>
-      <p className="font-display text-sm font-medium text-neutral-400 dark:text-neutral-500 mt-0.5 transition-colors duration-300">
-        Rumo ao seu peso desejado
-      </p>
-    </div>
-  )
-}
-
-function EditButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 active:scale-[0.98] transition-all duration-150 cursor-pointer"
-    >
-      <PencilSimple size={15} weight="bold" className="text-neutral-600 dark:text-neutral-400" />
-      <span className="text-sm font-bold text-neutral-600 dark:text-neutral-400">Editar meta</span>
-    </button>
+      <TargetWeightModal
+        isOpen={modalOpen}
+        isPending={isSaving}
+        defaultTarget={patient.targetWeight}
+        currentWeight={current}
+        onClose={closeModal}
+        onSave={saveTarget}
+      />
+    </motion.section>
   )
 }

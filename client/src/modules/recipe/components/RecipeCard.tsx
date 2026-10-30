@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { CookingPot, CaretDown, PencilSimple } from '@phosphor-icons/react'
+import { ChevronDown, CookingPot, Pencil } from 'lucide-react'
 import type { Recipe } from '../types/recipe'
 
 export interface RecipeCardProps {
@@ -20,7 +20,7 @@ export default function RecipeCard({ recipe, isOpen, onToggle }: RecipeCardProps
         {/* Top row */}
         <div className="flex items-center gap-3 min-w-0 mb-3">
           <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 bg-rose-50 dark:bg-rose-950/40 transition-colors duration-300">
-            <CookingPot size={20} weight="bold" className="text-rose-600" />
+            <CookingPot size={20} className="text-rose-600" />
           </div>
           <span className="text-lg font-extrabold truncate text-rose-700">
             {recipe.name}
@@ -62,9 +62,8 @@ export default function RecipeCard({ recipe, isOpen, onToggle }: RecipeCardProps
           <span className="text-sm font-bold">
             Ver detalhes
           </span>
-          <CaretDown
+          <ChevronDown
             size={16}
-            weight="bold"
             className={`transition-transform duration-250 ${isOpen ? 'rotate-180' : 'rotate-0'}`}
           />
         </button>
@@ -111,7 +110,7 @@ export default function RecipeCard({ recipe, isOpen, onToggle }: RecipeCardProps
                 onClick={() => navigate(`/app/recipes/${recipe.id}`)}
                 className="mt-4 w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-base font-bold text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors duration-150 cursor-pointer"
               >
-                <PencilSimple size={18} weight="bold" />
+                <Pencil size={18} />
                 Editar receita
               </button>
             </div>

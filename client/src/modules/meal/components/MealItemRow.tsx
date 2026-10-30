@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { X, PencilSimple, Check } from '@phosphor-icons/react'
+import { Check, Pencil, Trash2, X } from 'lucide-react'
 import type { FoodItem } from '../types/meal'
 import type { MealTypeConfig } from '@/shared/config/mealTypes'
+import { getMealAccent } from '@/shared/config/mealTypes'
+import { useThemeContext } from '@/shared/contexts/ThemeProvider'
 import MacroChipsRow from './MacroChipsRow'
 import { nonNegativeInputProps } from '@/shared/utils/nonNegativeInputProps'
 
@@ -16,6 +18,8 @@ type Props = {
 
 export default function MealItemRow({ item, cfg, onRemove, onUpdateQuantity, isRemovePending, isUpdatePending }: Props) {
   const name = (item.food ?? item.privateFood)?.name ?? 'Alimento'
+  const { resolvedTheme } = useThemeContext()
+  const accent = getMealAccent(cfg, resolvedTheme === 'dark')
   const [editing, setEditing] = useState(false)
   const [value, setValue] = useState(String(Math.round(item.quantity)))
 
@@ -32,12 +36,14 @@ export default function MealItemRow({ item, cfg, onRemove, onUpdateQuantity, isR
   }
 
   return (
-    <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-4 sm:p-5 hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors duration-300">
-      <div className="flex items-center justify-between gap-3 mb-3">
+    <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm transition-colors duration-300 hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700 sm:p-5">
+      <div className="mb-3 flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-sm sm:text-base font-bold text-neutral-950 dark:text-neutral-100 truncate">{name}</p>
+          <p className="truncate text-base font-bold text-neutral-950 transition-colors duration-300 dark:text-neutral-100">
+            {name}
+          </p>
           {editing ? (
-            <div className="flex items-center gap-1.5 mt-1.5">
+            <div className="mt-1.5 flex items-center gap-1.5">
               <input
                 type="number"
                 {...nonNegativeInputProps}
@@ -50,44 +56,49 @@ export default function MealItemRow({ item, cfg, onRemove, onUpdateQuantity, isR
                   if (e.key === 'Enter') save()
                   if (e.key === 'Escape') setEditing(false)
                 }}
-                className="w-20 text-sm font-bold text-neutral-950 dark:text-neutral-100 bg-transparent outline-none border-b-2 border-neutral-200 dark:border-neutral-700 focus:border-neutral-500 dark:focus:border-neutral-400 pb-0.5 tabular-nums"
+                className="w-20 border-b-2 border-neutral-200 bg-transparent pb-0.5 text-sm font-bold tabular-nums text-neutral-950 outline-none transition-colors duration-150 focus:border-neutral-500 dark:border-neutral-700 dark:text-neutral-100 dark:focus:border-neutral-400"
               />
-              <span className="text-xs font-bold text-neutral-400 dark:text-neutral-500">g</span>
+              <span className="text-sm font-semibold text-neutral-400 dark:text-neutral-500">g</span>
             </div>
           ) : (
-            <p className="text-xs font-bold text-neutral-400 dark:text-neutral-500 mt-0.5">
+            <p className="mt-0.5 text-sm font-medium tabular-nums text-neutral-500 transition-colors duration-300 dark:text-neutral-400">
               {Math.round(item.quantity)}g
             </p>
           )}
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="text-right">
-            <p className="text-lg sm:text-xl font-extrabold tabular-nums leading-none" style={{ color: cfg.theme }}>
-              {Math.round(item.calories)}
-            </p>
-            <p className="text-[9px] sm:text-[10px] font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wide mt-0.5">
+
+        <div className="flex shrink-0 items-center gap-2">
+          <span className="flex items-baseline gap-1">
+            <span
+              className="font-display text-xl font-extrabold leading-none tabular-nums"
+              style={{ color: accent.ink }}
+            >
+              {Math.round(item.calories).toLocaleString('pt-BR')}
+            </span>
+            <span className="text-sm font-semibold" style={{ color: accent.ink }}>
               kcal
-            </p>
-          </div>
+            </span>
+          </span>
+
           {editing ? (
             <>
               <button
                 type="button"
                 onClick={save}
                 disabled={isUpdatePending}
-                className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-300 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ backgroundColor: cfg.theme, color: '#ffffff' }}
+                className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl transition-opacity duration-200 hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
+                style={{ backgroundColor: accent.surface, color: accent.ink }}
                 aria-label="Salvar quantidade"
               >
-                <Check size={14} weight="bold" />
+                <Check size={16} />
               </button>
               <button
                 type="button"
                 onClick={() => setEditing(false)}
-                className="w-8 h-8 rounded-xl flex items-center justify-center bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors duration-300 cursor-pointer shrink-0"
+                className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-neutral-100 text-neutral-600 transition-colors duration-200 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
                 aria-label="Cancelar edição"
               >
-                <X size={14} weight="bold" />
+                <X size={16} />
               </button>
             </>
           ) : (
@@ -95,20 +106,19 @@ export default function MealItemRow({ item, cfg, onRemove, onUpdateQuantity, isR
               <button
                 type="button"
                 onClick={startEdit}
-                className="w-8 h-8 rounded-xl flex items-center justify-center bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors duration-300 cursor-pointer shrink-0"
+                className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-neutral-100 text-neutral-600 transition-colors duration-200 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
                 aria-label={`Editar quantidade de ${name}`}
               >
-                <PencilSimple size={14} weight="bold" />
+                <Pencil size={16} />
               </button>
               <button
                 type="button"
                 onClick={() => onRemove(item)}
                 disabled={isRemovePending}
-                className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-300 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ backgroundColor: cfg.theme, color: '#ffffff' }}
+                className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-neutral-100 text-red-600 transition-colors duration-200 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-800 dark:text-red-400 dark:hover:bg-red-950/40"
                 aria-label={`Remover ${name}`}
               >
-                <X size={14} weight="bold" />
+                <Trash2 size={16} />
               </button>
             </>
           )}

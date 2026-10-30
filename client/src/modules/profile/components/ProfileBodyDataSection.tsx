@@ -1,9 +1,13 @@
 import { useState } from 'react'
-import { GenderMale, GenderFemale, ArrowsVertical, Calendar, PencilSimple, PlusCircle } from '@phosphor-icons/react'
+import { motion } from 'framer-motion'
+import { ArrowUpDown, Calendar, CirclePlus, Mars, Pencil, Ruler, Venus } from 'lucide-react'
 import { useUpdatePatient } from '@/modules/patient/hooks/useUpdatePatient'
 import PatientBodyEditModal from '@/modules/auth/components/PatientBodyEditModal'
 import { formatBirthDate } from '@/shared/utils/date'
 import type { Patient } from '@/modules/patient/types/patient'
+import { PROFILE_ACCENTS } from '../config/profileAccents'
+
+const { color, track } = PROFILE_ACCENTS.body
 
 const GENDER_LABEL: Record<string, string> = {
   male: 'Masculino',
@@ -23,101 +27,116 @@ export default function ProfileBodyDataSection({ patient }: Props) {
     patient.birthDate !== null ||
     patient.gender !== null
 
+  const GenderIcon = patient.gender === 'female' ? Venus : Mars
+
+  const tiles = [
+    {
+      key: 'height',
+      label: 'Altura',
+      icon: ArrowUpDown,
+      accent: PROFILE_ACCENTS.body,
+      value: patient.height ?? '—',
+      unit: patient.height !== null ? 'cm' : null,
+    },
+    {
+      key: 'gender',
+      label: 'Sexo',
+      icon: GenderIcon,
+      accent: PROFILE_ACCENTS.nutritionist,
+      value: patient.gender ? (GENDER_LABEL[patient.gender] ?? '—') : '—',
+      unit: null,
+    },
+    {
+      key: 'birthDate',
+      label: 'Nascimento',
+      icon: Calendar,
+      accent: PROFILE_ACCENTS.since,
+      value: patient.birthDate ? formatBirthDate(patient.birthDate) : '—',
+      unit: null,
+    },
+  ]
+
   return (
-    <section className="mb-5">
-      <div className="flex items-start justify-between mb-5 px-1">
-        <div>
-          <h2 className="font-display text-xl font-extrabold text-neutral-900 dark:text-white tracking-tight leading-tight transition-colors duration-300">
-            Métricas corporais
-          </h2>
-          <p className="font-display text-sm font-medium text-neutral-400 dark:text-neutral-500 mt-0.5 transition-colors duration-300">
-            {hasData ? 'Seus dados físicos atuais' : 'Nenhuma métrica registrada ainda'}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-200 text-sm sm:text-xs font-bold px-4 py-2.5 sm:px-3 sm:py-2 rounded-xl transition-colors duration-200 cursor-pointer shrink-0"
+    <motion.section
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.3 }}
+    >
+      <div className="flex items-center gap-2.5 mb-6">
+        <span
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+          style={{ backgroundColor: track }}
         >
-          <PencilSimple size={16} weight="bold" />
-          Editar
-        </button>
+          <Ruler size={18} style={{ color }} />
+        </span>
+        <span className="text-base font-bold tracking-tight" style={{ color }}>
+          Métricas corporais
+        </span>
+
+        {hasData && (
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="ml-auto flex shrink-0 items-center gap-1.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 px-3 py-2 text-xs font-bold text-neutral-600 dark:text-neutral-300 active:scale-95 transition-all duration-150 cursor-pointer"
+          >
+            <Pencil size={14} />
+            Editar
+          </button>
+        )}
       </div>
 
       {hasData ? (
-        <div className="flex flex-col gap-1">
-
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-emerald-50/60 dark:hover:bg-emerald-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center shrink-0 shadow-md shadow-emerald-200 dark:shadow-emerald-950/40">
-              <ArrowsVertical size={22} weight="bold" className="text-white" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-emerald-400 dark:text-emerald-500 uppercase tracking-widest mb-0.5">Altura</p>
-              <div className="flex items-baseline gap-1 leading-none">
-                <span className="font-display text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">
-                  {patient.height ?? '—'}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {tiles.map((tile) => (
+            <button
+              key={tile.key}
+              type="button"
+              onClick={() => setOpen(true)}
+              className="flex items-center justify-between gap-3 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-4 text-left hover:border-neutral-300 dark:hover:border-neutral-700 active:scale-[0.98] transition-all duration-150 cursor-pointer sm:block"
+            >
+              <div className="flex min-w-0 items-center gap-2 sm:mb-3">
+                <span
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+                  style={{ backgroundColor: tile.accent.track }}
+                >
+                  <tile.icon size={15} style={{ color: tile.accent.color }} />
                 </span>
-                {patient.height !== null && (
-                  <span className="text-sm font-bold text-emerald-400 dark:text-emerald-500">cm</span>
+                <span className="min-w-0 truncate text-sm font-medium text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
+                  {tile.label}
+                </span>
+              </div>
+
+              <div className="flex min-w-0 shrink-0 items-baseline gap-1">
+                <span
+                  className="min-w-0 truncate font-display text-xl xl:text-2xl font-extrabold tabular-nums leading-none"
+                  style={{ color: tile.accent.color }}
+                >
+                  {tile.value}
+                </span>
+                {tile.unit && (
+                  <span className="text-sm font-semibold" style={{ color: tile.accent.color }}>
+                    {tile.unit}
+                  </span>
                 )}
               </div>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-blue-50/60 dark:hover:bg-blue-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center shrink-0 shadow-md shadow-blue-200 dark:shadow-blue-950/40">
-              {patient.gender === 'female' ? (
-                <GenderFemale size={22} weight="bold" className="text-white" />
-              ) : (
-                <GenderMale size={22} weight="bold" className="text-white" />
-              )}
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-blue-400 dark:text-blue-500 uppercase tracking-widest mb-0.5">Sexo</p>
-              <span className="font-display text-2xl font-extrabold text-blue-600 dark:text-blue-400 leading-none">
-                {patient.gender ? (GENDER_LABEL[patient.gender] ?? '—') : '—'}
-              </span>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="flex items-center gap-4 px-4 py-4 rounded-2xl hover:bg-violet-50/60 dark:hover:bg-violet-950/15 active:scale-[0.97] transition-all duration-150 cursor-pointer text-left"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-violet-500 flex items-center justify-center shrink-0 shadow-md shadow-violet-200 dark:shadow-violet-950/40">
-              <Calendar size={22} weight="bold" className="text-white" />
-            </div>
-            <div>
-              <p className="text-[10px] font-black text-violet-400 dark:text-violet-500 uppercase tracking-widest mb-0.5">Data de nascimento</p>
-              <span className="font-display text-2xl font-extrabold text-violet-600 dark:text-violet-400 leading-none">
-                {patient.birthDate ? formatBirthDate(patient.birthDate) : '—'}
-              </span>
-            </div>
-          </button>
-
+            </button>
+          ))}
         </div>
       ) : (
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="flex items-center gap-3 px-4 py-4 rounded-2xl hover:bg-neutral-100 dark:hover:bg-neutral-800/60 transition-colors duration-150 cursor-pointer"
-        >
-          <div className="w-12 h-12 rounded-2xl bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-            <PlusCircle size={22} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
-          </div>
-          <span className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
-            Adicionar suas métricas
-          </span>
-        </button>
+        <>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
+            Altura, sexo e data de nascimento ajudam a calibrar o cálculo do seu plano.
+          </p>
+
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-neutral-200 dark:border-neutral-800 py-3 text-sm font-bold text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 active:scale-[0.98] transition-all duration-150 cursor-pointer"
+          >
+            <CirclePlus size={17} />
+            Adicionar métricas
+          </button>
+        </>
       )}
 
       <PatientBodyEditModal
@@ -131,6 +150,6 @@ export default function ProfileBodyDataSection({ patient }: Props) {
         onClose={() => setOpen(false)}
         onSave={(data) => updatePatient.mutate(data, { onSuccess: () => setOpen(false) })}
       />
-    </section>
+    </motion.section>
   )
 }

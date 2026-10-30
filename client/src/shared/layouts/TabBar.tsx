@@ -1,26 +1,19 @@
 import { Link, useLocation } from 'react-router-dom'
 import { LayoutGroup, motion } from 'framer-motion'
-import {
-  HouseSimpleIcon,
-  TrophyIcon,
-  TargetIcon,
-  UserCircleIcon,
-  UsersIcon,
-  ChartBarIcon,
-} from '@phosphor-icons/react'
+import { ChartColumn, CircleUser, ClipboardList, House, Trophy, Users } from 'lucide-react'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
 
 const patientTabs = [
-  { label: 'Início', href: '/app/home', icon: HouseSimpleIcon, tourId: 'nav-home' },
-  { label: 'Pontuação', href: '/app/score', icon: TrophyIcon, tourId: 'nav-score' },
-  { label: 'Plano', href: '/app/plan', icon: TargetIcon, tourId: 'nav-plan' },
-  { label: 'Perfil', href: '/app/profile', icon: UserCircleIcon, tourId: 'nav-profile' },
+  { label: 'Início', href: '/app/home', icon: House, tourId: 'nav-home' },
+  { label: 'Pontuação', href: '/app/score', icon: Trophy, tourId: 'nav-score' },
+  { label: 'Plano', href: '/app/plan', icon: ClipboardList, tourId: 'nav-plan' },
+  { label: 'Perfil', href: '/app/profile', icon: CircleUser, tourId: 'nav-profile' },
 ]
 
 const nutritionistTabs = [
-  { label: 'Pacientes', href: '/app/home', icon: UsersIcon, tourId: undefined },
-  { label: 'Resultados', href: '/app/nutritionist/results', icon: ChartBarIcon, tourId: 'nav-reports' },
-  { label: 'Perfil', href: '/app/profile', icon: UserCircleIcon, tourId: 'nav-profile' },
+  { label: 'Pacientes', href: '/app/home', icon: Users, tourId: undefined },
+  { label: 'Resultados', href: '/app/nutritionist/results', icon: ChartColumn, tourId: 'nav-reports' },
+  { label: 'Perfil', href: '/app/profile', icon: CircleUser, tourId: 'nav-profile' },
 ]
 
 const spring = { type: 'spring', stiffness: 380, damping: 32, mass: 0.8 } as const
@@ -65,7 +58,7 @@ export default function TabBar({ hidden = false }: TabBarProps) {
                   )}
                   <Icon
                     size={26}
-                    weight={active ? 'fill' : 'regular'}
+                    strokeWidth={active ? 2.6 : 1.9}
                     className={`shrink-0 transition-colors duration-200 ${active ? 'text-red-600' : 'text-neutral-400 dark:text-neutral-500'}`}
                   />
                   <span className={`text-xs font-bold tracking-tight transition-colors duration-200 ${active ? 'text-red-600' : 'text-neutral-400 dark:text-neutral-500'}`}>
@@ -106,7 +99,7 @@ export default function TabBar({ hidden = false }: TabBarProps) {
                   )}
                   <Icon
                     size={19}
-                    weight={active ? 'fill' : 'regular'}
+                    strokeWidth={active ? 2.6 : 1.9}
                     className={`relative shrink-0 transition-colors duration-200 ${
                       active
                         ? 'text-red-600'

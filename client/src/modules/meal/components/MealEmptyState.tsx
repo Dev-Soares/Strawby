@@ -1,4 +1,4 @@
-import { Plus, ForkKnifeIcon } from '@phosphor-icons/react'
+import { Plus, Utensils } from 'lucide-react'
 
 type Props = {
   title: string
@@ -8,18 +8,22 @@ type Props = {
 
 export default function MealEmptyState({ title, description, onAddClick }: Props) {
   return (
-    <div className="p-8 text-center mb-6">
-      <div className="w-14 h-14 rounded-2xl bg-neutral-200 dark:bg-neutral-700 border border-neutral-300 dark:border-neutral-600 flex items-center justify-center mx-auto mb-3 transition-colors duration-300">
-        <ForkKnifeIcon size={22} weight="duotone" className="text-neutral-500 dark:text-neutral-300" />
+    <div className="mb-6 flex flex-col items-center rounded-2xl border border-dashed border-neutral-200 bg-white px-4 py-12 text-center transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-900">
+      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-neutral-100 transition-colors duration-300 dark:bg-neutral-800">
+        <Utensils size={24} className="text-neutral-400 dark:text-neutral-500" />
       </div>
-      <p className="text-sm font-bold text-neutral-800 dark:text-neutral-100 mb-1">{title}</p>
-      <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-4">{description}</p>
+      <p className="mb-1 text-sm font-bold text-neutral-700 transition-colors duration-300 dark:text-neutral-300">
+        {title}
+      </p>
+      <p className="mb-5 max-w-xs text-xs leading-relaxed text-neutral-400 transition-colors duration-300 dark:text-neutral-500">
+        {description}
+      </p>
       <button
         type="button"
         onClick={onAddClick}
-        className="inline-flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-red-700 transition-colors cursor-pointer"
+        className="flex cursor-pointer items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-bold text-white transition-colors duration-200 hover:bg-red-700"
       >
-        <Plus size={13} weight="bold" />
+        <Plus size={18} />
         Adicionar agora
       </button>
     </div>

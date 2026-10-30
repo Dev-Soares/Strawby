@@ -1,4 +1,4 @@
-import { Sun, Moon, Monitor } from '@phosphor-icons/react'
+import { Monitor, Moon, Sun } from 'lucide-react'
 import { useThemeContext } from '@/shared/contexts/ThemeProvider'
 
 const themeOptions = [
@@ -31,7 +31,7 @@ export default function ProfileThemeSection() {
                     : 'border-transparent bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-150 dark:hover:bg-neutral-700'
                 }`}
               >
-                <Icon size={18} weight={active ? 'fill' : 'regular'} className={active ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400'} />
+                <Icon size={18} strokeWidth={active ? 2.6 : 1.9} className={active ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400'} />
                 <span className={`text-xs font-bold ${active ? 'text-red-600' : 'text-neutral-500 dark:text-neutral-400'}`}>
                   {label}
                 </span>

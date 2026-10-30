@@ -1,4 +1,5 @@
 import type { MonthlyScoreData, DayStatus } from '../types/monthlyScore'
+import { GOOD_SCORE_THRESHOLD } from '@/shared/config/score'
 
 export interface MonthRange {
   startDate: string
@@ -14,7 +15,7 @@ interface ScoredEntry {
 }
 
 function getDayStatus(score: number): DayStatus {
-  return score >= 8 ? 'good' : 'bad'
+  return score >= GOOD_SCORE_THRESHOLD ? 'good' : 'bad'
 }
 
 export function getMonthRange(offset = 0): MonthRange {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Bell, X } from '@phosphor-icons/react'
+import { Bell, X } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useRequestNotificationPermission } from '../hooks/useRequestNotificationPermission'
 import Spinner from '../../../shared/components/Spinner'
@@ -82,7 +82,7 @@ const NotificationPermissionPopup = ({ forceOpen, onClose }: NotificationPermiss
       <div className="w-full max-w-sm bg-white dark:bg-neutral-900 rounded-2xl shadow-lg border border-neutral-200 dark:border-neutral-700 p-4">
         <div className="flex items-start gap-3">
           <div className="shrink-0 w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/40 flex items-center justify-center">
-            <Bell size={18} weight="fill" className="text-red-600" />
+            <Bell size={18} className="text-red-600" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">

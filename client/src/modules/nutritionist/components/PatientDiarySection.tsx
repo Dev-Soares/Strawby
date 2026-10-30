@@ -1,4 +1,4 @@
-import { CaretLeft, CaretRight, BookOpen, Fire } from '@phosphor-icons/react'
+import { BookOpen, ChevronLeft, ChevronRight, Flame } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGetPatientDailyMeals } from '../hooks/useGetPatientDailyMeals'
 import PatientDiarySkeleton from '../skeletons/PatientDiarySkeleton'
@@ -55,7 +55,7 @@ export default function PatientDiarySection({ patientId, selectedDay, plan, onPr
       <div className="flex flex-col gap-3 mb-5">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
-            <BookOpen size={18} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
+            <BookOpen size={18} className="text-neutral-500 dark:text-neutral-400" />
           </div>
           <h2 className="text-xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight">Diário alimentar</h2>
         </div>
@@ -65,7 +65,7 @@ export default function PatientDiarySection({ patientId, selectedDay, plan, onPr
             onClick={onPrevDay}
             className="w-9 h-9 flex items-center justify-center rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
           >
-            <CaretLeft size={15} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+            <ChevronLeft size={15} className="text-neutral-600 dark:text-neutral-300" />
           </button>
           <div className="px-4 py-2 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex-1 text-center">
             <span className="text-sm font-bold text-neutral-700 dark:text-neutral-300">
@@ -81,7 +81,7 @@ export default function PatientDiarySection({ patientId, selectedDay, plan, onPr
             disabled={isToday}
             className="w-9 h-9 flex items-center justify-center rounded-xl bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <CaretRight size={15} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+            <ChevronRight size={15} className="text-neutral-600 dark:text-neutral-300" />
           </button>
         </div>
       </div>
@@ -90,7 +90,7 @@ export default function PatientDiarySection({ patientId, selectedDay, plan, onPr
         <PatientDiarySkeleton />
       ) : !meals || meals.length === 0 ? (
         <div className="flex flex-col items-center text-center py-12 border-2 border-dashed border-neutral-200 dark:border-neutral-700 rounded-2xl">
-          <BookOpen size={28} weight="light" className="text-neutral-300 dark:text-neutral-600 mb-3" />
+          <BookOpen size={28} className="text-neutral-300 dark:text-neutral-600 mb-3" />
           <p className="text-base font-bold text-neutral-500 dark:text-neutral-400">Nenhuma refeição registrada</p>
           <p className="text-sm text-neutral-400 dark:text-neutral-500 mt-1">O paciente não registrou refeições neste dia</p>
         </div>
@@ -107,7 +107,7 @@ export default function PatientDiarySection({ patientId, selectedDay, plan, onPr
             {/* Totals summary */}
             <div className="bg-white dark:bg-neutral-900 border border-neutral-100 dark:border-neutral-800 rounded-2xl p-6 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
-                <Fire size={16} weight="fill" className="text-red-500" />
+                <Flame size={16} className="text-red-500" />
                 <span className="text-sm font-extrabold text-neutral-500 dark:text-neutral-400 uppercase tracking-widest">Total do dia</span>
               </div>
 
@@ -179,7 +179,7 @@ export default function PatientDiarySection({ patientId, selectedDay, plan, onPr
                         className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
                         style={{ backgroundColor: `${cfg.color}20` }}
                       >
-                        <MealIcon size={20} weight="bold" style={{ color: cfg.color }} />
+                        <MealIcon size={20} style={{ color: cfg.color }} />
                       </div>
                       <div className="min-w-0">
                         <p className="text-base font-extrabold truncate" style={{ color: cfg.color }}>{meal.name}</p>

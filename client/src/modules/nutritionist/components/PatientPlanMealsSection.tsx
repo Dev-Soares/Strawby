@@ -1,4 +1,4 @@
-import { Plus } from '@phosphor-icons/react'
+import { Plus } from 'lucide-react'
 import type { MealSummary } from '../../meal/types/meal'
 import PatientPlanMealCard from './PatientPlanMealCard'
 
@@ -22,7 +22,7 @@ export default function PatientPlanMealsSection({ meals, mealsPending, patientId
           onClick={onAddClick}
           className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-colors cursor-pointer"
         >
-          <Plus size={14} weight="bold" /> Nova refeição
+          <Plus size={14} /> Nova refeição
         </button>
       </div>
 

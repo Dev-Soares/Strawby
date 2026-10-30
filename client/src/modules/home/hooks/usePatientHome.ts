@@ -4,6 +4,13 @@ import { useGetMealsByDay } from '../../meal/hooks/useGetMealsByDay'
 import { useGetPlan } from '../../plan/hooks/useGetPlan'
 import { useDay } from '../../daily-summary/contexts/DayContext'
 import type { DailySummary } from '../../daily-summary/types/dailySummary'
+import { CALORIES, getMacro } from '@/shared/config/macros'
+
+// Rótulo, ícone e unidade saem do config de macros — a cor vem das CSS vars,
+// que já trocam no tema escuro.
+const protein_ = getMacro('protein')
+const carbs_ = getMacro('carbs')
+const fat_ = getMacro('fat')
 
 export const usePatientHome = () => {
   const { data: user } = useAuth()
@@ -20,10 +27,10 @@ export const usePatientHome = () => {
     const fat = meals.reduce((s, m) => s + m.totals.fat, 0)
     return {
       macros: [
-        { label: 'CALORIAS', value: Math.round(consumed), max: plan ? Math.round(plan.calories) : 0, unit: 'kcal', color: 'var(--macro-calories)', trackColor: 'var(--macro-calories-light)' },
-        { label: 'PROTEÍNA', value: Math.round(protein), max: plan ? Math.round(plan.protein) : 0, unit: 'g', color: 'var(--macro-protein)', trackColor: 'var(--macro-protein-light)' },
-        { label: 'CARBOIDRATOS', value: Math.round(carbs), max: plan ? Math.round(plan.carbs) : 0, unit: 'g', color: 'var(--macro-carbs)', trackColor: 'var(--macro-carbs-light)' },
-        { label: 'GORDURA', value: Math.round(fat), max: plan ? Math.round(plan.fat) : 0, unit: 'g', color: 'var(--macro-fat)', trackColor: 'var(--macro-fat-light)' },
+        { label: CALORIES.label, icon: CALORIES.icon, value: Math.round(consumed), max: plan ? Math.round(plan.calories) : 0, unit: 'kcal', color: 'var(--macro-calories)', trackColor: 'var(--macro-calories-light)' },
+        { label: protein_.label, icon: protein_.icon, value: Math.round(protein), max: plan ? Math.round(plan.protein) : 0, unit: 'g', color: 'var(--macro-protein)', trackColor: 'var(--macro-protein-light)' },
+        { label: carbs_.label, icon: carbs_.icon, value: Math.round(carbs), max: plan ? Math.round(plan.carbs) : 0, unit: 'g', color: 'var(--macro-carbs)', trackColor: 'var(--macro-carbs-light)' },
+        { label: fat_.label, icon: fat_.icon, value: Math.round(fat), max: plan ? Math.round(plan.fat) : 0, unit: 'g', color: 'var(--macro-fat)', trackColor: 'var(--macro-fat-light)' },
       ],
     }
   }, [meals, plan])

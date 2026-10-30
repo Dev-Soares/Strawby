@@ -1,4 +1,4 @@
-import { Plus, Fire } from '@phosphor-icons/react'
+import { Flame, Plus } from 'lucide-react'
 import type { SelectableItem } from '../types/selectableItem'
 
 type Props = {
@@ -32,7 +32,7 @@ export default function SelectableFoodCard({ item, onSelect, isPending }: Props)
       >
         {isPending
           ? <span className="w-3.5 h-3.5 border-2 border-red-300 border-t-red-500 rounded-full animate-spin" />
-          : <Plus size={16} weight="bold" />
+          : <Plus size={16} />
         }
       </button>
 
@@ -46,7 +46,7 @@ export default function SelectableFoodCard({ item, onSelect, isPending }: Props)
       </div>
 
       <div className="flex items-center gap-1.5 mb-4">
-        <Fire size={13} weight="fill" className="text-red-500 shrink-0" />
+        <Flame size={13} className="text-red-500 shrink-0" />
         <span className="text-xl font-extrabold text-neutral-900 dark:text-neutral-200 tabular-nums leading-none transition-colors duration-300">
           {Math.round(item.calories)}
         </span>

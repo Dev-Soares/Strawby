@@ -1,30 +1,45 @@
 import { motion } from 'framer-motion'
 import type { MacroRing } from '../types/dailySummary'
 
-export default function MacroBar({ label, value, max, unit, color, trackColor }: MacroRing) {
+export default function MacroBar({ label, icon: Icon, value, max, unit, color, trackColor }: MacroRing) {
   const progress = max > 0 ? Math.min(value / max, 1) : 0
   const displayValue = unit === 'kcal' ? value.toLocaleString('pt-BR') : value
   const displayMax = unit === 'kcal' ? max.toLocaleString('pt-BR') : max
 
   return (
-    <div className="flex flex-col min-w-0">
-      <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest mb-1.5" style={{ color }}>
-        {label}
-      </span>
-      <div className="flex items-baseline gap-1 mb-2 sm:mb-3">
-        <span className="text-xl sm:text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tabular-nums leading-none transition-colors duration-300">
+    <div className="flex min-w-0 flex-col gap-2.5">
+      <div className="flex items-center gap-2">
+        <span
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+          style={{ backgroundColor: trackColor }}
+        >
+          <Icon size={16} style={{ color }} />
+        </span>
+        <span className="min-w-0 truncate text-base font-bold tracking-tight sm:text-lg" style={{ color }}>
+          {label}
+        </span>
+        {max > 0 && (
+          <span className="ml-auto shrink-0 text-xs font-bold tabular-nums" style={{ color }}>
+            {Math.round(progress * 100)}%
+          </span>
+        )}
+      </div>
+
+      <div className="flex items-baseline gap-1">
+        <span className="font-display text-2xl font-extrabold leading-none tabular-nums text-neutral-950 transition-colors duration-300 dark:text-neutral-100 sm:text-3xl">
           {displayValue}
         </span>
         {max > 0 && (
-          <span className="text-sm sm:text-base font-bold text-neutral-400 dark:text-neutral-500 tabular-nums leading-none transition-colors duration-300">
+          <span className="text-sm font-bold leading-none tabular-nums text-neutral-400 transition-colors duration-300 dark:text-neutral-500">
             /{displayMax}
           </span>
         )}
-        <span className="text-[10px] sm:text-xs font-bold text-neutral-400 dark:text-neutral-500 uppercase transition-colors duration-300">
+        <span className="text-xs font-semibold leading-none text-neutral-400 transition-colors duration-300 dark:text-neutral-500">
           {unit}
         </span>
       </div>
-      <div className="h-2 sm:h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: trackColor }}>
+
+      <div className="h-2 overflow-hidden rounded-full" style={{ backgroundColor: trackColor }}>
         <motion.div
           className="h-full rounded-full"
           style={{ backgroundColor: color }}

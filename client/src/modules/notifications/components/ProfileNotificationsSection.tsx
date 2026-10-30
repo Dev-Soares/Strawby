@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Bell } from '@phosphor-icons/react'
+import { Bell } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useRequestNotificationPermission } from '../hooks/useRequestNotificationPermission'
 import { useDisableNotifications } from '../hooks/useDisableNotifications'
@@ -49,7 +49,7 @@ export default function ProfileNotificationsSection() {
       <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-5 transition-colors duration-300">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-            <Bell size={15} weight="bold" className="text-neutral-400 dark:text-neutral-500" />
+            <Bell size={15} className="text-neutral-400 dark:text-neutral-500" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">

@@ -1,4 +1,4 @@
-import { FloppyDisk, CopySimple, X } from '@phosphor-icons/react'
+import { Copy as CopySimple, Save, X } from 'lucide-react'
 import { MEAL_TYPE_LIST } from '@/shared/config/mealTypes'
 import { useCreateMealForm } from '../hooks/useCreateMealForm'
 import PlanMealPicker from './PlanMealPicker'
@@ -48,7 +48,7 @@ export default function CreateMealForm() {
                   className={`w-10 h-10 rounded-xl flex items-center justify-center ${!isSelected ? 'bg-neutral-200 dark:bg-neutral-700' : ''}`}
                   style={isSelected ? { backgroundColor: isDark ? `${cfg.accent}26` : cfg.accentLight } : undefined}
                 >
-                  <Ico size={18} weight="bold" style={{ color: isSelected ? (isDark ? cfg.accentLight : cfg.accentText) : undefined }} className={!isSelected ? 'text-neutral-400 dark:text-neutral-500' : ''} />
+                  <Ico size={18} style={{ color: isSelected ? (isDark ? cfg.accentLight : cfg.accentText) : undefined }} className={!isSelected ? 'text-neutral-400 dark:text-neutral-500' : ''} />
                 </div>
                 <span
                   className={`text-[10px] font-black tracking-widest leading-none text-center ${!isSelected ? 'text-neutral-400 dark:text-neutral-500' : ''}`}
@@ -112,7 +112,7 @@ export default function CreateMealForm() {
                 onClick={clearPlanMeal}
                 className="w-8 h-8 flex items-center justify-center rounded-xl text-neutral-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors duration-200 cursor-pointer shrink-0"
               >
-                <X size={15} weight="bold" />
+                <X size={15} />
               </button>
             </div>
           ) : (
@@ -121,7 +121,7 @@ export default function CreateMealForm() {
               onClick={togglePicker}
               className="flex items-center justify-center gap-2 py-3.5 rounded-2xl border border-dashed border-neutral-300 dark:border-neutral-700 text-sm font-semibold text-neutral-500 dark:text-neutral-400 hover:border-neutral-400 dark:hover:border-neutral-600 hover:text-neutral-700 dark:hover:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-all duration-200 cursor-pointer"
             >
-              <CopySimple size={16} weight="bold" />
+              <CopySimple size={16} />
               Copiar refeição planejada
             </button>
           )}
@@ -141,7 +141,7 @@ export default function CreateMealForm() {
         {isSubmitting ? (
           <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
         ) : (
-          <FloppyDisk size={17} weight="bold" />
+          <Save size={17} />
         )}
         {isSubmitting ? 'Salvando…' : 'Salvar refeição'}
       </button>

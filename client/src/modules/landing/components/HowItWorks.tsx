@@ -1,5 +1,5 @@
-import { CookingPotIcon, BowlSteamIcon, TrayIcon } from '@phosphor-icons/react'
-import type { Icon } from '@phosphor-icons/react'
+import { CookingPot, Inbox, Soup } from 'lucide-react'
+import type { LucideIcon as Icon } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 interface Step {
@@ -13,7 +13,7 @@ interface Step {
 const steps: Step[] = [
   {
     time: '08:23',
-    icon: CookingPotIcon,
+    icon: CookingPot,
     title: 'Crie sua conta',
     description:
       'Cadastre-se em 30 segundos. Defina suas metas de calorias e macros de acordo com seus objetivos.',
@@ -21,7 +21,7 @@ const steps: Step[] = [
   },
   {
     time: '12:47',
-    icon: BowlSteamIcon,
+    icon: Soup,
     title: 'Registre suas refeições',
     description:
       'Busque alimentos, escaneie o código de barras ou crie refeições personalizadas com um clique.',
@@ -29,7 +29,7 @@ const steps: Step[] = [
   },
   {
     time: '21:05',
-    icon: TrayIcon,
+    icon: Inbox,
     title: 'Evolua todo dia',
     description:
       'Veja seus relatórios, mantenha a sequência diária e alcance suas metas com consistência.',
@@ -68,7 +68,7 @@ export default function HowItWorks() {
               transition={{ duration: 0.5, ease: [0.34, 1.05, 0.64, 1], delay: i * 0.1 }}
             >
               <div className="shrink-0 flex flex-row md:flex-col items-center md:items-start gap-4 md:gap-2 w-full md:w-52">
-                <StepIcon size={28} weight="duotone" className="text-neutral-400 dark:text-neutral-500 transition-colors duration-300" />
+                <StepIcon size={28} className="text-neutral-400 dark:text-neutral-500 transition-colors duration-300" />
                 <span className="font-display font-black text-[52px] md:text-[64px] leading-none tracking-tighter text-red-600 tabular-nums">
                   {time}
                 </span>

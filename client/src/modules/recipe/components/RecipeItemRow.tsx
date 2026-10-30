@@ -1,4 +1,4 @@
-import { X } from '@phosphor-icons/react'
+import { X } from 'lucide-react'
 import type { FoodItem } from '../types/recipe'
 
 type Props = {
@@ -35,7 +35,7 @@ export default function RecipeItemRow({ item, isRemovePending, onRemove }: Props
             className="w-8 h-8 rounded-xl flex items-center justify-center transition-colors duration-150 cursor-pointer shrink-0 disabled:opacity-50 disabled:cursor-not-allowed bg-rose-50 dark:bg-rose-950/40 text-rose-600 hover:bg-rose-100 dark:hover:bg-rose-950/60"
             aria-label={`Remover ${name}`}
           >
-            <X size={14} weight="bold" />
+            <X size={14} />
           </button>
         </div>
       </div>

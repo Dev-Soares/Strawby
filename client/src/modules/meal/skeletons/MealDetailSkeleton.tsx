@@ -10,33 +10,53 @@ export default function MealDetailSkeleton() {
         </div>
       </div>
 
-      {/* Totals card skeleton */}
-      <div className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-5 sm:p-6 mb-6 animate-pulse transition-colors duration-300">
-        <div className="h-6 w-40 rounded-lg bg-neutral-200 dark:bg-neutral-800 mb-4" />
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      {/* Observações skeleton */}
+      <div className="mb-8 animate-pulse">
+        <div className="mb-4 flex items-center gap-2.5">
+          <div className="h-9 w-9 rounded-xl bg-neutral-200 dark:bg-neutral-800" />
+          <div className="h-5 w-32 rounded-md bg-neutral-200 dark:bg-neutral-800" />
+        </div>
+        <div className="h-24 rounded-2xl bg-neutral-200 dark:bg-neutral-800" />
+      </div>
+
+      {/* Totals skeleton */}
+      <div className="mb-8 animate-pulse">
+        <div className="mb-4 flex items-center gap-2.5">
+          <div className="h-9 w-9 rounded-xl bg-neutral-200 dark:bg-neutral-800" />
+          <div className="h-5 w-40 rounded-md bg-neutral-200 dark:bg-neutral-800" />
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="flex flex-col gap-2">
-              <div className="h-3 w-16 rounded bg-neutral-200 dark:bg-neutral-800" />
-              <div className="h-7 w-20 rounded bg-neutral-200 dark:bg-neutral-800" />
-              <div className="h-2 w-full rounded-full bg-neutral-200 dark:bg-neutral-800" />
+            <div
+              key={i}
+              className="rounded-2xl border border-neutral-200 bg-white p-4 transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-900"
+            >
+              <div className="mb-3 flex items-center gap-2">
+                <div className="h-7 w-7 rounded-lg bg-neutral-200 dark:bg-neutral-800" />
+                <div className="h-4 w-16 rounded bg-neutral-200 dark:bg-neutral-800" />
+              </div>
+              <div className="h-6 w-20 rounded bg-neutral-200 dark:bg-neutral-800" />
             </div>
           ))}
         </div>
       </div>
 
       {/* Items skeleton */}
-      <div className="h-5 w-32 rounded-md bg-neutral-200 dark:bg-neutral-800 animate-pulse mb-4" />
+      <div className="mb-4 flex animate-pulse items-center gap-2.5">
+        <div className="h-9 w-9 rounded-xl bg-neutral-200 dark:bg-neutral-800" />
+        <div className="h-5 w-28 rounded-md bg-neutral-200 dark:bg-neutral-800" />
+      </div>
       <div className="flex flex-col gap-3">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 p-4 animate-pulse transition-colors duration-300">
-            <div className="flex items-center justify-between mb-3">
+          <div key={i} className="animate-pulse rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-900 sm:p-5">
+            <div className="mb-3 flex items-center justify-between">
               <div className="h-5 w-40 rounded bg-neutral-200 dark:bg-neutral-800" />
               <div className="h-5 w-16 rounded bg-neutral-200 dark:bg-neutral-800" />
             </div>
-            <div className="grid grid-cols-3 gap-2">
-              <div className="h-6 rounded-lg bg-neutral-200 dark:bg-neutral-800" />
-              <div className="h-6 rounded-lg bg-neutral-200 dark:bg-neutral-800" />
-              <div className="h-6 rounded-lg bg-neutral-200 dark:bg-neutral-800" />
+            <div className="flex flex-wrap gap-1.5">
+              <div className="h-8 w-28 rounded-full bg-neutral-200 dark:bg-neutral-800" />
+              <div className="h-8 w-32 rounded-full bg-neutral-200 dark:bg-neutral-800" />
+              <div className="h-8 w-28 rounded-full bg-neutral-200 dark:bg-neutral-800" />
             </div>
           </div>
         ))}

@@ -59,9 +59,11 @@ export function deriveWeightChartData(records: WeightRecord[] | undefined) {
 interface WeightBarChartProps {
   records: WeightRecord[] | undefined
   isPending: boolean
+  /** Sem moldura de card e sem o bloco de variação — para uso dentro de outro card */
+  bare?: boolean
 }
 
-export default function WeightBarChart({ records, isPending }: WeightBarChartProps) {
+export default function WeightBarChart({ records, isPending, bare = false }: WeightBarChartProps) {
   const { resolvedTheme } = useThemeContext()
   const isDark = resolvedTheme === 'dark'
 
@@ -69,7 +71,11 @@ export default function WeightBarChart({ records, isPending }: WeightBarChartPro
   const chartHeight = Math.max(chartData.length * 42, 80)
 
   return (
-    <div className="rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-4 pt-5 transition-colors duration-300">
+    <div
+      className={`rounded-2xl bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 p-4 transition-colors duration-300 ${
+        bare ? '' : 'pt-5'
+      }`}
+    >
       {isPending ? (
         <div className="flex flex-col gap-3 animate-pulse">
           <div className="h-4 w-24 rounded bg-neutral-100 dark:bg-neutral-800" />
@@ -81,7 +87,7 @@ export default function WeightBarChart({ records, isPending }: WeightBarChartPro
         </p>
       ) : (
         <>
-          {delta !== null && (
+          {!bare && delta !== null && (
             <div className="mb-5 px-1">
               <p className="text-[10px] font-black text-neutral-500 uppercase tracking-widest mb-0.5">
                 Variação total
@@ -106,7 +112,11 @@ export default function WeightBarChart({ records, isPending }: WeightBarChartPro
                 <CartesianGrid strokeDasharray="3 3" stroke={isDark ? '#262626' : '#e5e5e5'} horizontal={false} />
                 <XAxis
                   type="number"
-                  domain={['auto', 'auto']}
+                  /* Folga nas pontas: com domínio exato o menor peso vira barra de largura zero */
+                  domain={[
+                    (dataMin: number) => Math.floor(dataMin - 2),
+                    (dataMax: number) => Math.ceil(dataMax + 1),
+                  ]}
                   tick={{ fill: isDark ? '#ffffff' : '#171717', fontSize: 10, fontWeight: 600 }}
                   axisLine={false}
                   tickLine={false}

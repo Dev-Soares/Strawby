@@ -1,15 +1,14 @@
 import { motion } from 'framer-motion'
-import { Sparkle, Fire, ChartBar, Lightning } from '@phosphor-icons/react'
-
+import { ChartColumn, Flame, Sparkles, Zap } from 'lucide-react'
 interface PlanEmptyStateProps {
   onManual: () => void
   onGenerate: () => void
 }
 
 const BENEFITS = [
-  { Icon: Fire, text: 'Meta calórica personalizada para seu corpo' },
-  { Icon: ChartBar, text: 'Macros calculados por objetivo (perda ou ganho)' },
-  { Icon: Lightning, text: 'Baseado na fórmula Mifflin-St Jeor' },
+  { Icon: Flame, text: 'Meta calórica personalizada para seu corpo' },
+  { Icon: ChartColumn, text: 'Macros calculados por objetivo (perda ou ganho)' },
+  { Icon: Zap, text: 'Baseado na fórmula Mifflin-St Jeor' },
 ]
 
 export default function PlanEmptyState({ onGenerate }: PlanEmptyStateProps) {
@@ -48,7 +47,7 @@ export default function PlanEmptyState({ onGenerate }: PlanEmptyStateProps) {
             className="flex items-center gap-3"
           >
             <div className="w-8 h-8 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900/40 flex items-center justify-center shrink-0">
-              <Icon size={15} weight="fill" className="text-red-500" />
+              <Icon size={15} className="text-red-500" />
             </div>
             <p className="text-sm text-neutral-600 dark:text-neutral-400">{text}</p>
           </motion.div>
@@ -65,7 +64,7 @@ export default function PlanEmptyState({ onGenerate }: PlanEmptyStateProps) {
         whileTap={{ scale: 0.97 }}
         className="flex items-center gap-2.5 bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-4 rounded-2xl transition-colors duration-200 cursor-pointer text-sm"
       >
-        <Sparkle size={16} weight="fill" />
+        <Sparkles size={16} />
         Gerar meu plano agora
       </motion.button>
 

@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, HouseSimple, Carrot, Gear, Users, UserCircle } from '@phosphor-icons/react'
-import type { Icon } from '@phosphor-icons/react'
+import { ArrowRight, Carrot, CircleUser, House, Settings, Users } from 'lucide-react'
+import type { LucideIcon as Icon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { useAuth } from '@/modules/auth/hooks/useAuth'
@@ -13,15 +13,15 @@ interface BlobMenuProps {
 const blobPath = 'M 24 0 C 8 8, 0 22, 2 38 C 4 54, 22 58, 20 70 C 16 82, 6 86, 10 94 C 12 98, 16 100, 22 100 L 100 100 L 100 0 Z'
 
 const patientNavItems: { label: string; href: string; icon: Icon }[] = [
-  { label: 'Início', href: '/app/home', icon: HouseSimple },
+  { label: 'Início', href: '/app/home', icon: House },
   { label: 'Alimentos', href: '/app/foods', icon: Carrot },
-  { label: 'Ajustes', href: '/app/settings', icon: Gear },
+  { label: 'Ajustes', href: '/app/settings', icon: Settings },
 ]
 
 const nutritionistNavItems: { label: string; href: string; icon: Icon }[] = [
   { label: 'Pacientes', href: '/app/home', icon: Users },
-  { label: 'Perfil', href: '/app/profile', icon: UserCircle },
-  { label: 'Ajustes', href: '/app/settings', icon: Gear },
+  { label: 'Perfil', href: '/app/profile', icon: CircleUser },
+  { label: 'Ajustes', href: '/app/settings', icon: Settings },
 ]
 
 export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
@@ -74,7 +74,6 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
                     >
                       <item.icon
                         size={38}
-                        weight="fill"
                         className="shrink-0 text-white transition-all duration-300 ease-out group-hover:translate-x-2"
                       />
                       <span
@@ -84,7 +83,6 @@ export default function BlobMenu({ isOpen, onClose }: BlobMenuProps) {
                       </span>
                       <ArrowRight
                         size={20}
-                        weight="bold"
                         className="ml-auto text-white opacity-0 -translate-x-3 group-hover:opacity-60 group-hover:translate-x-0 transition-all duration-300 shrink-0"
                       />
                     </Link>

@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { Fire, PencilSimple, Trash, Sparkle, Warning } from '@phosphor-icons/react'
+import { Flame, Pencil, Sparkles, Trash2, TriangleAlert } from 'lucide-react'
 import type { Plan } from '../../plan/types/plan'
 import { MACROS } from '@/shared/config/macros'
 import type { CreatePlanMode } from '../hooks/useNutritionistPatientPage'
@@ -35,13 +35,13 @@ export default function PatientPlanSection({
               onClick={onOpenEditPlan}
               className="flex items-center gap-2 text-sm font-bold text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 px-4 py-2.5 rounded-xl transition-all cursor-pointer"
             >
-              <PencilSimple size={14} weight="bold" /> Editar
+              <Pencil size={14} /> Editar
             </button>
             <button
               onClick={onAskDeletePlan}
               className="flex items-center gap-2 text-sm font-bold text-red-500 bg-red-50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-950/50 px-4 py-2.5 rounded-xl transition-all cursor-pointer"
             >
-              <Trash size={14} weight="bold" /> Remover
+              <Trash2 size={14} /> Remover
             </button>
           </div>
         )}
@@ -64,7 +64,7 @@ export default function PatientPlanSection({
               className="group flex items-center gap-3 flex-1 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 rounded-2xl p-5 transition-all cursor-pointer text-left active:scale-[0.99]"
             >
               <div className="w-11 h-11 rounded-xl bg-neutral-100 dark:bg-neutral-800 group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700 flex items-center justify-center shrink-0 transition-colors">
-                <PencilSimple size={20} weight="bold" className="text-neutral-700 dark:text-neutral-200" />
+                <Pencil size={20} className="text-neutral-700 dark:text-neutral-200" />
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-extrabold text-neutral-950 dark:text-neutral-100 leading-tight">Inserir manualmente</p>
@@ -83,7 +83,7 @@ export default function PatientPlanSection({
               <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
                 hasBodyData ? 'bg-white/20' : 'bg-neutral-200 dark:bg-neutral-700'
               }`}>
-                <Sparkle size={20} weight="fill" className={hasBodyData ? 'text-white' : 'text-neutral-400 dark:text-neutral-500'} />
+                <Sparkles size={20} className={hasBodyData ? 'text-white' : 'text-neutral-400 dark:text-neutral-500'} />
               </div>
               <div className="min-w-0">
                 <p className={`text-sm font-extrabold leading-tight ${hasBodyData ? 'text-white' : 'text-neutral-400 dark:text-neutral-500'}`}>Gerar automaticamente</p>
@@ -108,7 +108,7 @@ export default function PatientPlanSection({
         >
           <div className="bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/30 rounded-2xl px-6 py-5 transition-colors duration-300">
             <div className="flex items-center gap-2 mb-2">
-              <Fire size={14} weight="fill" className="text-red-500" />
+              <Flame size={14} className="text-red-500" />
               <span className="text-[10px] font-extrabold text-red-600 dark:text-red-400 uppercase tracking-widest">Meta calórica diária</span>
             </div>
             <div className="flex items-baseline gap-1.5">
@@ -154,7 +154,7 @@ export default function PatientPlanSection({
             exit={{ opacity: 0 }}
           >
             <div className="flex items-start gap-2">
-              <Warning size={16} weight="fill" className="text-red-500 shrink-0 mt-0.5" />
+              <TriangleAlert size={16} className="text-red-500 shrink-0 mt-0.5" />
               <p className="text-sm font-bold text-red-700 dark:text-red-400">Remover plano?</p>
             </div>
             <div className="flex gap-2">

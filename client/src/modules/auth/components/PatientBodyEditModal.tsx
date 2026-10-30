@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, FloppyDisk, GenderMale, GenderFemale, Heartbeat, ArrowsVertical, Calendar } from '@phosphor-icons/react'
+import { ArrowUpDown, Calendar, HeartPulse, Mars, Save, Venus, X } from 'lucide-react'
 import Spinner from '../../../shared/components/Spinner'
 import { nonNegativeInputProps } from '../../../shared/utils/nonNegativeInputProps'
 import { patientBodySchema, type PatientBodyData } from '../types/patientBody'
@@ -56,7 +56,7 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
             <div className="flex items-center justify-between px-7 pt-7 pb-5">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-red-100 dark:bg-red-950/40 flex items-center justify-center">
-                  <Heartbeat size={16} weight="bold" className="text-red-500 dark:text-red-400" />
+                  <HeartPulse size={16} className="text-red-500 dark:text-red-400" />
                 </div>
                 <div>
                   <h2 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight">Dados corporais</h2>
@@ -64,7 +64,7 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
                 </div>
               </div>
               <button type="button" onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer">
-                <X size={13} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+                <X size={13} className="text-neutral-600 dark:text-neutral-300" />
               </button>
             </div>
 
@@ -72,13 +72,13 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
               {/* Gender — blue */}
               <div>
                 <label className="flex items-center gap-1.5 text-[10px] font-bold text-blue-500 dark:text-blue-400 uppercase tracking-widest mb-2.5">
-                  <GenderMale size={12} weight="bold" />
+                  <Mars size={12} />
                   Sexo biológico
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   {([
-                    { value: 'male' as const, label: 'Masculino', Icon: GenderMale },
-                    { value: 'female' as const, label: 'Feminino', Icon: GenderFemale },
+                    { value: 'male' as const, label: 'Masculino', Icon: Mars },
+                    { value: 'female' as const, label: 'Feminino', Icon: Venus },
                   ]).map(({ value, label, Icon }) => (
                     <button
                       key={value}
@@ -90,7 +90,7 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
                           : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 bg-neutral-50 dark:bg-neutral-800'
                       }`}
                     >
-                      <Icon size={16} weight="bold" className={gender === value ? 'text-blue-600 dark:text-blue-400' : 'text-neutral-400 dark:text-neutral-500'} />
+                      <Icon size={16} className={gender === value ? 'text-blue-600 dark:text-blue-400' : 'text-neutral-400 dark:text-neutral-500'} />
                       <span className={`text-sm font-bold ${gender === value ? 'text-blue-700 dark:text-blue-300' : 'text-neutral-600 dark:text-neutral-300'}`}>
                         {label}
                       </span>
@@ -102,7 +102,7 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
               {/* Height — emerald */}
               <div>
                 <label className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-500 dark:text-emerald-400 uppercase tracking-widest mb-2">
-                  <ArrowsVertical size={12} weight="bold" />
+                  <ArrowUpDown size={12} />
                   Altura
                 </label>
                 <div className="relative">
@@ -121,7 +121,7 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
               {/* Birth Date — violet */}
               <div>
                 <label className="flex items-center gap-1.5 text-[10px] font-bold text-violet-500 dark:text-violet-400 uppercase tracking-widest mb-2">
-                  <Calendar size={12} weight="bold" />
+                  <Calendar size={12} />
                   Data de nascimento
                 </label>
                 <input
@@ -140,7 +140,7 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
               >
                 {isPending
                   ? <Spinner size={15} />
-                  : <FloppyDisk size={15} weight="bold" />
+                  : <Save size={15} />
                 }
                 {isPending ? 'Salvando…' : 'Salvar'}
               </button>

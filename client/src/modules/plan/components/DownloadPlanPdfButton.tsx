@@ -1,4 +1,4 @@
-import { DownloadSimple } from '@phosphor-icons/react'
+import { Download } from 'lucide-react'
 import { useDownloadPlanPdf } from '../hooks/useDownloadPlanPdf'
 import Spinner from '@/shared/components/Spinner'
 
@@ -19,7 +19,7 @@ export default function DownloadPlanPdfButton({ patientId, compact = false }: Pr
       >
         {isPending
           ? <Spinner size={18} className="border-neutral-400 border-t-neutral-700 dark:border-neutral-600 dark:border-t-neutral-200" />
-          : <DownloadSimple size={18} weight="bold" />
+          : <Download size={18} />
         }
         PDF
       </button>
@@ -34,7 +34,7 @@ export default function DownloadPlanPdfButton({ patientId, compact = false }: Pr
     >
       {isPending
         ? <Spinner size={16} className="border-white/30 dark:border-neutral-900/30 border-t-white dark:border-t-neutral-900" />
-        : <DownloadSimple size={16} weight="bold" />
+        : <Download size={16} />
       }
       {isPending ? 'Gerando…' : 'Exportar PDF'}
     </button>

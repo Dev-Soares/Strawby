@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, Key, FloppyDisk } from '@phosphor-icons/react'
+import { Key, Save, X } from 'lucide-react'
 import { updateCodeSchema, type UpdateCodeData } from '../types/updateCode'
 import Spinner from '@/shared/components/Spinner'
 
@@ -48,7 +48,7 @@ export default function UpdateCodeModal({ isOpen, currentCode, isPending, onClos
             <div className="flex items-center justify-between px-7 pt-7 pb-5">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
-                  <Key size={16} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+                  <Key size={16} className="text-neutral-600 dark:text-neutral-300" />
                 </div>
                 <div>
                   <h2 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight">Código de convite</h2>
@@ -60,7 +60,7 @@ export default function UpdateCodeModal({ isOpen, currentCode, isPending, onClos
                 onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
               >
-                <X size={13} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+                <X size={13} className="text-neutral-600 dark:text-neutral-300" />
               </button>
             </div>
 
@@ -90,7 +90,7 @@ export default function UpdateCodeModal({ isOpen, currentCode, isPending, onClos
               >
                 {isPending
                   ? <Spinner size={15} />
-                  : <FloppyDisk size={15} weight="bold" />
+                  : <Save size={15} />
                 }
                 {isPending ? 'Salvando…' : 'Salvar código'}
               </button>

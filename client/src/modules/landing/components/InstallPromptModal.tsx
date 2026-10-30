@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { X } from '@phosphor-icons/react'
+import { X } from 'lucide-react'
 import AndroidGuide from './AndroidGuide'
 import IosGuide from './IosGuide'
 
@@ -41,7 +41,7 @@ export default function InstallPromptModal({ isOpen, onClose, platform }: Instal
                 onClick={onClose}
                 className="w-9 h-9 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
               >
-                <X size={15} weight="bold" className="text-neutral-600 dark:text-neutral-300 transition-colors duration-300" />
+                <X size={15} className="text-neutral-600 dark:text-neutral-300 transition-colors duration-300" />
               </button>
             </div>
 

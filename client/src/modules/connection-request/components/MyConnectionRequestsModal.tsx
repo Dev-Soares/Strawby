@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, ClockCounterClockwise, Stethoscope, Clock, Check, Trash } from '@phosphor-icons/react'
+import { Check, Clock, History, Stethoscope, Trash2, X } from 'lucide-react'
 import { useGetMyConnectionRequests } from '../hooks/useGetMyConnectionRequests'
 import { useCancelConnectionRequest } from '../hooks/useCancelConnectionRequest'
 import MyConnectionRequestsSkeleton from '../skeletons/MyConnectionRequestsSkeleton'
@@ -65,7 +65,7 @@ export default function MyConnectionRequestsModal({ isOpen, onClose }: Props) {
             <div className="flex items-center justify-between px-7 pt-7 pb-5 shrink-0">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
-                  <ClockCounterClockwise size={16} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+                  <History size={16} className="text-neutral-600 dark:text-neutral-300" />
                 </div>
                 <div>
                   <h2 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight">Suas solicitações</h2>
@@ -77,7 +77,7 @@ export default function MyConnectionRequestsModal({ isOpen, onClose }: Props) {
                 onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer shrink-0"
               >
-                <X size={13} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+                <X size={13} className="text-neutral-600 dark:text-neutral-300" />
               </button>
             </div>
 
@@ -103,7 +103,7 @@ export default function MyConnectionRequestsModal({ isOpen, onClose }: Props) {
                       >
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/30 flex items-center justify-center shrink-0">
-                            <Stethoscope size={16} weight="bold" className="text-red-500" />
+                            <Stethoscope size={16} className="text-red-500" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 truncate">
@@ -114,7 +114,7 @@ export default function MyConnectionRequestsModal({ isOpen, onClose }: Props) {
                             </p>
                           </div>
                           <span className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shrink-0 ${status.className}`}>
-                            <status.Icon size={12} weight="bold" className={status.iconClassName} />
+                            <status.Icon size={12} className={status.iconClassName} />
                             {status.label}
                           </span>
                         </div>
@@ -128,7 +128,7 @@ export default function MyConnectionRequestsModal({ isOpen, onClose }: Props) {
                           >
                             {cancelingId === request.id
                               ? <Spinner size={13} />
-                              : <Trash size={13} weight="bold" />
+                              : <Trash2 size={13} />
                             }
                             {cancelingId === request.id ? 'Cancelando…' : 'Cancelar solicitação'}
                           </button>

@@ -32,6 +32,24 @@
   --macro-fat-light: #f3e8ff;
   --macro-score-green: #10b981;
   --macro-score-green-light: #d1fae5;
+  --score-good: #10b981;
+  --score-good-light: #d1fae5;
+  --score-low: #dc2626;
+  --score-low-light: #fee2e2;
+  --score-streak: #ef4444;
+  --score-streak-light: #fee2e2;
+  --score-best: #eab308;
+  --score-best-light: #fef9c3;
+  --profile-brand: #dc2626;
+  --profile-brand-light: #fee2e2;
+  --profile-nutri: #3b82f6;
+  --profile-nutri-light: #dbeafe;
+  --profile-body: #10b981;
+  --profile-body-light: #d1fae5;
+  --profile-goal: #f97316;
+  --profile-goal-light: #ffedd5;
+  --profile-since: #a855f7;
+  --profile-since-light: #f3e8ff;
 }
 
 .dark {
@@ -45,6 +63,24 @@
   --macro-fat-light: #4c1d95;
   --macro-score-green: #34d399;
   --macro-score-green-light: #064e3b;
+  --score-good: #34d399;
+  --score-good-light: #064e3b;
+  --score-low: #ef4444;
+  --score-low-light: #450a0a;
+  --score-streak: #f87171;
+  --score-streak-light: #450a0a;
+  --score-best: #facc15;
+  --score-best-light: #422006;
+  --profile-brand: #ef4444;
+  --profile-brand-light: #450a0a;
+  --profile-nutri: #60a5fa;
+  --profile-nutri-light: #1e3a8a;
+  --profile-body: #34d399;
+  --profile-body-light: #064e3b;
+  --profile-goal: #fb923c;
+  --profile-goal-light: #431407;
+  --profile-since: #c084fc;
+  --profile-since-light: #4c1d95;
 }
 
 html, body {

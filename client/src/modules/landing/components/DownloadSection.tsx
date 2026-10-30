@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { AndroidLogo, AppleLogo, Globe } from '@phosphor-icons/react'
+import { Globe } from 'lucide-react'
+import { AndroidLogo, AppleLogo } from '@phosphor-icons/react'
 import { useAndroidInstall } from '@/shared/hooks/useAndroidInstall'
 import InstallPromptModal from './InstallPromptModal'
 
@@ -67,7 +68,7 @@ export default function DownloadSection() {
               onClick={handleAndroid}
               className="inline-flex items-center justify-center gap-3 w-full sm:w-auto bg-white dark:bg-neutral-900 hover:bg-red-50 dark:hover:bg-red-950/40 border border-neutral-200 dark:border-neutral-800 hover:border-red-200 dark:hover:border-red-900 text-neutral-900 dark:text-neutral-100 font-bold px-7 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md text-[15px] cursor-pointer"
             >
-              <AndroidLogo size={22} weight="duotone" className="text-red-600" />
+              <AndroidLogo size={22} className="text-red-600" />
               <span>Baixar no Android</span>
             </a>
 
@@ -76,7 +77,7 @@ export default function DownloadSection() {
               onClick={handleIos}
               className="inline-flex items-center justify-center gap-3 w-full sm:w-auto bg-white dark:bg-neutral-900 hover:bg-red-50 dark:hover:bg-red-950/40 border border-neutral-200 dark:border-neutral-800 hover:border-red-200 dark:hover:border-red-900 text-neutral-900 dark:text-neutral-100 font-bold px-7 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md text-[15px] cursor-pointer"
             >
-              <AppleLogo size={22} weight="duotone" className="text-red-600" />
+              <AppleLogo size={22} className="text-red-600" />
               <span>Baixar no iOS</span>
             </a>
 
@@ -84,7 +85,7 @@ export default function DownloadSection() {
               href="/app/create-account"
               className="inline-flex items-center justify-center gap-3 w-full sm:w-auto bg-white dark:bg-neutral-900 hover:bg-red-50 dark:hover:bg-red-950/40 border border-neutral-200 dark:border-neutral-800 hover:border-red-200 dark:hover:border-red-900 text-neutral-900 dark:text-neutral-100 font-bold px-7 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md text-[15px] cursor-pointer"
             >
-              <Globe size={22} weight="duotone" className="text-red-600" />
+              <Globe size={22} className="text-red-600" />
               <span>Usar no navegador</span>
             </a>
           </motion.div>

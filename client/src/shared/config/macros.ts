@@ -1,8 +1,16 @@
+import type { ComponentType, CSSProperties } from 'react'
+import { Droplets, Flame, Ham, Wheat } from 'lucide-react'
+
 export type MacroField = 'protein' | 'carbs' | 'fat'
+
+/** Ícones de macro vêm do lucide-react — o Phosphor não tem bisteca/trigo/castanha */
+export type MacroIcon = ComponentType<{ size?: number; className?: string; style?: CSSProperties }>
 
 export type MacroConfig = {
   field: MacroField
   label: string
+  /** Ícone do macro — alimento típico da categoria */
+  icon: MacroIcon
   /** Rótulo abreviado — usado em chips e espaços estreitos */
   short: string
   unit: string
@@ -25,6 +33,7 @@ export const MACROS: MacroConfig[] = [
   {
     field: 'protein',
     label: 'Proteína',
+    icon: Ham,
     short: 'Prot',
     unit: 'g',
     kcalPerGram: 4,
@@ -41,6 +50,7 @@ export const MACROS: MacroConfig[] = [
   {
     field: 'carbs',
     label: 'Carboidratos',
+    icon: Wheat,
     short: 'Carb',
     unit: 'g',
     kcalPerGram: 4,
@@ -57,6 +67,7 @@ export const MACROS: MacroConfig[] = [
   {
     field: 'fat',
     label: 'Gordura',
+    icon: Droplets,
     short: 'Gord',
     unit: 'g',
     kcalPerGram: 9,
@@ -81,6 +92,7 @@ export type NutrientField = 'calories' | MacroField
 export const CALORIES = {
   field: 'calories' as const,
   label: 'Calorias',
+  icon: Flame as MacroIcon,
   short: 'Kcal',
   unit: 'kcal',
   color: '#ef4444',

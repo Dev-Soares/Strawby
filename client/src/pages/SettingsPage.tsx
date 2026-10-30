@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { SignOutIcon } from '@phosphor-icons/react'
+import { LogOut } from 'lucide-react'
 import AppLayout from '@/shared/layouts/AppLayout'
 import { useSignOut } from '@/modules/auth/hooks/useSignOut'
 import ProfileAccountSection from '@/modules/profile/components/ProfileAccountSection'
@@ -40,7 +40,7 @@ export default function SettingsPage() {
           {signOut.isPending ? (
             <Spinner size={17} />
           ) : (
-            <SignOutIcon size={17} weight="bold" />
+            <LogOut size={17} />
           )}
           {signOut.isPending ? 'Saindo…' : 'Sair da conta'}
         </button>

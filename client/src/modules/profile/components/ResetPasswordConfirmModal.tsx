@@ -1,4 +1,4 @@
-import { LockKey } from '@phosphor-icons/react'
+import { Lock } from 'lucide-react'
 import Spinner from '@/shared/components/Spinner'
 
 interface Props {
@@ -17,7 +17,7 @@ export default function ResetPasswordConfirmModal({ email, isPending, onConfirm,
 
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-            <LockKey size={20} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+            <Lock size={20} className="text-neutral-600 dark:text-neutral-300" />
           </div>
           <div>
             <h2 className="text-[15px] font-black text-neutral-900 dark:text-neutral-100 transition-colors duration-300">

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { Warning } from '@phosphor-icons/react'
+import { TriangleAlert } from 'lucide-react'
 import Spinner from '@/shared/components/Spinner'
 
 interface ConfirmDeletePlanModalProps {
@@ -31,7 +31,7 @@ export default function ConfirmDeletePlanModal({ isOpen, onClose, onConfirm, isP
           >
             <div className="p-7 flex flex-col items-center text-center">
               <div className="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center mb-5">
-                <Warning size={28} weight="fill" className="text-red-500" />
+                <TriangleAlert size={28} className="text-red-500" />
               </div>
 
               <h2 className="text-lg font-extrabold text-neutral-950 tracking-tight mb-2">

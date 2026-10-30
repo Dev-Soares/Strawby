@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { Warning } from '@phosphor-icons/react'
+import { TriangleAlert } from 'lucide-react'
 import Spinner from '@/shared/components/Spinner'
 
 type Props = {
@@ -27,7 +27,7 @@ export default function ConfirmDeletePatientMealModal({ mealId, isPending, onClo
             exit={{ opacity: 0, scale: 0.96, y: 14 }}
           >
             <div className="flex items-start gap-3 mb-4">
-              <Warning size={20} weight="fill" className="text-red-500 shrink-0 mt-0.5" />
+              <TriangleAlert size={20} className="text-red-500 shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100">Remover refeição?</p>
                 <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-1">Esta ação não pode ser desfeita.</p>

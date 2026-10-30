@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { PencilSimple, Trash, Fire } from '@phosphor-icons/react'
+import { Flame, Pencil, Trash2 } from 'lucide-react'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 import type { PrivateFood } from '../types/privateFood'
 import { useDeletePrivateFood } from '../hooks/useDeletePrivateFood'
@@ -36,7 +36,7 @@ export default function PrivateFoodList({ foods, onEdit }: PrivateFoodListProps)
 
   return (
     <motion.div
-      className="flex flex-col gap-3"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
       variants={container}
       initial="hidden"
       animate="show"
@@ -54,7 +54,7 @@ export default function PrivateFoodList({ foods, onEdit }: PrivateFoodListProps)
               className="w-8 h-8 rounded-xl bg-neutral-50 dark:bg-neutral-950 hover:bg-neutral-100 dark:hover:bg-neutral-900 text-neutral-500 dark:text-neutral-400 flex items-center justify-center transition-colors duration-150 cursor-pointer"
               aria-label={`Editar ${food.name}`}
             >
-              <PencilSimple size={14} weight="bold" />
+              <Pencil size={14} />
             </button>
             <button
               type="button"
@@ -63,7 +63,7 @@ export default function PrivateFoodList({ foods, onEdit }: PrivateFoodListProps)
               className="w-8 h-8 rounded-xl bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/40 text-red-500 flex items-center justify-center transition-colors duration-150 cursor-pointer disabled:opacity-50"
               aria-label={`Remover ${food.name}`}
             >
-              <Trash size={14} weight="bold" />
+              <Trash2 size={14} />
             </button>
           </div>
 
@@ -75,7 +75,7 @@ export default function PrivateFoodList({ foods, onEdit }: PrivateFoodListProps)
           </div>
 
           <div className="flex items-center gap-1.5 mb-4">
-            <Fire size={13} weight="fill" className="text-red-500 shrink-0" />
+            <Flame size={13} className="text-red-500 shrink-0" />
             <span className="text-xl font-extrabold text-neutral-900 dark:text-neutral-200 tabular-nums leading-none transition-colors duration-300">
               {Math.round(food.calories)}
             </span>

@@ -19,11 +19,14 @@ export default function PatientScoreCalendar({ patientId }: Props) {
 
   if (isPending) {
     return (
-      <div className="animate-pulse flex flex-col gap-3">
-        <div className="h-6 w-40 rounded bg-neutral-100 dark:bg-neutral-800" />
-        <div className="grid grid-cols-7 gap-2 sm:gap-3">
+      <div className="animate-pulse bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-6 sm:p-8 transition-colors duration-300">
+        <div className="flex items-center gap-2.5 mb-6">
+          <div className="h-9 w-9 rounded-xl bg-neutral-200 dark:bg-neutral-800" />
+          <div className="h-4 w-40 rounded-full bg-neutral-200 dark:bg-neutral-800" />
+        </div>
+        <div className="grid w-full max-w-sm grid-cols-7 gap-2">
           {Array.from({ length: 35 }).map((_, i) => (
-            <div key={i} className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-neutral-100 dark:bg-neutral-800" />
+            <div key={i} className="aspect-square rounded-xl bg-neutral-100 dark:bg-neutral-800" />
           ))}
         </div>
       </div>

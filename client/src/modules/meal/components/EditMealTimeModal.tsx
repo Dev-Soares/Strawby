@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, PencilSimple, FloppyDisk } from '@phosphor-icons/react'
+import { Pencil, Save, X } from 'lucide-react'
 import { updateMealSchema, MEAL_TYPES, type UpdateMealData } from '../types/updateMeal'
 import { MEAL_TYPES as mealConfig } from '@/shared/config/mealTypes'
 import Spinner from '@/shared/components/Spinner'
@@ -70,7 +70,7 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
             <div className="flex items-center justify-between px-7 pt-7 pb-5">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
-                  <PencilSimple size={16} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+                  <Pencil size={16} className="text-neutral-600 dark:text-neutral-300" />
                 </div>
                 <div>
                   <h2 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight">Editar refeição</h2>
@@ -82,7 +82,7 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
                 onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
               >
-                <X size={13} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+                <X size={13} className="text-neutral-600 dark:text-neutral-300" />
               </button>
             </div>
 
@@ -111,7 +111,6 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
                       >
                         <Icon
                           size={18}
-                          weight="bold"
                           className={active ? 'text-white' : 'text-neutral-500 dark:text-neutral-400'}
                         />
                       </button>
@@ -159,7 +158,7 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
               >
                 {isPending
                   ? <Spinner size={15} />
-                  : <FloppyDisk size={15} weight="bold" />
+                  : <Save size={15} />
                 }
                 {isPending ? 'Salvando…' : 'Salvar'}
               </button>

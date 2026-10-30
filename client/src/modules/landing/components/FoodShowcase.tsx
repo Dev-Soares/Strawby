@@ -1,31 +1,5 @@
-import {
-  OrangeSlice,
-  Carrot,
-  Fish,
-  Egg,
-  Cookie,
-  Coffee,
-  Wine,
-  Bread,
-  Pizza,
-  Hamburger,
-  IceCream,
-  Pepper,
-  Grains,
-  Shrimp,
-  Avocado,
-  CookingPot,
-  BowlSteam,
-  Cake,
-  BeerStein,
-  Champagne,
-  Martini,
-  TeaBag,
-  Cheese,
-  Nut,
-  Leaf,
-} from '@phosphor-icons/react'
-import type { Icon } from '@phosphor-icons/react'
+import { Beer, Cake, Carrot, Wine as Champagne, Citrus, Coffee, Cookie, CookingPot, Croissant, CupSoda, Egg, Fish, Hamburger, IceCreamCone, Leaf, Martini, Milk, Nut, Pizza, Salad, Shrimp, Soup, Vegan, Wheat, Wine } from 'lucide-react'
+import type { LucideIcon as Icon } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 const ease = [0.34, 1.05, 0.64, 1] as const
@@ -37,30 +11,30 @@ interface FoodItem {
 }
 
 const foods: FoodItem[] = [
-  { icon: OrangeSlice,  color: 'text-orange-500'  },
-  { icon: Avocado,      color: 'text-lime-500'    },
+  { icon: Citrus,  color: 'text-orange-500'  },
+  { icon: Salad,      color: 'text-lime-500'    },
   { icon: Carrot,       color: 'text-orange-500'  },
   { icon: Fish,         color: 'text-cyan-500'    },
   { icon: Egg,          color: 'text-yellow-400'  },
   { icon: Pizza,        color: 'text-red-500'     },
   { icon: Coffee,       color: 'text-amber-800'   },
-  { icon: TeaBag,       color: 'text-green-600'   },
+  { icon: CupSoda,       color: 'text-green-600'   },
   { icon: Hamburger,    color: 'text-yellow-600'  },
   { icon: Leaf,         color: 'text-green-500'   },
-  { icon: Grains,       color: 'text-yellow-500'  },
+  { icon: Wheat,       color: 'text-yellow-500'  },
   { icon: Wine,         color: 'text-rose-600'    },
   { icon: Champagne,    color: 'text-yellow-400'  },
   { icon: Martini,      color: 'text-indigo-500'  },
-  { icon: BeerStein,    color: 'text-amber-400'   },
+  { icon: Beer,    color: 'text-amber-400'   },
   { icon: Shrimp,       color: 'text-pink-500'    },
-  { icon: Bread,        color: 'text-amber-500'   },
+  { icon: Croissant,        color: 'text-amber-500'   },
   { icon: Cookie,       color: 'text-orange-600'  },
-  { icon: IceCream,     color: 'text-fuchsia-500' },
+  { icon: IceCreamCone,     color: 'text-fuchsia-500' },
   { icon: CookingPot,   color: 'text-teal-600'    },
-  { icon: BowlSteam,    color: 'text-cyan-600'    },
-  { icon: Pepper,       color: 'text-red-600'     },
+  { icon: Soup,    color: 'text-cyan-600'    },
+  { icon: Vegan,       color: 'text-red-600'     },
   { icon: Cake,         color: 'text-pink-500'    },
-  { icon: Cheese,       color: 'text-yellow-500'  },
+  { icon: Milk,       color: 'text-yellow-500'  },
   { icon: Nut,          color: 'text-amber-600'   },
 ]
 
@@ -152,7 +126,6 @@ export default function FoodShowcase() {
                 <food.icon
                   className={`${food.color} cursor-default select-none transition-[scale] duration-200 hover:scale-125`}
                   size={52}
-                  weight="duotone"
                 />
               </motion.div>
             ))}

@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { Warning, Trash } from '@phosphor-icons/react'
+import { Trash2, TriangleAlert } from 'lucide-react'
 import Spinner from './Spinner'
 
 interface ConfirmDeleteModalProps {
@@ -46,7 +46,7 @@ export default function ConfirmDeleteModal({
           >
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/40 flex items-center justify-center shrink-0 transition-colors duration-300">
-                <Warning size={20} weight="bold" className="text-red-500 dark:text-red-400" />
+                <TriangleAlert size={20} className="text-red-500 dark:text-red-400" />
               </div>
               <h3 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 transition-colors duration-300">{title}</h3>
             </div>
@@ -73,7 +73,7 @@ export default function ConfirmDeleteModal({
                 {isPending ? (
                   <Spinner size={16} className="border-white/40 border-t-white" />
                 ) : (
-                  <Trash size={16} weight="bold" />
+                  <Trash2 size={16} />
                 )}
                 {isPending ? 'Removendo…' : confirmLabel}
               </button>
