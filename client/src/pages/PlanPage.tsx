@@ -99,7 +99,7 @@ export default function PlanPage() {
               >
                 <div className="flex items-center gap-2.5 mb-3">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-(--macro-calories-light)">
-                    <Flame size={18} className="text-(--macro-calories)" />
+                    <Flame size={20} className="text-(--macro-calories)" />
                   </span>
                   <span className="text-base font-bold tracking-tight text-(--macro-calories)">
                     Meta calórica diária
@@ -130,10 +130,10 @@ export default function PlanPage() {
                   <div key={macro.field} className="px-6 py-5">
                     <div className="flex items-center gap-2.5 mb-3">
                       <span
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg"
                         style={{ backgroundColor: macro.track }}
                       >
-                        <macro.icon size={17} style={{ color: macro.color }} />
+                        <macro.icon size={20} style={{ color: macro.color }} />
                       </span>
                       <span
                         className="min-w-0 truncate text-base font-bold tracking-tight"

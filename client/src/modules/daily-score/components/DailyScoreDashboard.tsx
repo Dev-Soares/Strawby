@@ -79,13 +79,19 @@ export default function DailyScoreDashboard() {
             isFetching ? 'opacity-40 pointer-events-none' : 'opacity-100'
           }`}
         >
-          <MonthlyCalendar
-            data={monthly}
-            todayDate={todayDate}
-            onPrevMonth={() => setMonthOffset((o) => o - 1)}
-            onNextMonth={() => setMonthOffset((o) => o + 1)}
-          />
-          <BestStreakCard />
+          {/* No mobile a sequencia vem primeiro: e o dado que resume o mes.
+              No desktop volta pra direita do calendario. */}
+          <div className="order-2 lg:order-1">
+            <MonthlyCalendar
+              data={monthly}
+              todayDate={todayDate}
+              onPrevMonth={() => setMonthOffset((o) => o - 1)}
+              onNextMonth={() => setMonthOffset((o) => o + 1)}
+            />
+          </div>
+          <div className="order-1 lg:order-2">
+            <BestStreakCard />
+          </div>
         </div>
       )}
     </div>

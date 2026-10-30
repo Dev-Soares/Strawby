@@ -5,7 +5,7 @@ type Props = { totals: RecipeTotals }
 
 const items = [
   { label: 'Calorias', key: 'calories' as const, unit: 'kcal', color: 'bg-red-500', track: 'bg-red-50 dark:bg-red-950/40' },
-  { label: 'Proteína', key: 'protein' as const, unit: 'g', color: 'bg-amber-500', track: 'bg-amber-50 dark:bg-amber-950/40' },
+  { label: 'Proteína', key: 'protein' as const, unit: 'g', color: 'bg-emerald-500', track: 'bg-emerald-50 dark:bg-emerald-950/40' },
   { label: 'Carboidrato', key: 'carbs' as const, unit: 'g', color: 'bg-blue-500', track: 'bg-blue-50 dark:bg-blue-950/40' },
   { label: 'Gordura', key: 'fat' as const, unit: 'g', color: 'bg-violet-500', track: 'bg-violet-50 dark:bg-violet-950/40' },
 ]

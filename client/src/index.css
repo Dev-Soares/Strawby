@@ -24,8 +24,8 @@
 :root {
   --macro-calories: #dc2626;
   --macro-calories-light: #fee2e2;
-  --macro-protein: #f59e0b;
-  --macro-protein-light: #fef3c7;
+  --macro-protein: #10b981;
+  --macro-protein-light: #d1fae5;
   --macro-carbs: #3b82f6;
   --macro-carbs-light: #dbeafe;
   --macro-fat: #a855f7;
@@ -55,8 +55,8 @@
 .dark {
   --macro-calories: #ef4444;
   --macro-calories-light: #450a0a;
-  --macro-protein: #fbbf24;
-  --macro-protein-light: #451a03;
+  --macro-protein: #34d399;
+  --macro-protein-light: #064e3b;
   --macro-carbs: #60a5fa;
   --macro-carbs-light: #1e3a8a;
   --macro-fat: #c084fc;
