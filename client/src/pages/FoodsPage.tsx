@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus } from '@phosphor-icons/react'
+import { Plus } from 'lucide-react'
 import AppLayout from '../shared/layouts/AppLayout'
 import FoodSearch from '../modules/food/components/FoodSearch'
 import FoodSearchResults from '../modules/food/components/FoodSearchResults'
@@ -71,7 +71,7 @@ export default function FoodsPage() {
                 onClick={() => navigate('/app/recipes/new')}
                 className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer shrink-0"
               >
-                <Plus size={16} weight="bold" />
+                <Plus size={16} />
                 Nova receita
               </button>
             </div>

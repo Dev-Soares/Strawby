@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MagnifyingGlass, Plus } from '@phosphor-icons/react'
+import { Plus, Search } from 'lucide-react'
 import FoodSearch from '../../food/components/FoodSearch'
 import PrivateFoodList from './PrivateFoodList'
 import PrivateFoodModal from './PrivateFoodModal'
@@ -45,7 +45,7 @@ export default function PrivateFoodManager() {
           onClick={openCreate}
           className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-colors cursor-pointer shadow-sm shadow-red-200 dark:shadow-red-900"
         >
-          <Plus size={16} weight="bold" />
+          <Plus size={16} />
           Criar alimento
         </button>
       </div>
@@ -67,8 +67,8 @@ export default function PrivateFoodManager() {
         </div>
 
         {isPending ? (
-          <div className="flex flex-col gap-3">
-            {Array.from({ length: 4 }).map((_, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {Array.from({ length: 6 }).map((_, i) => (
               <PrivateFoodSkeleton key={i} />
             ))}
           </div>
@@ -80,7 +80,7 @@ export default function PrivateFoodManager() {
         ) : filteredFoods.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
             <div className="w-14 h-14 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-4 transition-colors duration-300">
-              <MagnifyingGlass size={22} weight="bold" className="text-neutral-400 dark:text-neutral-500 transition-colors duration-300" />
+              <Search size={22} className="text-neutral-400 dark:text-neutral-500 transition-colors duration-300" />
             </div>
             <p className="text-sm font-semibold text-neutral-600 dark:text-neutral-400 mb-1 transition-colors duration-300">
               {search.trim().length >= 2 ? `Nenhum resultado para "${search}"` : 'Nenhum alimento cadastrado'}
