@@ -90,7 +90,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
 
         {meal.observations && (
           <div
-            className="mt-3 flex items-start gap-2.5 rounded-xl p-3"
+            className="mt-3 flex w-fit max-w-full items-start gap-2.5 rounded-xl p-3"
             style={{ backgroundColor: accentSurface }}
           >
             <StickyNote size={17} className="mt-0.5 shrink-0" style={{ color: accentStrong }} />
