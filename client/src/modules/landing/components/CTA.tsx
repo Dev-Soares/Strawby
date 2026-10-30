@@ -14,7 +14,7 @@ export default function CTA() {
       >
         <img
           draggable={false}
-          src="/logo.webp"
+          src="/logo.webp" width={128} height={128}
           alt=""
           className="select-none"
           style={{ width: 'clamp(360px, 50vw, 720px)', height: 'auto' }}

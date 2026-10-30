@@ -24,7 +24,7 @@ export default function Footer() {
 
           <div>
             <a href="/" className="inline-flex items-center gap-2.5 mb-10 group select-none">
-              <img draggable={false} src="/logo.webp" alt="Strawby" className="w-10 h-10 object-contain" />
+              <img draggable={false} src="/logo.webp" width={128} height={128} alt="Strawby" className="w-10 h-10 object-contain" />
                <span className="font-display text-neutral-950 dark:text-neutral-100 text-xl tracking-tighter font-extrabold transition-colors duration-300">
                 Strawby
               </span>
