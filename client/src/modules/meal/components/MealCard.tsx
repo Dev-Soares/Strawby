@@ -82,7 +82,7 @@ export default function MealCard({ meal, isOpen, onToggle }: MealCardProps) {
         </div>
 
         <p
-          className="mt-3 ml-2 min-h-11 line-clamp-2 text-base font-medium leading-snug transition-colors duration-300"
+          className="mt-3 ml-2 pr-10 sm:pr-16 min-h-11 line-clamp-2 text-base font-medium leading-snug text-pretty transition-colors duration-300"
           style={{ color: accentInk }}
         >
           {contents.length > 0 ? contents.join(', ') : 'Nenhum alimento registrado'}

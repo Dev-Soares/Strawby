@@ -92,12 +92,12 @@ export default function PlanPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
               {/* Left — calorie card */}
               <motion.div
-                className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-8 transition-colors duration-300"
+                className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm px-6 py-5 transition-colors duration-300"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
               >
-                <div className="flex items-center gap-2.5 mb-6">
+                <div className="flex items-center gap-2.5 mb-3">
                   <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-(--macro-calories-light)">
                     <Flame size={18} className="text-(--macro-calories)" />
                   </span>
@@ -107,14 +107,14 @@ export default function PlanPage() {
                 </div>
 
                 <div className="flex items-baseline gap-2">
-                  <span className="font-display text-7xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums transition-colors duration-300 sm:text-8xl">
+                  <span className="font-display text-5xl font-extrabold text-neutral-950 dark:text-neutral-100 leading-none tabular-nums transition-colors duration-300 sm:text-6xl">
                     {plan.calories.toLocaleString('pt-BR')}
                   </span>
-                  <span className="text-base font-semibold text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
+                  <span className="text-sm font-semibold text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
                     kcal
                   </span>
                 </div>
-                <p className="mt-3 text-sm text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
+                <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
                   É o total que as refeições do dia devem somar.
                 </p>
               </motion.div>
@@ -140,9 +140,6 @@ export default function PlanPage() {
                         style={{ color: macro.color }}
                       >
                         {macro.label}
-                      </span>
-                      <span className="shrink-0 text-xs font-bold tabular-nums text-neutral-400 dark:text-neutral-500">
-                        {macro.pct}% das calorias
                       </span>
                       <span className="ml-auto flex shrink-0 items-baseline gap-1">
                         <span className="font-display text-2xl font-extrabold tabular-nums leading-none text-neutral-950 dark:text-neutral-100 transition-colors duration-300">
