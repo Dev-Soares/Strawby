@@ -1,4 +1,4 @@
-import { Fire, Trophy } from '@phosphor-icons/react'
+import { Flame, Trophy } from 'lucide-react'
 import { useGetPatientStreak } from '@/modules/patient/hooks/useGetPatientStreak'
 
 function getStreakLabel(currentStreak: number) {
@@ -28,7 +28,7 @@ export default function ProfileScoreSection() {
         <>
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-red-500 flex items-center justify-center shrink-0 shadow-md shadow-red-200 dark:shadow-red-950/40 transition-colors duration-300">
-              <Fire size={22} weight="fill" className="text-white" />
+              <Flame size={22} className="text-white" />
             </div>
 
             <div>
@@ -47,7 +47,7 @@ export default function ProfileScoreSection() {
           </div>
 
           <div className="mt-4 flex items-center gap-3 px-4 py-3 rounded-2xl bg-neutral-100 dark:bg-neutral-800 transition-colors duration-300">
-            <Trophy size={20} weight="duotone" className="text-yellow-500 shrink-0" />
+            <Trophy size={20} className="text-yellow-500 shrink-0" />
             <div>
               <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-yellow-500/70 leading-none mb-1 transition-colors duration-300">
                 Melhor sequência

@@ -1,5 +1,5 @@
 import { useDeleteUser } from '@/modules/auth/hooks/useDeleteUser'
-import { Warning } from '@phosphor-icons/react'
+import { TriangleAlert } from 'lucide-react'
 import Spinner from '@/shared/components/Spinner'
 
 interface Props {
@@ -25,7 +25,7 @@ export default function DeleteAccountModal({ userId, onClose }: Props) {
       <div className="relative w-full max-w-sm bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-800 p-6 transition-colors duration-300">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/40 flex items-center justify-center shrink-0">
-            <Warning size={20} weight="fill" className="text-red-600" />
+            <TriangleAlert size={20} className="text-red-600" />
           </div>
           <div>
             <h2 className="text-[15px] font-black text-neutral-900 dark:text-neutral-100 transition-colors duration-300">

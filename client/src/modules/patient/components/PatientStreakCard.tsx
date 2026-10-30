@@ -1,9 +1,13 @@
 import { lazy, Suspense } from 'react'
 import { motion } from 'framer-motion'
+import { Flame } from 'lucide-react'
 import { useGetPatientStreak } from '../hooks/useGetPatientStreak'
 import PatientStreakSkeleton from '../skeletons/PatientStreakSkeleton'
+import { STREAK_COLORS } from '@/shared/config/score'
 
 const FireAnimation = lazy(() => import('./FireAnimation'))
+
+const { color, track } = STREAK_COLORS.current
 
 export default function PatientStreakCard() {
   const { data: streak, isPending, isError } = useGetPatientStreak()
@@ -19,43 +23,54 @@ export default function PatientStreakCard() {
         : 'Dias consecutivos'
 
   return (
-    <section className="mb-5">
-      <div className="mb-5 px-1">
-        <h2 className="font-display text-xl font-extrabold text-neutral-900 dark:text-white tracking-tight leading-tight transition-colors duration-300">
-          Sua sequência
-        </h2>
-        <p className="font-display text-sm font-medium text-neutral-400 dark:text-neutral-500 mt-0.5 transition-colors duration-300">
-          Dias consecutivos seguindo seu plano
-        </p>
+    <motion.div
+      className="bg-white dark:bg-neutral-900 rounded-2xl border border-neutral-200 dark:border-neutral-800 shadow-sm p-6 sm:p-8 transition-colors duration-300"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+    >
+      <div className="flex items-center gap-2.5 mb-6">
+        <span
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl"
+          style={{ backgroundColor: track }}
+        >
+          <Flame size={18} style={{ color }} />
+        </span>
+        <span className="text-base font-bold tracking-tight" style={{ color }}>
+          Minha sequência
+        </span>
       </div>
 
-      <motion.div
-        className="flex flex-col items-center text-center py-2"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <Suspense fallback={<div style={{ width: 140, height: 140 }} />}>
-          <FireAnimation />
+      <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-8">
+        <Suspense fallback={<div className="shrink-0" style={{ width: 132, height: 132 }} />}>
+          <FireAnimation size={132} />
         </Suspense>
 
-        <div className="mt-1 flex items-end gap-1.5 justify-center">
-          <span className="font-display text-6xl sm:text-7xl font-extrabold text-red-500 leading-none tabular-nums tracking-tight">
-            {streak.currentStreak}
-          </span>
-          <span className="text-sm font-bold text-neutral-400 dark:text-neutral-500 pb-2.5 transition-colors duration-300">
-            dias
-          </span>
+        <div className="min-w-0 flex-1 text-center sm:text-left">
+          <div className="flex items-baseline justify-center gap-2 sm:justify-start">
+            <span
+              className="font-display text-6xl font-extrabold leading-none tabular-nums tracking-tight"
+              style={{ color }}
+            >
+              {streak.currentStreak}
+            </span>
+            <span className="text-base font-semibold text-neutral-400 dark:text-neutral-500 transition-colors duration-300">
+              dias
+            </span>
+          </div>
+
+          <p className="mt-2 text-sm font-semibold text-neutral-500 dark:text-neutral-400 transition-colors duration-300">
+            {streakLabel}
+          </p>
+
+          <div className="mt-5 rounded-2xl border border-neutral-100 dark:border-neutral-800 bg-neutral-50/70 dark:bg-neutral-800/30 px-4 py-3 transition-colors duration-300">
+            <p className="text-xs font-semibold text-neutral-400 dark:text-neutral-500 leading-relaxed transition-colors duration-300">
+              Registre as refeições todo dia para manter a sequência. Um dia sem registro, ou muito
+              longe do plano, zera a contagem.
+            </p>
+          </div>
         </div>
-
-        <span className="text-base sm:text-lg font-semibold text-red-500 mt-1.5 transition-colors duration-300">
-          {streakLabel}
-        </span>
-
-        <p className="mt-4 text-base font-bold text-neutral-500 dark:text-neutral-400 text-center max-w-72 leading-relaxed transition-colors duration-300">
-          Registre suas refeições todos os dias para manter sua sequência. Um dia sem registro ou muito longe do seu plano quebra a sequência.
-        </p>
-      </motion.div>
-    </section>
+      </div>
+    </motion.div>
   )
 }

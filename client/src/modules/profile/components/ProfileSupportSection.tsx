@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom'
-import { Question, FileText, ShieldCheck, CaretRight } from '@phosphor-icons/react'
-
+import { ChevronRight, CircleQuestionMark, FileText, ShieldCheck } from 'lucide-react'
 const links = [
-  { label: 'Perguntas frequentes', Icon: Question, path: '/faq' },
+  { label: 'Perguntas frequentes', Icon: CircleQuestionMark, path: '/faq' },
   { label: 'Termos de uso', Icon: FileText, path: '/terms' },
   { label: 'Política de privacidade', Icon: ShieldCheck, path: '/privacy' },
 ]
@@ -26,12 +25,12 @@ export default function ProfileSupportSection() {
             }`}
           >
             <div className="w-8 h-8 rounded-xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center shrink-0">
-              <Icon size={15} weight="bold" className="text-neutral-500 dark:text-neutral-400" />
+              <Icon size={15} className="text-neutral-500 dark:text-neutral-400" />
             </div>
             <span className="flex-1 text-sm font-semibold text-neutral-800 dark:text-neutral-100 text-left">
               {label}
             </span>
-            <CaretRight size={14} weight="bold" className="text-neutral-400 dark:text-neutral-600 shrink-0" />
+            <ChevronRight size={14} className="text-neutral-400 dark:text-neutral-600 shrink-0" />
           </button>
         ))}
       </div>

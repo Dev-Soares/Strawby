@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
-import { X, FloppyDisk, Target, TrendDown, TrendUp, Minus, ArrowRight } from '@phosphor-icons/react'
+import { ArrowRight, Minus, Save, Target, TrendingDown, TrendingUp, X } from 'lucide-react'
 import Spinner from '@/shared/components/Spinner'
 import { targetWeightSchema, type TargetWeightFormData } from '@/modules/patient/types/targetWeight'
 import { nonNegativeInputProps } from '@/shared/utils/nonNegativeInputProps'
@@ -45,8 +45,8 @@ export default function TargetWeightModal({
       : Math.abs(diff) <= 1
         ? { Icon: Minus, text: 'Manter o peso atual' }
         : diff < 0
-          ? { Icon: TrendDown, text: `${Math.abs(diff)} kg a perder até a meta` }
-          : { Icon: TrendUp, text: `${Math.abs(diff)} kg a ganhar até a meta` }
+          ? { Icon: TrendingDown, text: `${Math.abs(diff)} kg a perder até a meta` }
+          : { Icon: TrendingUp, text: `${Math.abs(diff)} kg a ganhar até a meta` }
 
   return (
     <AnimatePresence>
@@ -71,7 +71,7 @@ export default function TargetWeightModal({
             <div className="flex items-center justify-between px-7 pt-7 pb-5">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-orange-100 dark:bg-orange-950/40 flex items-center justify-center">
-                  <Target size={16} weight="bold" className="text-orange-600 dark:text-orange-400" />
+                  <Target size={16} className="text-orange-600 dark:text-orange-400" />
                 </div>
                 <div>
                   <h2 className="text-base font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight leading-tight">
@@ -85,7 +85,7 @@ export default function TargetWeightModal({
                 onClick={onClose}
                 className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
               >
-                <X size={13} weight="bold" className="text-neutral-600 dark:text-neutral-300" />
+                <X size={13} className="text-neutral-600 dark:text-neutral-300" />
               </button>
             </div>
 
@@ -103,7 +103,7 @@ export default function TargetWeightModal({
                 </div>
 
                 <div className="flex items-center">
-                  <ArrowRight size={16} weight="bold" className="text-neutral-300 dark:text-neutral-600" />
+                  <ArrowRight size={16} className="text-neutral-300 dark:text-neutral-600" />
                 </div>
 
                 <div className="flex-1 rounded-2xl bg-orange-50 dark:bg-orange-950/25 border border-orange-100 dark:border-orange-950/40 px-4 py-3">
@@ -138,7 +138,7 @@ export default function TargetWeightModal({
                   <p className="text-[10px] font-semibold text-red-500 mt-1.5">{errors.targetWeight.message}</p>
                 ) : hint ? (
                   <p className="text-[10px] font-bold text-orange-500 dark:text-orange-400 mt-1.5 flex items-center gap-1">
-                    <hint.Icon size={12} weight="bold" />
+                    <hint.Icon size={12} />
                     {hint.text}
                   </p>
                 ) : null}
@@ -152,7 +152,7 @@ export default function TargetWeightModal({
                 {isPending ? (
                   <Spinner size={15} className="border-white/30 dark:border-neutral-950/30 border-t-white dark:border-t-neutral-950" />
                 ) : (
-                  <FloppyDisk size={15} weight="bold" />
+                  <Save size={15} />
                 )}
                 {isPending ? 'Salvando…' : 'Salvar meta'}
               </button>
