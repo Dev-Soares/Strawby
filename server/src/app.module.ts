@@ -24,7 +24,7 @@ import { NotificationTokenModule } from './modules/notification/notification-tok
 import { NotificationModule } from './modules/notification/send-notification/notification.module';
 import { PatientWeightModule } from './modules/patient-weight/patient-weight.module';
 import { AiModule } from './modules/ai/ai.module';
-
+import { StrawbyAssistantModule } from './modules/strawby-assistant/strawby-assistant.module';
 
 @Module({
   imports: [
@@ -95,6 +95,7 @@ import { AiModule } from './modules/ai/ai.module';
     NotificationModule,
     PatientWeightModule,
     AiModule,
+    StrawbyAssistantModule,
   ],
   providers: [
     {
