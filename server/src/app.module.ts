@@ -23,6 +23,8 @@ import { EmailModule } from './modules/email/email.module';
 import { NotificationTokenModule } from './modules/notification/notification-token/notification-token.module';
 import { NotificationModule } from './modules/notification/send-notification/notification.module';
 import { PatientWeightModule } from './modules/patient-weight/patient-weight.module';
+import { AiModule } from './modules/ai/ai.module';
+
 
 @Module({
   imports: [
@@ -92,6 +94,7 @@ import { PatientWeightModule } from './modules/patient-weight/patient-weight.mod
     NotificationTokenModule,
     NotificationModule,
     PatientWeightModule,
+    AiModule,
   ],
   providers: [
     {
