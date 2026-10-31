@@ -26,7 +26,7 @@ export class MealService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly patientAccess: PatientAccessService,
-  ) { }
+  ) {}
 
   private computeTotals(
     items: FoodItemPublic[],
@@ -510,6 +510,5 @@ export class MealService {
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar refeições por horário');
     }
-
   }
 }

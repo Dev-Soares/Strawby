@@ -8,6 +8,12 @@ import { MealModule } from '../meal/meal.module';
 
 @Module({
   providers: [CronService],
-  imports: [DailyScoreModule, PatientModule, UserModule, NotificationModule, MealModule],
+  imports: [
+    DailyScoreModule,
+    PatientModule,
+    UserModule,
+    NotificationModule,
+    MealModule,
+  ],
 })
 export class CronModule {}

@@ -32,10 +32,7 @@ export type RecipeInMeal = {
   items: FoodItemPublic[];
 };
 
-export type MealData = Pick<
-  Meal,
-  | 'mealType' | 'patientId'
->;
+export type MealData = Pick<Meal, 'mealType' | 'patientId'>;
 
 export type MealPublic = Pick<
   Meal,

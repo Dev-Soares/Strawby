@@ -16,7 +16,7 @@ export class CronService {
     private readonly patientService: PatientService,
     private readonly userService: UserService,
     private readonly notificationService: NotificationService,
-    private readonly mealService: MealService
+    private readonly mealService: MealService,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_2AM, { timeZone: 'America/Sao_Paulo' })
@@ -73,7 +73,7 @@ export class CronService {
     } catch (error) {
       this.logger.error('notifyPatientsWithoutDailyMeal falhou', error);
     }
-  } 
+  }
 
   @Cron(CronExpression.EVERY_10_MINUTES, { timeZone: 'America/Sao_Paulo' })
   async notifyPatientsWithPlannedMeal() {
