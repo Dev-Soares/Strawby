@@ -99,75 +99,21 @@ body {
   overflow-x: clip;
 }
 
-/* Reserva a calha da scrollbar sempre, mesmo em página curta. Elemento fixed
-   se posiciona pelo bloco de contenção inicial, que exclui a scrollbar (12px
-   aqui, não é overlay) -- sem isso a TabBar centralizada desloca 6px entre
-   página com e sem scroll, e o layout todo pula ao abrir modal que trava o
-   scroll do body. */
-html {
-  scrollbar-gutter: stable;
-}
+
 
 .dark html,
 .dark body {
   background: #0a0a0a;
 }
 
-/* Custom scrollbar — minimal red bar */
-::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-  background: transparent;
-}
-
-::-webkit-scrollbar-button {
-  display: flex;
-  height: 0 !important;
-  width: 0 !important;
-}
-
-::-webkit-scrollbar-corner {
-  background: transparent;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-  background-color: transparent;
-}
-
-::-webkit-scrollbar-track-piece {
-  background: transparent;
-  background-color: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #dc2626;
-  border-radius: 999px;
-  min-height: 48px;
-  transition: background-color 0.2s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #cb0b0b;
-  transition: all 0.2s ease;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: #991b1b;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #7f1d1d;
-}
-
-/* Firefox */
+/* Scrollbar hidden globally — keeps scroll behavior without visible track/thumb */
 * {
-  scrollbar-width: auto;
-  scrollbar-color: #dc2626 transparent;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.dark * {
-  scrollbar-color: #991b1b transparent;
+*::-webkit-scrollbar {
+  display: none;
 }
 
 img, svg, video {

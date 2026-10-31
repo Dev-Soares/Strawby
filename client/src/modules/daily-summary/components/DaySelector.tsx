@@ -9,7 +9,11 @@ function iso(d: Date) {
   return toLocalISODate(d)
 }
 
-export default function DaySelector() {
+interface DaySelectorProps {
+  className?: string
+}
+
+export default function DaySelector({ className }: DaySelectorProps) {
   const { selectedDay, setSelectedDay } = useDay()
   const [pickerOpen, setPickerOpen] = useState(false)
 
@@ -38,7 +42,7 @@ export default function DaySelector() {
 
   return (
     <motion.div
-      className="mb-8 sm:mb-10 flex justify-center sm:justify-start"
+      className={`mb-8 sm:mb-10 flex justify-center sm:justify-start ${className ?? ''}`}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: 0.15 }}

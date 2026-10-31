@@ -1,4 +1,4 @@
-import { Bot, User } from 'lucide-react'
+import { User } from 'lucide-react'
 import type { AssistantMessage, SuggestedMeal } from '../types/chat'
 
 interface ChatMessageProps {
@@ -10,16 +10,20 @@ export default function ChatMessage({ message, onAddMeal }: ChatMessageProps) {
   const isUser = message.role === 'user'
 
   return (
-    <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
-      <div
-        className={`shrink-0 flex h-8 w-8 items-center justify-center rounded-full ${
-          isUser
-            ? 'bg-red-600 text-white'
-            : 'bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300'
-        }`}
-      >
-        {isUser ? <User size={16} /> : <Bot size={16} />}
-      </div>
+    <div className={`flex items-center gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+      {isUser ? (
+        <div className="shrink-0 flex h-8 w-8 items-center justify-center rounded-full bg-red-600 text-white">
+          <User size={16} />
+        </div>
+      ) : (
+        <div className="shrink-0 h-9 w-9 rounded-full bg-red-50 dark:bg-red-950/30 p-0.5">
+          <img
+            src="/mascot/mascot-smile.webp"
+            alt=""
+            className="h-full w-full object-contain"
+          />
+        </div>
+      )}
 
       <div className={`flex max-w-[85%] flex-col gap-3 ${isUser ? 'items-end' : 'items-start'}`}>
         <div

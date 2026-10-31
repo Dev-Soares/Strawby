@@ -5,6 +5,7 @@ import DaySelector from '../../daily-summary/components/DaySelector'
 import DailySummarySkeleton from '../../daily-summary/skeletons/DailySummarySkeleton'
 import MealListSkeleton from '../../daily-summary/skeletons/MealListSkeleton'
 import PatientHomeHeader from './PatientHomeHeader'
+import AssistantLauncher from '../../strawby-assistant/components/AssistantLauncher'
 import { usePatientHome } from '../hooks/usePatientHome'
 import { useAutoTutorial } from '../../onboarding/hooks/useTutorial'
 
@@ -19,7 +20,10 @@ export default function PatientHomeContent() {
           <PatientHomeHeader name={user?.name ?? 'Bem-vindo'} />
         </div>
 
-        <DaySelector />
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-start gap-3 mb-8 sm:mb-10">
+          <DaySelector className="!mb-0" />
+          <AssistantLauncher />
+        </div>
 
         {mealsError && (
           <div className="rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900 p-4 mb-6 mt-4 transition-colors duration-300">

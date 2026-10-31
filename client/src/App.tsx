@@ -15,6 +15,7 @@ import { planRoutes } from './routes/planRoutes'
 import { scoreRoutes } from './routes/scoreRoutes'
 import { profileRoutes } from './routes/profileRoutes'
 import { nutritionistRoutes } from './routes/nutritionistRoutes'
+import { assistantRoutes } from './routes/assistantRoutes'
 
 export default function App() {
   return (
@@ -41,6 +42,7 @@ export default function App() {
           {scoreRoutes}
           {profileRoutes}
           {nutritionistRoutes}
+          {assistantRoutes}
         </Routes>
       </Suspense>
     </>
