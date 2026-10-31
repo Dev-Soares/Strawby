@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { Plus, Utensils } from 'lucide-react'
 import type { Meal } from '../../meal/types/meal'
 import MealCard from '../../meal/components/MealCard'
-import { useDay } from '../contexts/DayContext'
+import { useDay } from '../hooks/useDay'
 
 interface MealListProps {
   meals: Meal[]

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useNavigate, type NavigateFunction } from 'react-router-dom'
+
 import Shepherd, { type Tour } from 'shepherd.js'
 import 'shepherd.js/dist/css/shepherd.css'
 import { useAuth } from '../../auth/hooks/useAuth'
@@ -210,7 +211,10 @@ function buildTour(
 export function useAutoTutorial() {
   const triggerTutorial = useTriggerTutorial()
   const triggerRef = useRef(triggerTutorial)
-  triggerRef.current = triggerTutorial
+
+  useEffect(() => {
+    triggerRef.current = triggerTutorial
+  }, [triggerTutorial])
 
   useEffect(() => {
     if (!sessionStorage.getItem(TUTORIAL_KEY)) return
@@ -231,7 +235,7 @@ export function useAutoTutorial() {
         sessionStorage.removeItem(TUTORIAL_ACTIVE_KEY)
       }
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 }
 
 export function useTriggerTutorial() {

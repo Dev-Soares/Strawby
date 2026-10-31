@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
@@ -31,6 +31,8 @@ export const useCreateMealForm = () => {
     resolver: zodResolver(createMealSchema),
     defaultValues: { time: '07:00', kind },
   })
+
+  const selectedType = useWatch({ control: form.control, name: 'mealType' })
 
   const selectPlanMeal = (meal: Meal) => {
     setSelectedPlanMeal(meal)
@@ -83,7 +85,7 @@ export const useCreateMealForm = () => {
     register: form.register,
     setValue: form.setValue,
     errors: form.formState.errors,
-    selectedType: form.watch('mealType'),
+    selectedType,
     onSubmit,
     isPlan,
     showPicker,

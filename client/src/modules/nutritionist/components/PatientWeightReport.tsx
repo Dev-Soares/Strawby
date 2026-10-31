@@ -1,5 +1,6 @@
 import { useGetPatientWeightRecords } from '@/modules/patient/hooks/useGetPatientWeightRecords'
-import WeightBarChart, { deriveWeightChartData } from '@/shared/components/WeightBarChart'
+import WeightBarChart from '@/shared/components/WeightBarChart'
+import { deriveWeightChartData } from '@/shared/utils/deriveWeightChartData'
 import CurrentWeightBadge from '@/shared/components/CurrentWeightBadge'
 
 interface Props {

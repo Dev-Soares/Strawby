@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
 import { toLocalISODate } from '@/shared/utils/date'
 import DatePickerPopover from '@/shared/components/DatePickerPopover'
-import { useDay } from '../contexts/DayContext'
+import { useDay } from '../hooks/useDay'
 
 function iso(d: Date) {
   return toLocalISODate(d)
@@ -12,7 +12,6 @@ function iso(d: Date) {
 export default function DaySelector() {
   const { selectedDay, setSelectedDay } = useDay()
   const [pickerOpen, setPickerOpen] = useState(false)
-  const todayIso = useMemo(() => iso(new Date()), [])
 
   const goPrevDay = () => {
     const d = new Date(selectedDay + 'T00:00:00')
@@ -35,7 +34,7 @@ export default function DaySelector() {
       month: 'long',
     }).replace(/^\w/, (c) => c.toUpperCase())
     return `${base} (${year})`
-  }, [selectedDay, todayIso])
+  }, [selectedDay])
 
   return (
     <motion.div

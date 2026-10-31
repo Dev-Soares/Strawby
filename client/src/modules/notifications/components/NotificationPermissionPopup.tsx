@@ -12,14 +12,11 @@ interface NotificationPermissionPopupProps {
 }
 
 const NotificationPermissionPopup = ({ forceOpen, onClose }: NotificationPermissionPopupProps = {}) => {
-  const [visible, setVisible] = useState(false)
+  const [visible, setVisible] = useState(() => !!forceOpen)
   const { mutate, isPending } = useRequestNotificationPermission()
 
   useEffect(() => {
-    if (forceOpen) {
-      setVisible(true)
-      return
-    }
+    if (forceOpen) return
 
     const permissionStatus = 'Notification' in window ? Notification.permission : 'unsupported'
 

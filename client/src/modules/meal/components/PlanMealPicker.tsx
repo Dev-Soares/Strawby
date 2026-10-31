@@ -1,6 +1,6 @@
 import { X } from 'lucide-react'
 import { useGetPlanMeals } from '../hooks/useGetPlanMeals'
-import { useThemeContext } from '@/shared/contexts/ThemeProvider'
+import { useThemeContext } from '@/shared/hooks/useThemeContext'
 import type { Meal } from '../types/meal'
 import { getMealType } from '@/shared/config/mealTypes'
 

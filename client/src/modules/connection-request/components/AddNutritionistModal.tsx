@@ -23,7 +23,7 @@ export default function AddNutritionistModal({ isOpen, isPending, onClose, onSen
 
   useEffect(() => {
     if (isOpen) reset()
-  }, [isOpen])
+  }, [isOpen, reset])
 
   const onSubmit = handleSubmit(({ code }) => onSend(code))
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
 
 export type ThemePreference = 'dark' | 'light' | 'system'
 
@@ -16,6 +16,12 @@ function getSystemTheme(): 'dark' | 'light' {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
+function subscribeSystemTheme(callback: () => void) {
+  const media = window.matchMedia('(prefers-color-scheme: dark)')
+  media.addEventListener('change', callback)
+  return () => media.removeEventListener('change', callback)
+}
+
 function getInitialPreference(): ThemePreference {
   try {
     const stored = localStorage.getItem(STORAGE_KEY) as ThemePreference | null
@@ -26,29 +32,20 @@ function getInitialPreference(): ThemePreference {
 
 export function useTheme(): ThemeState {
   const [theme, setThemeState] = useState<ThemePreference>(getInitialPreference)
-  const [resolvedTheme, setResolvedTheme] = useState<'dark' | 'light'>(getSystemTheme())
+  const systemTheme = useSyncExternalStore<'dark' | 'light'>(
+    subscribeSystemTheme,
+    getSystemTheme,
+    () => 'light',
+  )
+  const resolvedTheme = theme === 'system' ? systemTheme : theme
 
-  const apply = useCallback((pref: ThemePreference) => {
-    const resolved = pref === 'system' ? getSystemTheme() : pref
-    setResolvedTheme(resolved)
-    if (resolved === 'dark') {
+  useEffect(() => {
+    if (resolvedTheme === 'dark') {
       document.documentElement.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')
     }
-  }, [])
-
-  useEffect(() => {
-    apply(theme)
-  }, [theme, apply])
-
-  useEffect(() => {
-    if (theme !== 'system') return
-    const media = window.matchMedia('(prefers-color-scheme: dark)')
-    const handler = () => apply('system')
-    media.addEventListener('change', handler)
-    return () => media.removeEventListener('change', handler)
-  }, [theme, apply])
+  }, [resolvedTheme])
 
   const setTheme = useCallback((t: ThemePreference) => {
     try {

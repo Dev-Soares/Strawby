@@ -1,17 +1,10 @@
-import { createContext, useContext, useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { toLocalISODate } from '@/shared/utils/date'
+import { DayContext } from './day-context'
 
 function getTodayIso() {
   return toLocalISODate()
 }
-
-interface DayContextValue {
-  selectedDay: string
-  setSelectedDay: (day: string) => void
-  isToday: boolean
-}
-
-const DayContext = createContext<DayContextValue | null>(null)
 
 export function DayProvider({ children }: { children: React.ReactNode }) {
   const [selectedDay, setSelectedDay] = useState(() => getTodayIso())
@@ -28,10 +21,4 @@ export function DayProvider({ children }: { children: React.ReactNode }) {
   )
 
   return <DayContext.Provider value={value}>{children}</DayContext.Provider>
-}
-
-export function useDay() {
-  const ctx = useContext(DayContext)
-  if (!ctx) throw new Error('useDay must be used within DayProvider')
-  return ctx
 }

@@ -9,8 +9,9 @@ import {
   Cell,
   LabelList,
 } from 'recharts'
-import { useThemeContext } from '@/shared/contexts/ThemeProvider'
+import { useThemeContext } from '@/shared/hooks/useThemeContext'
 import type { WeightRecord } from '@/modules/patient/service/getPatientWeightRecordsService'
+import { deriveWeightChartData } from '../utils/deriveWeightChartData'
 
 interface CustomTooltipProps {
   active?: boolean
@@ -30,30 +31,6 @@ function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
       </div>
     </div>
   )
-}
-
-function formatDate(isoDate: string): string {
-  const d = new Date(isoDate)
-  const day = String(d.getUTCDate()).padStart(2, '0')
-  const month = String(d.getUTCMonth() + 1).padStart(2, '0')
-  return `${day}/${month}`
-}
-
-export function deriveWeightChartData(records: WeightRecord[] | undefined) {
-  const chartData = (records ?? []).map((r) => ({
-    date: formatDate(r.date),
-    weight: r.weight,
-  }))
-
-  const latestWeight = chartData[0]?.weight ?? null
-  const oldestWeight = chartData[chartData.length - 1]?.weight ?? null
-  const delta =
-    latestWeight !== null && oldestWeight !== null
-      ? (latestWeight - oldestWeight).toFixed(1)
-      : null
-  const lost = delta !== null && parseFloat(delta) < 0
-
-  return { chartData, latestWeight, delta, lost }
 }
 
 interface WeightBarChartProps {

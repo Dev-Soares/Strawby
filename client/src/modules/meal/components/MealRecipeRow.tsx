@@ -2,7 +2,7 @@ import { Trash2 } from 'lucide-react'
 import type { RecipeInMeal } from '../types/meal'
 import type { MealTypeConfig } from '@/shared/config/mealTypes'
 import { getMealAccent } from '@/shared/config/mealTypes'
-import { useThemeContext } from '@/shared/contexts/ThemeProvider'
+import { useThemeContext } from '@/shared/hooks/useThemeContext'
 import MacroChipsRow from './MacroChipsRow'
 
 type Props = {

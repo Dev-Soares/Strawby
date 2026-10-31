@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Minus, Save, Target, TrendingDown, TrendingUp, X } from 'lucide-react'
@@ -24,7 +24,7 @@ export default function TargetWeightModal({
   onClose,
   onSave,
 }: Props) {
-  const { register, handleSubmit, watch, reset, formState: { errors } } = useForm<TargetWeightFormData>({
+  const { register, handleSubmit, control, reset, formState: { errors } } = useForm<TargetWeightFormData>({
     resolver: zodResolver(targetWeightSchema),
   })
 
@@ -34,7 +34,7 @@ export default function TargetWeightModal({
 
   const onSubmit = handleSubmit((data) => onSave(data))
 
-  const typed = watch('targetWeight')
+  const typed = useWatch({ control, name: 'targetWeight' })
   const hasTyped = typeof typed === 'number' && !isNaN(typed)
   const diff =
     hasTyped && typeof currentWeight === 'number' ? +(typed - currentWeight).toFixed(1) : null

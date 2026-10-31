@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -27,7 +27,7 @@ interface CreatePlanModalProps {
 }
 
 export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, initialMode = 'select', isNutritionist = false }: CreatePlanModalProps) {
-  const [mode, setMode] = useState<Mode>(initialMode)
+  const [mode, setMode] = useState<Mode>(() => initialMode)
 
   const manualForm = useForm<ManualPlanData>({
     resolver: zodResolver(manualPlanSchema),
@@ -39,16 +39,8 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
     defaultValues: { movementLevel: DEFAULT_ACTIVITY_LEVEL },
   })
 
-  useEffect(() => {
-    if (isOpen) {
-      setMode(initialMode)
-      manualForm.reset()
-      generateForm.reset({ movementLevel: DEFAULT_ACTIVITY_LEVEL })
-    }
-  }, [isOpen, initialMode])
-
   const handleClose = () => {
-    setMode('select')
+    setMode(initialMode)
     manualForm.reset()
     generateForm.reset({ movementLevel: DEFAULT_ACTIVITY_LEVEL })
     onClose()

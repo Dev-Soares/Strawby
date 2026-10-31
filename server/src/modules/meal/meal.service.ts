@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Meal, MealKind } from '@prisma/client';
+import { MealKind } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { PatientAccessService } from '../patient-access/patient-access.service';
 import { appDayRangeTz, todayInAppTz } from '../../common/utils/date.util';
