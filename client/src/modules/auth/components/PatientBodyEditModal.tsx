@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUpDown, Calendar, HeartPulse, Mars, Save, Venus, X } from 'lucide-react'
@@ -16,11 +16,11 @@ interface Props {
 }
 
 export default function PatientBodyEditModal({ isOpen, isPending, defaultValues, onClose, onSave }: Props) {
-  const { register, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm<PatientBodyData>({
+  const { register, handleSubmit, setValue, control, reset, formState: { errors } } = useForm<PatientBodyData>({
     resolver: zodResolver(patientBodySchema),
   })
 
-  const gender = watch('gender')
+  const gender = useWatch({ control, name: 'gender' })
 
   useEffect(() => {
     if (isOpen) {
@@ -30,7 +30,7 @@ export default function PatientBodyEditModal({ isOpen, isPending, defaultValues,
         gender: (defaultValues.gender as 'male' | 'female' | undefined) ?? undefined,
       })
     }
-  }, [isOpen, defaultValues])
+  }, [isOpen, defaultValues, reset])
 
   const onSubmit = handleSubmit((data) => onSave(data))
 
