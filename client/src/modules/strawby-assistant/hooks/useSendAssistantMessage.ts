@@ -36,6 +36,7 @@ export const useSendAssistantMessage = () => {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ASSISTANT_CHAT_QUERY_KEY })
+      queryClient.invalidateQueries({ queryKey: ['meals'] })
     },
   })
 }
