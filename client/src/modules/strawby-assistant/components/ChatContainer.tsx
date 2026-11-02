@@ -1,16 +1,14 @@
 import { useEffect, useRef } from 'react'
+import { motion } from 'framer-motion'
 import { Plus } from 'lucide-react'
 import { useAssistantActions } from '../hooks/useAssistantActions'
 import type { AddSuggestedMealData } from '../types/snackSuggestion'
-import AssistantWelcome from './AssistantWelcome'
-import AssistantResponse from './AssistantResponse'
-import AssistantIntentPills from './AssistantIntentPills'
-import UserChatMessage from './UserChatMessage'
-import AssistantTyping from './AssistantTyping'
+import AssistantPresentation from './AssistantPresentation'
 import ChatInput from './ChatInput'
 import SnackInput from './SnackInput'
 import SuggestedMealCards from './SuggestedMealCards'
 import SnackSuggestions from './SnackSuggestions'
+import AssistantIntentPills from './AssistantIntentPills'
 
 export default function ChatContainer() {
   const {
@@ -32,13 +30,48 @@ export default function ChatContainer() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isPending, snackResult])
 
-  const lastAssistantIndex = [...messages].reverse().findIndex((message) => message.role === 'assistant')
-  const lastAssistantMessage = lastAssistantIndex !== -1
-    ? messages[messages.length - 1 - lastAssistantIndex]
-    : undefined
+  const userMessages = messages.filter((message) => message.role === 'user')
+  const lastAssistantMessage = [...messages].reverse().find((message) => message.role === 'assistant')
 
   const suggestedMeals = lastAssistantMessage?.suggestedMeals
   const hasSuggestedMeals = suggestedMeals && suggestedMeals.length > 0
+
+  const getPresentationProps = () => {
+    if (step === 'choose') return { state: 'welcome' as const }
+    if (isPending) return { state: 'typing' as const }
+    if (step === 'meal' && !lastAssistantMessage) {
+      return { state: 'response' as const, response: 'Me conta o que você comeu que eu registro pra você.' }
+    }
+    if (step === 'snack' && !snackResult) {
+      return { state: 'response' as const, response: 'Qual tipo de refeição você quer sugerir?' }
+    }
+    if (!lastAssistantMessage) return { state: 'typing' as const }
+    if (hasSuggestedMeals) {
+      return { state: 'response' as const, response: 'Pronto! Refeição criada! Algo mais que posso te ajudar?' }
+    }
+    return { state: 'response' as const, response: lastAssistantMessage.content }
+  }
+
+  const presentation = getPresentationProps()
+
+  const result = (() => {
+    if (step === 'snack' && snackResult) {
+      return (
+        <SnackSuggestions
+          remaining={snackResult.remaining}
+          options={snackResult.options}
+          onAdd={(meal) => addSuggestedMeal({ mealType: meal.mealType as AddSuggestedMealData['mealType'], mealName: meal.name })}
+          isAdding={isPending}
+        />
+      )
+    }
+
+    if (hasSuggestedMeals) {
+      return <SuggestedMealCards meals={suggestedMeals ?? []} />
+    }
+
+    return null
+  })()
 
   return (
     <div className="relative flex h-full flex-col justify-between gap-3 sm:gap-4">
@@ -54,53 +87,38 @@ export default function ChatContainer() {
       )}
 
       <div className="flex-1 overflow-y-auto px-1 py-2 scrollbar-hide">
-        <div className="mx-auto max-w-3xl space-y-6 pt-14">
-          {step === 'choose' && <AssistantWelcome />}
+        <div className="mx-auto max-w-3xl space-y-6">
+          <div className="mt-14">
+            <AssistantPresentation {...presentation} />
+          </div>
 
-          {messages.map((message, index) => {
-            const isLastAssistant = message.role === 'assistant' && messages.slice(index + 1).every((m) => m.role !== 'assistant')
-
-            if (message.role === 'user') {
-              return <UserChatMessage key={message.id} content={message.content} />
-            }
-
-            return (
-              <AssistantResponse key={message.id} content={message.content} contentKey={message.id}>
-                {isLastAssistant && hasSuggestedMeals && (
-                  <SuggestedMealCards meals={suggestedMeals ?? []} />
-                )}
-                {isLastAssistant && step === 'snack' && snackResult && (
-                  <SnackSuggestions
-                    remaining={snackResult.remaining}
-                    options={snackResult.options}
-                    onAdd={(meal) => addSuggestedMeal({ mealType: meal.mealType as AddSuggestedMealData['mealType'], mealName: meal.name })}
-                    isAdding={isPending}
-                  />
-                )}
-              </AssistantResponse>
-            )
-          })}
-
-          {step === 'meal' && !isPending && !hasSuggestedMeals && (
-            <AssistantResponse content="Me conta o que você comeu que eu registro pra você." contentKey="meal-prompt" />
-          )}
-
-          {step === 'snack' && !isPending && !snackResult && (
-            <AssistantResponse content="Qual tipo de refeição você quer sugerir?" contentKey="snack-prompt" />
-          )}
-
-          {isPending && step !== 'choose' && <AssistantTyping />}
+          {result ?? userMessages.map((message) => (
+            <motion.div
+              key={message.id}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+              className="flex justify-end"
+            >
+              <div className="max-w-[85%] rounded-2xl bg-neutral-100 px-5 py-3.5 text-[15px] leading-relaxed text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100">
+                {message.content}
+              </div>
+            </motion.div>
+          ))}
 
           <div ref={bottomRef} />
         </div>
       </div>
 
       <div className="mx-auto w-full max-w-3xl space-y-3">
-        {step === 'choose' && (
+        {step === 'choose' ? (
           <AssistantIntentPills onSelectMeal={selectMeal} onSelectSnack={selectSnack} />
+        ) : (
+          <>
+            {step === 'meal' && <ChatInput onSubmit={submitMeal} isPending={isPending} />}
+            {step === 'snack' && <SnackInput onSubmit={submitSnack} isPending={isPending} />}
+          </>
         )}
-        {step === 'meal' && <ChatInput onSubmit={submitMeal} isPending={isPending} />}
-        {step === 'snack' && <SnackInput onSubmit={submitSnack} isPending={isPending} />}
 
         <p className="text-center text-xs text-neutral-500 dark:text-neutral-400">
           A IA pode cometer erros. Sempre revise as sugestões antes de adicionar.
