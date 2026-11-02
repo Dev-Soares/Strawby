@@ -15,6 +15,7 @@ import { UpdateMealDto } from './dto/update-meal.dto';
 import { UpdateFoodItemDto } from './dto/update-food-item.dto';
 import {
   FoodItemPublic,
+  MealMacros,
   MealPublic,
   MealTotals,
   RecipeInMeal,
@@ -311,6 +312,49 @@ export class MealService {
   ): Promise<MealPublic[]> {
     await this.patientAccess.resolve(callerId, patientId);
     return this.queryMealsByDay(patientId, day, kind);
+  }
+
+  async queryDayMacros(patientId: string, day: string): Promise<MealMacros> {
+    try {
+      const { start, end } = appDayRangeTz(day);
+      const rows = await this.prisma.$queryRaw<
+        { calories: number; protein: number; carbs: number; fat: number }[]
+      >`
+        SELECT
+          COALESCE(SUM(calories), 0) AS calories,
+          COALESCE(SUM(protein), 0) AS protein,
+          COALESCE(SUM(carbs), 0) AS carbs,
+          COALESCE(SUM(fat), 0) AS fat
+        FROM (
+          SELECT fi.calories, fi.protein, fi.carbs, fi.fat
+          FROM "Meal" m
+          JOIN "FoodItem" fi ON fi."mealId" = m.id
+          WHERE m."patientId" = ${patientId}
+            AND m.kind = 'DAILY'
+            AND m.date >= ${start}
+            AND m.date < ${end}
+          UNION ALL
+          SELECT fi.calories, fi.protein, fi.carbs, fi.fat
+          FROM "Meal" m
+          JOIN "_MealToRecipe" mr ON mr."A" = m.id
+          JOIN "FoodItem" fi ON fi."recipeId" = mr."B"
+          WHERE m."patientId" = ${patientId}
+            AND m.kind = 'DAILY'
+            AND m.date >= ${start}
+            AND m.date < ${end}
+        ) items
+      `;
+
+      const row = rows[0] ?? { calories: 0, protein: 0, carbs: 0, fat: 0 };
+      return {
+        calories: Number(row.calories),
+        protein: Number(row.protein),
+        carbs: Number(row.carbs),
+        fat: Number(row.fat),
+      };
+    } catch (error) {
+      mapPrismaError(error, 'Erro ao buscar macros do dia');
+    }
   }
 
   async queryMealsByDay(

@@ -86,12 +86,13 @@ export class MealExtractionAssistantService {
   }
 
   private async extractMeal(message: string): Promise<AssistantExtractedMeal> {
-    return this.ai.generateObject({
+    const { object } = await this.ai.generateObject({
       system: EXTRACT_MEAL_SYSTEM_PROMPT,
       prompt: buildExtractMealPrompt(message, this.currentTime()),
       schema: assistantExtractedMealSchema,
       temperature: 0.3,
     });
+    return object;
   }
 
   private async resolveItems(

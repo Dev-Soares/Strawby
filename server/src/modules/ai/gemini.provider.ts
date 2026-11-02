@@ -3,7 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { createGoogle } from '@ai-sdk/google';
 import { generateObject, generateText } from 'ai';
 import type { LlmProvider } from './llm-provider.interface';
-import type { GenerateObjectOptions, GenerateTextOptions } from './types';
+import type {
+  GenerateObjectOptions,
+  GenerateObjectResult,
+  GenerateTextOptions,
+} from './types';
 
 @Injectable()
 export class GeminiProvider implements LlmProvider {
@@ -35,11 +39,13 @@ export class GeminiProvider implements LlmProvider {
     return text;
   }
 
-  async generateObject<T>(options: GenerateObjectOptions<T>): Promise<T> {
+  async generateObject<T>(
+    options: GenerateObjectOptions<T>,
+  ): Promise<GenerateObjectResult<T>> {
     const modelId =
       this.config.get<string>('GEMINI_MODEL') ?? 'gemini-2.0-flash';
 
-    const { object } = await generateObject({
+    const { object, usage } = await generateObject({
       model: this.googleProvider(modelId),
       schema: options.schema,
       system: options.system,
@@ -47,6 +53,13 @@ export class GeminiProvider implements LlmProvider {
       temperature: options.temperature ?? 0.3,
     });
 
-    return object;
+    return {
+      object,
+      usage: {
+        inputTokens: usage.inputTokens ?? 0,
+        outputTokens: usage.outputTokens ?? 0,
+        totalTokens: usage.totalTokens ?? 0,
+      },
+    };
   }
 }

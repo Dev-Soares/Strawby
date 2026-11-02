@@ -1,18 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PatientAccessService } from '../patient-access/patient-access.service';
-import { AiService } from '../ai/ai.service';
-import { FoodService } from '../food/food.service';
 import { MealService } from '../meal/meal.service';
 import { PlanService } from '../plan/plan.service';
 import { todayInAppTz } from '../../common/utils/date.util';
-import { findPublicFoodMatch } from './utils/food-matching.util';
-import type { MealMacros, MealPublic } from '../meal/types';
+import type { MealMacros } from '../meal/types';
 import { SuggestSnackDto } from './dto/suggest-snack.dto';
-import {
-  buildSnackSuggestionPrompt,
-  SNACK_SUGGESTION_SYSTEM_PROMPT,
-} from './prompts/meal-suggestion.prompts';
-import { suggestedSnackListSchema } from './types/meal-suggestion.types';
+import { SUGGESTED_MEALS } from './data/suggested-meals.data';
+import type { SuggestedMeal, SuggestedMealItem } from './data/suggested-meals.data';
 
 type SuggestedSnackItemResult = {
   name: string;
@@ -34,11 +28,37 @@ type SuggestedSnackResult = {
   totals: MealMacros;
 };
 
+const slugify = (value: string): string =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+const sumMacros = (items: { calories: number; protein: number; carbs: number; fat: number }[]): MealMacros =>
+  items.reduce(
+    (acc, item) => ({
+      calories: acc.calories + item.calories,
+      protein: acc.protein + item.protein,
+      carbs: acc.carbs + item.carbs,
+      fat: acc.fat + item.fat,
+    }),
+    { calories: 0, protein: 0, carbs: 0, fat: 0 },
+  );
+
+const shuffle = <T>(array: T[]): T[] => {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+};
+
 @Injectable()
 export class MealSuggestionAssistantService {
   constructor(
-    private readonly ai: AiService,
-    private readonly food: FoodService,
     private readonly meal: MealService,
     private readonly plan: PlanService,
     private readonly patientAccess: PatientAccessService,
@@ -55,12 +75,11 @@ export class MealSuggestionAssistantService {
     await this.patientAccess.resolve(callerId, patientId);
 
     const day = todayInAppTz();
-    const [meals, plan] = await Promise.all([
-      this.meal.queryMealsByDay(patientId, day),
+    const [consumed, plan] = await Promise.all([
+      this.meal.queryDayMacros(patientId, day),
       this.plan.queryPlanByPatient(patientId),
     ]);
 
-    const consumed = this.reduceDayMacros(meals);
     const remaining = plan
       ? {
           calories: Math.max(0, plan.calories - consumed.calories),
@@ -70,88 +89,66 @@ export class MealSuggestionAssistantService {
         }
       : null;
 
-    const maxResults = dto.maxResults ?? 3;
-
-    const extracted = await this.ai.generateObject({
-      system: SNACK_SUGGESTION_SYSTEM_PROMPT,
-      prompt: buildSnackSuggestionPrompt(remaining, dto.mealType, maxResults),
-      schema: suggestedSnackListSchema,
-      temperature: 0.4,
-    });
-
-    const options = await this.resolveOptions(extracted.options, maxResults);
+    const options = this.selectOptions(
+      dto.mealType ?? 'snack',
+      dto.maxResults ?? 3,
+      remaining,
+    );
 
     return { remaining, options };
   }
 
-  private reduceDayMacros(meals: MealPublic[]): MealMacros {
-    if (!meals?.length) return { calories: 0, protein: 0, carbs: 0, fat: 0 };
-    return meals.reduce(
-      (acc, meal) => ({
-        calories: acc.calories + meal.totals.calories,
-        protein: acc.protein + meal.totals.protein,
-        carbs: acc.carbs + meal.totals.carbs,
-        fat: acc.fat + meal.totals.fat,
-      }),
-      { calories: 0, protein: 0, carbs: 0, fat: 0 },
+  private selectOptions(
+    mealType: string,
+    maxResults: number,
+    remaining: MealMacros | null,
+  ): SuggestedSnackResult[] {
+    const candidates = SUGGESTED_MEALS[mealType as keyof typeof SUGGESTED_MEALS] ?? [];
+    const mapped = candidates.map((meal) => this.mapMeal(meal));
+
+    if (!remaining) {
+      return shuffle(mapped).slice(0, maxResults);
+    }
+
+    const validOptions = mapped.filter((option) =>
+      this.fitsWithinMacros(option.totals, remaining),
     );
+
+    return shuffle(validOptions.length > 0 ? validOptions : mapped).slice(0, maxResults);
   }
 
-  private async resolveOptions(
-    candidates: {
-      name: string;
-      mealType: string;
-      reason: string;
-      items: { name: string; quantity: number; unit: string }[];
-    }[],
-    maxResults: number,
-  ): Promise<SuggestedSnackResult[]> {
-    const limited = candidates.slice(0, maxResults);
+  private mapMeal(meal: SuggestedMeal): SuggestedSnackResult {
+    const items = meal.items.map((item) => this.mapItem(item));
 
-    return Promise.all(
-      limited.map(async (candidate) => {
-        const itemResults = await Promise.all(
-          candidate.items.map(async (item) => {
-            const match = await findPublicFoodMatch(item.name, this.food);
-            if (!match) return null;
+    return {
+      name: meal.name,
+      mealType: meal.mealType,
+      reason: meal.reason,
+      items,
+      totals: sumMacros(items),
+    };
+  }
 
-            const ratio = item.quantity / 100;
-            return {
-              name: item.name,
-              quantity: item.quantity,
-              unit: item.unit,
-              foodId: match.id,
-              foodName: match.name,
-              calories: match.calories * ratio,
-              protein: match.protein * ratio,
-              carbs: match.carbs * ratio,
-              fat: match.fat * ratio,
-            };
-          }),
-        );
+  private mapItem(item: SuggestedMealItem): SuggestedSnackItemResult {
+    return {
+      name: item.name,
+      quantity: item.quantity,
+      unit: item.unit,
+      foodId: `suggested-${slugify(item.name)}`,
+      foodName: item.name,
+      calories: item.calories,
+      protein: item.protein,
+      carbs: item.carbs,
+      fat: item.fat,
+    };
+  }
 
-        const validItems = itemResults.filter(
-          (item): item is SuggestedSnackItemResult => item !== null,
-        );
-
-        const totals = validItems.reduce(
-          (acc, item) => ({
-            calories: acc.calories + item.calories,
-            protein: acc.protein + item.protein,
-            carbs: acc.carbs + item.carbs,
-            fat: acc.fat + item.fat,
-          }),
-          { calories: 0, protein: 0, carbs: 0, fat: 0 },
-        );
-
-        return {
-          name: candidate.name,
-          mealType: candidate.mealType,
-          reason: candidate.reason,
-          items: validItems,
-          totals,
-        };
-      }),
+  private fitsWithinMacros(totals: MealMacros, remaining: MealMacros): boolean {
+    return (
+      totals.calories <= remaining.calories * 1.3 &&
+      totals.protein <= remaining.protein * 1.4 &&
+      totals.carbs <= remaining.carbs * 1.4 &&
+      totals.fat <= remaining.fat * 1.4
     );
   }
 }

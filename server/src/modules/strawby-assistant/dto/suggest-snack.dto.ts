@@ -17,5 +17,5 @@ export class SuggestSnackDto {
   @IsInt()
   @Min(1)
   @Max(5)
-  maxResults = 3;
+  maxResults?: number = 3;
 }

@@ -6,7 +6,11 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { LlmProvider } from './llm-provider.interface';
-import type { GenerateObjectOptions, GenerateTextOptions } from './types';
+import type {
+  GenerateObjectOptions,
+  GenerateObjectResult,
+  GenerateTextOptions,
+} from './types';
 
 export const LLM_PROVIDER = Symbol('LLM_PROVIDER');
 
@@ -33,7 +37,9 @@ export class AiService {
     }
   }
 
-  async generateObject<T>(options: GenerateObjectOptions<T>): Promise<T> {
+  async generateObject<T>(
+    options: GenerateObjectOptions<T>,
+  ): Promise<GenerateObjectResult<T>> {
     this.ensureConfigured();
 
     try {

@@ -6,7 +6,6 @@ import { PlanModule } from '../plan/plan.module';
 import { PatientAccessModule } from '../patient-access/patient-access.module';
 import { StrawbyAssistantController } from './strawby-assistant.controller';
 import { MealExtractionAssistantService } from './meal-extraction-assistant.service';
-import { FoodSubstitutionAssistantService } from './food-substitution-assistant.service';
 import { MealSuggestionAssistantService } from './meal-suggestion-assistant.service';
 
 @Module({
@@ -14,7 +13,6 @@ import { MealSuggestionAssistantService } from './meal-suggestion-assistant.serv
   controllers: [StrawbyAssistantController],
   providers: [
     MealExtractionAssistantService,
-    FoodSubstitutionAssistantService,
     MealSuggestionAssistantService,
   ],
 })

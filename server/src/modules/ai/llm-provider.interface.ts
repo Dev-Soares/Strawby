@@ -1,4 +1,8 @@
-import type { GenerateObjectOptions, GenerateTextOptions } from './types';
+import type {
+  GenerateObjectOptions,
+  GenerateObjectResult,
+  GenerateTextOptions,
+} from './types';
 
 export interface LlmProvider {
   readonly name: string;
@@ -7,5 +11,7 @@ export interface LlmProvider {
 
   generateText(options: GenerateTextOptions): Promise<string>;
 
-  generateObject<T>(options: GenerateObjectOptions<T>): Promise<T>;
+  generateObject<T>(
+    options: GenerateObjectOptions<T>,
+  ): Promise<GenerateObjectResult<T>>;
 }

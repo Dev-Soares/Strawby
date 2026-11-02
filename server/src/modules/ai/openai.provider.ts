@@ -3,7 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { createOpenAI } from '@ai-sdk/openai';
 import { generateObject, generateText } from 'ai';
 import type { LlmProvider } from './llm-provider.interface';
-import type { GenerateObjectOptions, GenerateTextOptions } from './types';
+import type {
+  GenerateObjectOptions,
+  GenerateObjectResult,
+  GenerateTextOptions,
+} from './types';
 
 @Injectable()
 export class OpenAiProvider implements LlmProvider {
@@ -28,10 +32,12 @@ export class OpenAiProvider implements LlmProvider {
     return text;
   }
 
-  async generateObject<T>(options: GenerateObjectOptions<T>): Promise<T> {
+  async generateObject<T>(
+    options: GenerateObjectOptions<T>,
+  ): Promise<GenerateObjectResult<T>> {
     const model = this.buildModel();
 
-    const { object } = await generateObject({
+    const { object, usage } = await generateObject({
       model,
       schema: options.schema,
       system: options.system,
@@ -39,7 +45,14 @@ export class OpenAiProvider implements LlmProvider {
       temperature: options.temperature ?? 0.3,
     });
 
-    return object;
+    return {
+      object,
+      usage: {
+        inputTokens: usage.inputTokens ?? 0,
+        outputTokens: usage.outputTokens ?? 0,
+        totalTokens: usage.totalTokens ?? 0,
+      },
+    };
   }
 
   private buildModel() {
