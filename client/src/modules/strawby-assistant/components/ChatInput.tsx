@@ -8,6 +8,8 @@ import { useSpeechRecognition } from '../../../shared/hooks/useSpeechRecognition
 import { useAudioVisualizer } from '../../../shared/hooks/useAudioVisualizer'
 import AudioWaveform from './AudioWaveform'
 
+const MAX_MESSAGE_LENGTH = 500
+
 interface ChatInputProps {
   onSubmit: (data: SendAssistantMessageData) => void
   isPending: boolean
@@ -19,10 +21,14 @@ export default function ChatInput({ onSubmit, isPending }: ChatInputProps) {
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<SendAssistantMessageData>({
     resolver: zodResolver(sendAssistantMessageSchema),
   })
+
+  const messageValue = watch('message', '')
+  const characterCount = messageValue.length
 
   const { isListening, transcript, error, toggle, resetTranscript } = useSpeechRecognition()
   const { bars, start: startVisualizer, stop: stopVisualizer } = useAudioVisualizer()
@@ -54,48 +60,76 @@ export default function ChatInput({ onSubmit, isPending }: ChatInputProps) {
   return (
     <form onSubmit={submitMessage} className="relative">
       {isListening ? (
-        <div className="flex min-h-[60px] sm:min-h-[56px] w-full items-center justify-center gap-3 rounded-3xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20 px-4 sm:px-5 py-3 sm:py-4 pr-24 sm:pr-24">
+        <div className="flex min-h-14 w-full items-center gap-3 rounded-3xl border border-red-200 bg-red-50 px-4 py-3 dark:border-red-900/50 dark:bg-red-950/20 sm:px-5 sm:py-4">
           <AudioWaveform bars={bars} />
-          <span className="text-sm font-medium text-red-700 dark:text-red-400">Ouvindo...</span>
+          <span className="flex-1 text-sm font-medium text-red-700 dark:text-red-400">Ouvindo...</span>
+          <button
+            type="button"
+            onClick={toggle}
+            className="flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-red-600 px-3 text-xs font-semibold text-white transition-colors duration-200 hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-950 cursor-pointer"
+            aria-label="Parar gravação"
+          >
+            <MicOff size={15} />
+            <span>Parar</span>
+          </button>
         </div>
       ) : (
-        <textarea
-          {...register('message')}
-          rows={1}
-          placeholder="Digite sua meta, preferências ou o que tem na geladeira..."
-          disabled={isPending}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault()
-              submitMessage()
-            }
-          }}
-          className="field-sizing-content min-h-[60px] sm:min-h-[56px] max-h-[200px] w-full resize-none rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 py-3 sm:py-4 pl-4 sm:pl-5 pr-24 sm:pr-24 text-sm text-neutral-950 dark:text-neutral-100 placeholder:text-neutral-500 dark:placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-red-600/30 dark:focus:ring-red-600/40 transition-all duration-200 disabled:opacity-60"
-        />
+        <div className="flex items-center gap-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 sm:px-4 sm:py-2.5 transition-all duration-200 focus-within:ring-2 focus-within:ring-red-600/30 dark:focus-within:ring-red-600/40">
+          <textarea
+            {...register('message')}
+            rows={1}
+            maxLength={MAX_MESSAGE_LENGTH}
+            placeholder="Digite sua meta, preferências ou o que tem na geladeira..."
+            disabled={isPending}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault()
+                submitMessage()
+              }
+            }}
+            className="field-sizing-content min-h-5 max-h-40 flex-1 resize-none bg-transparent border-0 p-0 text-sm text-neutral-950 dark:text-neutral-100 placeholder:text-neutral-500 dark:placeholder:text-neutral-500 focus:outline-none focus:ring-0 disabled:opacity-60"
+          />
+
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <button
+              type="button"
+              onClick={toggle}
+              disabled={isPending && !isListening}
+              className={`flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${
+                isListening
+                  ? 'bg-red-600 text-white animate-pulse'
+                  : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-700'
+              }`}
+              aria-label={isListening ? 'Parar de gravar' : 'Gravar mensagem de voz'}
+            >
+              {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+            </button>
+
+            <button
+              type="submit"
+              disabled={isPending || isListening}
+              className="flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-full bg-red-600 text-white transition-colors duration-200 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              aria-label="Enviar mensagem"
+            >
+              <ArrowUp size={18} />
+            </button>
+          </div>
+        </div>
       )}
 
-      <button
-        type="button"
-        onClick={toggle}
-        disabled={isPending && !isListening}
-        className={`absolute right-12 sm:right-14 top-1/2 -translate-y-1/2 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer ${
-          isListening
-            ? 'bg-red-600 text-white animate-pulse'
-            : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-700'
-        }`}
-        aria-label={isListening ? 'Parar de gravar' : 'Gravar mensagem de voz'}
-      >
-        {isListening ? <MicOff size={16} className="size-4 sm:size-5" /> : <Mic size={16} className="size-4 sm:size-5" />}
-      </button>
-
-      <button
-        type="submit"
-        disabled={isPending || isListening}
-        className="absolute right-2 top-1/2 -translate-y-1/2 flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-red-600 text-white transition-colors duration-200 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-        aria-label="Enviar mensagem"
-      >
-        <ArrowUp size={16} className="size-4 sm:size-5" />
-      </button>
+      <div className="mt-1.5 flex items-center justify-end px-1">
+        <span
+          className={`text-xs transition-colors duration-200 ${
+            characterCount >= MAX_MESSAGE_LENGTH
+              ? 'text-red-500'
+              : characterCount >= MAX_MESSAGE_LENGTH * 0.9
+                ? 'text-amber-500'
+                : 'text-neutral-400 dark:text-neutral-500'
+          }`}
+        >
+          {characterCount}/{MAX_MESSAGE_LENGTH}
+        </span>
+      </div>
 
       {errors.message && (
         <p className="absolute -top-6 left-0 text-xs text-red-500">{errors.message.message}</p>

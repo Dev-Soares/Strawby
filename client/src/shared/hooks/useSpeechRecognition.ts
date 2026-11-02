@@ -23,11 +23,15 @@ export const useSpeechRecognition = () => {
 
     const recognition = new SpeechRecognitionCtor()
     recognition.lang = 'pt-BR'
-    recognition.continuous = true
+    recognition.continuous = false
     recognition.interimResults = false
     recognition.maxAlternatives = 1
 
     recognition.onstart = () => setIsListening(true)
+
+    recognition.onspeechend = () => {
+      recognition.stop()
+    }
 
     recognition.onend = () => {
       setIsListening(false)

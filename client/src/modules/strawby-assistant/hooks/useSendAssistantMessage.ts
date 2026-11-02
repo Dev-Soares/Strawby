@@ -28,6 +28,12 @@ export const useSendAssistantMessage = () => {
 
       return { previousMessages }
     },
+    onSuccess: (reply) => {
+      queryClient.setQueryData<AssistantMessage[]>(ASSISTANT_CHAT_QUERY_KEY, (old = []) => [
+        ...old,
+        reply,
+      ])
+    },
     onError: (_error, _dto, context) => {
       if (context) {
         queryClient.setQueryData(ASSISTANT_CHAT_QUERY_KEY, context.previousMessages)
@@ -35,7 +41,6 @@ export const useSendAssistantMessage = () => {
       toast.error('Erro ao enviar mensagem. Tente novamente.')
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ASSISTANT_CHAT_QUERY_KEY })
       queryClient.invalidateQueries({ queryKey: ['meals'] })
     },
   })

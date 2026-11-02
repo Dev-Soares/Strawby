@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const sendAssistantMessageSchema = z.object({
-  message: z.string().min(1, 'Digite uma mensagem').max(2000, 'Mensagem muito longa'),
+  message: z.string().min(1, 'Digite uma mensagem').max(500, 'Mensagem muito longa'),
 })
 
 export type SendAssistantMessageData = z.infer<typeof sendAssistantMessageSchema>
@@ -16,13 +16,14 @@ export type MealTotals = {
 }
 
 export type SuggestedMealItem = {
-  name: string
+  id: string
   quantity: number
-  unit: string
   calories: number
   protein: number
   carbs: number
   fat: number
+  food: { id: string; name: string } | null
+  privateFood: { id: string; name: string } | null
 }
 
 export type SuggestedMeal = {
