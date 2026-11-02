@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { openai } from '@ai-sdk/openai';
+import { createOpenAI } from '@ai-sdk/openai';
 import { generateObject, generateText } from 'ai';
 import type { LlmProvider } from './llm-provider.interface';
 import type { GenerateObjectOptions, GenerateTextOptions } from './types';
@@ -12,14 +12,14 @@ export class OpenAiProvider implements LlmProvider {
   constructor(private readonly config: ConfigService) {}
 
   isConfigured(): boolean {
-    return Boolean(this.config.get<string>('OPENAI_API_KEY'));
+    return Boolean(this.getConfig('OPENAI_API_KEY'));
   }
 
   async generateText(options: GenerateTextOptions): Promise<string> {
-    const modelId = this.config.get<string>('OPENAI_MODEL') ?? 'gpt-4o-mini';
+    const model = this.buildModel();
 
     const { text } = await generateText({
-      model: openai(modelId),
+      model,
       system: options.system,
       prompt: options.prompt,
       temperature: options.temperature ?? 0.7,
@@ -29,10 +29,10 @@ export class OpenAiProvider implements LlmProvider {
   }
 
   async generateObject<T>(options: GenerateObjectOptions<T>): Promise<T> {
-    const modelId = this.config.get<string>('OPENAI_MODEL') ?? 'gpt-4o-mini';
+    const model = this.buildModel();
 
     const { object } = await generateObject({
-      model: openai(modelId),
+      model,
       schema: options.schema,
       system: options.system,
       prompt: options.prompt,
@@ -40,5 +40,23 @@ export class OpenAiProvider implements LlmProvider {
     });
 
     return object;
+  }
+
+  private buildModel() {
+    const apiKey = this.getConfig('OPENAI_API_KEY');
+    const baseURL = this.getConfig('OPENAI_BASE_URL');
+    const modelId = this.getConfig('OPENAI_MODEL') ?? 'gpt-4o-mini';
+
+    const options: { apiKey?: string; baseURL?: string } = { apiKey };
+    if (baseURL) {
+      options.baseURL = baseURL;
+    }
+
+    return createOpenAI(options)(modelId);
+  }
+
+  private getConfig(key: string): string | undefined {
+    const value = this.config.get<string>(key);
+    return value && value.trim().length > 0 ? value : undefined;
   }
 }

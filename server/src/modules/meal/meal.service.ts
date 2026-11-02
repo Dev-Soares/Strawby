@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { MealKind } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { PatientAccessService } from '../patient-access/patient-access.service';
@@ -20,6 +24,12 @@ import {
 } from './types';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
 import { parseServingSize } from '../../common/utils/serving-size.util';
+
+type CreateMealItemInput = {
+  foodId?: string;
+  privateFoodId?: string;
+  quantity: number;
+};
 
 @Injectable()
 export class MealService {
@@ -119,6 +129,160 @@ export class MealService {
       return this.toMealPublic(meal);
     } catch (error) {
       mapPrismaError(error, 'Erro ao criar refeição');
+    }
+  }
+
+  async createWithItems(
+    callerId: string,
+    patientId: string,
+    dto: CreateMealDto,
+    items: CreateMealItemInput[],
+  ): Promise<MealPublic> {
+    await this.patientAccess.resolve(callerId, patientId);
+
+    const foodIds = items
+      .filter((item) => item.foodId)
+      .map((item) => item.foodId!);
+    const privateFoodIds = items
+      .filter((item) => item.privateFoodId)
+      .map((item) => item.privateFoodId!);
+
+    try {
+      const [foods, privateFoods] = await Promise.all([
+        foodIds.length > 0
+          ? this.prisma.food.findMany({
+              where: { id: { in: foodIds } },
+              select: {
+                id: true,
+                name: true,
+                calories: true,
+                protein: true,
+                carbs: true,
+                fat: true,
+              },
+            })
+          : Promise.resolve<
+              Array<{
+                id: string;
+                name: string;
+                calories: number;
+                protein: number;
+                carbs: number;
+                fat: number;
+              }>
+            >([]),
+        privateFoodIds.length > 0
+          ? this.prisma.privateFood.findMany({
+              where: { id: { in: privateFoodIds }, patientId },
+              select: {
+                id: true,
+                name: true,
+                calories: true,
+                protein: true,
+                carbs: true,
+                fat: true,
+                servingSize: true,
+              },
+            })
+          : Promise.resolve<
+              Array<{
+                id: string;
+                name: string;
+                calories: number;
+                protein: number;
+                carbs: number;
+                fat: number;
+                servingSize: string | null;
+              }>
+            >([]),
+      ]);
+
+      const foodMap = new Map(foods.map((food) => [food.id, food]));
+      const privateFoodMap = new Map(
+        privateFoods.map((food) => [food.id, food]),
+      );
+
+      const meal = await this.prisma.$transaction(async (tx) => {
+        const created = await tx.meal.create({
+          data: {
+            name: this.mealTypeToName(dto.mealType),
+            kind: dto.kind,
+            mealType: dto.mealType,
+            time: dto.time,
+            observations: dto.observations || null,
+            date: dto.date ? appDayRangeTz(dto.date).start : undefined,
+            patientId,
+          },
+          select: {
+            id: true,
+            name: true,
+            kind: true,
+            mealType: true,
+            time: true,
+            observations: true,
+            date: true,
+            patientId: true,
+          },
+        });
+
+        const foodItemData = items.map((item) => {
+          if (item.foodId) {
+            const food = foodMap.get(item.foodId);
+            if (!food)
+              throw new NotFoundException('Alimento não encontrado');
+            const ratio = item.quantity / 100;
+            return {
+              mealId: created.id,
+              foodId: food.id,
+              quantity: item.quantity,
+              calories: food.calories * ratio,
+              protein: food.protein * ratio,
+              carbs: food.carbs * ratio,
+              fat: food.fat * ratio,
+            };
+          }
+
+          if (item.privateFoodId) {
+            const privateFood = privateFoodMap.get(item.privateFoodId);
+            if (!privateFood)
+              throw new NotFoundException('Alimento privado não encontrado');
+            const ratio =
+              item.quantity / parseServingSize(privateFood.servingSize);
+            return {
+              mealId: created.id,
+              privateFoodId: privateFood.id,
+              quantity: item.quantity,
+              calories: privateFood.calories * ratio,
+              protein: privateFood.protein * ratio,
+              carbs: privateFood.carbs * ratio,
+              fat: privateFood.fat * ratio,
+            };
+          }
+
+          throw new InternalServerErrorException(
+            'Item da refeição não possui foodId nem privateFoodId',
+          );
+        });
+
+        await tx.foodItem.createMany({ data: foodItemData });
+
+        const createdItems = await tx.foodItem.findMany({
+          where: { mealId: created.id },
+          select: foodItemSelect,
+        });
+
+        return { ...created, items: createdItems, recipes: [] };
+      });
+
+      return this.toMealPublic(meal);
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof InternalServerErrorException
+      ) {
+        throw error;
+      }
+      mapPrismaError(error, 'Erro ao criar refeição com itens');
     }
   }
 

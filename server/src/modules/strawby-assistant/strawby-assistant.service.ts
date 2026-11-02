@@ -1,6 +1,7 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { MealKind } from '@prisma/client';
 import { randomUUID } from 'crypto';
+import { performance } from 'perf_hooks';
 import { AiService } from '../ai/ai.service';
 import { FoodService } from '../food/food.service';
 import { MealService } from '../meal/meal.service';
@@ -8,32 +9,27 @@ import { PrivateFoodService } from '../private-food/private-food.service';
 import type { PrivateFoodPublic } from '../private-food/types';
 import { SendAssistantMessageDto } from './dto/send-message.dto';
 import {
-  buildMealPrompt,
-  buildSearchPrompt,
-  MEAL_SYSTEM_PROMPT,
-  SEARCH_SYSTEM_PROMPT,
+  buildExtractMealPrompt,
+  EXTRACT_MEAL_SYSTEM_PROMPT,
 } from './prompts';
 import {
-  assistantMealSchema,
-  assistantSearchSchema,
-  type AssistantMeal,
-  type AssistantMealItem,
+  assistantExtractedMealSchema,
+  type AssistantExtractedItem,
+  type AssistantExtractedMeal,
 } from './types';
 
-const MAX_CANDIDATES = 20;
-
-type CandidateFood = {
-  id: string;
+type ResolvedItem = {
   name: string;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  source: 'public' | 'private';
+  quantity: number;
+  unit: string;
+  foodId?: string;
+  privateFoodId?: string;
 };
 
 @Injectable()
 export class StrawbyAssistantService {
+  private readonly logger = new Logger(StrawbyAssistantService.name);
+
   constructor(
     private readonly ai: AiService,
     private readonly food: FoodService,
@@ -46,15 +42,17 @@ export class StrawbyAssistantService {
     patientId: string,
     dto: SendAssistantMessageDto,
   ) {
-    const search = await this.extractSearchQueries(dto.message);
-    const candidates = await this.findCandidates(
-      callerId,
-      patientId,
-      search.queries,
-    );
-    const mealData = await this.buildMeal(dto.message, candidates);
+    const totalStart = performance.now();
+    this.logger.log({ event: 'assistant_start', patientId });
 
-    if (mealData.items.length === 0) {
+    const extractStart = performance.now();
+    const extracted = await this.extractMeal(dto.message);
+    this.logTiming('extract_meal', extractStart, {
+      itemCount: extracted.items.length,
+    });
+
+    if (extracted.items.length === 0) {
+      this.logTiming('total', totalStart, { result: 'no_items' });
       return {
         reply: {
           id: randomUUID(),
@@ -67,11 +65,49 @@ export class StrawbyAssistantService {
       };
     }
 
-    const meal = await this.createMealFromAssistant(
+    const resolveStart = performance.now();
+    const resolvedItems = await this.resolveItems(
       callerId,
       patientId,
-      mealData,
+      extracted.items,
     );
+    const validItems = resolvedItems.filter(
+      (item) => item.foodId || item.privateFoodId,
+    );
+    this.logTiming('resolve_items', resolveStart, {
+      requestedCount: extracted.items.length,
+      resolvedCount: validItems.length,
+    });
+
+    if (validItems.length === 0) {
+      this.logTiming('total', totalStart, { result: 'no_resolved_items' });
+      return {
+        reply: {
+          id: randomUUID(),
+          role: 'assistant',
+          content:
+            'Não encontrei os alimentos que você descreveu no banco. Tente descrever de outra forma.',
+          createdAt: new Date().toISOString(),
+          suggestedMeals: [],
+        },
+      };
+    }
+
+    const createStart = performance.now();
+    const meal = await this.createMeal(
+      callerId,
+      patientId,
+      extracted,
+      validItems,
+    );
+    this.logTiming('create_meal', createStart, {
+      itemCount: meal.items.length,
+    });
+
+    this.logTiming('total', totalStart, {
+      result: 'success',
+      itemCount: meal.items.length,
+    });
 
     return {
       reply: {
@@ -84,72 +120,122 @@ export class StrawbyAssistantService {
     };
   }
 
-  private async extractSearchQueries(message: string) {
+  private async extractMeal(message: string): Promise<AssistantExtractedMeal> {
     return this.ai.generateObject({
-      system: SEARCH_SYSTEM_PROMPT,
-      prompt: buildSearchPrompt(message),
-      schema: assistantSearchSchema,
+      system: EXTRACT_MEAL_SYSTEM_PROMPT,
+      prompt: buildExtractMealPrompt(message, this.currentTime()),
+      schema: assistantExtractedMealSchema,
       temperature: 0.3,
     });
   }
 
-  private async findCandidates(
+  private async resolveItems(
     callerId: string,
     patientId: string,
-    queries: string[],
-  ): Promise<CandidateFood[]> {
-    const publicFoods = await Promise.all(
-      queries.map((query) => this.food.search(query)),
-    );
-
+    items: AssistantExtractedItem[],
+  ): Promise<ResolvedItem[]> {
     const privateFoods = await this.privateFood.findAllByPatient(
       callerId,
       patientId,
     );
 
-    const publicCandidates: CandidateFood[] = publicFoods
-      .flat()
-      .map((food) => ({
-        id: food.id,
-        name: food.name,
-        calories: food.calories,
-        protein: food.protein,
-        carbs: food.carbs,
-        fat: food.fat,
-        source: 'public' as const,
-      }));
+    return Promise.all(
+      items.map(async (item) => {
+        const privateMatch = this.findPrivateFoodMatch(item.name, privateFoods);
+        if (privateMatch) {
+          return {
+            name: item.name,
+            quantity: item.quantity,
+            unit: item.unit,
+            privateFoodId: privateMatch.id,
+          };
+        }
 
-    const privateCandidates: CandidateFood[] = this.filterPrivateFoods(
-      privateFoods,
-      queries,
-    ).map((food) => ({
-      id: food.id,
-      name: food.name,
-      calories: food.calories,
-      protein: food.protein,
-      carbs: food.carbs,
-      fat: food.fat,
-      source: 'private' as const,
-    }));
+        const publicMatch = await this.findPublicFoodMatch(item.name);
+        if (publicMatch) {
+          return {
+            name: item.name,
+            quantity: item.quantity,
+            unit: item.unit,
+            foodId: publicMatch.id,
+          };
+        }
 
-    const allCandidates = this.deduplicate([
-      ...publicCandidates,
-      ...privateCandidates,
-    ]);
-
-    return allCandidates.slice(0, MAX_CANDIDATES);
+        return {
+          name: item.name,
+          quantity: item.quantity,
+          unit: item.unit,
+        };
+      }),
+    );
   }
 
-  private filterPrivateFoods(
+  private findPrivateFoodMatch(
+    name: string,
     privateFoods: PrivateFoodPublic[],
-    queries: string[],
-  ): PrivateFoodPublic[] {
-    const normalizedQueries = queries.map((q) => this.normalize(q));
+  ): PrivateFoodPublic | null {
+    const normalizedName = this.normalize(name);
 
-    return privateFoods.filter((food) => {
-      const normalizedName = this.normalize(food.name);
-      return normalizedQueries.some((query) => normalizedName.includes(query));
+    const exact = privateFoods.find(
+      (food) => this.normalize(food.name) === normalizedName,
+    );
+    if (exact) return exact;
+
+    const contains = privateFoods.find((food) => {
+      const normalizedFood = this.normalize(food.name);
+      return (
+        normalizedFood.includes(normalizedName) ||
+        normalizedName.includes(normalizedFood)
+      );
     });
+    if (contains) return contains;
+
+    return null;
+  }
+
+  private async findPublicFoodMatch(name: string) {
+    const trimmed = name.trim();
+    if (trimmed.length < 2) return null;
+
+    const results = await this.food.search(trimmed);
+    if (results.length === 0) return null;
+
+    const normalizedName = this.normalize(trimmed);
+
+    const exact = results.find(
+      (food) => this.normalize(food.name) === normalizedName,
+    );
+    if (exact) return exact;
+
+    const contains = results.find((food) =>
+      this.normalize(food.name).includes(normalizedName),
+    );
+    if (contains) return contains;
+
+    return results[0];
+  }
+
+  private async createMeal(
+    callerId: string,
+    patientId: string,
+    extracted: AssistantExtractedMeal,
+    resolvedItems: ResolvedItem[],
+  ) {
+    return this.meal.createWithItems(
+      callerId,
+      patientId,
+      {
+        kind: MealKind.DAILY,
+        mealType: extracted.mealType ?? undefined,
+        time: extracted.time ?? undefined,
+        observations: extracted.observations ?? undefined,
+      },
+      resolvedItems.map((item) => ({
+        foodId: item.foodId,
+        privateFoodId: item.privateFoodId,
+        quantity: item.quantity,
+      })),
+    );
   }
 
   private normalize(value: string): string {
@@ -159,80 +245,6 @@ export class StrawbyAssistantService {
       .replace(/[\u0300-\u036f]/g, '');
   }
 
-  private deduplicate(candidates: CandidateFood[]): CandidateFood[] {
-    const seen = new Set<string>();
-    return candidates.filter((candidate) => {
-      const key = `${candidate.source}:${candidate.id}`;
-
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-  }
-
-  private async buildMeal(
-    message: string,
-    candidates: CandidateFood[],
-  ): Promise<AssistantMeal> {
-    if (candidates.length === 0) {
-      return {
-        name: 'Refeição',
-        items: [],
-      } as AssistantMeal;
-    }
-
-    return this.ai.generateObject({
-      system: MEAL_SYSTEM_PROMPT,
-      prompt: buildMealPrompt(message, candidates, this.currentTime()),
-      schema: assistantMealSchema,
-      temperature: 0.3,
-    });
-  }
-
-  private async createMealFromAssistant(
-    callerId: string,
-    patientId: string,
-    mealData: AssistantMeal,
-  ) {
-    const created = await this.meal.create(callerId, patientId, {
-      kind: MealKind.DAILY,
-      mealType: mealData.mealType,
-      time: mealData.time,
-      observations: mealData.observations,
-    });
-
-    for (const item of mealData.items) {
-      await this.addItem(callerId, patientId, created.id, item);
-    }
-
-    return this.meal.findOne(callerId, patientId, created.id);
-  }
-
-  private async addItem(
-    callerId: string,
-    patientId: string,
-    mealId: string,
-    item: AssistantMealItem,
-  ) {
-    if (item.privateFoodId) {
-      return this.meal.addPrivateFoodItem(callerId, patientId, mealId, {
-        privateFoodId: item.privateFoodId,
-        quantity: item.quantity,
-      });
-    }
-
-    if (!item.foodId) {
-      throw new InternalServerErrorException(
-        'Item da refeição não possui foodId nem privateFoodId',
-      );
-    }
-
-    return this.meal.addFoodItem(callerId, patientId, mealId, {
-      foodId: item.foodId,
-      quantity: item.quantity,
-    });
-  }
-
   private currentTime(): string {
     const now = new Date();
     return now.toLocaleTimeString('pt-BR', {
@@ -240,5 +252,14 @@ export class StrawbyAssistantService {
       minute: '2-digit',
       hour12: false,
     });
+  }
+
+  private logTiming(
+    phase: string,
+    start: number,
+    meta: Record<string, unknown> = {},
+  ): void {
+    const durationMs = performance.now() - start;
+    this.logger.log({ event: 'assistant_timing', phase, durationMs, ...meta });
   }
 }

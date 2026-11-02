@@ -1,14 +1,38 @@
 import { z } from 'zod';
 
-export const assistantSearchSchema = z.object({
-  queries: z.array(z.string().min(1)).min(1).max(5),
+const mealTypeSchema = z.enum([
+  'breakfast',
+  'lunch',
+  'snack',
+  'dinner',
+  'supper',
+]);
+
+export const assistantExtractedItemSchema = z.object({
+  name: z.string().min(1),
+  quantity: z.number().positive(),
+  unit: z.string().min(1),
 });
 
-export type AssistantSearch = z.infer<typeof assistantSearchSchema>;
+export const assistantExtractedMealSchema = z.object({
+  name: z.string().min(1),
+  mealType: mealTypeSchema.nullable(),
+  time: z.string().regex(/^\d{2}:\d{2}$/).nullable(),
+  observations: z.string().nullable(),
+  items: z.array(assistantExtractedItemSchema).min(1),
+});
+
+export type AssistantExtractedItem = z.infer<
+  typeof assistantExtractedItemSchema
+>;
+
+export type AssistantExtractedMeal = z.infer<
+  typeof assistantExtractedMealSchema
+>;
 
 export const assistantMealItemSchema = z.object({
-  foodId: z.string().uuid().optional(),
-  privateFoodId: z.string().uuid().optional(),
+  foodId: z.string().uuid().nullable(),
+  privateFoodId: z.string().uuid().nullable(),
   quantity: z.number().positive(),
   unit: z.string().min(1),
   name: z.string().min(1),
@@ -16,14 +40,9 @@ export const assistantMealItemSchema = z.object({
 
 export const assistantMealSchema = z.object({
   name: z.string().min(1),
-  mealType: z
-    .enum(['breakfast', 'lunch', 'snack', 'dinner', 'supper'])
-    .optional(),
-  time: z
-    .string()
-    .regex(/^\d{2}:\d{2}$/)
-    .optional(),
-  observations: z.string().optional(),
+  mealType: mealTypeSchema.nullable(),
+  time: z.string().regex(/^\d{2}:\d{2}$/).nullable(),
+  observations: z.string().nullable(),
   items: z.array(assistantMealItemSchema).min(1),
 });
 
