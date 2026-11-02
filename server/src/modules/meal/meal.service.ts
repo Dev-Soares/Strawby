@@ -228,8 +228,7 @@ export class MealService {
         const foodItemData = items.map((item) => {
           if (item.foodId) {
             const food = foodMap.get(item.foodId);
-            if (!food)
-              throw new NotFoundException('Alimento não encontrado');
+            if (!food) throw new NotFoundException('Alimento não encontrado');
             const ratio = item.quantity / 100;
             return {
               mealId: created.id,

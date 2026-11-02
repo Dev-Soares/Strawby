@@ -1,17 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { MealKind } from '@prisma/client';
 import { randomUUID } from 'crypto';
-import { performance } from 'perf_hooks';
 import { AiService } from '../ai/ai.service';
 import { FoodService } from '../food/food.service';
 import { MealService } from '../meal/meal.service';
-import { PrivateFoodService } from '../private-food/private-food.service';
-import type { PrivateFoodPublic } from '../private-food/types';
 import { SendAssistantMessageDto } from './dto/send-message.dto';
-import {
-  buildExtractMealPrompt,
-  EXTRACT_MEAL_SYSTEM_PROMPT,
-} from './prompts';
+import { buildExtractMealPrompt, EXTRACT_MEAL_SYSTEM_PROMPT } from './prompts';
 import {
   assistantExtractedMealSchema,
   type AssistantExtractedItem,
@@ -23,17 +17,13 @@ type ResolvedItem = {
   quantity: number;
   unit: string;
   foodId?: string;
-  privateFoodId?: string;
 };
 
 @Injectable()
 export class StrawbyAssistantService {
-  private readonly logger = new Logger(StrawbyAssistantService.name);
-
   constructor(
     private readonly ai: AiService,
     private readonly food: FoodService,
-    private readonly privateFood: PrivateFoodService,
     private readonly meal: MealService,
   ) {}
 
@@ -42,17 +32,9 @@ export class StrawbyAssistantService {
     patientId: string,
     dto: SendAssistantMessageDto,
   ) {
-    const totalStart = performance.now();
-    this.logger.log({ event: 'assistant_start', patientId });
-
-    const extractStart = performance.now();
     const extracted = await this.extractMeal(dto.message);
-    this.logTiming('extract_meal', extractStart, {
-      itemCount: extracted.items.length,
-    });
 
     if (extracted.items.length === 0) {
-      this.logTiming('total', totalStart, { result: 'no_items' });
       return {
         reply: {
           id: randomUUID(),
@@ -65,22 +47,10 @@ export class StrawbyAssistantService {
       };
     }
 
-    const resolveStart = performance.now();
-    const resolvedItems = await this.resolveItems(
-      callerId,
-      patientId,
-      extracted.items,
-    );
-    const validItems = resolvedItems.filter(
-      (item) => item.foodId || item.privateFoodId,
-    );
-    this.logTiming('resolve_items', resolveStart, {
-      requestedCount: extracted.items.length,
-      resolvedCount: validItems.length,
-    });
+    const resolvedItems = await this.resolveItems(extracted.items);
+    const validItems = resolvedItems.filter((item) => item.foodId);
 
     if (validItems.length === 0) {
-      this.logTiming('total', totalStart, { result: 'no_resolved_items' });
       return {
         reply: {
           id: randomUUID(),
@@ -93,21 +63,12 @@ export class StrawbyAssistantService {
       };
     }
 
-    const createStart = performance.now();
     const meal = await this.createMeal(
       callerId,
       patientId,
       extracted,
       validItems,
     );
-    this.logTiming('create_meal', createStart, {
-      itemCount: meal.items.length,
-    });
-
-    this.logTiming('total', totalStart, {
-      result: 'success',
-      itemCount: meal.items.length,
-    });
 
     return {
       reply: {
@@ -130,27 +91,10 @@ export class StrawbyAssistantService {
   }
 
   private async resolveItems(
-    callerId: string,
-    patientId: string,
     items: AssistantExtractedItem[],
   ): Promise<ResolvedItem[]> {
-    const privateFoods = await this.privateFood.findAllByPatient(
-      callerId,
-      patientId,
-    );
-
     return Promise.all(
       items.map(async (item) => {
-        const privateMatch = this.findPrivateFoodMatch(item.name, privateFoods);
-        if (privateMatch) {
-          return {
-            name: item.name,
-            quantity: item.quantity,
-            unit: item.unit,
-            privateFoodId: privateMatch.id,
-          };
-        }
-
         const publicMatch = await this.findPublicFoodMatch(item.name);
         if (publicMatch) {
           return {
@@ -170,37 +114,26 @@ export class StrawbyAssistantService {
     );
   }
 
-  private findPrivateFoodMatch(
-    name: string,
-    privateFoods: PrivateFoodPublic[],
-  ): PrivateFoodPublic | null {
-    const normalizedName = this.normalize(name);
-
-    const exact = privateFoods.find(
-      (food) => this.normalize(food.name) === normalizedName,
-    );
-    if (exact) return exact;
-
-    const contains = privateFoods.find((food) => {
-      const normalizedFood = this.normalize(food.name);
-      return (
-        normalizedFood.includes(normalizedName) ||
-        normalizedName.includes(normalizedFood)
-      );
-    });
-    if (contains) return contains;
-
-    return null;
-  }
-
   private async findPublicFoodMatch(name: string) {
     const trimmed = name.trim();
     if (trimmed.length < 2) return null;
 
-    const results = await this.food.search(trimmed);
+    const match = await this.tryFindPublicFoodMatch(trimmed);
+    if (match) return match;
+
+    const simplified = this.simplifyName(trimmed);
+    if (simplified && simplified !== trimmed) {
+      return this.tryFindPublicFoodMatch(simplified);
+    }
+
+    return null;
+  }
+
+  private async tryFindPublicFoodMatch(name: string) {
+    const results = await this.food.search(name);
     if (results.length === 0) return null;
 
-    const normalizedName = this.normalize(trimmed);
+    const normalizedName = this.normalize(name);
 
     const exact = results.find(
       (food) => this.normalize(food.name) === normalizedName,
@@ -213,6 +146,35 @@ export class StrawbyAssistantService {
     if (contains) return contains;
 
     return results[0];
+  }
+
+  private simplifyName(name: string): string | null {
+    const stopwords = [
+      'mexido',
+      'frito',
+      'grelhado',
+      'assado',
+      'refogado',
+      'natural',
+      'morno',
+      'gelado',
+      'seco',
+      'desnatado',
+      'integral',
+      'light',
+      'diet',
+      'zero',
+      'cremoso',
+      'tradicional',
+    ];
+
+    const words = name.toLowerCase().split(/\s+/);
+    const filtered = words.filter((word) => !stopwords.includes(word));
+
+    if (filtered.length === 0) return null;
+    if (filtered.length === words.length) return null;
+
+    return filtered.join(' ');
   }
 
   private async createMeal(
@@ -232,7 +194,6 @@ export class StrawbyAssistantService {
       },
       resolvedItems.map((item) => ({
         foodId: item.foodId,
-        privateFoodId: item.privateFoodId,
         quantity: item.quantity,
       })),
     );
@@ -252,14 +213,5 @@ export class StrawbyAssistantService {
       minute: '2-digit',
       hour12: false,
     });
-  }
-
-  private logTiming(
-    phase: string,
-    start: number,
-    meta: Record<string, unknown> = {},
-  ): void {
-    const durationMs = performance.now() - start;
-    this.logger.log({ event: 'assistant_timing', phase, durationMs, ...meta });
   }
 }
