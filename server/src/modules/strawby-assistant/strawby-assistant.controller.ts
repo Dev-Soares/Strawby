@@ -4,6 +4,7 @@ import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
 import { SendAssistantMessageDto } from './dto/send-message.dto';
 import { SuggestSnackDto } from './dto/suggest-snack.dto';
+import { AddSuggestedMealDto } from './dto/add-suggested-meal.dto';
 import { MealExtractionAssistantService } from './meal-extraction-assistant.service';
 import { MealSuggestionAssistantService } from './meal-suggestion-assistant.service';
 
@@ -39,5 +40,17 @@ export class StrawbyAssistantController {
       dto,
     );
     return { remaining, options };
+  }
+
+  @Post('add-suggested-meal')
+  addSuggestedMeal(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: AddSuggestedMealDto,
+  ) {
+    return this.suggestion.addSuggestedMeal(
+      req.user.sub,
+      req.user.sub,
+      dto,
+    );
   }
 }

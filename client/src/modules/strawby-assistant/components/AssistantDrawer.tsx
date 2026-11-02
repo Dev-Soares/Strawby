@@ -39,26 +39,16 @@ export default function AssistantDrawer({ isOpen, onClose }: AssistantDrawerProp
             transition={{ type: 'spring', damping: 28, stiffness: 260 }}
             className="fixed inset-x-0 top-14 bottom-0 sm:inset-auto sm:top-6 sm:right-6 sm:bottom-6 z-90 w-full sm:w-[45%] sm:min-w-[360px] sm:max-w-[640px] rounded-t-[2rem] sm:rounded-[2rem] bg-white dark:bg-neutral-900 sm:border border-neutral-200 dark:border-neutral-700 shadow-xl"
           >
-            <div className="flex h-full flex-col">
-              <header className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 px-5 py-4 sm:px-6 sm:py-5">
-                <div>
-                  <h2 className="font-display text-xl font-extrabold text-neutral-950 dark:text-neutral-100">
-                    Assistente Strawby
-                  </h2>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    Pergunte e receba refeições montadas pela IA
-                  </p>
-                </div>
-                <button
-                  onClick={onClose}
-                  className="flex h-9 w-9 items-center justify-center rounded-xl text-neutral-500 hover:bg-neutral-200 dark:text-neutral-400 dark:hover:bg-neutral-800 transition-colors duration-200 cursor-pointer"
-                  aria-label="Fechar assistente"
-                >
-                  <X size={20} />
-                </button>
-              </header>
+            <div className="relative flex h-full flex-col">
+              <button
+                onClick={onClose}
+                className="absolute top-3 right-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-700 shadow-sm hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 transition-colors duration-200 cursor-pointer"
+                aria-label="Fechar assistente"
+              >
+                <X size={22} />
+              </button>
 
-              <div className="flex-1 overflow-hidden px-4 py-4 sm:px-6 sm:py-5">
+              <div className="flex-1 overflow-hidden px-4 pt-24 pb-4 sm:px-6 sm:pt-20 sm:pb-5">
                 <ChatContainer />
               </div>
             </div>

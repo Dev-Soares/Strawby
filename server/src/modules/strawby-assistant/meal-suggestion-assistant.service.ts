@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { MealKind } from '@prisma/client';
 import { PatientAccessService } from '../patient-access/patient-access.service';
+import { FoodService } from '../food/food.service';
 import { MealService } from '../meal/meal.service';
 import { PlanService } from '../plan/plan.service';
-import { todayInAppTz } from '../../common/utils/date.util';
-import type { MealMacros } from '../meal/types';
+import { todayInAppTz, appTimeHHmm } from '../../common/utils/date.util';
+import { findPublicFoodMatch } from './utils/food-matching.util';
+import type { MealMacros, MealPublic } from '../meal/types';
 import { SuggestSnackDto } from './dto/suggest-snack.dto';
+import { AddSuggestedMealDto } from './dto/add-suggested-meal.dto';
 import { SUGGESTED_MEALS } from './data/suggested-meals.data';
 import type { SuggestedMeal, SuggestedMealItem } from './data/suggested-meals.data';
 
@@ -61,6 +65,7 @@ export class MealSuggestionAssistantService {
   constructor(
     private readonly meal: MealService,
     private readonly plan: PlanService,
+    private readonly food: FoodService,
     private readonly patientAccess: PatientAccessService,
   ) {}
 
@@ -98,13 +103,58 @@ export class MealSuggestionAssistantService {
     return { remaining, options };
   }
 
+  async addSuggestedMeal(
+    callerId: string,
+    patientId: string,
+    dto: AddSuggestedMealDto,
+  ): Promise<MealPublic> {
+    await this.patientAccess.resolve(callerId, patientId);
+
+    const meal = this.findSuggestedMeal(dto.mealType, dto.mealName);
+    if (!meal) {
+      throw new NotFoundException('Refeição sugerida não encontrada');
+    }
+
+    const items = await this.resolveItems(meal.items);
+
+    return this.meal.createWithItems(callerId, patientId, {
+      kind: MealKind.DAILY,
+      mealType: dto.mealType,
+      date: todayInAppTz(),
+      time: appTimeHHmm(),
+    }, items);
+  }
+
+  private findSuggestedMeal(
+    mealType: string,
+    mealName: string,
+  ): SuggestedMeal | undefined {
+    const candidates = SUGGESTED_MEALS[mealType as keyof typeof SUGGESTED_MEALS] ?? [];
+    return candidates.find((candidate) => candidate.name === mealName);
+  }
+
+  private async resolveItems(
+    items: SuggestedMealItem[],
+  ): Promise<{ foodId: string; quantity: number }[]> {
+    const resolved = await Promise.all(
+      items.map(async (item) => {
+        const food = await findPublicFoodMatch(item.name, this.food);
+        if (!food) {
+          throw new NotFoundException(`Alimento não encontrado: ${item.name}`);
+        }
+        return { foodId: food.id, quantity: item.quantity };
+      }),
+    );
+    return resolved;
+  }
+
   private selectOptions(
     mealType: string,
     maxResults: number,
     remaining: MealMacros | null,
   ): SuggestedSnackResult[] {
     const candidates = SUGGESTED_MEALS[mealType as keyof typeof SUGGESTED_MEALS] ?? [];
-    const mapped = candidates.map((meal) => this.mapMeal(meal));
+    const mapped = candidates.map((candidate) => this.mapMeal(candidate));
 
     if (!remaining) {
       return shuffle(mapped).slice(0, maxResults);

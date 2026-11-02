@@ -2,8 +2,9 @@ import { useCallback, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAssistantChat, ASSISTANT_CHAT_QUERY_KEY } from './useAssistantChat'
 import { useSuggestSnack } from './useSuggestSnack'
+import { useAddSuggestedMeal } from './useAddSuggestedMeal'
 import type { SendAssistantMessageData } from '../types/chat'
-import { mealTypeLabels, type SuggestSnackData, type SuggestSnackResponse } from '../types/snackSuggestion'
+import { mealTypeLabels, type AddSuggestedMealData, type SuggestSnackData, type SuggestSnackResponse } from '../types/snackSuggestion'
 
 export type AssistantStep = 'choose' | 'meal' | 'snack'
 
@@ -34,8 +35,9 @@ export const useAssistantActions = () => {
   const [storedSnackResult, setStoredSnackResult] = useState<SuggestSnackResponse | undefined>(readStoredSnackResult)
   const { messages, sendMessage, isPending: isChatPending, clearMessages } = useAssistantChat()
   const snackMutation = useSuggestSnack()
+  const addSuggestedMealMutation = useAddSuggestedMeal()
 
-  const isPending = isChatPending || snackMutation.isPending
+  const isPending = isChatPending || snackMutation.isPending || addSuggestedMealMutation.isPending
 
   const updateStep = useCallback((next: AssistantStep) => {
     window.sessionStorage.setItem(STEP_STORAGE_KEY, next)
@@ -88,7 +90,7 @@ export const useAssistantActions = () => {
         role: 'assistant',
         content:
           result.options.length > 0
-            ? `Aqui estão ${result.options.length} opção(ões) de ${data.mealType ? mealTypeLabels[data.mealType]?.toLowerCase() ?? 'refeição' : 'refeição'}.`
+            ? `Aqui estão ${result.options.length} opções de ${data.mealType ? mealTypeLabels[data.mealType]?.toLowerCase() ?? 'refeição' : 'refeição'}.`
             : 'Não consegui sugerir refeições no momento.',
         createdAt: new Date().toISOString(),
       })
@@ -98,13 +100,28 @@ export const useAssistantActions = () => {
     [appendMessage, snackMutation],
   )
 
+  const addSuggestedMeal = useCallback(
+    async (data: AddSuggestedMealData) => {
+      await addSuggestedMealMutation.mutateAsync(data)
+
+      appendMessage({
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: `Adicionei "${data.mealName}" ao seu diário de hoje.`,
+        createdAt: new Date().toISOString(),
+      })
+    },
+    [addSuggestedMealMutation, appendMessage],
+  )
+
   const startNewConversation = useCallback(() => {
     clearMessages()
     updateStep('choose')
     snackMutation.reset()
+    addSuggestedMealMutation.reset()
     window.sessionStorage.removeItem(SNACK_RESULT_STORAGE_KEY)
     setStoredSnackResult(undefined)
-  }, [clearMessages, updateStep, snackMutation])
+  }, [clearMessages, updateStep, snackMutation, addSuggestedMealMutation])
 
   return {
     step,
@@ -114,8 +131,10 @@ export const useAssistantActions = () => {
     isPending,
     submitMeal,
     submitSnack,
+    addSuggestedMeal,
     startNewConversation,
     snackResult: snackMutation.data ?? storedSnackResult,
     snackError: snackMutation.error,
+    addSuggestedMealError: addSuggestedMealMutation.error,
   }
 }

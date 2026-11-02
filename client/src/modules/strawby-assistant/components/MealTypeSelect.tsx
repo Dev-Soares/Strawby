@@ -68,7 +68,7 @@ export default function MealTypeSelect({ value, onChange, disabled }: MealTypeSe
         type="button"
         onClick={() => setIsOpen((open) => !open)}
         disabled={disabled}
-        className="flex w-full items-center gap-2 rounded-full bg-transparent py-1 text-left text-sm focus:outline-none disabled:opacity-60"
+        className="flex w-full items-center gap-2 rounded-full bg-transparent py-1 text-left text-sm focus:outline-none disabled:opacity-60 cursor-pointer"
         style={{ color: selectedAccent.ink }}
       >
         <SelectedIcon size={18} style={{ color: selectedAccent.strong }} />

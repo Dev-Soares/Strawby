@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Cookie, Flame, Ham, Wheat, Droplets } from 'lucide-react'
+import { Cookie, Flame, Ham, Wheat, Droplets, Plus } from 'lucide-react'
 import { getMealType } from '@/shared/config/mealTypes'
 import { useThemeContext } from '@/shared/hooks/useThemeContext'
 import type { SuggestedSnack, MealTotals } from '../types/snackSuggestion'
@@ -7,9 +7,11 @@ import type { SuggestedSnack, MealTotals } from '../types/snackSuggestion'
 interface SnackSuggestionsProps {
   remaining: MealTotals | null
   options: SuggestedSnack[]
+  onAdd?: (meal: SuggestedSnack) => void
+  isAdding?: boolean
 }
 
-export default function SnackSuggestions({ remaining, options }: SnackSuggestionsProps) {
+export default function SnackSuggestions({ remaining, options, onAdd, isAdding }: SnackSuggestionsProps) {
   const { resolvedTheme } = useThemeContext()
   const isDark = resolvedTheme === 'dark'
 
@@ -87,6 +89,19 @@ export default function SnackSuggestions({ remaining, options }: SnackSuggestion
                 <MacroBadge icon={Wheat} value={Math.round(option.totals.carbs)} label="g carb" color="text-blue-600 dark:text-blue-400" bg="bg-blue-50 dark:bg-blue-950/40" />
                 <MacroBadge icon={Droplets} value={Math.round(option.totals.fat)} label="g gord" color="text-purple-600 dark:text-purple-400" bg="bg-purple-50 dark:bg-purple-950/40" />
               </div>
+
+              {onAdd && (
+                <button
+                  type="button"
+                  onClick={() => onAdd(option)}
+                  disabled={isAdding}
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+                  style={{ backgroundColor: config.accent }}
+                >
+                  <Plus size={16} />
+                  {isAdding ? 'Adicionando...' : 'Adicionar ao diário'}
+                </button>
+              )}
             </div>
           </motion.div>
         )

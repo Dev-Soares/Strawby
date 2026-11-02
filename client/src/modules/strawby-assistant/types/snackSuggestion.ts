@@ -52,3 +52,10 @@ export type SuggestSnackResponse = {
   remaining: MealTotals | null
   options: SuggestedSnack[]
 }
+
+export const addSuggestedMealSchema = z.object({
+  mealType: mealTypeSchema,
+  mealName: z.string().min(1, 'Nome da refeição é obrigatório'),
+})
+
+export type AddSuggestedMealData = z.infer<typeof addSuggestedMealSchema>
