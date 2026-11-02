@@ -6,6 +6,14 @@ export type MealType = z.infer<typeof mealTypeSchema>
 
 export const mealTypeValues = mealTypeSchema.options
 
+export const mealTypeLabels: Record<MealType, string> = {
+  breakfast: 'Café da manhã',
+  lunch: 'Almoço',
+  snack: 'Lanche',
+  dinner: 'Jantar',
+  supper: 'Ceia',
+}
+
 export const suggestSnackSchema = z.object({
   mealType: mealTypeSchema.optional(),
   maxResults: z.number().min(1).max(5).optional(),

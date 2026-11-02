@@ -1,21 +1,46 @@
 import { useCallback, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAssistantChat, ASSISTANT_CHAT_QUERY_KEY } from './useAssistantChat'
-import { useSuggestSubstitution } from './useSuggestSubstitution'
 import { useSuggestSnack } from './useSuggestSnack'
-import type { AssistantMode } from '../components/AssistantQuickActions'
 import type { SendAssistantMessageData } from '../types/chat'
-import type { SuggestSubstitutionData } from '../types/substitution'
-import type { SuggestSnackData } from '../types/snackSuggestion'
+import { mealTypeLabels, type SuggestSnackData, type SuggestSnackResponse } from '../types/snackSuggestion'
+
+export type AssistantStep = 'choose' | 'meal' | 'snack'
+
+const STEP_STORAGE_KEY = 'strawby-assistant-step'
+const SNACK_RESULT_STORAGE_KEY = 'strawby-assistant-snack-result'
+
+const readStoredStep = (): AssistantStep => {
+  if (typeof window === 'undefined') return 'choose'
+  const stored = window.sessionStorage.getItem(STEP_STORAGE_KEY)
+  if (stored === 'meal' || stored === 'snack' || stored === 'choose') return stored
+  return 'choose'
+}
+
+const readStoredSnackResult = (): SuggestSnackResponse | undefined => {
+  if (typeof window === 'undefined') return undefined
+  const stored = window.sessionStorage.getItem(SNACK_RESULT_STORAGE_KEY)
+  if (!stored) return undefined
+  try {
+    return JSON.parse(stored) as SuggestSnackResponse
+  } catch {
+    return undefined
+  }
+}
 
 export const useAssistantActions = () => {
   const queryClient = useQueryClient()
-  const [mode, setMode] = useState<AssistantMode>('meal')
-  const { messages, sendMessage, isPending: isChatPending } = useAssistantChat()
-  const substitutionMutation = useSuggestSubstitution()
+  const [step, setStep] = useState<AssistantStep>(readStoredStep)
+  const [storedSnackResult, setStoredSnackResult] = useState<SuggestSnackResponse | undefined>(readStoredSnackResult)
+  const { messages, sendMessage, isPending: isChatPending, clearMessages } = useAssistantChat()
   const snackMutation = useSuggestSnack()
 
-  const isPending = isChatPending || substitutionMutation.isPending || snackMutation.isPending
+  const isPending = isChatPending || snackMutation.isPending
+
+  const updateStep = useCallback((next: AssistantStep) => {
+    window.sessionStorage.setItem(STEP_STORAGE_KEY, next)
+    setStep(next)
+  }, [])
 
   const appendMessage = useCallback(
     (message: { id: string; role: 'user' | 'assistant'; content: string; createdAt: string }) => {
@@ -24,6 +49,26 @@ export const useAssistantActions = () => {
     [queryClient],
   )
 
+  const selectMeal = useCallback(() => {
+    appendMessage({
+      id: crypto.randomUUID(),
+      role: 'user',
+      content: 'Quero que você registre uma refeição pra mim',
+      createdAt: new Date().toISOString(),
+    })
+    updateStep('meal')
+  }, [appendMessage, updateStep])
+
+  const selectSnack = useCallback(() => {
+    appendMessage({
+      id: crypto.randomUUID(),
+      role: 'user',
+      content: 'Quero que você me sugira uma refeição',
+      createdAt: new Date().toISOString(),
+    })
+    updateStep('snack')
+  }, [appendMessage, updateStep])
+
   const submitMeal = useCallback(
     async (data: SendAssistantMessageData) => {
       await sendMessage(data)
@@ -31,51 +76,20 @@ export const useAssistantActions = () => {
     [sendMessage],
   )
 
-  const submitSubstitution = useCallback(
-    async (data: SuggestSubstitutionData) => {
-      appendMessage({
-        id: crypto.randomUUID(),
-        role: 'user',
-        content: `Substituir "${data.foodName}" por ${data.goal}`,
-        createdAt: new Date().toISOString(),
-      })
-
-      const result = await substitutionMutation.mutateAsync(data)
-
-      const validCount = result.substitutions.filter((s) => s.food).length
-      appendMessage({
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content:
-          validCount > 0
-            ? `Encontrei ${validCount} alternativa(s) para "${data.foodName}".`
-            : `Não encontrei alternativas para "${data.foodName}" no banco de alimentos.`,
-        createdAt: new Date().toISOString(),
-      })
-
-      return result
-    },
-    [appendMessage, substitutionMutation],
-  )
-
   const submitSnack = useCallback(
     async (data: SuggestSnackData = {}) => {
-      appendMessage({
-        id: crypto.randomUUID(),
-        role: 'user',
-        content: `Sugerir ${data.mealType ? `opções de ${data.mealType}` : 'lanches'}`,
-        createdAt: new Date().toISOString(),
-      })
-
       const result = await snackMutation.mutateAsync(data)
+
+      window.sessionStorage.setItem(SNACK_RESULT_STORAGE_KEY, JSON.stringify(result))
+      setStoredSnackResult(result)
 
       appendMessage({
         id: crypto.randomUUID(),
         role: 'assistant',
         content:
           result.options.length > 0
-            ? `Aqui estão ${result.options.length} opção(ões) de lanche.`
-            : 'Não consegui sugerir lanches no momento.',
+            ? `Aqui estão ${result.options.length} opção(ões) de ${data.mealType ? mealTypeLabels[data.mealType]?.toLowerCase() ?? 'refeição' : 'refeição'}.`
+            : 'Não consegui sugerir refeições no momento.',
         createdAt: new Date().toISOString(),
       })
 
@@ -84,17 +98,24 @@ export const useAssistantActions = () => {
     [appendMessage, snackMutation],
   )
 
+  const startNewConversation = useCallback(() => {
+    clearMessages()
+    updateStep('choose')
+    snackMutation.reset()
+    window.sessionStorage.removeItem(SNACK_RESULT_STORAGE_KEY)
+    setStoredSnackResult(undefined)
+  }, [clearMessages, updateStep, snackMutation])
+
   return {
-    mode,
-    setMode,
+    step,
+    selectMeal,
+    selectSnack,
     messages,
     isPending,
     submitMeal,
-    submitSubstitution,
     submitSnack,
-    substitutionResult: substitutionMutation.data,
-    snackResult: snackMutation.data,
-    substitutionError: substitutionMutation.error,
+    startNewConversation,
+    snackResult: snackMutation.data ?? storedSnackResult,
     snackError: snackMutation.error,
   }
 }

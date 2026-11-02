@@ -41,7 +41,7 @@ export default function AssistantPresentation({ state, response }: AssistantPres
                     <span className="font-bold text-red-600 dark:text-red-400">
                       Oi, {username}!
                     </span>{' '}
-                    Sou o agssistente strawby, como posso te ajudar hoje?
+                    Sou o assistente Strawby, como posso te ajudar hoje?
                   </>
                 )}
                 {state === 'typing' && (
