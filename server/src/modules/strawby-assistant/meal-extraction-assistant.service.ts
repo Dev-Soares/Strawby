@@ -5,12 +5,16 @@ import { AiService } from '../ai/ai.service';
 import { FoodService } from '../food/food.service';
 import { MealService } from '../meal/meal.service';
 import { SendAssistantMessageDto } from './dto/send-message.dto';
-import { buildExtractMealPrompt, EXTRACT_MEAL_SYSTEM_PROMPT } from './prompts';
+import { findPublicFoodMatch } from './utils/food-matching.util';
+import {
+  buildExtractMealPrompt,
+  EXTRACT_MEAL_SYSTEM_PROMPT,
+} from './prompts/meal-extraction.prompts';
 import {
   assistantExtractedMealSchema,
   type AssistantExtractedItem,
   type AssistantExtractedMeal,
-} from './types';
+} from './types/meal-extraction.types';
 
 type ResolvedItem = {
   name: string;
@@ -20,14 +24,14 @@ type ResolvedItem = {
 };
 
 @Injectable()
-export class StrawbyAssistantService {
+export class MealExtractionAssistantService {
   constructor(
     private readonly ai: AiService,
     private readonly food: FoodService,
     private readonly meal: MealService,
   ) {}
 
-  async processMessage(
+  async createMealFromMessage(
     callerId: string,
     patientId: string,
     dto: SendAssistantMessageDto,
@@ -95,7 +99,7 @@ export class StrawbyAssistantService {
   ): Promise<ResolvedItem[]> {
     return Promise.all(
       items.map(async (item) => {
-        const publicMatch = await this.findPublicFoodMatch(item.name);
+        const publicMatch = await this.findFoodMatch(item.name);
         if (publicMatch) {
           return {
             name: item.name,
@@ -114,38 +118,19 @@ export class StrawbyAssistantService {
     );
   }
 
-  private async findPublicFoodMatch(name: string) {
+  private async findFoodMatch(name: string) {
     const trimmed = name.trim();
     if (trimmed.length < 2) return null;
 
-    const match = await this.tryFindPublicFoodMatch(trimmed);
+    const match = await findPublicFoodMatch(trimmed, this.food);
     if (match) return match;
 
     const simplified = this.simplifyName(trimmed);
     if (simplified && simplified !== trimmed) {
-      return this.tryFindPublicFoodMatch(simplified);
+      return findPublicFoodMatch(simplified, this.food);
     }
 
     return null;
-  }
-
-  private async tryFindPublicFoodMatch(name: string) {
-    const results = await this.food.search(name);
-    if (results.length === 0) return null;
-
-    const normalizedName = this.normalize(name);
-
-    const exact = results.find(
-      (food) => this.normalize(food.name) === normalizedName,
-    );
-    if (exact) return exact;
-
-    const contains = results.find((food) =>
-      this.normalize(food.name).includes(normalizedName),
-    );
-    if (contains) return contains;
-
-    return results[0];
   }
 
   private simplifyName(name: string): string | null {
@@ -197,13 +182,6 @@ export class StrawbyAssistantService {
         quantity: item.quantity,
       })),
     );
-  }
-
-  private normalize(value: string): string {
-    return value
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
   }
 
   private currentTime(): string {

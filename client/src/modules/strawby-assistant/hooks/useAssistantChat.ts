@@ -4,6 +4,8 @@ import { useGetAssistantChat, ASSISTANT_CHAT_QUERY_KEY } from './useGetAssistant
 import { useSendAssistantMessage } from './useSendAssistantMessage'
 import type { AssistantMessage, SendAssistantMessageData, SuggestedMeal } from '../types/chat'
 
+export { ASSISTANT_CHAT_QUERY_KEY }
+
 export const useAssistantChat = () => {
   const queryClient = useQueryClient()
   const { data: messages = [] } = useGetAssistantChat()
