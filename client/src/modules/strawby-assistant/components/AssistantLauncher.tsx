@@ -8,7 +8,7 @@ import AssistantDrawer from './AssistantDrawer'
  * inferior direito. No mobile a folga de baixo tem que livrar a TabBar.
  */
 const buttonClass =
-  'group fixed right-5 bottom-32 sm:right-6 sm:bottom-6 z-60 flex h-19 w-19 sm:h-20 sm:w-20 items-center justify-center rounded-full transition-transform duration-200 active:scale-95 cursor-pointer'
+  'group fixed right-5 bottom-24 sm:right-6 sm:bottom-6 z-60 flex h-19 w-19 sm:h-20 sm:w-20 items-center justify-center rounded-full transition-transform duration-200 active:scale-95 cursor-pointer'
 
 /**
  * Parado é o frame 0 da animação; no hover entra a animação inteira.
