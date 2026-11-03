@@ -10,27 +10,33 @@ import { queryClient } from './api/queryClient'
 import ThemeProvider from './shared/contexts/ThemeProvider'
 import StrawbyToaster from './shared/components/StrawbyToaster'
 import GlobalErrorBoundary from './shared/components/GlobalErrorBoundary'
+import { GOOGLE_CLIENT_ID, isGoogleAuthEnabled } from './modules/auth/config/google'
 
 // Registro e checagem do service worker vivem em modules/pwa (PwaAutoUpdate).
+
+const tree = (
+  <HelmetProvider>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <ThemeProvider>
+          <GlobalErrorBoundary>
+            <App />
+          </GlobalErrorBoundary>
+        </ThemeProvider>
+        <StrawbyToaster />
+      </BrowserRouter>
+    </QueryClientProvider>
+  </HelmetProvider>
+)
 
 const rootElement = document.getElementById('root')
 if (rootElement) {
   createRoot(rootElement).render(
     <StrictMode>
-      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-        <HelmetProvider>
-          <QueryClientProvider client={queryClient}>
-            <BrowserRouter>
-              <ThemeProvider>
-                <GlobalErrorBoundary>
-                  <App />
-                </GlobalErrorBoundary>
-              </ThemeProvider>
-              <StrawbyToaster />
-            </BrowserRouter>
-          </QueryClientProvider>
-        </HelmetProvider>
-      </GoogleOAuthProvider>
+      {isGoogleAuthEnabled
+        ? <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>{tree}</GoogleOAuthProvider>
+        : tree
+      }
     </StrictMode>,
   )
 }
