@@ -1,7 +1,8 @@
-import { motion } from 'framer-motion'
-import { Cookie, Flame, Ham, Wheat, Droplets, Plus } from 'lucide-react'
-import { getMealType } from '@/shared/config/mealTypes'
-import { useThemeContext } from '@/shared/hooks/useThemeContext'
+import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import MacroChips from './MacroChips'
+import SnackSuggestionCard from './SnackSuggestionCard'
 import type { SuggestedSnack, MealTotals } from '../types/snackSuggestion'
 
 interface SnackSuggestionsProps {
@@ -11,122 +12,133 @@ interface SnackSuggestionsProps {
   isAdding?: boolean
 }
 
-export default function SnackSuggestions({ remaining, options, onAdd, isAdding }: SnackSuggestionsProps) {
-  const { resolvedTheme } = useThemeContext()
-  const isDark = resolvedTheme === 'dark'
+const SWIPE_THRESHOLD = 60
+
+const slideVariants = {
+  enter: (direction: number) => ({ x: direction * 40, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (direction: number) => ({ x: direction * -40, opacity: 0 }),
+}
+
+export default function SnackSuggestions({
+  remaining,
+  options,
+  onAdd,
+  isAdding,
+}: SnackSuggestionsProps) {
+  // carrossel: um card por vez — arrastar no celular, setas no desktop
+  const [[slide, direction], setSlide] = useState<[number, number]>([0, 0])
+
+  // uma rodada nova de sugestões pode vir com menos opções que a anterior —
+  // sem o clamp o índice guardado apontaria para um card inexistente
+  const index = Math.min(slide, Math.max(options.length - 1, 0))
+
+  // navegação circular: passar da última volta para a primeira, e vice-versa
+  const move = (step: number) => {
+    const next = (index + step + options.length) % options.length
+    setSlide([next, step])
+  }
+
+  const goTo = (next: number) => {
+    if (next === index) return
+    setSlide([next, next > index ? 1 : -1])
+  }
 
   if (options.length === 0) {
     return (
       <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-        <p className="text-sm text-neutral-600 dark:text-neutral-400">Não consegui sugerir lanches no momento.</p>
+        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+          Não consegui sugerir lanches no momento.
+        </p>
       </div>
     )
   }
 
+  const option = options[index]
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {remaining && (
-        <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-          <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Macros restantes no dia</p>
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            <MacroBadge icon={Flame} value={Math.round(remaining.calories)} label="kcal" color="text-red-600 dark:text-red-400" bg="bg-red-50 dark:bg-red-950/40" />
-            <MacroBadge icon={Ham} value={Math.round(remaining.protein)} label="g prot" color="text-emerald-600 dark:text-emerald-400" bg="bg-emerald-50 dark:bg-emerald-950/40" />
-            <MacroBadge icon={Wheat} value={Math.round(remaining.carbs)} label="g carb" color="text-blue-600 dark:text-blue-400" bg="bg-blue-50 dark:bg-blue-950/40" />
-            <MacroBadge icon={Droplets} value={Math.round(remaining.fat)} label="g gord" color="text-purple-600 dark:text-purple-400" bg="bg-purple-50 dark:bg-purple-950/40" />
-          </div>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 px-1">
+          <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
+            Restam hoje
+          </span>
+          <MacroChips totals={remaining} />
         </div>
       )}
 
-      {options.map((option, index) => {
-        const config = getMealType(option.mealType)
-        const accent = {
-          surface: isDark ? `${config.accent}2e` : config.accentLight,
-          ink: isDark ? config.accentLight : config.accentText,
-          strong: isDark ? config.accentLight : config.accent,
-        }
-
-        return (
+      <div className="relative">
+        <AnimatePresence initial={false} custom={direction} mode="wait">
           <motion.div
-            key={`${option.name}-${index}`}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25, delay: index * 0.08, ease: [0.4, 0, 0.2, 1] }}
-            className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-900"
+            key={index}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.14, ease: [0.4, 0, 0.2, 1] }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.18}
+            onDragEnd={(_, info) => {
+              if (info.offset.x < -SWIPE_THRESHOLD) move(1)
+              if (info.offset.x > SWIPE_THRESHOLD) move(-1)
+            }}
+            className="cursor-grab touch-pan-y active:cursor-grabbing"
           >
-            <div className="px-4 py-4 sm:px-5">
-              <div className="flex items-center gap-3">
-                <span
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
-                  style={{ backgroundColor: accent.surface }}
-                >
-                  <Cookie size={20} style={{ color: accent.strong }} />
-                </span>
-                <div className="flex-1 min-w-0">
-                  <h4
-                    className="font-display text-lg font-extrabold leading-none tracking-tight"
-                    style={{ color: accent.ink }}
-                  >
-                    {option.name}
-                  </h4>
-                  <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{option.reason}</p>
-                </div>
-              </div>
-
-              <ul className="mt-3 space-y-1.5 text-sm text-neutral-700 dark:text-neutral-300">
-                {option.items.map((item) => (
-                  <li key={item.foodId} className="flex justify-between">
-                    <span>{item.foodName}</span>
-                    <span className="tabular-nums text-neutral-500 dark:text-neutral-500">
-                      {item.quantity} {item.unit}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                <MacroBadge icon={Flame} value={Math.round(option.totals.calories)} label="kcal" color="text-red-600 dark:text-red-400" bg="bg-red-50 dark:bg-red-950/40" />
-                <MacroBadge icon={Ham} value={Math.round(option.totals.protein)} label="g prot" color="text-emerald-600 dark:text-emerald-400" bg="bg-emerald-50 dark:bg-emerald-950/40" />
-                <MacroBadge icon={Wheat} value={Math.round(option.totals.carbs)} label="g carb" color="text-blue-600 dark:text-blue-400" bg="bg-blue-50 dark:bg-blue-950/40" />
-                <MacroBadge icon={Droplets} value={Math.round(option.totals.fat)} label="g gord" color="text-purple-600 dark:text-purple-400" bg="bg-purple-50 dark:bg-purple-950/40" />
-              </div>
-
-              {onAdd && (
-                <button
-                  type="button"
-                  onClick={() => onAdd(option)}
-                  disabled={isAdding}
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-bold text-white transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
-                  style={{ backgroundColor: config.accent }}
-                >
-                  <Plus size={16} />
-                  {isAdding ? 'Adicionando...' : 'Adicionar ao diário'}
-                </button>
-              )}
-            </div>
+            <SnackSuggestionCard
+              option={option}
+              onAdd={onAdd ? () => onAdd(option) : undefined}
+              isAdding={isAdding}
+            />
           </motion.div>
-        )
-      })}
+        </AnimatePresence>
+      </div>
+
+      {options.length > 1 && (
+        <div className="flex items-center justify-center gap-3">
+          <CarouselArrow direction="prev" onClick={() => move(-1)} />
+
+          <div className="flex items-center gap-1.5">
+            {options.map((item, dotIndex) => (
+              <button
+                key={`${item.name}-${dotIndex}`}
+                type="button"
+                onClick={() => goTo(dotIndex)}
+                aria-label={`Ver opção ${dotIndex + 1}`}
+                className={`h-1.5 cursor-pointer rounded-full transition-all duration-200 ${
+                  dotIndex === index
+                    ? 'w-5 bg-red-600 dark:bg-red-500'
+                    : 'w-1.5 bg-neutral-300 hover:bg-neutral-400 dark:bg-neutral-700 dark:hover:bg-neutral-600'
+                }`}
+              />
+            ))}
+          </div>
+
+          <CarouselArrow direction="next" onClick={() => move(1)} />
+        </div>
+      )}
     </div>
   )
 }
 
-function MacroBadge({
-  icon: Icon,
-  value,
-  label,
-  color,
-  bg,
+function CarouselArrow({
+  direction,
+  onClick,
 }: {
-  icon: typeof Flame
-  value: number
-  label: string
-  color: string
-  bg: string
+  direction: 'prev' | 'next'
+  onClick: () => void
 }) {
+  const Icon = direction === 'prev' ? ChevronLeft : ChevronRight
+
   return (
-    <span className={`flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-bold tabular-nums ${bg} ${color}`}>
-      <Icon size={12} />
-      {value.toLocaleString('pt-BR')} {label}
-    </span>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={direction === 'prev' ? 'Opção anterior' : 'Próxima opção'}
+      className="hidden h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-600 transition-colors duration-200 hover:bg-neutral-50 sm:flex dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800"
+    >
+      <Icon size={16} />
+    </button>
   )
 }

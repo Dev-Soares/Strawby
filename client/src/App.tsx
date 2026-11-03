@@ -16,10 +16,11 @@ import { scoreRoutes } from './routes/scoreRoutes'
 import { profileRoutes } from './routes/profileRoutes'
 import { nutritionistRoutes } from './routes/nutritionistRoutes'
 import { assistantRoutes } from './routes/assistantRoutes'
+import AssistantSessionProvider from './modules/strawby-assistant/contexts/AssistantSessionProvider'
 
 export default function App() {
   return (
-    <>
+    <AssistantSessionProvider>
       <ScrollToTop />
       <UnauthorizedListener />
       <NotificationTokenRefresher />
@@ -45,6 +46,6 @@ export default function App() {
           {assistantRoutes}
         </Routes>
       </Suspense>
-    </>
+    </AssistantSessionProvider>
   )
 }

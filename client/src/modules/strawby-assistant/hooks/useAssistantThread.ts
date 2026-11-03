@@ -34,11 +34,13 @@ const reaction = ({
   isWelcome,
   isPrompt,
   hasFailed,
+  hasCreatedMeal,
   hasSuggestedMeals,
 }: {
   isWelcome: boolean
   isPrompt: boolean
   hasFailed: boolean
+  hasCreatedMeal: boolean
   hasSuggestedMeals: boolean
 }): Pick<LiveTurn, 'action' | 'playback'> => {
   // a saudação fica acenando enquanto o usuário não escolhe o que fazer
@@ -47,8 +49,8 @@ const reaction = ({
   if (isPrompt) return { action: 'idle', playback: 'loop' }
   // a decepção não volta pro idle — fica parada no último frame
   if (hasFailed) return { action: 'upset', playback: 'once' }
-  // refeição criada: comemora sem parar
-  if (hasSuggestedMeals) return { action: 'celebrate', playback: 'loop' }
+  // refeição entrou no diário: comemora sem parar
+  if (hasCreatedMeal || hasSuggestedMeals) return { action: 'celebrate', playback: 'loop' }
   return { action: 'happy', playback: 'settle' }
 }
 
@@ -92,6 +94,7 @@ export const useAssistantThread = ({
         isWelcome,
         isPrompt: status === 'prompt' || status === 'preview',
         hasFailed,
+        hasCreatedMeal: status === 'created',
         hasSuggestedMeals,
       }),
       isTyping: false,
