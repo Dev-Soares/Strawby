@@ -43,7 +43,7 @@ const reaction = ({
 }): Pick<LiveTurn, 'action' | 'playback'> => {
   // a saudação fica acenando enquanto o usuário não escolhe o que fazer
   if (isWelcome) return { action: 'happy', playback: 'loop' }
-  // perguntou algo e está esperando o usuário responder
+  // perguntou algo (ou montou um rascunho) e espera o usuário responder
   if (isPrompt) return { action: 'idle', playback: 'loop' }
   // a decepção não volta pro idle — fica parada no último frame
   if (hasFailed) return { action: 'upset', playback: 'once' }
@@ -88,7 +88,12 @@ export const useAssistantThread = ({
     const hasFailed = status === 'not_found' || status === 'not_understood'
 
     const live: LiveTurn = {
-      ...reaction({ isWelcome, isPrompt: status === 'prompt', hasFailed, hasSuggestedMeals }),
+      ...reaction({
+        isWelcome,
+        isPrompt: status === 'prompt' || status === 'preview',
+        hasFailed,
+        hasSuggestedMeals,
+      }),
       isTyping: false,
       kind: isWelcome ? 'welcome' : 'text',
       content: lastItem.content,

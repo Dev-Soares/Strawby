@@ -126,6 +126,11 @@ def main() -> None:
     p.add_argument("--fps", type=int, default=24)
     p.add_argument("--skip-start", type=int, default=0, help="descarta N frames do início")
     p.add_argument("--skip-end", type=int, default=0, help="descarta N frames do fim")
+    p.add_argument(
+        "--boomerang",
+        action="store_true",
+        help="toca a animação e volta de ré — loop costurado sem salto",
+    )
     p.add_argument("--size", type=int, default=640)
     p.add_argument("--quality", type=int, default=95)
     p.add_argument("--lossless", action="store_true")
@@ -143,7 +148,10 @@ def main() -> None:
         if total != len(paths):
             print(f"descartados {total - len(paths)} frames (início {args.skip_start}, fim {args.skip_end})")
 
-        target = max(1, round(args.seconds * args.fps))
+        total = max(1, round(args.seconds * args.fps))
+        # na ida e volta só a metade precisa ser gerada — o resto é a mesma
+        # sequência de ré, o que fecha o ciclo sem salto nenhum
+        target = total // 2 + 1 if args.boomerang else total
         idx = np.linspace(0, len(paths), target, endpoint=False).astype(int)
         print(f"{len(paths)} frames -> {target} ({args.seconds}s @ {args.fps}fps)")
 
@@ -165,6 +173,11 @@ def main() -> None:
                 im.save(os.path.join(args.keep_frames, f"frame_{i:04d}.png"))
             if (i + 1) % 20 == 0 or i + 1 == len(selected):
                 print(f"  {i + 1}/{len(selected)}")
+
+        if args.boomerang:
+            # [1:-1] invertido: não repete os extremos, senão eles ficam 2 frames
+            out_frames += out_frames[-2:0:-1]
+            print(f"boomerang: {len(out_frames)} frames no ciclo")
 
         print("encodando webp...")
         enc = {"lossless": True, "method": 4} if args.lossless else {"quality": args.quality, "method": 6}

@@ -6,6 +6,6 @@ type SendAssistantMessageResponse = {
 }
 
 export const sendAssistantMessageService = async (dto: SendAssistantMessageData): Promise<AssistantMessage> => {
-  const { data } = await api.post<SendAssistantMessageResponse>('/strawby-assistant/create-meal', dto)
+  const { data } = await api.post<SendAssistantMessageResponse>('/strawby-assistant/preview-meal', dto)
   return data.reply
 }

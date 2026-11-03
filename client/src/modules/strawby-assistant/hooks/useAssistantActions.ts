@@ -3,7 +3,8 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useAssistantChat, ASSISTANT_CHAT_QUERY_KEY } from './useAssistantChat'
 import { useSuggestSnack } from './useSuggestSnack'
 import { useAddSuggestedMeal } from './useAddSuggestedMeal'
-import type { AssistantMessageStatus, SendAssistantMessageData } from '../types/chat'
+import { useConfirmMeal } from './useConfirmMeal'
+import type { AssistantMessageStatus, MealDraft, SendAssistantMessageData } from '../types/chat'
 import { mealTypeLabels, type AddSuggestedMealData, type SuggestSnackData, type SuggestSnackResponse } from '../types/snackSuggestion'
 
 export type AssistantStep = 'choose' | 'meal' | 'snack'
@@ -36,8 +37,13 @@ export const useAssistantActions = () => {
   const { messages, sendMessage, isPending: isChatPending, clearMessages } = useAssistantChat()
   const snackMutation = useSuggestSnack()
   const addSuggestedMealMutation = useAddSuggestedMeal()
+  const confirmMealMutation = useConfirmMeal()
 
-  const isPending = isChatPending || snackMutation.isPending || addSuggestedMealMutation.isPending
+  const isPending =
+    isChatPending ||
+    snackMutation.isPending ||
+    addSuggestedMealMutation.isPending ||
+    confirmMealMutation.isPending
 
   const updateStep = useCallback((next: AssistantStep) => {
     window.sessionStorage.setItem(STEP_STORAGE_KEY, next)
@@ -134,14 +140,48 @@ export const useAssistantActions = () => {
     [addSuggestedMealMutation, appendMessage],
   )
 
+  /** Grava a refeição que o Strawby montou e o usuário aprovou. */
+  const confirmDraft = useCallback(
+    async (draft: MealDraft) => {
+      await confirmMealMutation.mutateAsync({
+        mealType: draft.mealType ?? undefined,
+        time: draft.time ?? undefined,
+        observations: draft.observations ?? undefined,
+        items: draft.items.map((item) => ({
+          foodId: item.foodId,
+          quantity: item.quantity,
+        })),
+      })
+    },
+    [confirmMealMutation],
+  )
+
+  /** Joga o rascunho fora — a fala nova esconde o card e libera o input. */
+  const discardDraft = useCallback(() => {
+    appendMessage({
+      id: crypto.randomUUID(),
+      role: 'assistant',
+      content: 'Tudo bem, não registrei nada. Me conta de novo o que você comeu.',
+      createdAt: new Date().toISOString(),
+      status: 'prompt',
+    })
+  }, [appendMessage])
+
   const startNewConversation = useCallback(() => {
     clearMessages()
     updateStep('choose')
     snackMutation.reset()
     addSuggestedMealMutation.reset()
+    confirmMealMutation.reset()
     window.sessionStorage.removeItem(SNACK_RESULT_STORAGE_KEY)
     setStoredSnackResult(undefined)
-  }, [clearMessages, updateStep, snackMutation, addSuggestedMealMutation])
+  }, [
+    clearMessages,
+    updateStep,
+    snackMutation,
+    addSuggestedMealMutation,
+    confirmMealMutation,
+  ])
 
   return {
     step,
@@ -152,6 +192,9 @@ export const useAssistantActions = () => {
     submitMeal,
     submitSnack,
     addSuggestedMeal,
+    confirmDraft,
+    discardDraft,
+    isConfirmingDraft: confirmMealMutation.isPending,
     startNewConversation,
     snackResult: snackMutation.data ?? storedSnackResult,
     snackError: snackMutation.error,

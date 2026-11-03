@@ -3,6 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
 import { SendAssistantMessageDto } from './dto/send-message.dto';
+import { ConfirmMealDto } from './dto/confirm-meal.dto';
 import { SuggestSnackDto } from './dto/suggest-snack.dto';
 import { AddSuggestedMealDto } from './dto/add-suggested-meal.dto';
 import { MealExtractionAssistantService } from './meal-extraction-assistant.service';
@@ -17,16 +18,21 @@ export class StrawbyAssistantController {
     private readonly suggestion: MealSuggestionAssistantService,
   ) {}
 
-  @Post('create-meal')
-  createMeal(
+  @Post('preview-meal')
+  previewMeal(
     @Req() req: AuthenticatedRequest,
     @Body() dto: SendAssistantMessageDto,
   ) {
-    return this.mealExtraction.createMealFromMessage(
+    return this.mealExtraction.previewMealFromMessage(
       req.user.sub,
       req.user.sub,
       dto,
     );
+  }
+
+  @Post('confirm-meal')
+  confirmMeal(@Req() req: AuthenticatedRequest, @Body() dto: ConfirmMealDto) {
+    return this.mealExtraction.confirmMeal(req.user.sub, req.user.sub, dto);
   }
 
   @Post('suggest-snack')

@@ -7,6 +7,7 @@ import type { AddSuggestedMealData } from '../types/snackSuggestion'
 import ChatInput from './ChatInput'
 import ChatMessage from './ChatMessage'
 import MascotMessage from './MascotMessage'
+import MealPreviewCard from './MealPreviewCard'
 import SnackInput from './SnackInput'
 import SuggestedMealCards from './SuggestedMealCards'
 import SnackSuggestions from './SnackSuggestions'
@@ -22,6 +23,9 @@ export default function ChatContainer() {
     submitMeal,
     submitSnack,
     addSuggestedMeal,
+    confirmDraft,
+    discardDraft,
+    isConfirmingDraft,
     startNewConversation,
     snackResult,
   } = useAssistantActions()
@@ -40,6 +44,11 @@ export default function ChatContainer() {
   const hasSuggestedMeals = Boolean(suggestedMeals && suggestedMeals.length > 0)
 
   const { history, live } = useAssistantThread({ messages, isPending, hasSuggestedMeals })
+
+  // o rascunho só fica de pé enquanto é a última fala — confirmar ou descartar
+  // empilha uma mensagem nova e some com o card
+  const lastMessage = messages.at(-1)
+  const pendingDraft = lastMessage?.status === 'preview' ? lastMessage.draft : undefined
 
   const welcomeContent = (
     <>
@@ -99,6 +108,15 @@ export default function ChatContainer() {
             {live.kind === 'welcome' ? welcomeContent : live.content}
           </MascotMessage>
 
+          {pendingDraft && (
+            <MealPreviewCard
+              draft={pendingDraft}
+              onConfirm={(edited) => void confirmDraft(edited)}
+              onDiscard={discardDraft}
+              isConfirming={isConfirmingDraft}
+            />
+          )}
+
           {result}
 
           <div ref={bottomRef} />
@@ -110,7 +128,9 @@ export default function ChatContainer() {
           <AssistantIntentPills onSelectMeal={selectMeal} onSelectSnack={selectSnack} />
         ) : (
           <>
-            {step === 'meal' && <ChatInput onSubmit={submitMeal} isPending={isPending} />}
+            {step === 'meal' && (
+              <ChatInput onSubmit={submitMeal} isPending={isPending || Boolean(pendingDraft)} />
+            )}
             {step === 'snack' && <SnackInput onSubmit={submitSnack} isPending={isPending} />}
           </>
         )}

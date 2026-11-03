@@ -5,6 +5,8 @@ import { AiService } from '../ai/ai.service';
 import { FoodService } from '../food/food.service';
 import { MealService } from '../meal/meal.service';
 import { SendAssistantMessageDto } from './dto/send-message.dto';
+import { ConfirmMealDto } from './dto/confirm-meal.dto';
+import type { FoodPublic } from '../food/types';
 import { findPublicFoodMatch } from './utils/food-matching.util';
 import {
   buildExtractMealPrompt,
@@ -20,7 +22,28 @@ type ResolvedItem = {
   name: string;
   quantity: number;
   unit: string;
-  foodId?: string;
+  food?: FoodPublic;
+};
+
+/** Refeição montada mas ainda não salva — o usuário precisa confirmar. */
+type MealDraftItem = {
+  foodId: string;
+  name: string;
+  quantity: number;
+  unit: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+};
+
+type MealDraft = {
+  name: string;
+  mealType: string | null;
+  time: string | null;
+  observations: string | null;
+  items: MealDraftItem[];
+  totals: { calories: number; protein: number; carbs: number; fat: number };
 };
 
 @Injectable()
@@ -31,7 +54,11 @@ export class MealExtractionAssistantService {
     private readonly meal: MealService,
   ) {}
 
-  async createMealFromMessage(
+  /**
+   * Monta a refeição a partir da mensagem mas NÃO salva — devolve um rascunho
+   * pro usuário conferir. A gravação acontece em `confirmMeal`.
+   */
+  async previewMealFromMessage(
     callerId: string,
     patientId: string,
     dto: SendAssistantMessageDto,
@@ -53,7 +80,7 @@ export class MealExtractionAssistantService {
     }
 
     const resolvedItems = await this.resolveItems(extracted.items);
-    const validItems = resolvedItems.filter((item) => item.foodId);
+    const validItems = resolvedItems.filter((item) => item.food);
 
     if (validItems.length === 0) {
       return {
@@ -69,11 +96,36 @@ export class MealExtractionAssistantService {
       };
     }
 
-    const meal = await this.createMeal(
+    const draft = this.buildDraft(extracted, validItems);
+
+    return {
+      reply: {
+        id: randomUUID(),
+        role: 'assistant',
+        content: this.buildPreviewMessage(draft),
+        createdAt: new Date().toISOString(),
+        status: 'preview',
+        draft,
+        suggestedMeals: [],
+      },
+    };
+  }
+
+  /** Grava o rascunho que o usuário confirmou. */
+  async confirmMeal(callerId: string, patientId: string, dto: ConfirmMealDto) {
+    const meal = await this.meal.createWithItems(
       callerId,
       patientId,
-      extracted,
-      validItems,
+      {
+        kind: MealKind.DAILY,
+        mealType: dto.mealType,
+        time: dto.time,
+        observations: dto.observations,
+      },
+      dto.items.map((item) => ({
+        foodId: item.foodId,
+        quantity: item.quantity,
+      })),
     );
 
     return {
@@ -86,6 +138,52 @@ export class MealExtractionAssistantService {
         suggestedMeals: [meal],
       },
     };
+  }
+
+  private buildDraft(
+    extracted: AssistantExtractedMeal,
+    items: ResolvedItem[],
+  ): MealDraft {
+    const draftItems = items.map((item) => {
+      const food = item.food!;
+      const ratio = item.quantity / 100;
+
+      return {
+        foodId: food.id,
+        name: food.name,
+        quantity: item.quantity,
+        unit: item.unit,
+        calories: food.calories * ratio,
+        protein: food.protein * ratio,
+        carbs: food.carbs * ratio,
+        fat: food.fat * ratio,
+      };
+    });
+
+    const sum = (pick: (item: MealDraftItem) => number) =>
+      draftItems.reduce((total, item) => total + pick(item), 0);
+
+    return {
+      name: extracted.name,
+      mealType: extracted.mealType,
+      time: extracted.time,
+      observations: extracted.observations,
+      items: draftItems,
+      totals: {
+        calories: sum((item) => item.calories),
+        protein: sum((item) => item.protein),
+        carbs: sum((item) => item.carbs),
+        fat: sum((item) => item.fat),
+      },
+    };
+  }
+
+  /** Convite pra conferir o rascunho antes de salvar. */
+  private buildPreviewMessage(draft: MealDraft): string {
+    const items =
+      draft.items.length === 1 ? '1 item' : `${draft.items.length} itens`;
+
+    return `Montei "${draft.name}" com ${items}. Dá uma conferida e me diz se pode adicionar no seu dia.`;
   }
 
   /** Comemoração do registro — variada pro assistente não soar robótico. */
@@ -118,7 +216,7 @@ export class MealExtractionAssistantService {
             name: item.name,
             quantity: item.quantity,
             unit: item.unit,
-            foodId: publicMatch.id,
+            food: publicMatch,
           };
         }
 
@@ -173,28 +271,6 @@ export class MealExtractionAssistantService {
     if (filtered.length === words.length) return null;
 
     return filtered.join(' ');
-  }
-
-  private async createMeal(
-    callerId: string,
-    patientId: string,
-    extracted: AssistantExtractedMeal,
-    resolvedItems: ResolvedItem[],
-  ) {
-    return this.meal.createWithItems(
-      callerId,
-      patientId,
-      {
-        kind: MealKind.DAILY,
-        mealType: extracted.mealType ?? undefined,
-        time: extracted.time ?? undefined,
-        observations: extracted.observations ?? undefined,
-      },
-      resolvedItems.map((item) => ({
-        foodId: item.foodId,
-        quantity: item.quantity,
-      })),
-    );
   }
 
   private currentTime(): string {
