@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useAssistantChat, ASSISTANT_CHAT_QUERY_KEY } from './useAssistantChat'
 import { useSuggestSnack } from './useSuggestSnack'
 import { useAddSuggestedMeal } from './useAddSuggestedMeal'
-import type { SendAssistantMessageData } from '../types/chat'
+import type { AssistantMessageStatus, SendAssistantMessageData } from '../types/chat'
 import { mealTypeLabels, type AddSuggestedMealData, type SuggestSnackData, type SuggestSnackResponse } from '../types/snackSuggestion'
 
 export type AssistantStep = 'choose' | 'meal' | 'snack'
@@ -45,7 +45,13 @@ export const useAssistantActions = () => {
   }, [])
 
   const appendMessage = useCallback(
-    (message: { id: string; role: 'user' | 'assistant'; content: string; createdAt: string }) => {
+    (message: {
+      id: string
+      role: 'user' | 'assistant'
+      content: string
+      createdAt: string
+      status?: AssistantMessageStatus
+    }) => {
       queryClient.setQueryData<typeof message[]>(ASSISTANT_CHAT_QUERY_KEY, (old = []) => [...old, message])
     },
     [queryClient],
@@ -58,6 +64,13 @@ export const useAssistantActions = () => {
       content: 'Quero que você registre uma refeição pra mim',
       createdAt: new Date().toISOString(),
     })
+    appendMessage({
+      id: crypto.randomUUID(),
+      role: 'assistant',
+      content: 'Me conta o que você comeu que eu registro pra você.',
+      createdAt: new Date().toISOString(),
+      status: 'prompt',
+    })
     updateStep('meal')
   }, [appendMessage, updateStep])
 
@@ -67,6 +80,13 @@ export const useAssistantActions = () => {
       role: 'user',
       content: 'Quero que você me sugira uma refeição',
       createdAt: new Date().toISOString(),
+    })
+    appendMessage({
+      id: crypto.randomUUID(),
+      role: 'assistant',
+      content: 'Qual tipo de refeição você quer sugerir?',
+      createdAt: new Date().toISOString(),
+      status: 'prompt',
     })
     updateStep('snack')
   }, [appendMessage, updateStep])

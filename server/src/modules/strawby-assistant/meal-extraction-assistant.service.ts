@@ -46,6 +46,7 @@ export class MealExtractionAssistantService {
           content:
             'Não consegui identificar alimentos na sua mensagem. Tente descrever o que comeu com mais detalhes.',
           createdAt: new Date().toISOString(),
+          status: 'not_understood',
           suggestedMeals: [],
         },
       };
@@ -62,6 +63,7 @@ export class MealExtractionAssistantService {
           content:
             'Não encontrei os alimentos que você descreveu no banco. Tente descrever de outra forma.',
           createdAt: new Date().toISOString(),
+          status: 'not_found',
           suggestedMeals: [],
         },
       };
@@ -78,11 +80,21 @@ export class MealExtractionAssistantService {
       reply: {
         id: randomUUID(),
         role: 'assistant',
-        content: `Refeição "${meal.name}" registrada com ${meal.items.length} item(ns).`,
+        content: this.buildCreatedMessage(meal.name, meal.items.length),
         createdAt: new Date().toISOString(),
+        status: 'created',
         suggestedMeals: [meal],
       },
     };
+  }
+
+  /** Comemoração do registro — variada pro assistente não soar robótico. */
+  private buildCreatedMessage(mealName: string, itemCount: number): string {
+    const openings = ['Prontinho!', 'Boa!', 'Feito!', 'Pode deixar!', 'Anotado!'];
+    const opening = openings[Math.floor(Math.random() * openings.length)];
+    const items = itemCount === 1 ? '1 item' : `${itemCount} itens`;
+
+    return `${opening} Registrei "${mealName}" com ${items} no seu diário de hoje.`;
   }
 
   private async extractMeal(message: string): Promise<AssistantExtractedMeal> {

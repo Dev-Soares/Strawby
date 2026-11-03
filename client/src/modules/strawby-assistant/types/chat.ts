@@ -35,11 +35,19 @@ export type SuggestedMeal = {
   totals: MealTotals
 }
 
+/**
+ * Define a reação do mascote.
+ * `prompt` é local: o Strawby fez uma pergunta e está esperando o usuário.
+ * Os demais são o desfecho da tentativa de registrar a refeição.
+ */
+export type AssistantMessageStatus = 'prompt' | 'created' | 'not_found' | 'not_understood'
+
 export type AssistantMessage = {
   id: string
   role: AssistantMessageRole
   content: string
   createdAt: string
+  status?: AssistantMessageStatus
   suggestedMeals?: SuggestedMeal[]
 }
 
