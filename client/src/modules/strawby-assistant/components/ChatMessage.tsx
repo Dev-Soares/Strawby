@@ -22,11 +22,11 @@ export default function ChatMessage({ role, content, children }: ChatMessageProp
     >
       {!isUser && (
         <img
-          src="/mascot/avatar.webp"
+          src="/mascot/avatar-v2.webp"
           alt=""
           aria-hidden
           draggable={false}
-          className="h-8 w-8 shrink-0 translate-y-0.5 scale-110 rounded-full bg-neutral-100 object-contain select-none dark:bg-neutral-800"
+          className="h-8 w-8 shrink-0 translate-y-0.5 rounded-full bg-white object-cover select-none"
         />
       )}
 

@@ -32,12 +32,13 @@ export default function AssistantDrawer({ isOpen, onClose }: AssistantDrawerProp
             className="fixed inset-0 z-80 bg-black/50"
           />
 
+          {/* cresce a partir do canto do botão flutuante, como se saísse dele */}
           <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 260 }}
-            className="fixed inset-x-0 top-14 bottom-0 sm:inset-auto sm:top-6 sm:right-6 sm:bottom-6 z-90 w-full sm:w-[45%] sm:min-w-[360px] sm:max-w-[640px] rounded-t-[2rem] sm:rounded-[2rem] bg-white dark:bg-neutral-900 sm:border border-neutral-200 dark:border-neutral-700 shadow-xl"
+            initial={{ opacity: 0, scale: 0.4, x: 24, y: 24 }}
+            animate={{ opacity: 1, scale: 1, x: 0, y: 0 }}
+            exit={{ opacity: 0, scale: 0.4, x: 24, y: 24 }}
+            transition={{ type: 'spring', damping: 26, stiffness: 280, mass: 0.7 }}
+            className="fixed inset-x-0 top-14 bottom-0 sm:inset-auto sm:top-6 sm:right-6 sm:bottom-6 z-90 w-full origin-bottom-right sm:w-[45%] sm:min-w-[360px] sm:max-w-[640px] rounded-t-[2rem] sm:rounded-[2rem] bg-white dark:bg-neutral-900 sm:border border-neutral-200 dark:border-neutral-700 shadow-xl"
           >
             <div className="flex h-full flex-col">
               <header className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800 px-5 py-4 sm:px-6 sm:py-5">

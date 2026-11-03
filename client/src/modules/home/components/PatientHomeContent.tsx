@@ -22,8 +22,9 @@ export default function PatientHomeContent() {
 
         <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-start gap-3 mb-8 sm:mb-10">
           <DaySelector className="!mb-0" />
-          <AssistantLauncher />
         </div>
+
+        <AssistantLauncher />
 
         {mealsError && (
           <div className="rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900 p-4 mb-6 mt-4 transition-colors duration-300">
