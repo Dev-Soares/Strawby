@@ -3,15 +3,15 @@ import {
   MASCOT_ACTION_DURATION_MS,
   MASCOT_ACTION_END_SRC,
   MASCOT_ACTION_SRC,
-} from '../config/mascotActions'
-import type { MascotAction } from '../types/mascotAction'
+} from '@/shared/config/mascotActions'
+import type { MascotAction, MascotPlayback } from '@/shared/types/mascotAction'
 
 interface StrawbyMascotProps {
   /** Qual animação tocar. */
   action: MascotAction
-  /** `false` trava no último frame quando a animação termina. Padrão: repete. */
-  loop?: boolean
-  /** Chamado uma vez quando a animação termina (só com `loop={false}`). */
+  /** Como a animação termina. Padrão: repete para sempre. */
+  playback?: MascotPlayback
+  /** Chamado uma vez quando a animação termina (não dispara em `loop`). */
   onComplete?: () => void
   /** Tamanho e posicionamento — o componente só traz `object-contain`. */
   className?: string
@@ -19,20 +19,25 @@ interface StrawbyMascotProps {
 
 export default function StrawbyMascot({
   action,
-  loop = true,
+  playback = 'loop',
   onComplete,
   className = 'h-40 w-40',
 }: StrawbyMascotProps) {
   const [isFinished, setIsFinished] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
 
-  // trocar de ação (ou voltar a repetir) recomeça a contagem do fim
-  const [playing, setPlaying] = useState({ action, loop })
-  if (playing.action !== action || playing.loop !== loop) {
-    setPlaying({ action, loop })
+  // trocar de ação (ou de playback) recomeça a contagem do fim
+  const [current, setCurrent] = useState({ action, playback })
+  if (current.action !== action || current.playback !== playback) {
+    setCurrent({ action, playback })
     setIsFinished(false)
     setIsPlaying(false)
   }
+
+  // `settle` continua em cena depois de terminar: volta pro idle em loop
+  const hasSettled = playback === 'settle' && isFinished
+  const playingAction = hasSettled ? 'idle' : action
+  const loop = playback === 'loop' || hasSettled
 
   // guardado em ref para um `onComplete` inline não reiniciar a animação
   const onCompleteRef = useRef(onComplete)
@@ -44,10 +49,10 @@ export default function StrawbyMascot({
   // o still do último frame precisa estar em cache antes da troca, senão a
   // animação pisca no fim enquanto o browser busca a imagem
   useEffect(() => {
-    if (loop) return
+    if (playback === 'loop') return
     const preload = new Image()
     preload.src = MASCOT_ACTION_END_SRC[action]
-  }, [action, loop])
+  }, [action, playback])
 
   useEffect(() => {
     // o WebP só começa a tocar depois de decodificado — contar a partir da
@@ -62,12 +67,14 @@ export default function StrawbyMascot({
     return () => clearTimeout(timer)
   }, [action, loop, isPlaying])
 
-  const src = isFinished ? MASCOT_ACTION_END_SRC[action] : MASCOT_ACTION_SRC[action]
+  // `once` congela no still; `settle` volta a animar o idle
+  const isFrozen = isFinished && playback === 'once'
+  const src = isFrozen ? MASCOT_ACTION_END_SRC[playingAction] : MASCOT_ACTION_SRC[playingAction]
 
   return (
     <img
       // remontar o <img> faz o WebP recomeçar do frame 0 ao trocar de ação
-      key={`${action}-${isFinished}`}
+      key={`${playingAction}-${isFrozen}`}
       src={src}
       alt=""
       aria-hidden

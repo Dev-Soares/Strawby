@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import type { AssistantMessage, AssistantMessageRole } from '../types/chat'
-import type { MascotPlayback } from '../components/MascotMessage'
-import type { MascotAction } from '../types/mascotAction'
+import type { MascotAction, MascotPlayback } from '@/shared/types/mascotAction'
 
 /** A saudação não vem da API — ela abre toda conversa. */
 export const WELCOME_MESSAGE_ID = 'welcome'

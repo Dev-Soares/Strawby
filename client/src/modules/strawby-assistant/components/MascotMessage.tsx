@@ -1,15 +1,8 @@
-import { useState, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { Bubble, BubbleContent } from '@/components/ui/bubble'
-import type { MascotAction } from '../types/mascotAction'
-import StrawbyMascot from './StrawbyMascot'
-
-/**
- * `loop`   — repete enquanto a fala estiver viva
- * `settle` — toca uma vez e volta pro `idle` em loop
- * `once`   — toca uma vez e congela no último frame
- */
-export type MascotPlayback = 'loop' | 'settle' | 'once'
+import StrawbyMascot from '@/shared/components/StrawbyMascot'
+import type { MascotAction, MascotPlayback } from '@/shared/types/mascotAction'
 
 interface MascotMessageProps {
   /** Animação do mascote enquanto esta fala está ativa. */
@@ -26,19 +19,6 @@ export default function MascotMessage({
   isTyping = false,
   children,
 }: MascotMessageProps) {
-  const [hasSettled, setHasSettled] = useState(false)
-
-  // nova ação recomeça do zero, mesmo que a anterior já tivesse assentado
-  const [playingAction, setPlayingAction] = useState(action)
-  if (playingAction !== action) {
-    setPlayingAction(action)
-    setHasSettled(false)
-  }
-
-  const didSettle = playback === 'settle' && hasSettled
-  const currentAction = didSettle ? 'idle' : action
-  const shouldLoop = playback === 'loop' || didSettle
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -47,9 +27,8 @@ export default function MascotMessage({
       className="flex items-end gap-1"
     >
       <StrawbyMascot
-        action={currentAction}
-        loop={shouldLoop}
-        onComplete={() => setHasSettled(true)}
+        action={action}
+        playback={playback}
         className="h-28 w-28 shrink-0 drop-shadow-md sm:h-36 sm:w-36"
       />
 
