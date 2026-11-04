@@ -6,6 +6,7 @@ import ProfileAccountSection from '@/modules/profile/components/ProfileAccountSe
 import ProfileThemeSection from '@/modules/profile/components/ProfileThemeSection'
 import ProfileSupportSection from '@/modules/profile/components/ProfileSupportSection'
 import ProfileNotificationsSection from '@/modules/notifications/components/ProfileNotificationsSection'
+import ReplayTourSection from '@/modules/onboarding/components/ReplayTourSection'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 import Spinner from '@/shared/components/Spinner'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
@@ -30,6 +31,8 @@ export default function SettingsPage() {
 
           <ProfileNotificationsSection />
         </div>
+
+        <ReplayTourSection />
 
         <ProfileSupportSection />
 
