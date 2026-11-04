@@ -5,6 +5,13 @@ export function toLocalISODate(date = new Date()): string {
   return `${year}-${month}-${day}`
 }
 
+/** Hora local no formato 'HH:mm', o mesmo de `<input type="time">`. */
+export function toLocalTime(date = new Date()): string {
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${hours}:${minutes}`
+}
+
 /** Converte 'YYYY-MM-DD' em Date local (sem deslocamento de fuso). */
 export function parseLocalISODate(iso: string): Date {
   const [year, month, day] = iso.split('-').map(Number)

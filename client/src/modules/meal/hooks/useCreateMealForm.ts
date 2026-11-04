@@ -3,7 +3,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { toLocalISODate } from '@/shared/utils/date'
+import { toLocalISODate, toLocalTime } from '@/shared/utils/date'
 import { createMealSchema, type CreateMealData } from '../types/createMeal'
 import { useCreateMeal } from './useCreateMeal'
 import { useCopyMealItems } from './useCopyMealItems'
@@ -28,8 +28,10 @@ export const useCreateMealForm = () => {
   const copyMealItems = useCopyMealItems()
 
   const form = useForm<CreateMealData>({
+    // o registro quase sempre é do que acabou de ser comido: a hora de agora
+    // acerta mais do que um horário fixo
     resolver: zodResolver(createMealSchema),
-    defaultValues: { time: '07:00', kind },
+    defaultValues: { time: toLocalTime(), kind },
   })
 
   const selectedType = useWatch({ control: form.control, name: 'mealType' })
