@@ -7,3 +7,5 @@ coverage
 .DS_Store
 *.local
 /tools/ffmpeg
+__pycache__/
+/docs/mascot-previews
