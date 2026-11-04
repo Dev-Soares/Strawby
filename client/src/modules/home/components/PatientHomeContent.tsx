@@ -5,7 +5,6 @@ import DaySelector from '../../daily-summary/components/DaySelector'
 import DailySummarySkeleton from '../../daily-summary/skeletons/DailySummarySkeleton'
 import MealListSkeleton from '../../daily-summary/skeletons/MealListSkeleton'
 import PatientHomeHeader from './PatientHomeHeader'
-import AssistantLauncher from '../../strawby-assistant/components/AssistantLauncher'
 import { usePatientHome } from '../hooks/usePatientHome'
 import { useAutoTutorial } from '../../onboarding/hooks/useTutorial'
 
@@ -24,8 +23,6 @@ export default function PatientHomeContent() {
           <DaySelector className="!mb-0" />
         </div>
 
-        <AssistantLauncher />
-
         {mealsError && (
           <div className="rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900 p-4 mb-6 mt-4 transition-colors duration-300">
             <p className="text-sm font-semibold text-red-600 dark:text-red-400 transition-colors duration-300">Erro ao carregar refeições</p>
@@ -39,10 +36,10 @@ export default function PatientHomeContent() {
           </div>
         ) : (
           <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start transition-opacity duration-200 ${mealsFetching ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-            <div data-tutorial="meal-list">
+            <div data-tour="home-meals">
               <MealList meals={meals ?? []} />
             </div>
-            <div data-tutorial="daily-summary">
+            <div data-tour="home-summary">
               {summary ? <DailySummary data={summary} /> : <DailySummarySkeleton />}
             </div>
           </div>

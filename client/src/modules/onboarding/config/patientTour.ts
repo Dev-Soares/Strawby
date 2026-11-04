@@ -1,100 +1,118 @@
-import type { NavigateFunction } from 'react-router-dom'
-import type { StepOptions } from 'shepherd.js'
-type TourProxy = { next: () => void; back: () => void; complete: () => void }
+import type { TourStep } from '../types/tourStep'
 
-const TOTAL = 9
-
-const progress = (n: number) =>
-  `<span class="shepherd-step-progress">${n} de ${TOTAL}</span>`
-
-const goTo = (navigate: NavigateFunction, route: string, delay = 550) => () => {
-  navigate(route)
-  return new Promise<void>((resolve) => setTimeout(resolve, delay))
-}
-
-const navButtons = (tour: TourProxy) => [
-  { text: 'Anterior', classes: 'shepherd-btn-prev', action: () => tour.back() },
-  { text: 'Próximo', classes: 'shepherd-btn-next', action: () => tour.next() },
-]
-
-const firstButton = (tour: TourProxy) => [
-  { text: 'Vamos lá', classes: 'shepherd-btn-next', action: () => tour.next() },
-]
-
-const lastButtons = (tour: TourProxy) => [
-  { text: 'Anterior', classes: 'shepherd-btn-prev', action: () => tour.back() },
-  { text: 'Começar a usar', classes: 'shepherd-btn-next', action: () => tour.complete() },
-]
-
-export const createPatientSteps = (
-  tour: TourProxy,
-  navigate: NavigateFunction,
-): StepOptions[] => [
+/**
+ * Tutorial do paciente.
+ *
+ * Cada aba entra em dois tempos: o mascote encosta no botão que leva até ela e
+ * depois dá um closeup no que importa dentro da tela. Telas sem aba própria
+ * (Alimentos, Ajustes) apontam para o menu, que é por onde se chega nelas.
+ */
+export const PATIENT_TOUR: TourStep[] = [
   {
     id: 'welcome',
-    title: `${progress(1)}Bem-vindo ao Strawby`,
-    text: 'Vamos fazer um tour rápido — menos de 2 minutos. A navegação fica nas abas no topo (Início, Pontuação, Plano e Perfil) e no menu ☰ no canto, onde estão Alimentos e Ajustes.',
-    buttons: firstButton(tour),
+    route: '/app/home',
+    prompt: 'Oi de novo! Vou te mostrar como o Strawby pode te ajudar! Leva apenas dois minutos.',
+    action: 'happy',
+    cta: 'Vamos lá',
   },
   {
-    id: 'meal-list',
-    attachTo: { element: '[data-tutorial="meal-list"]', on: 'bottom-start' },
-    title: `${progress(2)}Suas refeições`,
-    text: 'A aba Início é seu dia a dia. Registre cada refeição aqui — café da manhã, almoço, lanche e jantar. Toque em uma refeição para ver os detalhes ou editar os alimentos.',
-    buttons: navButtons(tour),
+    id: 'home',
+    route: '/app/home',
+    target: 'nav-home',
+    prompt: 'Bora começar por aqui! O Início é a sua tela do dia.',
+    action: 'idle',
   },
   {
-    id: 'daily-summary',
-    attachTo: { element: '[data-tutorial="daily-summary"]', on: 'bottom-start' },
-    title: `${progress(3)}Resumo do dia`,
-    text: 'Ao lado, suas calorias e macros em tempo real. As barras progridem conforme você registra as refeições ao longo do dia.',
-    buttons: navButtons(tour),
+    id: 'home-meals',
+    route: '/app/home',
+    target: 'home-meals',
+    prompt: 'Nesta lista entram suas refeições! É só adicionar o que você comeu.',
+    action: 'idle',
+  },
+  {
+    id: 'home-summary',
+    route: '/app/home',
+    target: 'home-summary',
+    prompt: 'E olha só: aqui eu vou somando os nutrientes do dia enquanto você registra!',
+    action: 'thinking',
   },
   {
     id: 'score',
-    beforeShowPromise: goTo(navigate, '/app/score'),
-    attachTo: { element: '[data-tutorial="score-dashboard"]', on: 'top-start' },
-    title: `${progress(4)}Pontuação`,
-    text: 'Na aba Pontuação fica seu score diário de 0 a 100, que mede o quanto você seguiu suas metas. Acompanhe sua evolução e consistência ao longo do tempo.',
-    buttons: navButtons(tour),
+    route: '/app/score',
+    target: 'nav-score',
+    prompt: 'Agora a parte divertida: a Pontuação mostra sua consistência dia a dia!',
+    action: 'idle',
+  },
+  {
+    id: 'score-today',
+    route: '/app/score',
+    target: 'score-today',
+    prompt: 'Esta é a nota de hoje, de 0 a 10! Ela diz o quanto você seguiu suas metas.',
+    action: 'thinking',
+  },
+  {
+    id: 'score-streak',
+    route: '/app/score',
+    target: 'score-streak',
+    prompt: 'E esta é a sua sequência! Cada dia registrado faz ela crescer mais um pouco.',
+    action: 'idle',
   },
   {
     id: 'plan',
-    beforeShowPromise: goTo(navigate, '/app/plan'),
-    attachTo: { element: '[data-tutorial="plan-cta"]', on: 'top' },
-    title: `${progress(5)}Plano alimentar`,
-    text: 'Na aba Plano você define suas metas diárias de calorias e macros. Crie um plano manualmente, gere um a partir dos seus dados corporais ou aguarde seu nutricionista.',
-    buttons: navButtons(tour),
+    route: '/app/plan',
+    target: 'nav-plan',
+    prompt: 'No Plano ficam suas metas diárias de calorias e macros!',
+    action: 'idle',
   },
   {
-    id: 'foods',
-    beforeShowPromise: goTo(navigate, '/app/foods'),
-    attachTo: { element: '[data-tutorial="foods-tabs"]', on: 'bottom-start' },
-    title: `${progress(6)}Alimentos`,
-    text: 'Abra o menu ☰ e toque em Alimentos. Aqui você busca na base pública, cria seus próprios alimentos e monta receitas reutilizáveis — tudo nessas abas.',
-    buttons: navButtons(tour),
+    id: 'plan-generate',
+    route: '/app/plan',
+    target: 'plan-generate',
+    prompt: 'Aperte aqui que eu calculo tudo pelos seus dados! Seu nutricionista também pode montar pra você.',
+    action: 'thinking',
+  },
+  {
+    id: 'foods-tabs',
+    route: '/app/foods',
+    target: 'foods-tabs',
+    prompt:
+      'Esta é a tela de Alimentos, lá no menu {menu}! Busque na base pública, crie os seus e monte receitas.',
+    action: 'thinking',
   },
   {
     id: 'profile',
-    beforeShowPromise: goTo(navigate, '/app/profile'),
-    attachTo: { element: '[data-tutorial="profile-header"]', on: 'bottom-start' },
-    title: `${progress(7)}Meu perfil`,
-    text: 'Na aba Perfil mantenha seus dados corporais atualizados para cálculos mais precisos, acompanhe seu histórico de peso e veja o nutricionista vinculado.',
-    buttons: navButtons(tour),
+    route: '/app/profile',
+    target: 'nav-profile',
+    prompt: 'No Perfil ficam seus dados e toda a sua evolução!',
+    action: 'idle',
+  },
+  {
+    id: 'profile-weight',
+    route: '/app/profile',
+    target: 'profile-weight',
+    prompt: 'Registre seu peso de vez em quando! Essa curva aqui mostra se o plano tá funcionando.',
+    action: 'thinking',
+  },
+  {
+    id: 'profile-body',
+    route: '/app/profile',
+    target: 'profile-body',
+    prompt: 'E são estes dados que eu uso nas contas, então mantenha tudo em dia!',
+    action: 'idle',
   },
   {
     id: 'settings',
-    beforeShowPromise: goTo(navigate, '/app/settings'),
-    attachTo: { element: '[data-tutorial="settings-header"]', on: 'bottom-start' },
-    title: `${progress(8)}Ajustes`,
-    text: 'No menu ☰, em Ajustes, você gerencia sua conta, ativa notificações, troca o tema claro/escuro e sai do app.',
-    buttons: navButtons(tour),
+    route: '/app/settings',
+    target: 'settings-prefs',
+    prompt: 'E nos Ajustes, também pelo menu {menu}, você liga as notificações e troca o tema!',
+    action: 'idle',
   },
   {
     id: 'done',
-    beforeShowPromise: goTo(navigate, '/app/home'),
-    title: `${progress(9)}Tudo pronto!`,
-    text: 'Você já conhece o Strawby. Comece registrando sua primeira refeição e acompanhe sua evolução dia a dia.',
-    buttons: lastButtons(tour),
+    route: '/app/home',
+    prompt: 'É isso! Precisou de mim, é só me chamar neste botão aqui do canto. Tô sempre por perto!',
+    action: 'happy',
+    cta: 'Começar a usar',
+    assistantHandoff: true,
   },
 ]

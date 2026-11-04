@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '@/modules/auth/hooks/useAuth'
 import AssistantDrawer from './AssistantDrawer'
 
 /**
@@ -8,7 +9,7 @@ import AssistantDrawer from './AssistantDrawer'
  * inferior direito. No mobile a folga de baixo tem que livrar a TabBar.
  */
 const buttonClass =
-  'group fixed right-5 bottom-24 sm:right-6 sm:bottom-6 z-60 flex h-19 w-19 sm:h-20 sm:w-20 items-center justify-center rounded-full transition-transform duration-200 active:scale-95 cursor-pointer'
+  'group fixed right-5 bottom-24 sm:right-6 sm:bottom-6 z-60 flex h-19 w-19 sm:h-20 sm:w-20 items-center justify-center rounded-full transition-[transform,opacity] duration-200 active:scale-95 cursor-pointer'
 
 /**
  * Parado é o frame 0 da animação; no hover entra a animação inteira.
@@ -50,20 +51,34 @@ function LauncherMascot({ isHovered }: { isHovered: boolean }) {
   )
 }
 
-export default function AssistantLauncher() {
+interface AssistantLauncherProps {
+  /** Esconde junto com header/TabBar quando o BlobMenu esta aberto. */
+  hidden?: boolean
+}
+
+export default function AssistantLauncher({ hidden = false }: AssistantLauncherProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const { pathname } = useLocation()
+  const { data: user } = useAuth()
 
   const hoverProps = {
     onMouseEnter: () => setIsHovered(true),
     onMouseLeave: () => setIsHovered(false),
   }
 
+  // O assistente e do paciente, e na propria tela do chat o botao so atrapalha
+  // (no mobile ele cobre o input).
+  if (user?.role === 'nutritionist') return null
+  if (pathname === '/app/assistant') return null
+
+  const visibility = hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'
+
   return (
     <>
       <Link
         to="/app/assistant"
-        className={`${buttonClass} sm:hidden`}
+        className={`${buttonClass} ${visibility} sm:hidden`}
         aria-label="Abrir assistente Strawby"
       >
         <LauncherMascot isHovered={false} />
@@ -73,7 +88,7 @@ export default function AssistantLauncher() {
         type="button"
         onClick={() => setIsOpen(true)}
         {...hoverProps}
-        className={`${buttonClass} hidden sm:flex`}
+        className={`${buttonClass} ${visibility} hidden sm:flex`}
         aria-label="Abrir assistente Strawby"
       >
         <LauncherMascot isHovered={isHovered} />

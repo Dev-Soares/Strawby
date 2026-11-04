@@ -34,7 +34,7 @@ export default function NutritionistContent() {
 
         <NutritionistHeader name={user?.name ?? 'Nutricionista'} />
 
-        <div data-tutorial="patient-tabs" className="flex gap-1 p-1 bg-neutral-100 dark:bg-neutral-800/60 rounded-xl w-fit mb-6 transition-colors duration-300">
+        <div className="flex gap-1 p-1 bg-neutral-100 dark:bg-neutral-800/60 rounded-xl w-fit mb-6 transition-colors duration-300">
           <button
             onClick={() => setActiveTab('patients')}
             className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer ${
@@ -67,7 +67,7 @@ export default function NutritionistContent() {
 
         {activeTab === 'patients' && (
           <>
-            <div data-tutorial="patient-list" className="mb-5">
+            <div className="mb-5">
               <h2 className="text-xl sm:text-2xl font-extrabold text-neutral-950 dark:text-neutral-100 tracking-tight transition-colors duration-300">
                 Meus pacientes
               </h2>

@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom'
 import BlobMenu from './BlobMenu'
 import TabBar from './TabBar'
 import NotificationPermissionPopup from '@/modules/notifications/components/NotificationPermissionPopup'
+import { useTour } from '@/modules/onboarding/hooks/useTour'
+import AssistantLauncher from '@/modules/strawby-assistant/components/AssistantLauncher'
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -11,6 +13,7 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children }: AppLayoutProps) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const { isActive: isTourActive } = useTour()
 
   useEffect(() => {
     if (!menuOpen) return
@@ -72,6 +75,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <BlobMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
       <main className="pb-24 sm:pb-28 lg:pb-32">{children}</main>
+
+      {/* fixo como header/TabBar: o botao do assistente existe em toda tela do app.
+          Durante o tutorial ele sai: o mascote do tour ja desenha a bolinha no
+          mesmo lugar, e duas estragariam o efeito de ele sair e voltar pra la */}
+      <AssistantLauncher hidden={menuOpen || isTourActive} />
 
       <NotificationPermissionPopup />
     </div>
