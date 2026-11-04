@@ -81,14 +81,16 @@ export class MealExtractionAssistantService {
 
     const resolvedItems = await this.resolveItems(extracted.items);
     const validItems = resolvedItems.filter((item) => item.food);
+    const missingNames = resolvedItems
+      .filter((item) => !item.food)
+      .map((item) => item.name);
 
     if (validItems.length === 0) {
       return {
         reply: {
           id: randomUUID(),
           role: 'assistant',
-          content:
-            'Não encontrei os alimentos que você descreveu no banco. Tente descrever de outra forma.',
+          content: `Não encontrei ${this.joinNames(missingNames)} no meu banco de alimentos. Tente descrever de outra forma.`,
           createdAt: new Date().toISOString(),
           status: 'not_found',
           suggestedMeals: [],
@@ -102,7 +104,7 @@ export class MealExtractionAssistantService {
       reply: {
         id: randomUUID(),
         role: 'assistant',
-        content: this.buildPreviewMessage(draft),
+        content: this.buildPreviewMessage(draft, missingNames),
         createdAt: new Date().toISOString(),
         status: 'preview',
         draft,
@@ -178,17 +180,48 @@ export class MealExtractionAssistantService {
     };
   }
 
-  /** Convite pra conferir o rascunho antes de salvar. */
-  private buildPreviewMessage(draft: MealDraft): string {
+  /**
+   * Convite pra conferir o rascunho antes de salvar.
+   *
+   * O item que não casou com nenhum alimento é avisado aqui: antes ele era
+   * descartado em silêncio, então quem ditava três comidas recebia um card com
+   * duas e um total menor sem nenhuma pista do que faltou.
+   */
+  private buildPreviewMessage(
+    draft: MealDraft,
+    missingNames: string[],
+  ): string {
     const items =
       draft.items.length === 1 ? '1 item' : `${draft.items.length} itens`;
 
-    return `Montei "${draft.name}" com ${items}. Dá uma conferida e me diz se pode adicionar no seu dia.`;
+    const base = `Montei "${draft.name}" com ${items}.`;
+
+    if (missingNames.length === 0) {
+      return `${base} Dá uma conferida e me diz se pode adicionar no seu dia.`;
+    }
+
+    return `${base} Não achei ${this.joinNames(missingNames)} no meu banco, então ficou de fora do total. Dá uma conferida e me diz se pode adicionar no seu dia.`;
+  }
+
+  /** "arroz", "arroz e feijão", "arroz, feijão e ovo". */
+  private joinNames(names: string[]): string {
+    if (names.length === 0) return 'os alimentos que você descreveu';
+    if (names.length === 1) return `"${names[0]}"`;
+
+    const quoted = names.map((name) => `"${name}"`);
+    const last = quoted.pop();
+    return `${quoted.join(', ')} e ${last}`;
   }
 
   /** Comemoração do registro — variada pro assistente não soar robótico. */
   private buildCreatedMessage(mealName: string, itemCount: number): string {
-    const openings = ['Prontinho!', 'Boa!', 'Feito!', 'Pode deixar!', 'Anotado!'];
+    const openings = [
+      'Prontinho!',
+      'Boa!',
+      'Feito!',
+      'Pode deixar!',
+      'Anotado!',
+    ];
     const opening = openings[Math.floor(Math.random() * openings.length)];
     const items = itemCount === 1 ? '1 item' : `${itemCount} itens`;
 
@@ -210,7 +243,10 @@ export class MealExtractionAssistantService {
   ): Promise<ResolvedItem[]> {
     return Promise.all(
       items.map(async (item) => {
-        const publicMatch = await this.findFoodMatch(item.name);
+        const publicMatch = await this.findFoodMatch(
+          item.name,
+          item.preparation,
+        );
         if (publicMatch) {
           return {
             name: item.name,
@@ -229,32 +265,34 @@ export class MealExtractionAssistantService {
     );
   }
 
-  private async findFoodMatch(name: string) {
+  private async findFoodMatch(name: string, preparation: string | null) {
     const trimmed = name.trim();
     if (trimmed.length < 2) return null;
 
-    const match = await findPublicFoodMatch(trimmed, this.food);
+    const match = await findPublicFoodMatch(trimmed, this.food, {
+      preparation,
+    });
     if (match) return match;
 
     const simplified = this.simplifyName(trimmed);
     if (simplified && simplified !== trimmed) {
-      return findPublicFoodMatch(simplified, this.food);
+      return findPublicFoodMatch(simplified, this.food, { preparation });
     }
 
     return null;
   }
 
+  /**
+   * Corta só ruído de rótulo. Preparação (`grelhado`, `frito`, `assado`) ficou
+   * de fora da lista de propósito: ela é o sinal que decide entre o alimento
+   * cru e o cozido, e removê-la aqui desfazia o trabalho da extração.
+   */
   private simplifyName(name: string): string | null {
     const stopwords = [
-      'mexido',
-      'frito',
-      'grelhado',
-      'assado',
-      'refogado',
       'natural',
       'morno',
       'gelado',
-      'seco',
+      'quente',
       'desnatado',
       'integral',
       'light',
