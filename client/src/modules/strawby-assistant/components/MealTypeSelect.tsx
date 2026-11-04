@@ -5,7 +5,8 @@ import { useThemeContext } from '@/shared/hooks/useThemeContext'
 import { mealTypeValues, type MealType } from '../types/snackSuggestion'
 
 interface MealTypeSelectProps {
-  value: MealType
+  /** `undefined` enquanto o usuário não escolheu — mostra o placeholder. */
+  value: MealType | undefined
   onChange: (value: MealType) => void
   disabled?: boolean
 }
@@ -16,9 +17,9 @@ export default function MealTypeSelect({ value, onChange, disabled }: MealTypeSe
   const { resolvedTheme } = useThemeContext()
   const isDark = resolvedTheme === 'dark'
 
-  const selectedConfig = getMealType(value)
-  const selectedAccent = getMealAccent(selectedConfig, isDark)
-  const SelectedIcon = selectedConfig.icon
+  const selectedConfig = value ? getMealType(value) : null
+  const selectedAccent = selectedConfig ? getMealAccent(selectedConfig, isDark) : null
+  const SelectedIcon = selectedConfig?.icon
 
   useEffect(() => {
     if (!isOpen) return
@@ -46,7 +47,7 @@ export default function MealTypeSelect({ value, onChange, disabled }: MealTypeSe
           onChange(mealType)
           setIsOpen(false)
         }}
-        className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors duration-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+        className="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition-colors duration-200 hover:bg-neutral-100 dark:hover:bg-neutral-800"
       >
         <span
           className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
@@ -69,14 +70,22 @@ export default function MealTypeSelect({ value, onChange, disabled }: MealTypeSe
         onClick={() => setIsOpen((open) => !open)}
         disabled={disabled}
         className="flex w-full items-center gap-2 rounded-full bg-transparent py-1 text-left text-sm focus:outline-none disabled:opacity-60 cursor-pointer"
-        style={{ color: selectedAccent.ink }}
+        style={selectedAccent ? { color: selectedAccent.ink } : undefined}
       >
-        <SelectedIcon size={18} style={{ color: selectedAccent.strong }} />
-        <span className="font-medium">{selectedConfig.name}</span>
+        {SelectedIcon && selectedAccent && (
+          <SelectedIcon size={18} style={{ color: selectedAccent.strong }} />
+        )}
+        <span
+          className={`font-medium ${selectedConfig ? '' : 'text-neutral-500 dark:text-neutral-400'}`}
+        >
+          {selectedConfig?.name ?? 'Selecione um tipo de refeição'}
+        </span>
         <ChevronDown
           size={20}
-          className={`shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
-          style={{ color: selectedAccent.strong }}
+          className={`shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''} ${
+            selectedAccent ? '' : 'text-neutral-500 dark:text-neutral-400'
+          }`}
+          style={selectedAccent ? { color: selectedAccent.strong } : undefined}
         />
       </button>
 
