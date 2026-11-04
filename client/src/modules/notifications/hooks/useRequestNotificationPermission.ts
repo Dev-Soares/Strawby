@@ -1,18 +1,15 @@
 import { useMutation } from '@tanstack/react-query'
 import { requestNotificationPermissionService } from '../service/requestNotificationPermissionService'
 import { saveNotificationTokenService } from '../service/saveNotificationTokenService'
-import { deleteNotificationTokenService } from '../service/deleteNotificationTokenService'
 
 export const useRequestNotificationPermission = () => {
   return useMutation({
     mutationFn: async () => {
       const token = await requestNotificationPermissionService()
       if (token) {
-        const previousToken = localStorage.getItem('fcm_token')
-        if (previousToken && previousToken !== token) {
-          // FCM rotacionou o token — remove o antigo do banco pra não entregar em dobro
-          await deleteNotificationTokenService(previousToken).catch(() => {})
-        }
+        // O save é chaveado por deviceId: se o FCM rotacionou o token, o backend
+        // substitui o registro deste aparelho em vez de criar outro. Não depende
+        // mais do localStorage pra limpar o antigo (que sumia no reinstall do PWA).
         await saveNotificationTokenService(token)
         localStorage.setItem('fcm_token', token)
       }

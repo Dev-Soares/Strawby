@@ -85,9 +85,15 @@ export function appTimeWindow(minutes: number): {
   startTime: string;
   endTime: string;
 } {
-  const now = new Date();
-  const startTime = appTimeHHmm(now);
-  const end = new Date(now.getTime() + minutes * 60 * 1000);
+  const step = minutes * 60 * 1000;
+  // Arredonda pro múltiplo de `minutes` mais próximo em vez de usar o relógio
+  // cru: o cron pode disparar alguns ms adiantado ou atrasado e o 'HH:MM'
+  // truncado geraria uma janela deslocada, sobreposta à anterior — refeição
+  // notificada duas vezes. Os fusos do app são offsets inteiros de hora, então
+  // o múltiplo no epoch coincide com o múltiplo no horário local.
+  const start = new Date(Math.round(Date.now() / step) * step);
+  const startTime = appTimeHHmm(start);
+  const end = new Date(start.getTime() + step);
   const endTime = appTimeHHmm(end);
   return {
     startTime,

@@ -251,8 +251,15 @@ model NotificationToken {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   token     String   @unique
+  // identifica o aparelho (uuid no localStorage do cliente). O FCM rotaciona o
+  // token, então a chave do registro é userId+deviceId — sem isso cada rotação
+  // criava uma linha nova e o mesmo aparelho recebia a push várias vezes.
+  deviceId  String
   createdAt DateTime @default(now())
+  // tocado a cada re-registro (o app refaz na abertura) — base pra podar tokens mortos
+  updatedAt DateTime @updatedAt
 
+  @@unique([userId, deviceId])
   @@index([userId])
 }
 

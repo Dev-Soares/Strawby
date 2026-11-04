@@ -4,6 +4,7 @@ import { DailyScoreModule } from '../daily-score/daily-score.module';
 import { PatientModule } from '../patient/patient.module';
 import { UserModule } from '../user/user.module';
 import { NotificationModule } from '../notification/send-notification/notification.module';
+import { NotificationTokenModule } from '../notification/notification-token/notification-token.module';
 import { MealModule } from '../meal/meal.module';
 
 @Module({
@@ -13,6 +14,7 @@ import { MealModule } from '../meal/meal.module';
     PatientModule,
     UserModule,
     NotificationModule,
+    NotificationTokenModule,
     MealModule,
   ],
 })
