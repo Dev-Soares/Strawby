@@ -27,21 +27,21 @@ export const SEO_ROUTES = [
   {
     path: '/faq',
     source: 'src/pages/FaqPage.tsx',
-    title: 'Perguntas Frequentes — Strawby',
+    title: 'Perguntas Frequentes - Strawby',
     description:
       'Tire suas dúvidas sobre o Strawby: como criar conta, registrar refeições, buscar alimentos, criar receitas e acompanhar metas de calorias e macros.',
   },
   {
     path: '/privacy',
     source: 'src/pages/PrivacyPage.tsx',
-    title: 'Política de Privacidade — Strawby',
+    title: 'Política de Privacidade - Strawby',
     description:
       'Saiba como o Strawby coleta, usa e protege seus dados pessoais. Sua privacidade é nossa prioridade.',
   },
   {
     path: '/terms',
     source: 'src/pages/TermsPage.tsx',
-    title: 'Termos de Uso — Strawby',
+    title: 'Termos de Uso - Strawby',
     description:
       'Leia os termos de uso do Strawby. Entenda suas responsabilidades e os nossos compromissos ao usar a plataforma de nutrição.',
   },

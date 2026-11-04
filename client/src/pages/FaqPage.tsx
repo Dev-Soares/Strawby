@@ -100,7 +100,7 @@ export default function FaqPage() {
   return (
     <>
       <PageSEO
-        title="Perguntas Frequentes — Strawby"
+        title="Perguntas Frequentes - Strawby"
         description="Tire suas dúvidas sobre o Strawby: como criar conta, registrar refeições, buscar alimentos, criar receitas e acompanhar metas de calorias e macros."
         path="/faq"
         jsonLd={faqSchema}

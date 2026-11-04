@@ -51,7 +51,7 @@ export default function LandingPage() {
   return (
     <>
       <PageSEO
-        title="Strawby — Controle de Refeições e Nutrição Diária"
+        title="Strawby - Controle de Refeições e Nutrição Diária"
         description="Strawby é o app de nutrição para acompanhar calorias, macros e refeições do dia a dia. Simples, visual e consistente. Grátis e funciona como PWA."
         path="/"
         jsonLd={[webAppSchema, organizationSchema]}

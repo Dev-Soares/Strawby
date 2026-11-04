@@ -7,7 +7,7 @@ export default function NotFoundPage() {
   return (
     <>
       <PageSEO
-        title="Página não encontrada — Strawby"
+        title="Página não encontrada - Strawby"
         description="A página que você tentou acessar não existe."
         path="/404"
       />

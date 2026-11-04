@@ -39,7 +39,7 @@ export default function PrivacyPage() {
   return (
     <>
       <PageSEO
-        title="Política de Privacidade — Strawby"
+        title="Política de Privacidade - Strawby"
         description="Saiba como o Strawby coleta, usa e protege seus dados pessoais. Sua privacidade é nossa prioridade."
         path="/privacy"
         noIndex={false}

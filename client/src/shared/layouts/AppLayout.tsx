@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import BlobMenu from './BlobMenu'
 import TabBar from './TabBar'
@@ -24,6 +25,15 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 transition-colors duration-300">
+      {/* Dentro do app a aba mostra so a marca: o title do index.html e a chamada de
+          marketing da landing, que fica truncada e repetida em toda tela. Aqui tambem
+          vale noindex — /app/* ja esta bloqueado no robots, isto reforca caso um link
+          escape. Uma pagina pode sobrescrever montando o proprio Helmet depois. */}
+      <Helmet>
+        <title>Strawby</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+
       {/* Sem backdrop-blur: o Safari re-rasteriza o backdrop-filter a cada frame
           de scroll na largura toda do viewport, e o header e sticky em todas as
           telas do app — era a causa do scroll travado no iOS. Tambem sem overlay
