@@ -46,14 +46,6 @@ export default function StrawbyMascot({
     onCompleteRef.current = onComplete
   }, [onComplete])
 
-  // o still do último frame precisa estar em cache antes da troca, senão a
-  // animação pisca no fim enquanto o browser busca a imagem
-  useEffect(() => {
-    if (playback === 'loop') return
-    const preload = new Image()
-    preload.src = MASCOT_ACTION_END_SRC[action]
-  }, [action, playback])
-
   useEffect(() => {
     // o WebP só começa a tocar depois de decodificado — contar a partir da
     // montagem congelaria a animação no meio em cache frio
@@ -62,25 +54,42 @@ export default function StrawbyMascot({
     const timer = setTimeout(() => {
       setIsFinished(true)
       onCompleteRef.current?.()
-    }, MASCOT_ACTION_DURATION_MS)
+    }, MASCOT_ACTION_DURATION_MS[action])
 
     return () => clearTimeout(timer)
   }, [action, loop, isPlaying])
 
   // `once` congela no still; `settle` volta a animar o idle
   const isFrozen = isFinished && playback === 'once'
-  const src = isFrozen ? MASCOT_ACTION_END_SRC[playingAction] : MASCOT_ACTION_SRC[playingAction]
 
+  // as duas camadas ficam montadas e só trocam de opacidade: remontar o <img>
+  // no fim da animação deixava um frame vazio na tela — a piscada branca
   return (
-    <img
-      // remontar o <img> faz o WebP recomeçar do frame 0 ao trocar de ação
-      key={`${playingAction}-${isFrozen}`}
-      src={src}
-      alt=""
-      aria-hidden
-      draggable={false}
-      onLoad={() => setIsPlaying(true)}
-      className={`select-none object-contain ${className}`}
-    />
+    <div className={`relative select-none ${className}`}>
+      <img
+        // remontar faz o WebP recomeçar do frame 0 ao trocar de ação
+        key={playingAction}
+        src={MASCOT_ACTION_SRC[playingAction]}
+        alt=""
+        aria-hidden
+        draggable={false}
+        onLoad={() => setIsPlaying(true)}
+        className={`absolute inset-0 h-full w-full object-contain ${
+          isFrozen ? 'opacity-0' : 'opacity-100'
+        }`}
+      />
+
+      {playback !== 'loop' && (
+        <img
+          src={MASCOT_ACTION_END_SRC[playingAction]}
+          alt=""
+          aria-hidden
+          draggable={false}
+          className={`absolute inset-0 h-full w-full object-contain ${
+            isFrozen ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      )}
+    </div>
   )
 }

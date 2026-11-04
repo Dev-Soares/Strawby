@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion'
 
-interface OnboardingProgressProps {
+interface StepProgressProps {
   /** Passo atual, começando em 0. */
   stepIndex: number
   totalSteps: number
 }
 
-export default function OnboardingProgress({ stepIndex, totalSteps }: OnboardingProgressProps) {
+/** Barra de progresso dos fluxos passo a passo (onboarding e tutorial). */
+export default function StepProgress({ stepIndex, totalSteps }: StepProgressProps) {
   const progress = ((stepIndex + 1) / totalSteps) * 100
 
   return (

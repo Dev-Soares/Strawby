@@ -7,6 +7,7 @@ type MeasureField = 'weight' | 'height' | 'targetWeight'
 
 interface OnboardingMeasureStepProps {
   field: MeasureField
+  /** Abreviação ao lado do número (ex: "cm"). */
   unit: string
   placeholder: string
   /** Casas decimais aceitas: peso 1, altura 0. */
@@ -31,7 +32,11 @@ export default function OnboardingMeasureStep({
   onEdit,
   children,
 }: OnboardingMeasureStepProps) {
-  const { onChange, ...rest } = register(field, { valueAsNumber: true })
+  // `valueAsNumber` transforma campo vazio em NaN, e o input remonta a cada
+  // troca de passo escrevendo esse NaN de volta na tela como texto
+  const { onChange, ...rest } = register(field, {
+    setValueAs: (value: string) => (value === '' ? undefined : Number(value)),
+  })
 
   return (
     <div className="flex flex-col items-center">
@@ -44,13 +49,16 @@ export default function OnboardingMeasureStep({
           autoComplete="off"
           placeholder={placeholder}
           onChange={(event: ChangeEvent<HTMLInputElement>) => {
-            event.target.value = clampNumericValue(event.target.value, { maxDecimals })
+            event.target.value = clampNumericValue(event.target.value, {
+              maxDecimals,
+              allowLeadingZero: false,
+            })
             onEdit?.()
             return onChange(event)
           }}
           className="w-[3.4em] bg-transparent text-center text-6xl font-black tabular-nums text-neutral-900 caret-red-500 placeholder-neutral-200 focus:outline-none dark:text-neutral-50 dark:placeholder-neutral-800 sm:text-7xl"
         />
-        <span className="text-2xl font-black text-neutral-300 dark:text-neutral-600">{unit}</span>
+        <span className="text-2xl font-black text-neutral-500 dark:text-neutral-400">{unit}</span>
       </div>
 
       <div className="mt-1 h-1 w-44 rounded-full bg-neutral-200 dark:bg-neutral-800" />

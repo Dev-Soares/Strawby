@@ -75,3 +75,9 @@ export const ONBOARDING_ERROR_ACTION: MascotAction = 'upset'
 
 /** Reação do mascote quando o usuário responde a pergunta. */
 export const ONBOARDING_ANSWER_ACTION: MascotAction = 'happy'
+
+/**
+ * Comemoração fica reservada para o aceite dos termos — o último passo.
+ * Usar em toda resposta esvazia o gesto.
+ */
+export const ONBOARDING_FINAL_ACTION: MascotAction = 'celebrate'

@@ -1,15 +1,16 @@
 import type { FormEvent } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft } from 'lucide-react'
+import MascotSpeech from '@/shared/components/MascotSpeech'
 import Spinner from '@/shared/components/Spinner'
+import StepButton from '@/shared/components/StepButton'
+import StepProgress from '@/shared/components/StepProgress'
 import { useOnboardingFlow } from '../hooks/useOnboardingFlow'
 import GoalHint from './GoalHint'
 import OnboardingBirthDateStep from './OnboardingBirthDateStep'
 import OnboardingGenderStep from './OnboardingGenderStep'
 import OnboardingGoalRecap from './OnboardingGoalRecap'
 import OnboardingMeasureStep from './OnboardingMeasureStep'
-import OnboardingProgress from './OnboardingProgress'
-import OnboardingPrompt from './OnboardingPrompt'
 import OnboardingRoleStep from './OnboardingRoleStep'
 import OnboardingTermsStep from './OnboardingTermsStep'
 
@@ -96,11 +97,11 @@ export default function OnboardingForm() {
   return (
     <form onSubmit={handleSubmit} className="flex min-h-dvh flex-col">
       <header className="mx-auto w-full max-w-xl px-4 pt-5 sm:px-6">
-        <OnboardingProgress stepIndex={stepIndex} totalSteps={totalSteps} />
+        <StepProgress stepIndex={stepIndex} totalSteps={totalSteps} />
       </header>
 
       <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center gap-8 px-4 py-10 sm:px-6">
-        <OnboardingPrompt
+        <MascotSpeech
           message={stepError ?? step.prompt}
           action={mascot.action}
           playback={mascot.playback}
@@ -124,25 +125,16 @@ export default function OnboardingForm() {
       <footer className="sticky bottom-0 border-t-2 border-neutral-100 bg-white/90 backdrop-blur-sm dark:border-neutral-900 dark:bg-neutral-950/90">
         <div className="mx-auto flex w-full max-w-xl items-center gap-3 px-4 py-4 sm:px-6">
           {!isFirst && (
-            <button
-              type="button"
-              onClick={goBack}
-              disabled={isPending}
-              className="flex shrink-0 cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-b-4 border-neutral-200 border-b-neutral-300 bg-white px-5 py-4 text-[15px] font-extrabold uppercase tracking-wide text-neutral-500 transition-colors duration-150 hover:bg-neutral-50 hover:text-neutral-700 active:translate-y-0.5 active:border-b-2 disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-800 dark:border-b-neutral-700 dark:bg-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800/60 dark:hover:text-neutral-200"
-            >
+            <StepButton variant="secondary" type="button" onClick={goBack} disabled={isPending}>
               <ChevronLeft size={16} strokeWidth={3} />
               <span className="hidden sm:inline">Voltar</span>
-            </button>
+            </StepButton>
           )}
 
-          <button
-            type="submit"
-            disabled={!canContinue || isPending}
-            className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-2xl border-b-4 border-red-800 bg-red-600 py-4 text-[15px] font-extrabold uppercase tracking-wide text-white transition-colors duration-150 hover:bg-red-500 active:translate-y-0.5 active:border-b-2 disabled:pointer-events-none disabled:border-neutral-200 disabled:bg-neutral-100 disabled:text-neutral-400 dark:disabled:border-neutral-800 dark:disabled:bg-neutral-900 dark:disabled:text-neutral-600"
-          >
+          <StepButton type="submit" disabled={!canContinue || isPending} className="flex-1">
             {isPending && <Spinner size={16} className="border-white/30 border-t-white" />}
             {isPending ? 'Salvando…' : isLast ? (step.cta ?? 'Concluir') : 'Continuar'}
-          </button>
+          </StepButton>
         </div>
       </footer>
     </form>

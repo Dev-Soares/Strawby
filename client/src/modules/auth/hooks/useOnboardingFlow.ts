@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { MASCOT_DEFAULT_PLAYBACK } from '@/shared/config/mascotActions'
 import type { MascotAction, MascotPlayback } from '@/shared/types/mascotAction'
 import {
   ONBOARDING_ANSWER_ACTION,
   ONBOARDING_ERROR_ACTION,
+  ONBOARDING_FINAL_ACTION,
   ONBOARDING_FLOW,
   ONBOARDING_STEPS,
   type OnboardingStepId,
@@ -10,7 +12,9 @@ import {
 import type { OnboardingData } from '../types/onboarding'
 import { useCompleteOnboarding } from './useCompleteOnboarding'
 
-const isFilled = (value: unknown) => typeof value === 'number' && !Number.isNaN(value)
+// zero não é medida: o campo corta o 0 enquanto digita, mas um valor colado
+// ainda pode chegar aqui
+const isFilled = (value: unknown) => typeof value === 'number' && !Number.isNaN(value) && value > 0
 
 /** O botão principal só libera quando a pergunta da tela foi respondida. */
 const isAnswered = (stepId: OnboardingStepId, values: Partial<OnboardingData>): boolean => {
@@ -121,7 +125,7 @@ export const useOnboardingFlow = () => {
     const next = !values.acceptTerms
     setValue('acceptTerms', next as true)
     clearErrors('acceptTerms')
-    if (next) react(ONBOARDING_ANSWER_ACTION)
+    if (next) react(ONBOARDING_FINAL_ACTION)
   }
 
   const mascot: MascotTurn = reaction
@@ -133,7 +137,7 @@ export const useOnboardingFlow = () => {
       }
     : {
         action: step.action,
-        playback: step.action === 'happy' ? 'settle' : 'loop',
+        playback: MASCOT_DEFAULT_PLAYBACK[step.action],
         key: stepId,
       }
 
