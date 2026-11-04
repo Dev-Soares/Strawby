@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useAssistantChat, ASSISTANT_CHAT_QUERY_KEY } from './useAssistantChat'
 import { useAssistantSession } from './useAssistantSession'
@@ -13,6 +13,7 @@ import {
   buildSuggestionIntro,
   SUGGESTION_EMPTY_MESSAGE,
 } from '../config/assistantCopy'
+import { thinkingDelay } from '../config/assistantTiming'
 
 export type { AssistantStep } from '../contexts/assistant-session-context'
 
@@ -23,9 +24,11 @@ export const useAssistantActions = () => {
   const snackMutation = useSuggestSnack()
   const addSuggestedMealMutation = useAddSuggestedMeal()
   const confirmMealMutation = useConfirmMeal()
+  const [isThinking, setIsThinking] = useState(false)
 
   const isPending =
     isChatPending ||
+    isThinking ||
     snackMutation.isPending ||
     addSuggestedMealMutation.isPending ||
     confirmMealMutation.isPending
@@ -93,7 +96,13 @@ export const useAssistantActions = () => {
         createdAt: new Date().toISOString(),
       })
 
-      const result = await snackMutation.mutateAsync(data)
+      // o catálogo responde na hora: segura o resultado até o tempo de "pensando" fechar
+      setIsThinking(true)
+      const [result] = await Promise.all([
+        snackMutation.mutateAsync(data),
+        thinkingDelay(),
+      ]).finally(() => setIsThinking(false))
+
       setSnackResult(result)
 
       appendMessage({

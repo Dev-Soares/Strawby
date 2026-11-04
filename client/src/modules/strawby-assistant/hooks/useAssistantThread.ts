@@ -42,15 +42,16 @@ const reaction = ({
   hasCreatedMeal: boolean
   hasSuggestedMeals: boolean
 }): Pick<LiveTurn, 'action' | 'playback'> => {
-  // a saudação fica acenando enquanto o usuário não escolhe o que fazer
-  if (isWelcome) return { action: 'happy', playback: 'loop' }
+  // acena uma vez e volta pro idle — repetir deixa ele dando oi sem parar
+  if (isWelcome) return { action: 'happy', playback: 'settle' }
   // perguntou algo (ou montou um rascunho) e espera o usuário responder
   if (isPrompt) return { action: 'idle', playback: 'loop' }
   // a decepção não volta pro idle — fica parada no último frame
   if (hasFailed) return { action: 'upset', playback: 'once' }
   // refeição entrou no diário: comemora sem parar
   if (hasCreatedMeal || hasSuggestedMeals) return { action: 'celebrate', playback: 'loop' }
-  return { action: 'happy', playback: 'settle' }
+  // `happy` é o aceno — fora da saudação viraria "oi" no meio da conversa
+  return { action: 'idle', playback: 'loop' }
 }
 
 interface UseAssistantThreadParams {

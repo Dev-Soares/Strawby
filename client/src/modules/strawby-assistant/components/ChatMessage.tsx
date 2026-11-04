@@ -20,16 +20,6 @@ export default function ChatMessage({ role, content, children }: ChatMessageProp
       transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
       className={`flex items-end gap-2 ${isUser ? 'justify-end' : 'justify-start'}`}
     >
-      {!isUser && (
-        <img
-          src="/mascot/avatar-v2.webp"
-          alt=""
-          aria-hidden
-          draggable={false}
-          className="h-8 w-8 shrink-0 translate-y-0.5 rounded-full bg-white object-cover select-none"
-        />
-      )}
-
       <Bubble variant={isUser ? 'muted' : 'outline'} align={isUser ? 'end' : 'start'}>
         <BubbleContent className="px-5 py-3.5 text-[15px] leading-relaxed">
           {children ?? content}
