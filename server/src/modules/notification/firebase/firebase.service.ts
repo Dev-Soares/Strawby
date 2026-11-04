@@ -64,7 +64,7 @@ export class FirebaseService implements OnModuleInit {
     return {
       // Urgency high: sem isso, Android em Doze/economia de bateria segura push de urgência normal
       headers: { TTL: '18000', Urgency: 'high' },
-      notification: { icon: '/logo.png' },
+      notification: { icon: '/favicon-192.png' },
       ...(this.clickLink && { fcmOptions: { link: this.clickLink } }),
     };
   }

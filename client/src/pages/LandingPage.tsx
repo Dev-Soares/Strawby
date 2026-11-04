@@ -7,11 +7,13 @@ import DownloadSection from '@/modules/landing/components/DownloadSection';
 import Footer from '@/modules/landing/components/Footer';
 import PageSEO from '@/shared/components/PageSEO';
 
+const SITE_URL = (import.meta.env.VITE_SITE_URL ?? '').replace(/\/$/, '')
+
 const webAppSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: 'Strawby',
-  url: 'https://strawby.com',
+  url: SITE_URL,
   description:
     'App de nutrição para acompanhar calorias, macros e refeições do dia a dia. Simples, visual e consistente.',
   applicationCategory: 'HealthApplication',
@@ -34,14 +36,15 @@ const webAppSchema = {
   ],
 }
 
+// `sameAs` fica de fora enquanto não houver perfis oficiais — array vazio não
+// agrega nada ao schema e só ocupa espaço no payload.
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Strawby',
-  url: 'https://strawby.com',
-  logo: 'https://strawby.com/logo.webp',
+  url: SITE_URL,
+  logo: `${SITE_URL}/logo.webp`,
   description: 'App de nutrição para acompanhar calorias, macros e refeições do dia a dia.',
-  sameAs: [],
 }
 
 export default function LandingPage() {
