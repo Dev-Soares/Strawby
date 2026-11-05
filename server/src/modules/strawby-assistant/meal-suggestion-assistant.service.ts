@@ -10,14 +10,15 @@ import type { MealMacros, MealPublic } from '../meal/types';
 import { SuggestSnackDto } from './dto/suggest-snack.dto';
 import { AddSuggestedMealDto } from './dto/add-suggested-meal.dto';
 import { SUGGESTED_MEALS } from './data/suggested-meals.data';
-import type { SuggestedMeal, SuggestedMealItem } from './data/suggested-meals.data';
+import type {
+  SuggestedMeal,
+  SuggestedMealItem,
+} from './data/suggested-meals.data';
 
 type SuggestedSnackItemResult = {
   name: string;
   quantity: number;
   unit: string;
-  foodId: string;
-  foodName: string;
   calories: number;
   protein: number;
   carbs: number;
@@ -32,15 +33,9 @@ type SuggestedSnackResult = {
   totals: MealMacros;
 };
 
-const slugify = (value: string): string =>
-  value
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-
-const sumMacros = (items: { calories: number; protein: number; carbs: number; fat: number }[]): MealMacros =>
+const sumMacros = (
+  items: { calories: number; protein: number; carbs: number; fat: number }[],
+): MealMacros =>
   items.reduce(
     (acc, item) => ({
       calories: acc.calories + item.calories,
@@ -117,19 +112,25 @@ export class MealSuggestionAssistantService {
 
     const items = await this.resolveItems(meal.items);
 
-    return this.meal.createWithItems(callerId, patientId, {
-      kind: MealKind.DAILY,
-      mealType: dto.mealType,
-      date: todayInAppTz(),
-      time: appTimeHHmm(),
-    }, items);
+    return this.meal.createWithItems(
+      callerId,
+      patientId,
+      {
+        kind: MealKind.DAILY,
+        mealType: dto.mealType,
+        date: todayInAppTz(),
+        time: appTimeHHmm(),
+      },
+      items,
+    );
   }
 
   private findSuggestedMeal(
     mealType: string,
     mealName: string,
   ): SuggestedMeal | undefined {
-    const candidates = SUGGESTED_MEALS[mealType as keyof typeof SUGGESTED_MEALS] ?? [];
+    const candidates =
+      SUGGESTED_MEALS[mealType as keyof typeof SUGGESTED_MEALS] ?? [];
     return candidates.find((candidate) => candidate.name === mealName);
   }
 
@@ -153,7 +154,8 @@ export class MealSuggestionAssistantService {
     maxResults: number,
     remaining: MealMacros | null,
   ): SuggestedSnackResult[] {
-    const candidates = SUGGESTED_MEALS[mealType as keyof typeof SUGGESTED_MEALS] ?? [];
+    const candidates =
+      SUGGESTED_MEALS[mealType as keyof typeof SUGGESTED_MEALS] ?? [];
     const mapped = candidates.map((candidate) => this.mapMeal(candidate));
 
     if (!remaining) {
@@ -164,7 +166,10 @@ export class MealSuggestionAssistantService {
       this.fitsWithinMacros(option.totals, remaining),
     );
 
-    return shuffle(validOptions.length > 0 ? validOptions : mapped).slice(0, maxResults);
+    return shuffle(validOptions.length > 0 ? validOptions : mapped).slice(
+      0,
+      maxResults,
+    );
   }
 
   private mapMeal(meal: SuggestedMeal): SuggestedSnackResult {
@@ -184,8 +189,6 @@ export class MealSuggestionAssistantService {
       name: item.name,
       quantity: item.quantity,
       unit: item.unit,
-      foodId: `suggested-${slugify(item.name)}`,
-      foodName: item.name,
       calories: item.calories,
       protein: item.protein,
       carbs: item.carbs,

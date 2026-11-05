@@ -53,10 +53,6 @@ export class StrawbyAssistantController {
     @Req() req: AuthenticatedRequest,
     @Body() dto: AddSuggestedMealDto,
   ) {
-    return this.suggestion.addSuggestedMeal(
-      req.user.sub,
-      req.user.sub,
-      dto,
-    );
+    return this.suggestion.addSuggestedMeal(req.user.sub, req.user.sub, dto);
   }
 }

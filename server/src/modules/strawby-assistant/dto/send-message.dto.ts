@@ -5,6 +5,6 @@ export class SendAssistantMessageDto {
   @ApiProperty({ example: 'Comi arroz, feijão e frango' })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(2000)
+  @MaxLength(500)
   message: string;
 }

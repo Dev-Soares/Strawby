@@ -23,7 +23,7 @@ export default function SnackSuggestionCard({
   const { surface, ink, strong } = getMealAccent(config, isDark)
 
   // Mesma prévia do MealCard fechado: alimentos por extenso em uma linha só.
-  const contents = option.items.map((item) => item.foodName).join(', ')
+  const contents = option.items.map((item) => item.name).join(', ')
 
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-900">

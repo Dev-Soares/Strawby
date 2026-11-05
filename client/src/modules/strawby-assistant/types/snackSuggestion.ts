@@ -32,8 +32,6 @@ export type SuggestedSnackItem = {
   name: string
   quantity: number
   unit: string
-  foodId: string
-  foodName: string
   calories: number
   protein: number
   carbs: number

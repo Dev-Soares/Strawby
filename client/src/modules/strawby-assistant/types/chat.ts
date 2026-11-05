@@ -88,10 +88,3 @@ export type AssistantMessage = {
   draft?: MealDraft
   suggestedMeals?: SuggestedMeal[]
 }
-
-export type AssistantChat = {
-  id: string
-  messages: AssistantMessage[]
-  createdAt: string
-  updatedAt: string
-}

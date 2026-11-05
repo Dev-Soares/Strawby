@@ -11,9 +11,6 @@ import { MealSuggestionAssistantService } from './meal-suggestion-assistant.serv
 @Module({
   imports: [AiModule, FoodModule, MealModule, PlanModule, PatientAccessModule],
   controllers: [StrawbyAssistantController],
-  providers: [
-    MealExtractionAssistantService,
-    MealSuggestionAssistantService,
-  ],
+  providers: [MealExtractionAssistantService, MealSuggestionAssistantService],
 })
 export class StrawbyAssistantModule {}
