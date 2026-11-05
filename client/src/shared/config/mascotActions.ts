@@ -1,3 +1,4 @@
+import { preloadImage } from '../utils/preloadImage'
 import type { MascotAction, MascotPlayback } from '../types/mascotAction'
 
 /**
@@ -59,4 +60,18 @@ export const MASCOT_ACTION_END_SRC: Record<MascotAction, string> = {
   happy: '/mascot/actions/happy-end.webp',
   celebrate: '/mascot/actions/celebrate-end.webp',
   upset: '/mascot/actions/upset-end.webp',
+}
+
+/**
+ * Puxa as animações antes de elas entrarem em cena.
+ *
+ * O `StrawbyMascot` só monta a camada animada com o arquivo inteiro na mão —
+ * em cache frio isso é uma espera de ~700KB na frente do usuário. Chamar daqui
+ * com antecedência (ex.: enquanto o mascote pensa) tira a espera do caminho.
+ */
+export const preloadMascotActions = (actions: MascotAction[]): void => {
+  for (const action of actions) {
+    void preloadImage(MASCOT_ACTION_SRC[action])
+    void preloadImage(MASCOT_ACTION_END_SRC[action])
+  }
 }

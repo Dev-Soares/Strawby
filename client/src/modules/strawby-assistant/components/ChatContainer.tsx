@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Plus } from 'lucide-react'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
+import { preloadMascotActions } from '@/shared/config/mascotActions'
 import { useAssistantActions } from '../hooks/useAssistantActions'
 import { useAssistantThread, WELCOME_MESSAGE_ID } from '../hooks/useAssistantThread'
 import type { AddSuggestedMealData } from '../types/snackSuggestion'
@@ -38,6 +39,15 @@ export default function ChatContainer() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isPending, snackResult])
+
+  // Baixa todas as reações na abertura do chat. O `StrawbyMascot` segura a
+  // troca até o arquivo estar inteiro na mão, então qualquer ação que não
+  // estiver em cache na hora vira espera na frente do usuário — o erro
+  // "fora do ar", por exemplo, volta rápido demais pra baixar o `upset` entre
+  // o envio e a resposta.
+  useEffect(() => {
+    preloadMascotActions(['thinking', 'upset', 'celebrate'])
+  }, [])
 
   const lastAssistantMessage = [...messages].reverse().find((message) => message.role === 'assistant')
   const suggestedMeals = lastAssistantMessage?.suggestedMeals
