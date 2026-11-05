@@ -23,6 +23,14 @@ enum MealKind {
   PLAN
 }
 
+/// Quem definiu as metas do plano — um plano calculado pelo app é uma
+/// estimativa e precisa ser sinalizado como tal, não é prescrição profissional.
+enum PlanSource {
+  ASSISTANT
+  MANUAL
+  NUTRITIONIST
+}
+
 enum ConnectionRequestStatus {
   PENDING
   ACCEPTED
@@ -101,15 +109,16 @@ model DailyScore {
 }
 
 model Plan {
-  id        String   @id @default(uuid())
+  id        String     @id @default(uuid())
   calories  Float
   protein   Float
   carbs     Float
   fat       Float
-  patientId String   @unique
-  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  source    PlanSource @default(MANUAL)
+  patientId String     @unique
+  patient   Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Food {

@@ -6,6 +6,7 @@ import PlanEditModal from '../modules/plan/components/PlanEditModal'
 import PlanEmptyState from '../modules/plan/components/PlanEmptyState'
 import CreatePlanModal from '../modules/plan/components/CreatePlanModal'
 import PlanMealsSection from '../modules/plan/components/PlanMealsSection'
+import PlanRecommendedNotice from '../modules/plan/components/PlanRecommendedNotice'
 import PlanSkeleton from '../modules/plan/skeletons/PlanSkeleton'
 import DownloadPlanPdfButton from '../modules/plan/components/DownloadPlanPdfButton'
 import { usePlanPage } from '../modules/plan/hooks/usePlanPage'
@@ -37,6 +38,8 @@ export default function PlanPage() {
     submitCreate,
     isCreating,
   } = usePlanPage()
+
+  const isRecommended = plan?.source === 'ASSISTANT'
 
   /**
    * Geração automática agora vive no assistente — já abre na etapa de plano.
@@ -101,6 +104,7 @@ export default function PlanPage() {
                   Meu Plano
                 </h1>
                 <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-3 transition-colors duration-300">Seus objetivos nutricionais diários</p>
+                {isRecommended && <PlanRecommendedNotice />}
               </div>
 
               <div className="flex items-center gap-2 flex-wrap sm:shrink-0">

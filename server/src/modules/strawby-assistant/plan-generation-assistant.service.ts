@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { PlanSource } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { PatientAccessService } from '../patient-access/patient-access.service';
 import { PlanService } from '../plan/plan.service';
@@ -86,9 +87,21 @@ export class PlanGenerationAssistantService {
       fat: dto.fat,
     };
 
+    // marca a origem: o plano calculado aqui é estimativa do app e precisa
+    // aparecer sinalizado como tal no lugar de passar por prescrição
     const plan = existing
-      ? await this.plan.update(callerId, patientId, macros)
-      : await this.plan.create(callerId, patientId, macros);
+      ? await this.plan.update(
+          callerId,
+          patientId,
+          macros,
+          PlanSource.ASSISTANT,
+        )
+      : await this.plan.create(
+          callerId,
+          patientId,
+          macros,
+          PlanSource.ASSISTANT,
+        );
 
     return {
       reply: {

@@ -5,7 +5,7 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { PatientService } from '../patient/patient.service';
-import { MealKind } from '@prisma/client';
+import { MealKind, PlanSource } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { CreatePlanDto } from './dto/create-plan.dto';
 import { UpdatePlanDto } from './dto/update-plan.dto';
@@ -41,6 +41,7 @@ export class PlanService {
     callerId: string,
     patientId: string,
     dto: CreatePlanDto,
+    source?: PlanSource,
   ): Promise<PlanPublic> {
     await this.patientAccess.resolve(callerId, patientId);
 
@@ -71,7 +72,11 @@ export class PlanService {
 
     try {
       const plan = await this.prisma.plan.create({
-        data: { ...planData, patientId },
+        data: {
+          ...planData,
+          patientId,
+          source: source ?? this.resolveSource(callerId, patientId),
+        },
         select: planSelect,
       });
 
@@ -206,6 +211,7 @@ export class PlanService {
     callerId: string,
     patientId: string,
     dto: UpdatePlanDto,
+    source?: PlanSource,
   ): Promise<PlanPublic> {
     await this.patientAccess.resolve(callerId, patientId);
     try {
@@ -216,6 +222,9 @@ export class PlanService {
           ...(dto.protein !== undefined && { protein: dto.protein }),
           ...(dto.carbs !== undefined && { carbs: dto.carbs }),
           ...(dto.fat !== undefined && { fat: dto.fat }),
+          // quem edita assume a autoria: um plano revisado à mão deixa de ser
+          // estimativa do app
+          source: source ?? this.resolveSource(callerId, patientId),
         },
         select: planSelect,
       });
@@ -249,6 +258,11 @@ export class PlanService {
         p2025: 'Plano não encontrado',
       });
     }
+  }
+
+  /** Nutricionista prescreve; o próprio paciente digitando é entrada manual. */
+  private resolveSource(callerId: string, patientId: string): PlanSource {
+    return callerId === patientId ? PlanSource.MANUAL : PlanSource.NUTRITIONIST;
   }
 
   private getGoal(targetWeight: number, actualWeight: number): string {
