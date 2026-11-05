@@ -59,6 +59,7 @@ export default function TourOverlay({ role, onFinish }: TourOverlayProps) {
         cta={step.cta ?? (isLast ? 'Concluir' : 'Continuar')}
         canGoBack={!isFirst}
         avoidDock={layout.isDocked}
+        isIntro={isFirst}
         onNext={goNext}
         onBack={goBack}
         onSkip={skip}

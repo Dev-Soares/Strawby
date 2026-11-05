@@ -5,7 +5,7 @@ export const NUTRITIONIST_TOUR: TourStep[] = [
   {
     id: 'welcome',
     route: '/app/home',
-    prompt: 'Oi de novo! Vou te mostrar sua área profissional! Leva apenas dois minutos.',
+    prompt: 'Oi de novo! Posso te mostrar sua área profissional? Leva apenas dois minutos.',
     action: 'happy',
     cta: 'Vamos lá',
   },

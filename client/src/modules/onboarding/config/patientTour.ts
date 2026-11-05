@@ -11,7 +11,7 @@ export const PATIENT_TOUR: TourStep[] = [
   {
     id: 'welcome',
     route: '/app/home',
-    prompt: 'Oi de novo! Vou te mostrar como o Strawby pode te ajudar! Leva apenas dois minutos.',
+    prompt: 'Oi de novo! Posso te mostrar como o Strawby pode te ajudar? Leva apenas dois minutos.',
     action: 'happy',
     cta: 'Vamos lá',
   },
