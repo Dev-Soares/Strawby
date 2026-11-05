@@ -6,8 +6,19 @@
 const THINKING_MIN_MS = 1400
 const THINKING_MAX_MS = 2400
 
-export const thinkingDelay = (): Promise<void> =>
+/**
+ * Confirmações salvam em poucos milissegundos: sem um piso o "pensando" pisca
+ * e some antes de ser lido. A pausa é bem menor que a de uma resposta — aqui o
+ * usuário já decidiu e só espera o aceite.
+ */
+const ACTION_MIN_MS = 650
+const ACTION_MAX_MS = 950
+
+const randomDelay = (min: number, max: number): Promise<void> =>
   new Promise((resolve) => {
-    const duration = THINKING_MIN_MS + Math.random() * (THINKING_MAX_MS - THINKING_MIN_MS)
-    setTimeout(resolve, duration)
+    setTimeout(resolve, min + Math.random() * (max - min))
   })
+
+export const thinkingDelay = (): Promise<void> => randomDelay(THINKING_MIN_MS, THINKING_MAX_MS)
+
+export const actionDelay = (): Promise<void> => randomDelay(ACTION_MIN_MS, ACTION_MAX_MS)

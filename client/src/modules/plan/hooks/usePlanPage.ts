@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useGetPlan } from './useGetPlan'
 import { useEditPlan } from './useEditPlan'
 import { useCreatePlan } from './useCreatePlan'
-import { useDeletePlan } from './useDeletePlan'
 import { MACROS } from '@/shared/config/macros'
 import { macroKcalTotal, macroKcalShare } from '@/shared/utils/nutrition'
 import type { PlanData } from '../types/plan'
@@ -14,26 +13,14 @@ export const usePlanPage = () => {
   const { data: plan, isPending, isError } = useGetPlan()
   const editMutation = useEditPlan()
   const createMutation = useCreatePlan()
-  const deleteMutation = useDeletePlan()
 
   const [editOpen, setEditOpen] = useState(false)
   const [createOpen, setCreateOpen] = useState(false)
   const [createMode, setCreateMode] = useState<CreateMode>('select')
-  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
 
   const openCreate = (mode: CreateMode = 'select') => {
     setCreateMode(mode)
     setCreateOpen(true)
-  }
-
-  /** Regerar plano = apagar o atual e abrir o fluxo de geração */
-  const confirmDelete = () => {
-    deleteMutation.mutate(undefined, {
-      onSuccess: () => {
-        setConfirmDeleteOpen(false)
-        openCreate('generate')
-      },
-    })
   }
 
   const savePlan = (data: PlanData) =>
@@ -72,11 +59,5 @@ export const usePlanPage = () => {
     closeCreate: () => setCreateOpen(false),
     submitCreate,
     isCreating: createMutation.isPending,
-
-    confirmDeleteOpen,
-    openConfirmDelete: () => setConfirmDeleteOpen(true),
-    closeConfirmDelete: () => setConfirmDeleteOpen(false),
-    confirmDelete,
-    isDeleting: deleteMutation.isPending,
   }
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
+import { useAssistantSession } from '../hooks/useAssistantSession'
 import AssistantDrawer from './AssistantDrawer'
 
 /**
@@ -57,10 +58,11 @@ interface AssistantLauncherProps {
 }
 
 export default function AssistantLauncher({ hidden = false }: AssistantLauncherProps) {
-  const [isOpen, setIsOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const { pathname } = useLocation()
   const { data: user } = useAuth()
+  // o drawer vive no contexto: a página do Plano também precisa abri-lo
+  const { isDrawerOpen, openDrawer, closeDrawer } = useAssistantSession()
 
   const hoverProps = {
     onMouseEnter: () => setIsHovered(true),
@@ -86,7 +88,7 @@ export default function AssistantLauncher({ hidden = false }: AssistantLauncherP
 
       <button
         type="button"
-        onClick={() => setIsOpen(true)}
+        onClick={openDrawer}
         {...hoverProps}
         className={`${buttonClass} ${visibility} hidden sm:flex`}
         aria-label="Abrir assistente Strawby"
@@ -95,7 +97,7 @@ export default function AssistantLauncher({ hidden = false }: AssistantLauncherP
       </button>
 
       <div className="hidden sm:block">
-        <AssistantDrawer isOpen={isOpen} onClose={() => setIsOpen(false)} />
+        <AssistantDrawer isOpen={isDrawerOpen} onClose={closeDrawer} />
       </div>
     </>
   )

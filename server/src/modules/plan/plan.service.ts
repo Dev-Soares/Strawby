@@ -47,34 +47,10 @@ export class PlanService {
     let planData: PlanMacros;
 
     if (dto.movementLevel) {
-      const patient = await this.patientService.findById(patientId);
-      const lastWeight = patient?.weightRecord[0];
-
-      if (
-        !lastWeight?.weight ||
-        !patient?.height ||
-        !patient?.birthDate ||
-        !patient?.gender
-      ) {
-        throw new BadRequestException(
-          'Preencha peso, altura, data de nascimento e sexo antes de gerar um plano automático',
-        );
-      }
-
-      // sem meta definida → mantém (sem déficit/superávit)
-      const goal =
-        patient.targetWeight != null
-          ? this.getGoal(patient.targetWeight, lastWeight.weight)
-          : 'mantain';
-
-      planData = this.generateRecomendedPlan({
-        weight: lastWeight.weight,
-        height: patient.height,
-        age: this.calculateAge(patient.birthDate),
-        gender: patient.gender,
-        movementLevel: dto.movementLevel,
-        goal: goal,
-      });
+      planData = await this.generateRecommendedMacros(
+        patientId,
+        dto.movementLevel,
+      );
     } else if (
       dto.calories !== undefined &&
       dto.protein !== undefined &&
@@ -114,6 +90,44 @@ export class PlanService {
         p2002: 'Paciente já possui um plano',
       });
     }
+  }
+
+  /**
+   * Calcula as macros recomendadas a partir do perfil do paciente, sem gravar
+   * nada. Usado pelo fluxo automático do `create` e pelo assistente Strawby.
+   */
+  async generateRecommendedMacros(
+    patientId: string,
+    movementLevel: number,
+  ): Promise<PlanMacros> {
+    const patient = await this.patientService.findById(patientId);
+    const lastWeight = patient?.weightRecord[0];
+
+    if (
+      !lastWeight?.weight ||
+      !patient?.height ||
+      !patient?.birthDate ||
+      !patient?.gender
+    ) {
+      throw new BadRequestException(
+        'Preencha peso, altura, data de nascimento e sexo antes de gerar um plano automático',
+      );
+    }
+
+    // sem meta definida → mantém (sem déficit/superávit)
+    const goal =
+      patient.targetWeight != null
+        ? this.getGoal(patient.targetWeight, lastWeight.weight)
+        : 'mantain';
+
+    return this.generateRecomendedPlan({
+      weight: lastWeight.weight,
+      height: patient.height,
+      age: this.calculateAge(patient.birthDate),
+      gender: patient.gender,
+      movementLevel,
+      goal,
+    });
   }
 
   async findByPatient(

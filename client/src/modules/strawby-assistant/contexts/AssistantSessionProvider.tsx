@@ -14,15 +14,28 @@ export default function AssistantSessionProvider({
 }: AssistantSessionProviderProps) {
   const [step, setStep] = useState<AssistantStep>('choose')
   const [snackResult, setSnackResult] = useState<SuggestSnackResponse | null>(null)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
   const resetSession = useCallback(() => {
     setStep('choose')
     setSnackResult(null)
   }, [])
 
+  const openDrawer = useCallback(() => setIsDrawerOpen(true), [])
+  const closeDrawer = useCallback(() => setIsDrawerOpen(false), [])
+
   const value = useMemo(
-    () => ({ step, setStep, snackResult, setSnackResult, resetSession }),
-    [step, snackResult, resetSession],
+    () => ({
+      step,
+      setStep,
+      snackResult,
+      setSnackResult,
+      resetSession,
+      isDrawerOpen,
+      openDrawer,
+      closeDrawer,
+    }),
+    [step, snackResult, resetSession, isDrawerOpen, openDrawer, closeDrawer],
   )
 
   return (

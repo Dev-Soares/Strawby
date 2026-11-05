@@ -93,7 +93,7 @@ export const useAssistantThread = ({
     const live: LiveTurn = {
       ...reaction({
         isWelcome,
-        isPrompt: status === 'prompt' || status === 'preview',
+        isPrompt: status === 'prompt' || status === 'preview' || status === 'plan_preview',
         hasFailed,
         hasCreatedMeal: status === 'created',
         hasSuggestedMeals,

@@ -14,6 +14,18 @@ export const SUGGESTION_EMPTY_MESSAGE =
 export const ASSISTANT_UNAVAILABLE_MESSAGE =
   'Poxa, não estou disponível no momento. Tente novamente mais tarde.'
 
+/** Fala do usuário ao escolher o nível de atividade no seletor. */
+export const buildActivityLevelChoiceMessage = (label: string): string =>
+  `Meu nível de atividade é: ${label.toLowerCase()}`
+
+export const PLAN_INTENT_MESSAGE = 'Quero que você gere meu plano alimentar'
+
+export const PLAN_PROMPT_MESSAGE =
+  'Bora montar! Me conta qual é o seu nível de atividade física que eu calculo suas metas.'
+
+export const PLAN_DISCARDED_MESSAGE =
+  'Tudo bem, não mexi no seu plano. Se quiser calcular de novo, é só escolher outro nível de atividade.'
+
 export const buildSuggestionIntro = (
   count: number,
   mealType?: MealType,

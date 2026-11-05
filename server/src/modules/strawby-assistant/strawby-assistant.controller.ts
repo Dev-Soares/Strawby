@@ -6,8 +6,11 @@ import { SendAssistantMessageDto } from './dto/send-message.dto';
 import { ConfirmMealDto } from './dto/confirm-meal.dto';
 import { SuggestSnackDto } from './dto/suggest-snack.dto';
 import { AddSuggestedMealDto } from './dto/add-suggested-meal.dto';
+import { PreviewPlanDto } from './dto/preview-plan.dto';
+import { ConfirmPlanDto } from './dto/confirm-plan.dto';
 import { MealExtractionAssistantService } from './meal-extraction-assistant.service';
 import { MealSuggestionAssistantService } from './meal-suggestion-assistant.service';
+import { PlanGenerationAssistantService } from './plan-generation-assistant.service';
 
 @ApiTags('strawby-assistant')
 @UseGuards(AuthGuard)
@@ -16,6 +19,7 @@ export class StrawbyAssistantController {
   constructor(
     private readonly mealExtraction: MealExtractionAssistantService,
     private readonly suggestion: MealSuggestionAssistantService,
+    private readonly planGeneration: PlanGenerationAssistantService,
   ) {}
 
   @Post('preview-meal')
@@ -54,5 +58,15 @@ export class StrawbyAssistantController {
     @Body() dto: AddSuggestedMealDto,
   ) {
     return this.suggestion.addSuggestedMeal(req.user.sub, req.user.sub, dto);
+  }
+
+  @Post('preview-plan')
+  previewPlan(@Req() req: AuthenticatedRequest, @Body() dto: PreviewPlanDto) {
+    return this.planGeneration.previewPlan(req.user.sub, req.user.sub, dto);
+  }
+
+  @Post('confirm-plan')
+  confirmPlan(@Req() req: AuthenticatedRequest, @Body() dto: ConfirmPlanDto) {
+    return this.planGeneration.confirmPlan(req.user.sub, req.user.sub, dto);
   }
 }

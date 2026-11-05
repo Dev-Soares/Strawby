@@ -9,6 +9,8 @@ import ChatInput from './ChatInput'
 import ChatMessage from './ChatMessage'
 import MascotMessage from './MascotMessage'
 import MealPreviewCard from './MealPreviewCard'
+import PlanGenerationInput from './PlanGenerationInput'
+import PlanPreviewCard from './PlanPreviewCard'
 import SnackInput from './SnackInput'
 import SuggestedMealCards from './SuggestedMealCards'
 import SnackSuggestions from './SnackSuggestions'
@@ -19,14 +21,19 @@ export default function ChatContainer() {
     step,
     selectMeal,
     selectSnack,
+    selectPlan,
     messages,
     isPending,
     submitMeal,
     submitSnack,
+    submitPlan,
     addSuggestedMeal,
     confirmDraft,
     discardDraft,
+    confirmPlanDraft,
+    discardPlanDraft,
     isConfirmingDraft,
+    isConfirmingPlan,
     startNewConversation,
     snackResult,
   } = useAssistantActions()
@@ -59,6 +66,8 @@ export default function ChatContainer() {
   // empilha uma mensagem nova e some com o card
   const lastMessage = messages.at(-1)
   const pendingDraft = lastMessage?.status === 'preview' ? lastMessage.draft : undefined
+  const pendingPlanDraft =
+    lastMessage?.status === 'plan_preview' ? lastMessage.planDraft : undefined
 
   const welcomeContent = (
     <>
@@ -127,6 +136,15 @@ export default function ChatContainer() {
             />
           )}
 
+          {pendingPlanDraft && (
+            <PlanPreviewCard
+              draft={pendingPlanDraft}
+              onConfirm={(draft) => void confirmPlanDraft(draft)}
+              onDiscard={discardPlanDraft}
+              isConfirming={isConfirmingPlan}
+            />
+          )}
+
           {result}
 
           <div ref={bottomRef} />
@@ -135,13 +153,23 @@ export default function ChatContainer() {
 
       <div className="mx-auto w-full max-w-3xl space-y-3">
         {step === 'choose' ? (
-          <AssistantIntentPills onSelectMeal={selectMeal} onSelectSnack={selectSnack} />
+          <AssistantIntentPills
+            onSelectMeal={selectMeal}
+            onSelectSnack={selectSnack}
+            onSelectPlan={selectPlan}
+          />
         ) : (
           <>
             {step === 'meal' && (
               <ChatInput onSubmit={submitMeal} isPending={isPending || Boolean(pendingDraft)} />
             )}
             {step === 'snack' && <SnackInput onSubmit={submitSnack} isPending={isPending} />}
+            {step === 'plan' && (
+              <PlanGenerationInput
+                onSubmit={(data) => void submitPlan(data)}
+                isPending={isPending || Boolean(pendingPlanDraft)}
+              />
+            )}
           </>
         )}
 

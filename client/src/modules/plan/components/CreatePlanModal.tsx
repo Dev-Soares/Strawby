@@ -12,7 +12,7 @@ import {
 } from '../types/createPlan'
 import Spinner from '@/shared/components/Spinner'
 import { MACROS } from '@/shared/config/macros'
-import { ACTIVITY_LEVELS, DEFAULT_ACTIVITY_LEVEL } from '../config/activityLevels'
+import { ACTIVITY_LEVELS, DEFAULT_ACTIVITY_LEVEL } from '@/shared/config/activityLevels'
 import { nonNegativeInputProps } from '@/shared/utils/nonNegativeInputProps'
 
 type Mode = 'select' | 'manual' | 'generate'
@@ -109,19 +109,21 @@ export default function CreatePlanModal({ isOpen, onClose, onSubmit, isPending, 
                     <ArrowRight size={16} className="text-neutral-300 dark:text-neutral-600 ml-auto shrink-0" />
                   </button>
 
-                  <button type="button" onClick={() => setMode('generate')}
-                    className="group flex items-center gap-4 p-5 bg-red-600 hover:bg-red-700 rounded-2xl transition-all duration-200 text-left cursor-pointer">
-                    <div className="w-11 h-11 rounded-xl bg-red-500 group-hover:bg-red-600 flex items-center justify-center shrink-0 transition-colors duration-200">
-                      <Sparkles size={20} className="text-white" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-white">Gerar plano recomendado</p>
-                      <p className="text-xs text-red-200 mt-0.5">
-                        {isNutritionist ? 'Calculado com base no perfil do paciente' : 'Calculado com base no meu perfil'}
-                      </p>
-                    </div>
-                    <ArrowRight size={16} className="text-red-300 ml-auto shrink-0" />
-                  </button>
+                  {/* Paciente gera plano pelo assistente Strawby — o modo automático
+                      do modal fica só pro nutricionista */}
+                  {isNutritionist && (
+                    <button type="button" onClick={() => setMode('generate')}
+                      className="group flex items-center gap-4 p-5 bg-red-600 hover:bg-red-700 rounded-2xl transition-all duration-200 text-left cursor-pointer">
+                      <div className="w-11 h-11 rounded-xl bg-red-500 group-hover:bg-red-600 flex items-center justify-center shrink-0 transition-colors duration-200">
+                        <Sparkles size={20} className="text-white" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-white">Gerar plano recomendado</p>
+                        <p className="text-xs text-red-200 mt-0.5">Calculado com base no perfil do paciente</p>
+                      </div>
+                      <ArrowRight size={16} className="text-red-300 ml-auto shrink-0" />
+                    </button>
+                  )}
                 </div>
               )}
 

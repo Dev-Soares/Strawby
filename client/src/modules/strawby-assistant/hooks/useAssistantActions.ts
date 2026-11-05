@@ -1,19 +1,27 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
+import { ACTIVITY_LEVELS } from '@/shared/config/activityLevels'
 import { useAssistantChat, ASSISTANT_CHAT_QUERY_KEY } from './useAssistantChat'
 import { useAssistantSession } from './useAssistantSession'
 import { useSuggestSnack } from './useSuggestSnack'
 import { useAddSuggestedMeal } from './useAddSuggestedMeal'
 import { useConfirmMeal } from './useConfirmMeal'
-import type { AssistantMessageStatus, MealDraft, SendAssistantMessageData } from '../types/chat'
+import { usePreviewPlan } from './usePreviewPlan'
+import { useConfirmPlan } from './useConfirmPlan'
+import type { AssistantMessage, MealDraft, SendAssistantMessageData } from '../types/chat'
 import type { AddSuggestedMealData, SuggestSnackData } from '../types/snackSuggestion'
+import type { PlanDraft, PreviewPlanData } from '../types/planGeneration'
 import {
+  buildActivityLevelChoiceMessage,
   buildMealAddedMessage,
   buildMealTypeChoiceMessage,
   buildSuggestionIntro,
+  PLAN_DISCARDED_MESSAGE,
+  PLAN_INTENT_MESSAGE,
+  PLAN_PROMPT_MESSAGE,
   SUGGESTION_EMPTY_MESSAGE,
 } from '../config/assistantCopy'
-import { thinkingDelay } from '../config/assistantTiming'
+import { actionDelay, thinkingDelay } from '../config/assistantTiming'
 
 export type { AssistantStep } from '../contexts/assistant-session-context'
 
@@ -24,24 +32,26 @@ export const useAssistantActions = () => {
   const snackMutation = useSuggestSnack()
   const addSuggestedMealMutation = useAddSuggestedMeal()
   const confirmMealMutation = useConfirmMeal()
+  const previewPlanMutation = usePreviewPlan()
+  const confirmPlanMutation = useConfirmPlan()
   const [isThinking, setIsThinking] = useState(false)
+
+  // trava síncrona contra duplo envio: o `isPending` só desabilita o botão no
+  // re-render seguinte, então dois cliques no mesmo tick passavam os dois
+  const submitLockRef = useRef(false)
 
   const isPending =
     isChatPending ||
     isThinking ||
     snackMutation.isPending ||
     addSuggestedMealMutation.isPending ||
-    confirmMealMutation.isPending
+    confirmMealMutation.isPending ||
+    previewPlanMutation.isPending ||
+    confirmPlanMutation.isPending
 
   const appendMessage = useCallback(
-    (message: {
-      id: string
-      role: 'user' | 'assistant'
-      content: string
-      createdAt: string
-      status?: AssistantMessageStatus
-    }) => {
-      queryClient.setQueryData<typeof message[]>(ASSISTANT_CHAT_QUERY_KEY, (old = []) => [...old, message])
+    (message: AssistantMessage) => {
+      queryClient.setQueryData<AssistantMessage[]>(ASSISTANT_CHAT_QUERY_KEY, (old = []) => [...old, message])
     },
     [queryClient],
   )
@@ -80,6 +90,23 @@ export const useAssistantActions = () => {
     setStep('snack')
   }, [appendMessage, setStep])
 
+  const selectPlan = useCallback(() => {
+    appendMessage({
+      id: crypto.randomUUID(),
+      role: 'user',
+      content: PLAN_INTENT_MESSAGE,
+      createdAt: new Date().toISOString(),
+    })
+    appendMessage({
+      id: crypto.randomUUID(),
+      role: 'assistant',
+      content: PLAN_PROMPT_MESSAGE,
+      createdAt: new Date().toISOString(),
+      status: 'prompt',
+    })
+    setStep('plan')
+  }, [appendMessage, setStep])
+
   const submitMeal = useCallback(
     async (data: SendAssistantMessageData) => {
       await sendMessage(data)
@@ -89,6 +116,9 @@ export const useAssistantActions = () => {
 
   const submitSnack = useCallback(
     async (data: SuggestSnackData = {}) => {
+      if (submitLockRef.current) return
+      submitLockRef.current = true
+
       appendMessage({
         id: crypto.randomUUID(),
         role: 'user',
@@ -101,7 +131,10 @@ export const useAssistantActions = () => {
       const [result] = await Promise.all([
         snackMutation.mutateAsync(data),
         thinkingDelay(),
-      ]).finally(() => setIsThinking(false))
+      ]).finally(() => {
+        setIsThinking(false)
+        submitLockRef.current = false
+      })
 
       setSnackResult(result)
 
@@ -122,15 +155,22 @@ export const useAssistantActions = () => {
 
   const addSuggestedMeal = useCallback(
     async (data: AddSuggestedMealData) => {
-      await addSuggestedMealMutation.mutateAsync(data)
+      if (submitLockRef.current) return
+      submitLockRef.current = true
 
-      appendMessage({
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: buildMealAddedMessage(data.mealName),
-        createdAt: new Date().toISOString(),
-        status: 'created',
-      })
+      try {
+        await addSuggestedMealMutation.mutateAsync(data)
+
+        appendMessage({
+          id: crypto.randomUUID(),
+          role: 'assistant',
+          content: buildMealAddedMessage(data.mealName),
+          createdAt: new Date().toISOString(),
+          status: 'created',
+        })
+      } finally {
+        submitLockRef.current = false
+      }
     },
     [addSuggestedMealMutation, appendMessage],
   )
@@ -138,18 +178,103 @@ export const useAssistantActions = () => {
   /** Grava a refeição que o Strawby montou e o usuário aprovou. */
   const confirmDraft = useCallback(
     async (draft: MealDraft) => {
-      await confirmMealMutation.mutateAsync({
-        mealType: draft.mealType ?? undefined,
-        time: draft.time ?? undefined,
-        observations: draft.observations ?? undefined,
-        items: draft.items.map((item) => ({
-          foodId: item.foodId,
-          quantity: item.quantity,
-        })),
-      })
+      if (submitLockRef.current) return
+      submitLockRef.current = true
+
+      try {
+        await confirmMealMutation.mutateAsync({
+          mealType: draft.mealType ?? undefined,
+          time: draft.time ?? undefined,
+          observations: draft.observations ?? undefined,
+          items: draft.items.map((item) => ({
+            foodId: item.foodId,
+            quantity: item.quantity,
+          })),
+        })
+      } catch {
+        // tratado no onError da mutation
+      } finally {
+        submitLockRef.current = false
+      }
     },
     [confirmMealMutation],
   )
+
+  /** Calcula o plano recomendado — a resposta chega com o rascunho pra confirmar. */
+  const submitPlan = useCallback(
+    async (data: PreviewPlanData) => {
+      if (submitLockRef.current) return
+      submitLockRef.current = true
+
+      const label =
+        ACTIVITY_LEVELS.find((level) => level.value === data.movementLevel)?.label ??
+        'moderado'
+
+      appendMessage({
+        id: crypto.randomUUID(),
+        role: 'user',
+        content: buildActivityLevelChoiceMessage(label),
+        createdAt: new Date().toISOString(),
+      })
+
+      // o cálculo responde na hora: segura a resposta até o tempo de "pensando" fechar
+      setIsThinking(true)
+      try {
+        const [reply] = await Promise.all([
+          previewPlanMutation.mutateAsync({ movementLevel: data.movementLevel }),
+          thinkingDelay(),
+        ])
+        appendMessage(reply)
+      } catch {
+        // tratado no onError da mutation
+      } finally {
+        setIsThinking(false)
+        submitLockRef.current = false
+      }
+    },
+    [appendMessage, previewPlanMutation],
+  )
+
+  /** Grava o plano que o Strawby calculou e o usuário aprovou. */
+  const confirmPlanDraft = useCallback(
+    async (draft: PlanDraft) => {
+      if (submitLockRef.current) return
+      submitLockRef.current = true
+
+      setIsThinking(true)
+      try {
+        // só as macros: o `replacesExisting` do rascunho é rejeitado pelo
+        // whitelist do backend
+        const [reply] = await Promise.all([
+          confirmPlanMutation.mutateAsync({
+            calories: draft.calories,
+            protein: draft.protein,
+            carbs: draft.carbs,
+            fat: draft.fat,
+          }),
+          actionDelay(),
+        ])
+        appendMessage(reply)
+      } catch {
+        // tratado no onError da mutation
+      } finally {
+        setIsThinking(false)
+        submitLockRef.current = false
+      }
+    },
+    [appendMessage, confirmPlanMutation],
+  )
+
+  /** Joga o plano calculado fora — a fala nova esconde o card e libera o seletor. */
+  const discardPlanDraft = useCallback(() => {
+    appendMessage({
+      id: crypto.randomUUID(),
+      role: 'assistant',
+      content: PLAN_DISCARDED_MESSAGE,
+      createdAt: new Date().toISOString(),
+      status: 'prompt',
+    })
+  }, [appendMessage])
 
   /** Joga o rascunho fora — a fala nova esconde o card e libera o input. */
   const discardDraft = useCallback(() => {
@@ -168,26 +293,37 @@ export const useAssistantActions = () => {
     snackMutation.reset()
     addSuggestedMealMutation.reset()
     confirmMealMutation.reset()
+    previewPlanMutation.reset()
+    confirmPlanMutation.reset()
   }, [
     clearMessages,
     resetSession,
     snackMutation,
     addSuggestedMealMutation,
     confirmMealMutation,
+    previewPlanMutation,
+    confirmPlanMutation,
   ])
 
   return {
     step,
     selectMeal,
     selectSnack,
+    selectPlan,
     messages,
     isPending,
     submitMeal,
     submitSnack,
+    submitPlan,
     addSuggestedMeal,
     confirmDraft,
     discardDraft,
+    confirmPlanDraft,
+    discardPlanDraft,
     isConfirmingDraft: confirmMealMutation.isPending,
+    // o `isThinking` entra aqui pro botão seguir travado durante a pausa que
+    // vem depois do salvamento — sem isso ele volta ao normal antes do card sair
+    isConfirmingPlan: confirmPlanMutation.isPending || isThinking,
     startNewConversation,
     snackResult,
     snackError: snackMutation.error,

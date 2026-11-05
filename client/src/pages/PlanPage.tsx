@@ -1,16 +1,25 @@
-import { motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 import { Flame, Pencil, Sparkles } from 'lucide-react'
 import AppLayout from '../shared/layouts/AppLayout'
 import PlanEditModal from '../modules/plan/components/PlanEditModal'
 import PlanEmptyState from '../modules/plan/components/PlanEmptyState'
 import CreatePlanModal from '../modules/plan/components/CreatePlanModal'
-import ConfirmDeletePlanModal from '../modules/plan/components/ConfirmDeletePlanModal'
 import PlanMealsSection from '../modules/plan/components/PlanMealsSection'
 import PlanSkeleton from '../modules/plan/skeletons/PlanSkeleton'
 import DownloadPlanPdfButton from '../modules/plan/components/DownloadPlanPdfButton'
 import { usePlanPage } from '../modules/plan/hooks/usePlanPage'
+import { useAssistantActions } from '../modules/strawby-assistant/hooks/useAssistantActions'
+import { useAssistantSession } from '../modules/strawby-assistant/hooks/useAssistantSession'
+
+/** Mesmo corte do `AssistantLauncher`: abaixo disso o assistente é página. */
+const DESKTOP_QUERY = '(min-width: 640px)'
 
 export default function PlanPage() {
+  const navigate = useNavigate()
+  const { selectPlan } = useAssistantActions()
+  const { openDrawer } = useAssistantSession()
+
   const {
     plan,
     isPending,
@@ -27,12 +36,22 @@ export default function PlanPage() {
     closeCreate,
     submitCreate,
     isCreating,
-    confirmDeleteOpen,
-    openConfirmDelete,
-    closeConfirmDelete,
-    confirmDelete,
-    isDeleting,
   } = usePlanPage()
+
+  /**
+   * Geração automática agora vive no assistente — já abre na etapa de plano.
+   * No desktop o assistente é o drawer lateral; só no mobile ele vira página.
+   */
+  const goToAssistantPlan = () => {
+    selectPlan()
+
+    if (window.matchMedia(DESKTOP_QUERY).matches) {
+      openDrawer()
+      return
+    }
+
+    navigate('/app/assistant')
+  }
 
   return (
     <AppLayout>
@@ -44,16 +63,31 @@ export default function PlanPage() {
         </div>
       )}
 
-      {!isPending && !isError && !plan && (
-        <PlanEmptyState
-          onManual={() => openCreate('manual')}
-          onGenerate={() => openCreate('generate')}
-        />
-      )}
+      {/* o plano pode nascer pelo assistente com a página aberta atrás do
+          drawer: sem o crossfade a troca de estado vazio pelo plano salta */}
+      <AnimatePresence mode="wait">
+        {!isPending && !isError && !plan && (
+          <motion.div
+            key="empty"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <PlanEmptyState
+              onManual={() => openCreate('manual')}
+              onGenerate={goToAssistantPlan}
+            />
+          </motion.div>
+        )}
 
-
-      {plan && (
-        <>
+        {plan && (
+          <motion.div
+            key="plan"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
           <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-8 sm:py-12">
             {/* Header */}
             <motion.div
@@ -71,7 +105,7 @@ export default function PlanPage() {
 
               <div className="flex items-center gap-2 flex-wrap sm:shrink-0">
                 <button
-                  onClick={openConfirmDelete}
+                  onClick={goToAssistantPlan}
                   className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-colors duration-200 cursor-pointer"
                 >
                   <Sparkles size={18} />
@@ -181,8 +215,9 @@ export default function PlanPage() {
             isPending={isSaving}
             onSave={savePlan}
           />
-        </>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <CreatePlanModal
         isOpen={createOpen}
@@ -190,13 +225,6 @@ export default function PlanPage() {
         onSubmit={submitCreate}
         isPending={isCreating}
         initialMode={createMode}
-      />
-
-      <ConfirmDeletePlanModal
-        isOpen={confirmDeleteOpen}
-        onClose={closeConfirmDelete}
-        onConfirm={confirmDelete}
-        isPending={isDeleting}
       />
     </AppLayout>
   )

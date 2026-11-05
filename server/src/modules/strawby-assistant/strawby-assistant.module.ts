@@ -7,10 +7,15 @@ import { PatientAccessModule } from '../patient-access/patient-access.module';
 import { StrawbyAssistantController } from './strawby-assistant.controller';
 import { MealExtractionAssistantService } from './meal-extraction-assistant.service';
 import { MealSuggestionAssistantService } from './meal-suggestion-assistant.service';
+import { PlanGenerationAssistantService } from './plan-generation-assistant.service';
 
 @Module({
   imports: [AiModule, FoodModule, MealModule, PlanModule, PatientAccessModule],
   controllers: [StrawbyAssistantController],
-  providers: [MealExtractionAssistantService, MealSuggestionAssistantService],
+  providers: [
+    MealExtractionAssistantService,
+    MealSuggestionAssistantService,
+    PlanGenerationAssistantService,
+  ],
 })
 export class StrawbyAssistantModule {}

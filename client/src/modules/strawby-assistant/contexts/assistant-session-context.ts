@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 import type { SuggestSnackResponse } from '../types/snackSuggestion'
 
-export type AssistantStep = 'choose' | 'meal' | 'snack'
+export type AssistantStep = 'choose' | 'meal' | 'snack' | 'plan'
 
 export type AssistantSessionValue = {
   step: AssistantStep
@@ -9,6 +9,10 @@ export type AssistantSessionValue = {
   snackResult: SuggestSnackResponse | null
   setSnackResult: (result: SuggestSnackResponse | null) => void
   resetSession: () => void
+  /** Drawer do desktop — fica aqui pra outras telas conseguirem abrir o chat. */
+  isDrawerOpen: boolean
+  openDrawer: () => void
+  closeDrawer: () => void
 }
 
 /**

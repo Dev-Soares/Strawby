@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { PlanDraft } from './planGeneration'
 
 export const sendAssistantMessageSchema = z.object({
   message: z.string().min(1, 'Digite uma mensagem').max(500, 'Mensagem muito longa'),
@@ -39,12 +40,14 @@ export type SuggestedMeal = {
  * Define a reação do mascote.
  * `prompt` é local: o Strawby fez uma pergunta e está esperando o usuário.
  * `preview` é a refeição montada aguardando confirmação — nada foi salvo ainda.
+ * `plan_preview` é o plano calculado aguardando confirmação — nada foi salvo ainda.
  * `unavailable` é local: a IA está fora do ar e o mascote avisa no lugar do erro.
- * Os demais são o desfecho da tentativa de registrar a refeição.
+ * Os demais são o desfecho da tentativa de registrar a refeição ou o plano.
  */
 export type AssistantMessageStatus =
   | 'prompt'
   | 'preview'
+  | 'plan_preview'
   | 'created'
   | 'not_found'
   | 'not_understood'
@@ -86,5 +89,7 @@ export type AssistantMessage = {
   status?: AssistantMessageStatus
   /** Presente só quando `status === 'preview'`. */
   draft?: MealDraft
+  /** Presente só quando `status === 'plan_preview'`. */
+  planDraft?: PlanDraft
   suggestedMeals?: SuggestedMeal[]
 }
