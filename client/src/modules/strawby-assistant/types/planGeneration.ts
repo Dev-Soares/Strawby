@@ -1,7 +1,12 @@
 import { z } from 'zod'
+import { ACTIVITY_LEVEL_VALUES } from '@/shared/config/activityLevels'
 
 export const previewPlanSchema = z.object({
-  movementLevel: z.number().min(1.15).max(1.6),
+  movementLevel: z
+    .number()
+    .refine((value) => ACTIVITY_LEVEL_VALUES.includes(value), {
+      message: 'Selecione o nível de atividade física',
+    }),
 })
 
 export type PreviewPlanData = z.infer<typeof previewPlanSchema>
