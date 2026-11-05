@@ -91,16 +91,16 @@ export default function StrawbyMascot({
     }
   }, [playingAction])
 
-  // a camada velha sai de cena assim que a nova já pintou por cima
-  useEffect(() => {
-    if (!frames.leaving) return
-
-    const timer = setTimeout(() => {
-      setFrames((prev) => ({ ...prev, leaving: null }))
-    }, 200)
-
-    return () => clearTimeout(timer)
-  }, [frames.leaving])
+  /**
+   * Derruba a camada velha assim que a nova pintou: o `onLoad` da <img> nova
+   * dispara e o rAF garante um paint com as duas em cena. Mais que isso e as
+   * poses diferentes aparecem uma atrás da outra — o mascote duplicado.
+   */
+  const clearLeaving = () => {
+    requestAnimationFrame(() => {
+      setFrames((prev) => (prev.leaving ? { ...prev, leaving: null } : prev))
+    })
+  }
 
   // `settle` termina trocando pro idle: baixa e decodifica durante a animação,
   // senão a remontagem no fim cai num frame vazio — o corte bruto
@@ -156,6 +156,7 @@ export default function StrawbyMascot({
             alt=""
             aria-hidden
             draggable={false}
+            onLoad={layer === frames.live ? clearLeaving : undefined}
             className={`absolute inset-0 h-full w-full object-contain ${
               isFrozen && layer === frames.live ? 'opacity-0' : 'opacity-100'
             }`}
