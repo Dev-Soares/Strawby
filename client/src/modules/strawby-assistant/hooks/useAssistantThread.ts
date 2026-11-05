@@ -87,7 +87,8 @@ export const useAssistantThread = ({
 
     const isWelcome = lastItem.id === WELCOME_MESSAGE_ID
     const status = messages.at(-1)?.status
-    const hasFailed = status === 'not_found' || status === 'not_understood'
+    const hasFailed =
+      status === 'not_found' || status === 'not_understood' || status === 'unavailable'
 
     const live: LiveTurn = {
       ...reaction({

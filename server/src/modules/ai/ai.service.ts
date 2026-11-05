@@ -1,18 +1,17 @@
 import {
   Inject,
   Injectable,
-  InternalServerErrorException,
   Logger,
+  ServiceUnavailableException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { AI_UNAVAILABLE_MESSAGE, LLM_PROVIDER } from './ai.constants';
 import type { LlmProvider } from './llm-provider.interface';
 import type {
   GenerateObjectOptions,
   GenerateObjectResult,
   GenerateTextOptions,
 } from './types';
-
-export const LLM_PROVIDER = Symbol('LLM_PROVIDER');
 
 @Injectable()
 export class AiService {
@@ -33,7 +32,7 @@ export class AiService {
         { provider: this.provider.name, error: this.errorMessage(error) },
         'Falha ao gerar texto com IA',
       );
-      throw new InternalServerErrorException('Erro ao gerar texto com IA');
+      throw new ServiceUnavailableException(AI_UNAVAILABLE_MESSAGE);
     }
   }
 
@@ -49,15 +48,17 @@ export class AiService {
         { provider: this.provider.name, error: this.errorMessage(error) },
         'Falha ao gerar objeto com IA',
       );
-      throw new InternalServerErrorException('Erro ao gerar objeto com IA');
+      throw new ServiceUnavailableException(AI_UNAVAILABLE_MESSAGE);
     }
   }
 
   private ensureConfigured(): void {
     if (!this.provider.isConfigured()) {
-      throw new InternalServerErrorException(
-        `Provider de IA "${this.provider.name}" não está configurado. Verifique a API key.`,
+      this.logger.error(
+        { provider: this.provider.name },
+        'Provider de IA sem API key configurada',
       );
+      throw new ServiceUnavailableException(AI_UNAVAILABLE_MESSAGE);
     }
   }
 

@@ -11,13 +11,19 @@ import type { MascotAction, MascotPlayback } from '../types/mascotAction'
  * mascote à pose neutra pra fechar o loop sem pulo, então congelar lá mostraria
  * ele parado em vez de pensando. Corta no frame 30, que é onde o still está —
  * a pose ainda está firme, longe do começo da descida do braço.
+ *
+ * `upset` corta no frame 43 (3612ms) pelo mesmo motivo que `thinking`, mas por
+ * causa do loop: os 3780ms do arquivo batiam com o instante da troca, então
+ * qualquer atraso do timer deixava o WebP voltar ao frame 0 — braços pra baixo,
+ * cara neutra — antes do still entrar. A folga de ~1.5 frame mata o pulo, e
+ * 42/43 é o par mais parado da animação: a troca não aparece.
  */
 export const MASCOT_ACTION_DURATION_MS: Record<MascotAction, number> = {
   idle: 3780,
   thinking: 2560,
   happy: 3780,
   celebrate: 3780,
-  upset: 3780,
+  upset: 3640,
 }
 
 /** Animação em loop de cada ação. */

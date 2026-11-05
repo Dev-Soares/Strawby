@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
+import { isServiceUnavailableError } from '@/shared/utils/isServiceUnavailableError'
 import { sendAssistantMessageService } from '../service/sendAssistantMessageService'
+import { ASSISTANT_UNAVAILABLE_MESSAGE } from '../config/assistantCopy'
 import { ASSISTANT_CHAT_QUERY_KEY } from './useGetAssistantChat'
 import type { AssistantMessage, SendAssistantMessageData } from '../types/chat'
 
@@ -34,7 +36,23 @@ export const useSendAssistantMessage = () => {
         reply,
       ])
     },
-    onError: (_error, _dto, context) => {
+    onError: (error, _dto, context) => {
+      // IA fora do ar: o mascote avisa dentro da conversa e a fala do usuário
+      // continua na thread — toast de erro aqui soaria como bug do app.
+      if (isServiceUnavailableError(error)) {
+        queryClient.setQueryData<AssistantMessage[]>(ASSISTANT_CHAT_QUERY_KEY, (old = []) => [
+          ...old,
+          {
+            id: crypto.randomUUID(),
+            role: 'assistant',
+            content: ASSISTANT_UNAVAILABLE_MESSAGE,
+            createdAt: new Date().toISOString(),
+            status: 'unavailable',
+          },
+        ])
+        return
+      }
+
       if (context) {
         queryClient.setQueryData(ASSISTANT_CHAT_QUERY_KEY, context.previousMessages)
       }

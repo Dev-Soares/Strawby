@@ -10,6 +10,10 @@ export const buildMealAddedMessage = (mealName: string): string =>
 export const SUGGESTION_EMPTY_MESSAGE =
   'Poxa, não consegui montar nada agora. Tenta de novo daqui a pouco?'
 
+/** Fala do mascote quando a IA está fora do ar (sem key, provider caído). */
+export const ASSISTANT_UNAVAILABLE_MESSAGE =
+  'Poxa, não estou disponível no momento. Tente novamente mais tarde.'
+
 export const buildSuggestionIntro = (
   count: number,
   mealType?: MealType,

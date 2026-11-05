@@ -39,6 +39,7 @@ export type SuggestedMeal = {
  * Define a reação do mascote.
  * `prompt` é local: o Strawby fez uma pergunta e está esperando o usuário.
  * `preview` é a refeição montada aguardando confirmação — nada foi salvo ainda.
+ * `unavailable` é local: a IA está fora do ar e o mascote avisa no lugar do erro.
  * Os demais são o desfecho da tentativa de registrar a refeição.
  */
 export type AssistantMessageStatus =
@@ -47,6 +48,7 @@ export type AssistantMessageStatus =
   | 'created'
   | 'not_found'
   | 'not_understood'
+  | 'unavailable'
 
 export type MealDraftItem = {
   foodId: string

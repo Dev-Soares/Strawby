@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AiService, LLM_PROVIDER } from './ai.service';
+import { AiService } from './ai.service';
+import { LLM_PROVIDER } from './ai.constants';
 import { GeminiProvider } from './gemini.provider';
 import { OpenAiProvider } from './openai.provider';
 import type { AiProvider } from './types';

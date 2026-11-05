@@ -14,7 +14,13 @@ export const useAssistantChat = () => {
 
   const sendMessage = useCallback(
     async (data: SendAssistantMessageData) => {
-      await mutation.mutateAsync(data)
+      // o `onError` da mutation já resolve o feedback (fala do mascote ou toast);
+      // propagar aqui só geraria unhandled rejection no submit do ChatInput
+      try {
+        await mutation.mutateAsync(data)
+      } catch {
+        // tratado no onError
+      }
     },
     [mutation],
   )
