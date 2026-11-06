@@ -18,6 +18,9 @@ import type { MascotAction, MascotPlayback } from '../types/mascotAction'
  * qualquer atraso do timer deixava o WebP voltar ao frame 0 — braços pra baixo,
  * cara neutra — antes do still entrar. A folga de ~1.5 frame mata o pulo, e
  * 42/43 é o par mais parado da animação: a troca não aparece.
+ *
+ * `goodbye` leva a mesma folga do `upset`, pelo mesmo motivo: é a outra ação
+ * que termina em `once`. O still sai do frame 43, onde o braço já desceu.
  */
 export const MASCOT_ACTION_DURATION_MS: Record<MascotAction, number> = {
   idle: 3780,
@@ -25,6 +28,12 @@ export const MASCOT_ACTION_DURATION_MS: Record<MascotAction, number> = {
   happy: 3780,
   celebrate: 3780,
   upset: 3640,
+  eating: 3780,
+  phone: 3780,
+  writing: 3780,
+  'note-taking': 3780,
+  inviting: 3780,
+  goodbye: 3640,
 }
 
 /** Animação em loop de cada ação. */
@@ -34,6 +43,12 @@ export const MASCOT_ACTION_SRC: Record<MascotAction, string> = {
   happy: '/mascot/actions/happy.webp',
   celebrate: '/mascot/actions/celebrate.webp',
   upset: '/mascot/actions/upset.webp',
+  eating: '/mascot/actions/eating.webp',
+  phone: '/mascot/actions/phone.webp',
+  writing: '/mascot/actions/writing.webp',
+  'note-taking': '/mascot/actions/note-taking.webp',
+  inviting: '/mascot/actions/inviting.webp',
+  goodbye: '/mascot/actions/goodbye.webp',
 }
 
 /**
@@ -47,6 +62,12 @@ export const MASCOT_DEFAULT_PLAYBACK: Record<MascotAction, MascotPlayback> = {
   happy: 'settle',
   celebrate: 'settle',
   upset: 'once',
+  eating: 'loop',
+  phone: 'loop',
+  writing: 'loop',
+  'note-taking': 'loop',
+  inviting: 'loop',
+  goodbye: 'once',
 }
 
 /**
@@ -60,6 +81,12 @@ export const MASCOT_ACTION_END_SRC: Record<MascotAction, string> = {
   happy: '/mascot/actions/happy-end.webp',
   celebrate: '/mascot/actions/celebrate-end.webp',
   upset: '/mascot/actions/upset-end.webp',
+  eating: '/mascot/actions/eating-end.webp',
+  phone: '/mascot/actions/phone-end.webp',
+  writing: '/mascot/actions/writing-end.webp',
+  'note-taking': '/mascot/actions/note-taking-end.webp',
+  inviting: '/mascot/actions/inviting-end.webp',
+  goodbye: '/mascot/actions/goodbye-end.webp',
 }
 
 /**

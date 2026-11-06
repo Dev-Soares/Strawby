@@ -9,13 +9,38 @@ vermelho pra laranja. Mesmo assim, o pack precisa passar pelo
 [`scripts/mascot-frames.py`](../scripts/mascot-frames.py) antes de ir pro app — ver
 [Processamento](#processamento) no fim.
 
-Status: `idle`, `thinking`, `happy`, `celebrate` e `upset` já existem em
-`client/public/mascot/actions/`.
+Status: já existem em `client/public/mascot/actions/` — `idle`, `thinking`, `happy`,
+`celebrate`, `upset`, `eating`, `phone`, `writing`, `note-taking`, `inviting` e `goodbye`.
 
-Os packs mudaram de formato em 04/11: o gerador passou a devolver RGB opaco sobre fundo
-quase branco, com o vermelho já quase certo. O script detecta isso sozinho (estilo `flat`)
-e recorta o fundo; o caminho antigo — RGBA com o corpo puxado pro laranja — segue como
-estilo `alpha`. Se a detecção errar, force com `--style`.
+`phone` (mascote olhando pro celular) e `note-taking` (anotando com prancheta) saíram de
+packs sem prompt aqui; `writing` é a versão só com caneta.
+
+O formato dos packs mudou duas vezes, e cada mudança mexeu num eixo só — por isso o script
+decide fundo e paleta separados, e detecta os dois sozinho:
+
+| estilo | fundo | corpo |
+|---|---|---|
+| `alpha` | alpha já é a silhueta | puxado pro laranja |
+| `flat` (04/11) | RGB opaco sobre fundo quase branco | já quase certo |
+| `alpha-flat` (06/11) | alpha keyado pela luminância | já quase certo |
+
+O `alpha-flat` é o traiçoeiro, e vale saber por quê antes de confiar num pack desses. O
+alpha afunda nas áreas claras — pupila, esclera, props brancos —, e onde ele chega a zero
+o RGB embaixo é **lixo de compressão**: o codificador não gasta bit num pixel invisível.
+Então a cor crua não serve (a pupila vira um anel listrado em volta do olho) e o alpha
+também não (o celular some no dark mode).
+
+Compor o frame sobre branco resolve o lixo — ele some junto com o alpha que o escondia.
+Só que compor injeta branco proporcional a `1 - a`, e isso lava tudo que tem alpha médio:
+a folha chega em ~197 e sai clara, com um degradê que o k-means depois posteriza em
+manchas, e a pupila sai cinza em vez de preta.
+
+Então a composição vale só onde ela é necessária. Acima de `TRUST_HI` (192) o RGB do pack
+é confiável e fica como está; abaixo de `TRUST_LO` (64) ele é lixo e vale o composto; no
+meio, mistura. As `BLEND_ANCHORS` são medidas **depois** dessa mistura — remedir é
+obrigatório se qualquer um dos dois limiares mudar.
+
+Se a detecção errar, force com `--style`.
 
 ---
 
@@ -445,36 +470,60 @@ cropped limbs.
 
 ## Processamento
 
-Todo pack que sair do AnimeGen passa pelo script antes de entrar no app — ele corrige o
-desvio de cor, achata o mottling e exporta o WebP com alpha:
+Todo pack que sair do AnimeGen passa pelo script antes de entrar no app — ele resolve o
+fundo, corrige o desvio de cor, achata o mottling e exporta o WebP com alpha:
 
 ```bash
 python scripts/mascot-frames.py "~/Downloads/<pack>.zip" \
   -o client/public/mascot/actions/<acao>.webp \
   --skip-start 2 --seconds 3 --fps 15 --size 320 --quality 90
+
+# o ritmo das ações atuais: 45 frames a 84ms
+python scripts/mascot-retime.py client/public/mascot/actions/<acao>.webp --total 3780
+
+# still em que o playback `once` congela (o `-end.webp`)
+python scripts/mascot-still.py client/public/mascot/actions/<acao>.webp
 ```
 
-Depois, o still do último frame (necessário pro playback `once`):
+O `--skip-start`/`--skip-end` é o que mais muda de pack pra pack, porque o gerador começa
+na imagem de referência e leva uns frames pra montar a pose — em pack com prop, o objeto
+materializa no ar. O que foi usado nos últimos seis:
 
-```bash
-python -c "
-from PIL import Image
-im = Image.open('client/public/mascot/actions/<acao>.webp')
-im.seek(im.n_frames - 1)
-im.convert('RGBA').save('client/public/mascot/actions/<acao>-end.webp', quality=92, method=6)
-"
-```
+| ação | pack | janela |
+|---|---|---|
+| `eating` | eating-frames | — (já fecha em 0..90) |
+| `phone` | smartphone-frames | `--skip-start 10 --skip-end 16` |
+| `writing` | other wirting frames | `--skip-start 20` |
+| `note-taking` | writing-frames | `--skip-start 16 --skip-end 30` (prancheta instável depois do 60) |
+| `inviting` | come-onframes | `--skip-start 10` |
+| `goodbye` | goodbye-frames | `--skip-start 8 --skip-end 26` (cauda de 30 frames parados) |
 
 Checagens que valem antes de aceitar o pack:
 
+- **Prop estável** — frame a frame, a distância até a mediana do regime cai e estabiliza
+  quando o objeto terminou de aparecer. Começar antes disso deixa o prop piscando a cada
+  volta do loop.
+- **Cor dos primeiros frames** — nos packs `flat` o frame 0 costuma ser a imagem de
+  referência colada crua, com o vermelho de outro tom. Medir a cor mediana do corpo frame a
+  frame contra o regime: no `goodbye` o frame 0 desviava 462 e piscava a cada volta. É o
+  mesmo `--skip-start` que resolve, só que por outro motivo.
 - **Loop costurado** — se a diferença entre o primeiro e o último frame for alta, o loop
   dá um salto visível. Acima de ~10 o olho pega. Saída: `--boomerang`, que toca e volta de
   ré, fechando o ciclo por construção (foi o que resolveu o `thinking`, que estava em 27).
-- **Cor** — conferir se os clusters do pack batem com as âncoras de `RECOLOR_ANCHORS` no
-  script. Se o gerador desviar pra outro tom, as âncoras precisam ser remedidas.
+  Em ação `once` a costura não importa — ela nunca dá a volta.
+- **Prop coerente no tempo** — contar os pixels do objeto frame a frame. O gerador não
+  garante coerência temporal: a prancheta do `note-taking` perdia 40% da área por 4 frames
+  no meio da animação e voltava, o que lê como piscada. Não tem conserto no processamento
+  — é escolher uma janela que não passe por cima do trecho ruim.
+- **Dark mode** — compor um frame sobre preto. Aro claro em volta do mascote, ou prop
+  branco que escurece, significa que o fundo do gerador ficou na borda ou que o alpha veio
+  keyado. Os dois casos são do script, não do pack.
+- **Cor** — conferir se os clusters do pack batem com as âncoras do estilo detectado. Se o
+  gerador desviar pra outro tom, as âncoras precisam ser remedidas.
 - **Corte de membro** — braço levantado é o que mais estoura o quadro.
 
 Registrar a ação nova em:
 
-- [`types/mascotAction.ts`](../client/src/modules/strawby-assistant/types/mascotAction.ts) — adicionar ao union
-- [`config/mascotActions.ts`](../client/src/modules/strawby-assistant/config/mascotActions.ts) — paths do loop e do still
+- [`types/mascotAction.ts`](../client/src/shared/types/mascotAction.ts) — adicionar ao union
+- [`config/mascotActions.ts`](../client/src/shared/config/mascotActions.ts) — path do loop,
+  path do still, duração e playback padrão
