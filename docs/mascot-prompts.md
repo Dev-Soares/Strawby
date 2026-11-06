@@ -494,7 +494,7 @@ materializa no ar. O que foi usado nos últimos seis:
 | `eating` | eating-frames | — (já fecha em 0..90) |
 | `phone` | smartphone-frames | `--skip-start 10 --skip-end 16` |
 | `writing` | other wirting frames | `--skip-start 20` |
-| `note-taking` | writing-frames | `--skip-start 16 --skip-end 30` (prancheta instável depois do 60) |
+| `note-taking` | writing-frames | `--skip-start 16 --skip-end 30 --boomerang` (prancheta instável) |
 | `inviting` | come-onframes | `--skip-start 10` |
 | `goodbye` | goodbye-frames | `--skip-start 8 --skip-end 26` (cauda de 30 frames parados) |
 
@@ -515,6 +515,11 @@ Checagens que valem antes de aceitar o pack:
   garante coerência temporal: a prancheta do `note-taking` perdia 40% da área por 4 frames
   no meio da animação e voltava, o que lê como piscada. Não tem conserto no processamento
   — é escolher uma janela que não passe por cima do trecho ruim.
+- **Costura medida no prop, não no quadro** — a sombra da prancheta é pequena demais pra
+  pesar na média do quadro inteiro: a costura dava 4.15 (ótima) enquanto a prancheta
+  pulava 18.6 na volta do loop, e era só isso que se via. Se o pack tem prop, medir a
+  costura restrita à máscara dele. Quando nenhuma janela fecha — foi o caso aqui, a melhor
+  dava 14.8 —, `--boomerang` resolve por construção.
 - **Dark mode** — compor um frame sobre preto. Aro claro em volta do mascote, ou prop
   branco que escurece, significa que o fundo do gerador ficou na borda ou que o alpha veio
   keyado. Os dois casos são do script, não do pack.

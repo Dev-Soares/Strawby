@@ -96,9 +96,15 @@ BLEND_ANCHORS = [
     ((26, 127, 59), (24, 152, 64)),      # folha        -> #189840
     ((87, 167, 66), (88, 184, 64)),      # folha clara  -> #58B840
     ((249, 248, 248), (251, 247, 245)),  # esclera e props brancos
-    # âncoras identidade: o cinza do celular e da prancheta não pode virar cor
-    # do mascote, e o traço precisa continuar preto
-    ((107, 115, 115), (107, 115, 115)),
+    # O cinza neutro só existe nos props, e lá ele é sombra macia que o gerador
+    # redesenha a cada frame: a cunha na prancheta mudava de tamanho o tempo
+    # todo e dava um salto na volta do loop. Chapar esse cinza no branco do prop
+    # mata a oscilação e ainda aproxima do traço sem sombra das ações antigas.
+    # O contorno escuro e o vermelho desenhado ficam, que são saturados.
+    ((107, 115, 115), (246, 246, 246)),
+    ((140, 143, 143), (246, 246, 246)),
+    ((172, 175, 175), (246, 246, 246)),
+    ((200, 202, 202), (246, 246, 246)),
     ((255, 255, 255), (255, 255, 255)),
     ((0, 0, 0), (0, 0, 0)),
 ]

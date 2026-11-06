@@ -21,6 +21,10 @@ import type { MascotAction, MascotPlayback } from '../types/mascotAction'
  *
  * `goodbye` leva a mesma folga do `upset`, pelo mesmo motivo: é a outra ação
  * que termina em `once`. O still sai do frame 43, onde o braço já desceu.
+ *
+ * `thinking` e `note-taking` têm 44 frames (3696ms) em vez de 45: as duas foram
+ * montadas em `--boomerang`, que toca e volta de ré pra fechar o ciclo sem
+ * salto, e nesse modo os extremos não se repetem.
  */
 export const MASCOT_ACTION_DURATION_MS: Record<MascotAction, number> = {
   idle: 3780,
@@ -31,7 +35,7 @@ export const MASCOT_ACTION_DURATION_MS: Record<MascotAction, number> = {
   eating: 3780,
   phone: 3780,
   writing: 3780,
-  'note-taking': 3780,
+  'note-taking': 3696,
   inviting: 3780,
   goodbye: 3640,
 }
