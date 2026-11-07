@@ -28,7 +28,7 @@ const Hero = () => {
           <div className="relative z-10 order-2 flex flex-col items-center text-center lg:items-start lg:text-left">
 
             <motion.h1
-              className="font-display font-black tracking-tighter leading-[0.92] text-balance text-[38px] sm:text-[48px] lg:text-[52px] xl:text-[58px] mb-4"
+              className="font-display font-black tracking-tighter leading-[0.92] text-balance text-[42px] sm:text-[54px] lg:text-[62px] xl:text-[68px] mb-4"
               {...fadeUp(0.08)}
             >
               <span className="text-neutral-950 dark:text-neutral-100 transition-colors duration-300">
