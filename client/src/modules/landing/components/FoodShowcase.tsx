@@ -10,7 +10,7 @@ interface FoodItem {
   color: string
 }
 
-const foods: FoodItem[] = [
+export const foodShowcaseItems: FoodItem[] = [
   { icon: Citrus,  color: 'text-orange-500'  },
   { icon: Salad,      color: 'text-lime-500'    },
   { icon: Carrot,       color: 'text-orange-500'  },
@@ -34,9 +34,7 @@ const foods: FoodItem[] = [
   { icon: Soup,    color: 'text-cyan-600'    },
   { icon: Vegan,       color: 'text-red-600'     },
   { icon: Cake,         color: 'text-pink-500'    },
-  { icon: Milk,       color: 'text-yellow-500'  },
-  { icon: Nut,          color: 'text-amber-600'   },
-]
+  { icon: Nut,          color: 'text-amber-600'   },]
 
 const iconVariants = {
   hidden: { opacity: 0, scale: 0.5 },
@@ -121,7 +119,7 @@ export default function FoodShowcase() {
             whileInView="show"
             viewport={{ once: true, amount: 0.2 }}
           >
-            {foods.map((food, i) => (
+            {foodShowcaseItems.map((food, i) => (
               <motion.div key={i} variants={iconVariants}>
                 <food.icon
                   className={`${food.color} cursor-default select-none transition-[scale] duration-200 hover:scale-125`}

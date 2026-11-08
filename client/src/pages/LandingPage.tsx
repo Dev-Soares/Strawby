@@ -1,9 +1,11 @@
 import Navbar from '@/modules/landing/components/Navbar';
 import Hero from '@/modules/landing/components/Hero';
-import Features from '@/modules/landing/components/Features';
-import FoodShowcase from '@/modules/landing/components/FoodShowcase';
+import ProductShowcaseSection from '@/modules/landing/components/ProductShowcaseSection';
+import HowToUseSection from '@/modules/landing/components/HowToUseSection';
+import DifferentialsSection from '@/modules/landing/components/DifferentialsSection';
 import CTA from '@/modules/landing/components/CTA';
-import DownloadSection from '@/modules/landing/components/DownloadSection';
+
+
 import Footer from '@/modules/landing/components/Footer';
 import PageSEO from '@/shared/components/PageSEO';
 
@@ -56,12 +58,17 @@ export default function LandingPage() {
         path="/"
         jsonLd={[webAppSchema, organizationSchema]}
       />
-      <main className="bg-white dark:bg-neutral-950 min-h-screen transition-colors duration-300">
+      <main className="min-h-screen bg-white transition-colors duration-300 dark:bg-neutral-950">
         <Navbar />
+        {/* S1: Hero */}
         <Hero />
-        <Features />
-        <FoodShowcase />
-        <DownloadSection />
+        {/* S2: Conheça o Strawby */}
+        <ProductShowcaseSection />
+        {/* S3: Como usar */}
+        <HowToUseSection />
+        {/* S4: Não é só sobre contar calorias */}
+        <DifferentialsSection />
+        {/* S5: CTA Final + Footer */}
         <CTA />
         <Footer />
       </main>

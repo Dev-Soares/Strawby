@@ -12,8 +12,8 @@ const fadeUp = (delay: number) => ({
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden">
-      <div className="flex-1 flex items-center px-6 pt-28 pb-10 sm:pt-32">
+    <section className="relative flex min-h-[calc(100vh-80px)] flex-col justify-center overflow-hidden pt-28 pb-16 sm:pt-32">
+      <div className="flex-1 flex items-center px-6">
         <div className="mx-auto grid w-full max-w-5xl items-center gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
 
           <motion.div
@@ -25,10 +25,10 @@ const Hero = () => {
             <HeroMascot />
           </motion.div>
 
-          <div className="relative z-10 order-2 flex flex-col items-center text-center lg:items-start lg:text-left">
+          <div className="relative z-10 order-2 flex min-w-0 flex-col items-center text-center lg:items-start lg:text-left">
 
             <motion.h1
-              className="font-display font-black tracking-tighter leading-[0.92] text-balance text-[42px] sm:text-[54px] lg:text-[62px] xl:text-[68px] mb-4"
+              className="w-full max-w-[500px] font-display font-black tracking-tighter leading-[0.92] text-balance text-[44px] sm:text-[52px] lg:text-[58px] xl:text-[64px] mb-4"
               {...fadeUp(0.08)}
             >
               <span className="text-neutral-950 dark:text-neutral-100 transition-colors duration-300">
@@ -63,25 +63,6 @@ const Hero = () => {
           </div>
         </div>
       </div>
-
-      <motion.div
-        aria-hidden
-        className="pointer-events-none overflow-hidden select-none"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-      >
-        <div className="marquee-track">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <span
-              key={i}
-              className="font-display font-black tracking-[-0.05em] leading-[0.8] whitespace-nowrap pr-[0.15em] text-[clamp(72px,11vw,160px)] text-transparent [-webkit-text-stroke:1.5px_rgba(220,38,38,0.3)]"
-            >
-              STRAWBY ·
-            </span>
-          ))}
-        </div>
-      </motion.div>
     </section>
   )
 }
