@@ -1,4 +1,5 @@
-import { ArrowRight } from 'lucide-react'
+import type { MouseEvent } from 'react'
+import { ArrowRight, ChevronDown } from 'lucide-react'
 import { motion } from 'framer-motion'
 import HeroMascot from './HeroMascot'
 
@@ -9,6 +10,16 @@ const fadeUp = (delay: number) => ({
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.6, ease, delay },
 })
+
+// Scroll suave explicito: o CSS global nao usa scroll-behavior: smooth
+// (ver comentario em index.css) e o href fica como fallback sem JS.
+const scrollToShowcase = (event: MouseEvent<HTMLAnchorElement>) => {
+  const target = document.getElementById('conheca')
+  if (!target) return
+
+  event.preventDefault()
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
 
 const Hero = () => {
   return (
@@ -49,15 +60,27 @@ const Hero = () => {
             </motion.p>
 
             <motion.div
-              className="flex flex-col items-center lg:items-start"
+              className="flex w-full max-w-xs flex-col items-stretch gap-3 sm:max-w-none sm:flex-row sm:items-center sm:justify-center lg:justify-start"
               {...fadeUp(0.5)}
             >
               <a
                 href="/app/create-account"
-                className="bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold px-8 py-4 rounded-xl transition-colors duration-150 flex items-center gap-2 text-[15px] cursor-pointer"
+                className="flex items-center justify-center gap-2 rounded-xl border-2 border-red-600 bg-red-600 px-8 py-4 text-[15px] font-semibold text-white transition-colors duration-150 hover:border-red-700 hover:bg-red-700 active:border-red-800 active:bg-red-800 cursor-pointer"
               >
                 Experimentar grátis
                 <ArrowRight size={17} />
+              </a>
+
+              <a
+                href="#conheca"
+                onClick={scrollToShowcase}
+                className="group flex items-center justify-center gap-2 rounded-xl border-2 border-stone-200 bg-white px-8 py-4 text-[15px] font-semibold text-neutral-700 transition-colors duration-150 hover:border-stone-300 hover:bg-stone-50 hover:text-neutral-950 cursor-pointer"
+              >
+                Conhecer o aplicativo
+                <ChevronDown
+                  size={17}
+                  className="transition-transform duration-200 group-hover:translate-y-0.5"
+                />
               </a>
             </motion.div>
           </div>

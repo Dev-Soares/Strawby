@@ -30,9 +30,11 @@ export default function ProductShowcaseSection() {
   }, [])
 
   return (
+    // scroll-mt compensa a navbar fixa; diminui conforme o pt- da secao cresce,
+    // deixando o titulo sempre ~112px do topo da viewport ao ancorar aqui.
     <section
       id="conheca"
-      className="relative flex min-h-screen flex-col justify-between overflow-hidden bg-white pt-12 transition-colors duration-300 sm:pt-16 lg:pt-20"
+      className="relative flex min-h-screen scroll-mt-16 flex-col justify-between overflow-hidden bg-white pt-12 transition-colors duration-300 sm:scroll-mt-12 sm:pt-16 lg:scroll-mt-8 lg:pt-20"
     >
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-6 sm:px-8 lg:px-12">
         {/* ================================================================= */}

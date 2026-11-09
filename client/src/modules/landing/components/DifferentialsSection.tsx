@@ -2,10 +2,12 @@ import { useEffect, useRef } from 'react'
 import { lazy, Suspense } from 'react'
 import { motion, useInView } from 'framer-motion'
 import {
+  ArrowUp,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
   Flame,
+  Mic,
   Trophy,
 } from 'lucide-react'
 import StrawbyMascot from '@/shared/components/StrawbyMascot'
@@ -118,10 +120,10 @@ export default function DifferentialsSection() {
         {/* ================================================================= */}
         <div className="flex flex-col gap-y-28 sm:gap-y-36 lg:gap-y-44">
           {/* --------------------------------------------------------------- */}
-          {/* Diferencial 01: Simplicidade de verdade                         */}
+          {/* Diferencial 01: Assistente Strawby — registro por conversa      */}
           {/* --------------------------------------------------------------- */}
           <div className="flex flex-col items-center gap-8 sm:gap-10 lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-16">
-            {/* Visual no topo: Conversão inteligente em tempo real */}
+            {/* Visual: a conversa real do assistente, da fala ao registro */}
             <motion.div
               className="relative mx-auto flex w-full max-w-lg items-end justify-center lg:mx-0 lg:w-1/2 lg:max-w-none"
               {...fadeUp(0)}
@@ -150,16 +152,32 @@ export default function DifferentialsSection() {
                     <span className="font-bold text-red-600">394 kcal</span>.
                   </p>
                 </div>
+
+                {/* Campo do assistente: deixa claro que é conversa — escrita ou por voz */}
+                <div
+                  aria-hidden
+                  className="-mt-2 flex items-center gap-2.5 rounded-2xl border-2 border-stone-200 bg-white px-4 py-3 shadow-[0_14px_30px_-24px_rgba(28,25,23,0.5)]"
+                >
+                  <span className="flex-1 truncate text-[13px] font-medium text-neutral-400">
+                    Digite ou fale o que você comeu...
+                  </span>
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-stone-100 text-neutral-500">
+                    <Mic size={15} strokeWidth={2.5} />
+                  </span>
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-600 text-white">
+                    <ArrowUp size={15} strokeWidth={3} />
+                  </span>
+                </div>
               </div>
             </motion.div>
 
             {/* Texto descritivo embaixo */}
             <motion.div className="max-w-xl text-center lg:flex-1 lg:text-left" {...fadeUp(0.1)}>
               <h3 className="mb-4 font-display text-[34px] font-black tracking-tight leading-[0.98] text-neutral-950 sm:text-[44px]">
-                Menos contas. <span className="text-red-600">Mais praticidade.</span>
+                Você conta o que comeu. <span className="text-red-600">Ele registra.</span>
               </h3>
               <p className="text-base font-medium leading-relaxed text-neutral-600 sm:text-lg">
-                Você não precisa perder tempo calculando tudo manualmente. Registre suas refeições e deixe o Strawby organizar as informações nutricionais.
+                Escreva ou fale do jeito que você falaria com uma pessoa: &ldquo;comi frango com arroz no almoço&rdquo;. O Assistente Strawby entende, calcula as calorias e lança a refeição no seu diário. Ele também sugere refeições e monta seu plano alimentar.
               </p>
             </motion.div>
           </div>
