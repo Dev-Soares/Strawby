@@ -15,5 +15,5 @@ export default function StatusDot({ status }: { status: 'good' | 'warn' | 'bad' 
       <X size={8} className="text-white" />
     </div>
   )
-  return <div className="w-1.5 h-1.5 rounded-full bg-neutral-200 dark:bg-neutral-700 transition-colors duration-300" />
+  return <div className="w-1.5 h-1.5 rounded-full bg-neutral-200 transition-colors duration-300" />
 }

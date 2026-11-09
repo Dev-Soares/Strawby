@@ -10,18 +10,18 @@ const macros = [
 /** O resultado do registro: o que o Strawby devolve depois do toque no celular. */
 const HeroLogCard = () => {
   return (
-    <div className="w-49 rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm p-3.5 shadow-lg shadow-neutral-900/5 dark:shadow-black/30">
+    <div className="w-49 rounded-2xl border border-neutral-200/80 bg-white/95 backdrop-blur-sm p-3.5 shadow-lg shadow-neutral-900/5">
       <div className="flex items-center gap-2">
         <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600">
           <Check size={12} strokeWidth={3.5} className="text-white" />
         </span>
-        <span className="text-[11px] font-bold tracking-wide text-neutral-500 dark:text-neutral-400">
+        <span className="text-[11px] font-bold tracking-wide text-neutral-500">
           REGISTRADO
         </span>
       </div>
 
       <div className="mt-3 flex items-baseline gap-1.5">
-        <span className="font-display text-2xl font-black tabular-nums text-neutral-900 dark:text-neutral-100">
+        <span className="font-display text-2xl font-black tabular-nums text-neutral-900">
           620
         </span>
         <span className="text-[11px] font-bold text-neutral-400">kcal</span>
@@ -33,7 +33,7 @@ const HeroLogCard = () => {
             <span className="w-2 text-[10px] font-black text-neutral-400">
               {macro.label}
             </span>
-            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-800">
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-neutral-100">
               <motion.div
                 className="h-full rounded-full"
                 style={{ backgroundColor: macro.color }}

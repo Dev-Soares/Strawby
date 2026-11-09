@@ -61,7 +61,7 @@ export const PATIENT_TOUR: TourStep[] = [
     id: 'plan',
     route: '/app/plan',
     target: 'nav-plan',
-    prompt: 'No Plano ficam suas metas diárias de calorias e macros!',
+    prompt: 'No Plano ficam suas metas diárias de calorias e nutrientes!',
     action: 'idle',
   },
   {

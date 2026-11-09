@@ -7,7 +7,7 @@ interface PlanEmptyStateProps {
 
 const BENEFITS = [
   { Icon: Flame, text: 'Meta calórica personalizada para seu corpo' },
-  { Icon: ChartColumn, text: 'Macros calculados por objetivo (perda ou ganho)' },
+  { Icon: ChartColumn, text: 'Nutrientes calculados por objetivo (perda ou ganho)' },
   { Icon: Zap, text: 'Baseado na fórmula Mifflin-St Jeor' },
 ]
 

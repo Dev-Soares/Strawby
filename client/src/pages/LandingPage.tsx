@@ -7,6 +7,7 @@ import CTA from '@/modules/landing/components/CTA';
 
 
 import Footer from '@/modules/landing/components/Footer';
+import { useLightThemeOnly } from '@/modules/landing/hooks/useLightThemeOnly';
 import PageSEO from '@/shared/components/PageSEO';
 
 const SITE_URL = (import.meta.env.VITE_SITE_URL ?? '').replace(/\/$/, '')
@@ -17,7 +18,7 @@ const webAppSchema = {
   name: 'Strawby',
   url: SITE_URL,
   description:
-    'App de nutrição para acompanhar calorias, macros e refeições do dia a dia. Simples, visual e consistente.',
+    'App de nutrição para acompanhar calorias, nutrientes e refeições do dia a dia. Simples, visual e consistente.',
   applicationCategory: 'HealthApplication',
   operatingSystem: 'Web, Android, iOS',
   offers: {
@@ -46,19 +47,21 @@ const organizationSchema = {
   name: 'Strawby',
   url: SITE_URL,
   logo: `${SITE_URL}/logo.webp`,
-  description: 'App de nutrição para acompanhar calorias, macros e refeições do dia a dia.',
+  description: 'App de nutrição para acompanhar calorias, nutrientes e refeições do dia a dia.',
 }
 
 export default function LandingPage() {
+  useLightThemeOnly()
+
   return (
     <>
       <PageSEO
         title="Strawby - Controle de Refeições e Nutrição Diária"
-        description="Strawby é o app de nutrição para acompanhar calorias, macros e refeições do dia a dia. Simples, visual e consistente. Grátis e funciona como PWA."
+        description="Strawby é o app de nutrição para acompanhar calorias, nutrientes e refeições do dia a dia. Simples, visual e consistente. Grátis e funciona como PWA."
         path="/"
         jsonLd={[webAppSchema, organizationSchema]}
       />
-      <main className="min-h-screen bg-white transition-colors duration-300 dark:bg-neutral-950">
+      <main className="min-h-screen bg-white transition-colors duration-300">
         <Navbar />
         {/* S1: Hero */}
         <Hero />

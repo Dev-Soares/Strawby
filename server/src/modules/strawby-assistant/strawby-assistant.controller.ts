@@ -1,5 +1,6 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { AuthGuard } from '../../common/guards/auth/auth.guard';
 import type { AuthenticatedRequest } from '../../common/types/req-types';
 import { SendAssistantMessageDto } from './dto/send-message.dto';
@@ -22,7 +23,14 @@ export class StrawbyAssistantController {
     private readonly planGeneration: PlanGenerationAssistantService,
   ) {}
 
+  /**
+   * Único endpoint do assistente que chama o LLM — cada request é uma chamada
+   * paga. O limite é por IP (tracker padrão do ThrottlerGuard) e serve como
+   * teto de abuso, não como cota: residência e rede móvel compartilham IP,
+   * então a contagem justa por usuário fica no `assistantUsage`.
+   */
   @Post('preview-meal')
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   previewMeal(
     @Req() req: AuthenticatedRequest,
     @Body() dto: SendAssistantMessageDto,
@@ -35,11 +43,13 @@ export class StrawbyAssistantController {
   }
 
   @Post('confirm-meal')
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   confirmMeal(@Req() req: AuthenticatedRequest, @Body() dto: ConfirmMealDto) {
     return this.mealExtraction.confirmMeal(req.user.sub, req.user.sub, dto);
   }
 
   @Post('suggest-snack')
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   async suggestSnack(
     @Req() req: AuthenticatedRequest,
     @Body() dto: SuggestSnackDto,
@@ -53,6 +63,7 @@ export class StrawbyAssistantController {
   }
 
   @Post('add-suggested-meal')
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   addSuggestedMeal(
     @Req() req: AuthenticatedRequest,
     @Body() dto: AddSuggestedMealDto,
@@ -61,11 +72,13 @@ export class StrawbyAssistantController {
   }
 
   @Post('preview-plan')
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   previewPlan(@Req() req: AuthenticatedRequest, @Body() dto: PreviewPlanDto) {
     return this.planGeneration.previewPlan(req.user.sub, req.user.sub, dto);
   }
 
   @Post('confirm-plan')
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   confirmPlan(@Req() req: AuthenticatedRequest, @Body() dto: ConfirmPlanDto) {
     return this.planGeneration.confirmPlan(req.user.sub, req.user.sub, dto);
   }

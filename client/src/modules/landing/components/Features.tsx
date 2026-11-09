@@ -4,7 +4,7 @@ import NutritionistPreview from './NutritionistPreview'
 
 const patientBullets = [
   'Registre refeições em segundos',
-  'Macros em tempo real, dia a dia',
+  'Nutrientes em tempo real, dia a dia',
   'Sequência semanal sempre visível',
 ]
 
@@ -16,11 +16,11 @@ const nutritionistBullets = [
 
 export default function Features() {
   return (
-    <section className="bg-stone-50 dark:bg-neutral-950 pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 lg:pb-24 transition-colors duration-300">
+    <section className="bg-stone-50 pt-20 sm:pt-24 lg:pt-28 pb-16 sm:pb-20 lg:pb-24 transition-colors duration-300">
       <div className="max-w-5xl mx-auto px-5 sm:px-8 lg:px-12">
 
         <motion.h2
-          className="font-display text-[32px] sm:text-[44px] lg:text-[56px] font-black tracking-[-0.04em] text-neutral-950 dark:text-neutral-100 leading-[0.92] mb-20 sm:mb-24 transition-colors duration-300"
+          className="font-display text-[32px] sm:text-[44px] lg:text-[56px] font-black tracking-[-0.04em] text-neutral-950 leading-[0.92] mb-20 sm:mb-24 transition-colors duration-300"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.5 }}
@@ -40,12 +40,12 @@ export default function Features() {
         >
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.22em] text-red-600 mb-3">Para pacientes</p>
-            <h3 className="font-display text-[26px] sm:text-[32px] font-black tracking-[-0.02em] text-neutral-950 dark:text-neutral-100 leading-tight mb-4 transition-colors duration-300">
+            <h3 className="font-display text-[26px] sm:text-[32px] font-black tracking-[-0.02em] text-neutral-950 leading-tight mb-4 transition-colors duration-300">
               Coma bem.<br />Veja a diferença.
             </h3>
             <ul className="flex flex-col gap-2.5">
               {patientBullets.map((b) => (
-                <li key={b} className="flex items-center gap-2.5 text-[13px] sm:text-[14px] text-neutral-600 dark:text-neutral-400 transition-colors duration-300">
+                <li key={b} className="flex items-center gap-2.5 text-[13px] sm:text-[14px] text-neutral-600 transition-colors duration-300">
                   <div className="w-1 h-1 rounded-full bg-red-600 shrink-0" />
                   {b}
                 </li>
@@ -56,7 +56,7 @@ export default function Features() {
         </motion.div>
 
         {/* Divider */}
-        <div className="w-full h-px bg-neutral-200 dark:bg-neutral-800 mb-20 sm:mb-28 transition-colors duration-300" />
+        <div className="w-full h-px bg-neutral-200 mb-20 sm:mb-28 transition-colors duration-300" />
 
         {/* Nutritionist */}
         <motion.div
@@ -69,12 +69,12 @@ export default function Features() {
           <NutritionistPreview />
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.22em] text-red-600 mb-3">Para nutricionistas</p>
-            <h3 className="font-display text-[26px] sm:text-[32px] font-black tracking-[-0.02em] text-neutral-950 dark:text-neutral-100 leading-tight mb-4 transition-colors duration-300">
+            <h3 className="font-display text-[26px] sm:text-[32px] font-black tracking-[-0.02em] text-neutral-950 leading-tight mb-4 transition-colors duration-300">
               Prescreva.<br />Acompanhe de perto.
             </h3>
             <ul className="flex flex-col gap-2.5">
               {nutritionistBullets.map((b) => (
-                <li key={b} className="flex items-center gap-2.5 text-[13px] sm:text-[14px] text-neutral-600 dark:text-neutral-400 transition-colors duration-300">
+                <li key={b} className="flex items-center gap-2.5 text-[13px] sm:text-[14px] text-neutral-600 transition-colors duration-300">
                   <div className="w-1 h-1 rounded-full bg-red-600 shrink-0" />
                   {b}
                 </li>

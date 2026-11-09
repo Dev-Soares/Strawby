@@ -59,8 +59,8 @@ export default function MealList({ meals }: MealListProps) {
           </p>
           <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-5 max-w-50 leading-relaxed transition-colors duration-300">
             {isToday
-              ? 'Registre o que você comeu para acompanhar seus macros'
-              : 'Registre o que você comeu neste dia para acompanhar seus macros'}
+              ? 'Registre o que você comeu para acompanhar seus nutrientes'
+              : 'Registre o que você comeu neste dia para acompanhar seus nutrientes'}
           </p>
           <button
             type="button"

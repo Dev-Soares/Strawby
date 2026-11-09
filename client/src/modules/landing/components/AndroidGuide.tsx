@@ -2,7 +2,7 @@ import { Check, EllipsisVertical } from 'lucide-react'
 export default function AndroidGuide() {
   return (
     <div className="space-y-5">
-      <p className="text-sm text-neutral-500 dark:text-neutral-400 text-center transition-colors duration-300">
+      <p className="text-sm text-neutral-500 text-center transition-colors duration-300">
         Seu navegador não mostrou o prompt automático. Siga os passos abaixo para instalar manualmente.
       </p>
 
@@ -12,11 +12,11 @@ export default function AndroidGuide() {
             1
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
+            <p className="text-sm font-bold text-neutral-900 transition-colors duration-300">
               Abra o menu do Chrome
             </p>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
-              Toque nos três pontinhos <EllipsisVertical size={18} className="inline align-text-bottom text-neutral-800 dark:text-neutral-200 transition-colors duration-300" /> no canto superior direito da tela.
+            <p className="text-sm text-neutral-600 leading-relaxed transition-colors duration-300">
+              Toque nos três pontinhos <EllipsisVertical size={18} className="inline align-text-bottom text-neutral-800 transition-colors duration-300" /> no canto superior direito da tela.
             </p>
           </div>
         </div>
@@ -26,13 +26,13 @@ export default function AndroidGuide() {
             2
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
+            <p className="text-sm font-bold text-neutral-900 transition-colors duration-300">
               Procure a opção de instalação
             </p>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
-              Role o menu para baixo e toque em <strong className="text-neutral-800 dark:text-neutral-200 transition-colors duration-300">&ldquo;Instalar aplicativo&rdquo;</strong> ou <strong className="text-neutral-800 dark:text-neutral-200 transition-colors duration-300">&ldquo;Adicionar à tela inicial&rdquo;</strong>.
+            <p className="text-sm text-neutral-600 leading-relaxed transition-colors duration-300">
+              Role o menu para baixo e toque em <strong className="text-neutral-800 transition-colors duration-300">&ldquo;Instalar aplicativo&rdquo;</strong> ou <strong className="text-neutral-800 transition-colors duration-300">&ldquo;Adicionar à tela inicial&rdquo;</strong>.
             </p>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 italic transition-colors duration-300">
+            <p className="text-xs text-neutral-500 italic transition-colors duration-300">
               Dica: a opção pode estar perto do final do menu.
             </p>
           </div>
@@ -43,11 +43,11 @@ export default function AndroidGuide() {
             3
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
+            <p className="text-sm font-bold text-neutral-900 transition-colors duration-300">
               Confirme a instalação
             </p>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
-              Uma janela aparecerá perguntando se deseja instalar o Strawby. Toque em <strong className="text-neutral-800 dark:text-neutral-200 transition-colors duration-300">&ldquo;Instalar&rdquo;</strong>.
+            <p className="text-sm text-neutral-600 leading-relaxed transition-colors duration-300">
+              Uma janela aparecerá perguntando se deseja instalar o Strawby. Toque em <strong className="text-neutral-800 transition-colors duration-300">&ldquo;Instalar&rdquo;</strong>.
             </p>
           </div>
         </div>
@@ -57,10 +57,10 @@ export default function AndroidGuide() {
             <Check size={16} />
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
+            <p className="text-sm font-bold text-neutral-900 transition-colors duration-300">
               Pronto!
             </p>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed transition-colors duration-300">
+            <p className="text-sm text-neutral-600 leading-relaxed transition-colors duration-300">
               O Strawby vai aparecer na sua tela inicial como um app normal, com notificações e tudo.
             </p>
           </div>

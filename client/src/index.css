@@ -194,6 +194,13 @@ body {
   background: #0a0a0a;
 }
 
+/* Landing é sempre tema claro: o atributo é marcado enquanto a página está
+   montada e neutraliza o fundo escuro global. */
+html[data-force-light],
+html[data-force-light] body {
+  background: #ffffff;
+}
+
 /* Scrollbar hidden globally — keeps scroll behavior without visible track/thumb */
 * {
   scrollbar-width: none;

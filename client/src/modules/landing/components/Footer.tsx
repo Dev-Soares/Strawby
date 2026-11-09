@@ -7,11 +7,6 @@ const productLinks = [
   { label: 'Começar agora', href: '/app/create-account' },
 ]
 
-const institutionalLinks = [
-  { label: 'Sobre nós', href: '#conheca' },
-  { label: 'Contato', href: 'mailto:contato@strawby.app' },
-]
-
 const legalLinks = [
   { label: 'Termos de uso', href: '/terms' },
   { label: 'Política de privacidade', href: '/privacy' },
@@ -77,26 +72,9 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Coluna 2: Institucional */}
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-white/70 mb-4">
-              Institucional
-            </p>
-            <ul className="flex flex-col gap-3">
-              {institutionalLinks.map(({ label, href }) => (
-                <li key={label}>
-                  <a
-                    href={href}
-                    className="text-sm font-semibold text-white/90 hover:text-white hover:underline transition-colors duration-150"
-                  >
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+        
 
-          {/* Coluna 3: Legal */}
+          {/* Coluna 2: Legal */}
           <div>
             <p className="text-xs font-black uppercase tracking-[0.2em] text-white/70 mb-4">
               Legal
@@ -143,7 +121,7 @@ export default function Footer() {
         {/* ================================================================= */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium text-white/75">
           <p>© 2026 Strawby. Todos os direitos reservados.</p>
-          <p>Feito para transformar consistência em motivação real.</p>
+          
         </div>
       </div>
     </footer>
