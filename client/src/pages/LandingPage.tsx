@@ -4,8 +4,6 @@ import ProductShowcaseSection from '@/modules/landing/components/ProductShowcase
 import HowToUseSection from '@/modules/landing/components/HowToUseSection';
 import DifferentialsSection from '@/modules/landing/components/DifferentialsSection';
 import CTA from '@/modules/landing/components/CTA';
-
-
 import Footer from '@/modules/landing/components/Footer';
 import { useLightThemeOnly } from '@/modules/landing/hooks/useLightThemeOnly';
 import PageSEO from '@/shared/components/PageSEO';
