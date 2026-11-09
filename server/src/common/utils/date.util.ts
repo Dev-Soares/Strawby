@@ -101,6 +101,23 @@ export function appTimeWindow(minutes: number): {
   };
 }
 
+/**
+ * Instante (UTC) da próxima meia-noite no fuso de São Paulo.
+ *
+ * USO: fim da janela de cota diária. Meia-noite fixa em vez de 24h rolantes
+ * porque o usuário precisa saber quando a cota volta ("amanhã"), e o front
+ * consegue montar contagem regressiva a partir disso.
+ *
+ * Ex.: 2026-11-09 20:00 local -> 2026-11-10T03:00:00Z
+ */
+export function nextAppMidnight(from: Date = new Date()): Date {
+  const todayStr = from.toLocaleDateString('en-CA', { timeZone: APP_TIMEZONE });
+  const [y, m, d] = todayStr.split('-').map(Number);
+  const tomorrowUtcMidnight = Date.UTC(y, m - 1, d) + 86_400_000;
+  // local midnight = utc midnight - offset (offset é negativo => soma 3h)
+  return new Date(tomorrowUtcMidnight - APP_TZ_OFFSET_HOURS * 60 * 60 * 1000);
+}
+
 export function yesterdayInAppTz(): string {
   const now = new Date();
   const todayStr = now.toLocaleDateString('en-CA', { timeZone: APP_TIMEZONE });

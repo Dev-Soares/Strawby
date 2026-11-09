@@ -4,6 +4,7 @@ import { randomUUID } from 'crypto';
 import { AiService } from '../ai/ai.service';
 import { FoodService } from '../food/food.service';
 import { MealService } from '../meal/meal.service';
+import { UserService } from '../user/user.service';
 import { SendAssistantMessageDto } from './dto/send-message.dto';
 import { ConfirmMealDto } from './dto/confirm-meal.dto';
 import type { FoodPublic } from '../food/types';
@@ -52,17 +53,23 @@ export class MealExtractionAssistantService {
     private readonly ai: AiService,
     private readonly food: FoodService,
     private readonly meal: MealService,
+    private readonly user: UserService,
   ) {}
 
   /**
    * Monta a refeição a partir da mensagem mas NÃO salva — devolve um rascunho
    * pro usuário conferir. A gravação acontece em `confirmMeal`.
+   *
+   * Único ponto do assistente que chama o LLM, então é aqui — e só aqui — que
+   * a cota diária é cobrada. Os caminhos de "não entendi" e "não encontrei"
+   * também consomem: a chamada paga já aconteceu.
    */
   async previewMealFromMessage(
     callerId: string,
     patientId: string,
     dto: SendAssistantMessageDto,
   ) {
+    await this.user.consumeAssistantQuota(callerId);
     const extracted = await this.extractMeal(dto.message);
 
     if (extracted.items.length === 0) {

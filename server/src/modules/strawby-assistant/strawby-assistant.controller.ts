@@ -27,7 +27,7 @@ export class StrawbyAssistantController {
    * Único endpoint do assistente que chama o LLM — cada request é uma chamada
    * paga. O limite é por IP (tracker padrão do ThrottlerGuard) e serve como
    * teto de abuso, não como cota: residência e rede móvel compartilham IP,
-   * então a contagem justa por usuário fica no `assistantUsage`.
+   * então a cota justa por usuário fica em `User.assistantUsageCount`.
    */
   @Post('preview-meal')
   @Throttle({ default: { limit: 20, ttl: 60000 } })

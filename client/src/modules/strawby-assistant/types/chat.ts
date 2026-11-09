@@ -42,6 +42,7 @@ export type SuggestedMeal = {
  * `preview` é a refeição montada aguardando confirmação — nada foi salvo ainda.
  * `plan_preview` é o plano calculado aguardando confirmação — nada foi salvo ainda.
  * `unavailable` é local: a IA está fora do ar e o mascote avisa no lugar do erro.
+ * `quota_exceeded` é local: a cota diária acabou e o mascote avisa na conversa.
  * Os demais são o desfecho da tentativa de registrar a refeição ou o plano.
  */
 export type AssistantMessageStatus =
@@ -52,6 +53,7 @@ export type AssistantMessageStatus =
   | 'not_found'
   | 'not_understood'
   | 'unavailable'
+  | 'quota_exceeded'
 
 export type MealDraftItem = {
   foodId: string

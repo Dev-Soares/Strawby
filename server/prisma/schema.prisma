@@ -61,6 +61,8 @@ model User {
   passwordResetToken          String?       @unique
   passwordResetTokenExpiresAt DateTime?
   notificationToken           NotificationToken[]
+  assistantUsageCount         Int           @default(0)
+  assistantUsageResetAt       DateTime      @default(now())
 }
 
 model Patient {

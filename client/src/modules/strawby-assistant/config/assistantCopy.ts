@@ -14,6 +14,10 @@ export const SUGGESTION_EMPTY_MESSAGE =
 export const ASSISTANT_UNAVAILABLE_MESSAGE =
   'Poxa, não estou disponível no momento. Tente novamente mais tarde.'
 
+/** Fala do mascote quando a cota diária de registros com IA acabou. */
+export const ASSISTANT_QUOTA_EXCEEDED_MESSAGE =
+  'Poxa, por hoje já chegamos no limite de registros com a minha ajuda. Amanhã eu volto zerado e a gente continua!'
+
 /** Fala do usuário ao escolher o nível de atividade no seletor. */
 export const buildActivityLevelChoiceMessage = (label: string): string =>
   `Meu nível de atividade é: ${label.toLowerCase()}`
