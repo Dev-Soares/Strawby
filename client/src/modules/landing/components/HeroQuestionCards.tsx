@@ -36,7 +36,7 @@ const questions: Question[] = [
   {
     label: 'Como acompanhar?',
     Icon: ChartLine,
-    position: 'left-1/2 -translate-x-1/2 -top-14 sm:-top-16',
+    position: 'left-1/2 -translate-x-1/2 -top-9 sm:-top-16',
     trail: [
       'bottom-[-10px] left-[47%] h-3 w-3',
       'bottom-[-21px] left-[43%] h-2 w-2',
@@ -90,7 +90,7 @@ const HeroQuestionCards = () => {
             }}
           >
             <span
-              className={`flex items-center gap-1.5 whitespace-nowrap rounded-2xl border-2 px-3.5 py-2 font-display text-[13px] font-black shadow-[3px_3px_0_0_rgba(28,25,23,0.06)] sm:px-4 sm:py-2.5 sm:text-sm ${
+              className={`flex items-center gap-1 whitespace-nowrap rounded-2xl border-2 px-2.5 py-1.5 font-display text-[11px] font-black shadow-[3px_3px_0_0_rgba(28,25,23,0.06)] sm:gap-1.5 sm:px-4 sm:py-2.5 sm:text-sm ${
                 accent
                   ? 'border-red-200 bg-red-50 text-red-700'
                   : 'border-stone-200 bg-white text-neutral-700'

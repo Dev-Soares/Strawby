@@ -24,11 +24,11 @@ const ConnectorDesktop = () => (
 )
 
 const ConnectorMobile = () => (
-  <div className="flex h-24 flex-col items-center justify-center gap-2.5 md:hidden">
+  <div className="flex h-16 flex-col items-center justify-center gap-2 md:hidden">
     <span className="h-2.5 w-2.5 rounded-full bg-red-200" />
     <span className="h-3.5 w-3.5 rounded-full bg-red-300" />
     <span className="h-4.5 w-4.5 rounded-full bg-red-400" />
-    <ChevronDown size={38} strokeWidth={4} className="-mt-1 text-red-600" />
+    <ChevronDown size={30} strokeWidth={4} className="-mt-1 text-red-600" />
   </div>
 )
 
@@ -58,15 +58,15 @@ export default function HowToUseSection() {
   return (
     <section
       id="como-usar"
-      className="bg-white py-16 transition-colors duration-300 sm:py-24 lg:py-28"
+      className="bg-white py-12 transition-colors duration-300 sm:py-24 lg:py-28"
     >
       <div className="mx-auto max-w-6xl px-6 sm:px-8 lg:px-12">
         {/* Cabeçalho */}
-        <motion.div className="mb-16 max-w-xl text-left sm:mb-24" {...fadeUp(0)}>
-          <h2 className="font-display text-[42px] font-black tracking-tighter leading-[0.94] text-neutral-950 sm:text-[54px] lg:text-[62px]">
+        <motion.div className="mb-10 max-w-xl text-left sm:mb-24" {...fadeUp(0)}>
+          <h2 className="font-display text-[32px] font-black tracking-tighter leading-[0.94] text-neutral-950 sm:text-[54px] lg:text-[62px]">
             Simples do começo <span className="text-red-600">ao fim.</span>
           </h2>
-          <p className="mt-3 text-sm font-medium text-neutral-600 sm:text-lg">
+          <p className="mt-3 text-[13px] font-medium text-neutral-600 sm:text-lg">
             Acompanhe seu dia em poucos cliques.
           </p>
         </motion.div>
@@ -75,17 +75,17 @@ export default function HowToUseSection() {
         <div className="flex flex-col items-center md:flex-row md:items-start md:justify-between lg:px-4">
           {/* 1. Comeu */}
           <motion.div className="flex flex-1 flex-col items-center text-center max-w-[270px]" {...fadeUp(0.08)}>
-            <div className="relative mb-4 flex h-44 w-44 items-center justify-center sm:h-48 sm:w-48">
+            <div className="relative mb-3 flex h-36 w-36 items-center justify-center sm:mb-4 sm:h-48 sm:w-48">
               <StrawbyMascot
                 action={steps[0].action}
                 playback="loop"
                 className="h-full w-full drop-shadow-[0_12px_20px_rgba(220,38,38,0.12)]"
               />
             </div>
-            <h3 className="mb-3 font-display text-2xl font-black tracking-tight text-neutral-950 sm:text-3xl">
+            <h3 className="mb-2 font-display text-xl font-black tracking-tight text-neutral-950 sm:mb-3 sm:text-3xl">
               {steps[0].title}
             </h3>
-            <p className="text-sm font-medium leading-relaxed text-neutral-600">
+            <p className="text-[13px] font-medium leading-relaxed text-neutral-600 sm:text-sm">
               {steps[0].description}
             </p>
           </motion.div>
@@ -95,17 +95,17 @@ export default function HowToUseSection() {
 
           {/* 2. Registrou */}
           <motion.div className="flex flex-1 flex-col items-center text-center max-w-[270px]" {...fadeUp(0.18)}>
-            <div className="relative mb-4 flex h-44 w-44 items-center justify-center sm:h-48 sm:w-48">
+            <div className="relative mb-3 flex h-36 w-36 items-center justify-center sm:mb-4 sm:h-48 sm:w-48">
               <StrawbyMascot
                 action={steps[1].action}
                 playback="loop"
                 className="h-full w-full drop-shadow-[0_12px_20px_rgba(220,38,38,0.12)]"
               />
             </div>
-            <h3 className="mb-3 font-display text-2xl font-black tracking-tight text-neutral-950 sm:text-3xl">
+            <h3 className="mb-2 font-display text-xl font-black tracking-tight text-neutral-950 sm:mb-3 sm:text-3xl">
               {steps[1].title}
             </h3>
-            <p className="text-sm font-medium leading-relaxed text-neutral-600">
+            <p className="text-[13px] font-medium leading-relaxed text-neutral-600 sm:text-sm">
               {steps[1].description}
             </p>
           </motion.div>
@@ -115,17 +115,17 @@ export default function HowToUseSection() {
 
           {/* 3. A gente calcula */}
           <motion.div className="flex flex-1 flex-col items-center text-center max-w-[270px]" {...fadeUp(0.28)}>
-            <div className="relative mb-4 flex h-44 w-44 items-center justify-center sm:h-48 sm:w-48">
+            <div className="relative mb-3 flex h-36 w-36 items-center justify-center sm:mb-4 sm:h-48 sm:w-48">
               <StrawbyMascot
                 action={steps[2].action}
                 playback="loop"
                 className="h-full w-full drop-shadow-[0_12px_20px_rgba(220,38,38,0.12)]"
               />
             </div>
-            <h3 className="mb-3 font-display text-2xl font-black tracking-tight text-neutral-950 sm:text-3xl">
+            <h3 className="mb-2 font-display text-xl font-black tracking-tight text-neutral-950 sm:mb-3 sm:text-3xl">
               {steps[2].title}
             </h3>
-            <p className="text-sm font-medium leading-relaxed text-neutral-600">
+            <p className="text-[13px] font-medium leading-relaxed text-neutral-600 sm:text-sm">
               {steps[2].description}
             </p>
           </motion.div>

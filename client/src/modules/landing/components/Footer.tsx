@@ -25,12 +25,12 @@ export default function Footer() {
   const scrollToAnchor = useSmoothScrollTo()
 
   return (
-    <footer className="relative bg-red-600 text-white selection:bg-white selection:text-red-600 pt-6 sm:pt-10 pb-16">
+    <footer className="relative bg-red-600 text-white selection:bg-white selection:text-red-600 pt-6 sm:pt-10 pb-12 sm:pb-16">
       <div className="mx-auto max-w-6xl px-6 sm:px-8 lg:px-12">
         {/* ================================================================= */}
         {/* 1. Área Superior: Identidade Institucional + Colunas de Links     */}
         {/* ================================================================= */}
-        <div className="grid grid-cols-1 gap-12 pb-14 border-b border-white/20 lg:grid-cols-[1.5fr_1fr_1fr_1fr_0.8fr] lg:gap-10">
+        <div className="grid grid-cols-1 gap-9 pb-10 border-b border-white/20 sm:gap-12 sm:pb-14 lg:grid-cols-[1.5fr_1fr_1fr_1fr_0.8fr] lg:gap-10">
           {/* Apresentação da Marca */}
           <div className="max-w-sm">
             <a href="/" className="inline-flex items-center gap-3 select-none mb-5">
@@ -40,18 +40,18 @@ export default function Footer() {
                 width={128}
                 height={128}
                 alt="Strawby"
-                className="h-10 w-10 object-contain brightness-0 invert"
+                className="h-9 w-9 object-contain brightness-0 invert sm:h-10 sm:w-10"
               />
-              <span className="font-display text-2xl font-black tracking-tight text-white">
+              <span className="font-display text-xl font-black tracking-tight text-white sm:text-2xl">
                 Strawby
               </span>
             </a>
 
-            <p className="font-display text-base font-bold text-white mb-2">
+            <p className="font-display text-[15px] font-bold text-white mb-2 sm:text-base">
               Pequenos passos, grandes mudanças.
             </p>
 
-            <p className="text-sm font-medium leading-relaxed text-white/80">
+            <p className="text-[13px] font-medium leading-relaxed text-white/80 sm:text-sm">
               Acompanhe suas refeições, entenda seus hábitos e construa uma rotina saudável sem complicação.
             </p>
           </div>

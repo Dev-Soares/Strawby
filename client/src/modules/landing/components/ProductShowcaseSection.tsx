@@ -40,16 +40,16 @@ export default function ProductShowcaseSection() {
         {/* ================================================================= */}
         {/* 1. Headline — Lateralizado (text-left) com subtítulo maior        */}
         {/* ================================================================= */}
-        <div className="mb-10 max-w-2xl text-left sm:mb-14 lg:mb-16">
+        <div className="mb-8 max-w-2xl text-left sm:mb-14 lg:mb-16">
           <motion.h2
-            className="font-display text-[42px] font-black tracking-tighter leading-[0.92] text-neutral-950 sm:text-[54px] lg:text-[62px]"
+            className="font-display text-[32px] font-black tracking-tighter leading-[0.92] text-neutral-950 sm:text-[54px] lg:text-[62px]"
             {...fadeUp(0)}
           >
             Conheça o <span className="text-red-600">Strawby</span>.
           </motion.h2>
 
           <motion.p
-            className="mt-3.5 max-w-2xl text-lg font-medium leading-relaxed text-neutral-600 sm:text-xl lg:text-[22px]"
+            className="mt-3 max-w-2xl text-[15px] font-medium leading-relaxed text-neutral-600 sm:mt-3.5 sm:text-xl lg:text-[22px]"
             {...fadeUp(0.08)}
           >
             Muito mais simples do que você imagina. Acompanhe sua alimentação e alcance suas metas sem complicação.
@@ -68,10 +68,10 @@ export default function ProductShowcaseSection() {
 
           {/* Tela retangular com o layout real da aplicação */}
           <motion.div
-            className="relative z-10 w-full max-w-[640px] shrink-0 rounded-3xl border-2 border-neutral-200 bg-white p-4 shadow-[0_24px_60px_-12px_rgba(0,0,0,0.12)] sm:p-6"
+            className="relative z-10 w-full max-w-[640px] shrink-0 rounded-3xl border-2 border-neutral-200 bg-white p-2.5 shadow-[0_24px_60px_-12px_rgba(0,0,0,0.12)] sm:p-6"
             {...fadeUp(0.18)}
           >
-            <div className="overflow-hidden rounded-2xl bg-white p-4 sm:p-5">
+            <div className="overflow-hidden rounded-2xl bg-white p-2.5 sm:p-5">
 
               {/* Cabeçalho do App: Data + Streak */}
               <div className="mb-3 flex items-center justify-between border-b border-stone-200/80 pb-2.5">
@@ -219,12 +219,12 @@ export default function ProductShowcaseSection() {
       {/* ================================================================= */}
       {/* 3. Carrossel Marquee STRAWBY — Tamanho Original Completo          */}
       {/* ================================================================= */}
-      <div className="overflow-hidden select-none pointer-events-none mt-16 sm:mt-24 lg:mt-28">
+      <div className="overflow-hidden select-none pointer-events-none mt-12 sm:mt-24 lg:mt-28">
         <div className="marquee-track">
           {Array.from({ length: 8 }).map((_, i) => (
             <span
               key={i}
-              className="font-display font-black tracking-[-0.05em] leading-[0.8] whitespace-nowrap pr-[0.15em] text-[clamp(72px,11vw,160px)] text-transparent [-webkit-text-stroke:1.5px_rgba(220,38,38,0.22)] select-none"
+              className="font-display font-black tracking-[-0.05em] leading-[0.8] whitespace-nowrap pr-[0.15em] text-[clamp(46px,11vw,160px)] text-transparent [-webkit-text-stroke:1.5px_rgba(220,38,38,0.22)] select-none"
             >
               STRAWBY ·
             </span>

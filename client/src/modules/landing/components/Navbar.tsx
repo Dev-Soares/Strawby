@@ -41,14 +41,14 @@ export default function Navbar() {
             animate={{ width: scrolled ? 30 : 38, height: scrolled ? 30 : 38 }}
             transition={{ duration: 0.4, ease }}
           />
-          <span className="font-display text-lg font-extrabold tracking-tighter text-neutral-950 sm:text-xl">
+          <span className="font-display text-base font-extrabold tracking-tighter text-neutral-950 sm:text-xl">
             Strawby
           </span>
         </a>
 
         <a
           href="/app/login"
-          className="shrink-0 rounded-full bg-red-600 px-5 py-2 text-sm font-bold whitespace-nowrap text-white shadow-sm shadow-red-600/25 transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-700 hover:shadow-md hover:shadow-red-600/30 active:translate-y-0 active:bg-red-800 sm:px-6 sm:py-2.5 sm:text-[15px]"
+          className="shrink-0 rounded-full bg-red-600 px-4 py-1.5 text-[13px] font-bold whitespace-nowrap text-white shadow-sm shadow-red-600/25 transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-700 hover:shadow-md hover:shadow-red-600/30 active:translate-y-0 active:bg-red-800 sm:px-6 sm:py-2.5 sm:text-[15px]"
         >
           Entrar
         </a>

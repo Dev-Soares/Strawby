@@ -107,7 +107,7 @@ export default function DifferentialsSection() {
   return (
     <section
       id="diferenciais"
-      className="bg-white py-20 transition-colors duration-300 sm:py-28 lg:py-36"
+      className="bg-white py-14 transition-colors duration-300 sm:py-28 lg:py-36"
     >
       <div className="mx-auto max-w-6xl px-6 sm:px-8 lg:px-12">
         {/* ================================================================= */}
@@ -118,7 +118,7 @@ export default function DifferentialsSection() {
         {/* ================================================================= */}
         {/* 2. Três Composições Editoriais (Visual no Topo, Texto Embaixo)    */}
         {/* ================================================================= */}
-        <div className="flex flex-col gap-y-28 sm:gap-y-36 lg:gap-y-44">
+        <div className="flex flex-col gap-y-20 sm:gap-y-36 lg:gap-y-44">
           {/* --------------------------------------------------------------- */}
           {/* Diferencial 01: Assistente Strawby — registro por conversa      */}
           {/* --------------------------------------------------------------- */}
@@ -141,7 +141,7 @@ export default function DifferentialsSection() {
                 <div className="mt-5 flex items-end gap-1">
                   <InViewMascot
                     action="writing"
-                    className="h-28 w-28 shrink-0 sm:h-36 sm:w-36"
+                    className="h-24 w-24 shrink-0 sm:h-36 sm:w-36"
                     mascotClassName="h-full w-full drop-shadow-[0_12px_20px_rgba(220,38,38,0.16)]"
                   />
 
@@ -173,10 +173,10 @@ export default function DifferentialsSection() {
 
             {/* Texto descritivo embaixo */}
             <motion.div className="max-w-xl text-center lg:flex-1 lg:text-left" {...fadeUp(0.1)}>
-              <h3 className="mb-4 font-display text-[34px] font-black tracking-tight leading-[0.98] text-neutral-950 sm:text-[44px]">
+              <h3 className="mb-3 font-display text-[27px] font-black tracking-tight leading-[0.98] text-neutral-950 sm:mb-4 sm:text-[44px]">
                 Você conta o que comeu. <span className="text-red-600">Ele registra.</span>
               </h3>
-              <p className="text-base font-medium leading-relaxed text-neutral-600 sm:text-lg">
+              <p className="text-[15px] font-medium leading-relaxed text-neutral-600 sm:text-lg">
                 Escreva ou fale do jeito que você falaria com uma pessoa: &ldquo;comi frango com arroz no almoço&rdquo;. O Assistente Strawby entende, calcula as calorias e lança a refeição no seu diário. Ele também sugere refeições e monta seu plano alimentar.
               </p>
             </motion.div>
@@ -187,7 +187,7 @@ export default function DifferentialsSection() {
           {/* --------------------------------------------------------------- */}
           <div className="order-3 flex flex-col items-center gap-8 sm:gap-10 lg:flex-row-reverse lg:items-center lg:justify-between lg:gap-16">
             {/* Visual no topo: Nuvem de alimentos + Mascote thinking */}
-            <div className="relative mx-auto flex h-[400px] w-full max-w-2xl items-end justify-center sm:h-[440px] lg:mx-0 lg:h-[480px] lg:w-1/2 lg:max-w-none">
+            <div className="relative mx-auto flex h-[300px] w-full max-w-2xl items-end justify-center sm:h-[440px] lg:mx-0 lg:h-[480px] lg:w-1/2 lg:max-w-none">
               {/* Grid de alimentos ao fundo */}
               <motion.div
                 className="pointer-events-none absolute inset-x-0 top-[42%] mx-auto grid w-[min(100%,520px)] -translate-y-1/2 grid-cols-6 place-items-center gap-x-2 gap-y-4 sm:gap-x-4 sm:gap-y-5 lg:gap-x-5 lg:gap-y-6"
@@ -205,7 +205,7 @@ export default function DifferentialsSection() {
                     className={`flex items-center justify-center ${getFoodArcItemClass(index)}`}
                   >
                     <food.icon
-                      size={38}
+                      size={28}
                       className={`${food.color} select-none drop-shadow-xs transition-transform duration-200 hover:scale-125 sm:size-11`}
                     />
                   </div>
@@ -219,7 +219,7 @@ export default function DifferentialsSection() {
               >
                 <InViewMascot
                   action="thinking"
-                  className="h-48 w-48 sm:h-56 sm:w-56 lg:h-60 lg:w-60"
+                  className="h-36 w-36 sm:h-56 sm:w-56 lg:h-60 lg:w-60"
                   mascotClassName="h-full w-full drop-shadow-[0_20px_32px_rgba(220,38,38,0.2)]"
                 />
               </motion.div>
@@ -227,10 +227,10 @@ export default function DifferentialsSection() {
 
             {/* Texto descritivo embaixo */}
             <motion.div className="max-w-xl text-center lg:flex-1 lg:text-left" {...fadeUp(0.1)}>
-              <h3 className="mb-4 font-display text-[34px] font-black tracking-tight leading-[0.98] text-neutral-950 sm:text-[44px]">
+              <h3 className="mb-3 font-display text-[27px] font-black tracking-tight leading-[0.98] text-neutral-950 sm:mb-4 sm:text-[44px]">
                 Do açaí ao pão de queijo. <span className="text-red-600">Tudo aqui.</span>
               </h3>
-              <p className="text-base font-medium leading-relaxed text-neutral-600 sm:text-lg">
+              <p className="text-[15px] font-medium leading-relaxed text-neutral-600 sm:text-lg">
                 Encontre o que você realmente come no dia a dia. Uma base com milhares de alimentos da nossa culinária, sem precisar traduzir ingredientes ou adivinhar calorias.
               </p>
             </motion.div>
@@ -315,27 +315,27 @@ export default function DifferentialsSection() {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="flex min-h-28 flex-col items-center justify-center rounded-3xl border-2 border-stone-200 bg-white px-3 py-4 text-center shadow-sm transition-colors duration-300 sm:flex-row sm:justify-start sm:gap-3 sm:py-3 sm:text-left">
-                  <div className="flex h-20 w-20 shrink-0 items-center justify-center">
+                <div className="flex min-h-24 flex-col items-center justify-center rounded-3xl border-2 border-stone-200 bg-white px-3 py-3 text-center shadow-sm transition-colors duration-300 sm:min-h-28 sm:flex-row sm:justify-start sm:gap-3 sm:py-3 sm:text-left">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center sm:h-20 sm:w-20">
                     <Suspense fallback={<Flame size={52} className="text-red-600" />}>
-                      <FireAnimation size={72} />
+                      <FireAnimation size={56} />
                     </Suspense>
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-baseline justify-center gap-2 sm:justify-start">
-                      <span className="font-display text-3xl font-black leading-none text-red-600 sm:text-4xl">12</span>
+                      <span className="font-display text-2xl font-black leading-none text-red-600 sm:text-4xl">12</span>
                     </div>
                     <p className="mt-1 text-[11px] font-semibold text-neutral-950 sm:text-xs">dias consecutivos</p>
                   </div>
                 </div>
 
-                <div className="flex min-h-28 flex-col items-center justify-center rounded-3xl border-2 border-stone-200 bg-white px-3 py-4 text-center shadow-sm transition-colors duration-300 sm:flex-row sm:justify-start sm:gap-3 sm:py-3 sm:text-left">
-                  <div className="flex h-20 w-20 shrink-0 items-center justify-center">
-                    <Trophy size={62} strokeWidth={1.7} className="text-amber-500" />
+                <div className="flex min-h-24 flex-col items-center justify-center rounded-3xl border-2 border-stone-200 bg-white px-3 py-3 text-center shadow-sm transition-colors duration-300 sm:min-h-28 sm:flex-row sm:justify-start sm:gap-3 sm:py-3 sm:text-left">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center sm:h-20 sm:w-20">
+                    <Trophy size={48} strokeWidth={1.7} className="text-amber-500" />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-baseline justify-center gap-2 sm:justify-start">
-                      <span className="font-display text-3xl font-black leading-none text-amber-500 sm:text-4xl">21</span>
+                      <span className="font-display text-2xl font-black leading-none text-amber-500 sm:text-4xl">21</span>
                     </div>
                     <p className="mt-1 text-[11px] font-semibold text-neutral-950 sm:text-xs">melhor sequência</p>
                   </div>
@@ -345,10 +345,10 @@ export default function DifferentialsSection() {
 
             {/* Texto descritivo embaixo */}
             <motion.div className="max-w-xl text-center lg:flex-1 lg:text-left" {...fadeUp(0.15)}>
-              <h3 className="mb-4 font-display text-[34px] font-black tracking-tight leading-[0.98] text-neutral-950 sm:text-[44px]">
+              <h3 className="mb-3 font-display text-[27px] font-black tracking-tight leading-[0.98] text-neutral-950 sm:mb-4 sm:text-[44px]">
                 Pontuação diária e sequência. <span className="text-red-600">Sem perder o ritmo.</span>
               </h3>
-              <p className="text-base font-medium leading-relaxed text-neutral-600 sm:text-lg">
+              <p className="text-[15px] font-medium leading-relaxed text-neutral-600 sm:text-lg">
                 Acompanhe sua pontuação do dia e veja se suas escolhas estão no caminho certo. Mantenha sua sequência ativa, bata recordes e transforme consistência em motivação real.
               </p>
             </motion.div>

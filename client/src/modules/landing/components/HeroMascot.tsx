@@ -19,11 +19,11 @@ const HeroMascot = () => {
   }, [])
 
   return (
-    <div className="relative mx-auto h-[260px] w-full max-w-[390px] sm:h-[300px]">
+    <div className="relative mx-auto h-[205px] w-full max-w-[390px] sm:h-[300px]">
       <HeroQuestionCards />
 
       <motion.div
-        className="absolute left-1/2 top-1/2 z-10 flex h-[205px] w-[205px] -translate-x-1/2 -translate-y-1/2 items-center justify-center sm:h-[250px] sm:w-[250px]"
+        className="absolute left-1/2 top-1/2 z-10 flex h-[165px] w-[165px] -translate-x-1/2 -translate-y-1/2 items-center justify-center sm:h-[250px] sm:w-[250px]"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.7, ease }}

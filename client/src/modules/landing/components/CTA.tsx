@@ -20,33 +20,33 @@ export default function CTA() {
   }, [])
 
   return (
-    <section className="relative overflow-hidden bg-white pt-20 sm:pt-28 lg:pt-36 transition-colors duration-300">
-      <div className="relative z-10 mx-auto max-w-5xl px-6 sm:px-8 lg:px-10 pb-16 sm:pb-20 lg:pb-28">
+    <section className="relative overflow-hidden bg-white pt-14 sm:pt-28 lg:pt-36 transition-colors duration-300">
+      <div className="relative z-10 mx-auto max-w-5xl px-6 sm:px-8 lg:px-10 pb-12 sm:pb-20 lg:pb-28">
         <div className="grid grid-cols-1 items-center gap-2 sm:gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-6">
 
           {/* Lado Esquerdo */}
           <div className="order-2 flex flex-col items-center text-center lg:order-1 lg:items-start lg:text-left">
             <motion.h2
-              className="font-display text-[44px] sm:text-[56px] lg:text-[68px] font-black tracking-tighter leading-[0.92] text-neutral-950"
+              className="font-display text-[32px] sm:text-[56px] lg:text-[68px] font-black tracking-tighter leading-[0.92] text-neutral-950"
               {...fadeUp(0)}
             >
               Que tal começar <span className="text-red-600">agora?</span>
             </motion.h2>
 
             <motion.p
-              className="mt-6 max-w-xl text-lg font-medium leading-relaxed text-neutral-600 sm:text-xl"
+              className="mt-4 max-w-xl text-[15px] font-medium leading-relaxed text-neutral-600 sm:mt-6 sm:text-xl"
               {...fadeUp(0.1)}
             >
               Pequenos passos fazem a diferença. Comece a cuidar da sua alimentação de um jeito mais simples e leve.
             </motion.p>
 
             <motion.div
-              className="mt-8 flex w-full max-w-sm flex-col items-stretch gap-3"
+              className="mt-6 flex w-full max-w-sm flex-col items-stretch gap-3 sm:mt-8"
               {...fadeUp(0.2)}
             >
               <a
                 href="/app/create-account"
-                className="group relative inline-flex items-center justify-center gap-2.5 rounded-2xl bg-red-600 px-8 py-4.5 text-base font-bold text-white shadow-md shadow-red-600/20 hover:bg-red-700 hover:shadow-lg hover:shadow-red-600/25 hover:-translate-y-0.5 active:translate-y-0.5 active:bg-red-800 transition-all duration-200 cursor-pointer"
+                className="group relative inline-flex items-center justify-center gap-2.5 rounded-2xl bg-red-600 px-8 py-4 text-[15px] sm:py-4.5 sm:text-base font-bold text-white shadow-md shadow-red-600/20 hover:bg-red-700 hover:shadow-lg hover:shadow-red-600/25 hover:-translate-y-0.5 active:translate-y-0.5 active:bg-red-800 transition-all duration-200 cursor-pointer"
               >
                 <span>Criar minha conta grátis</span>
                 <ArrowRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
@@ -54,22 +54,22 @@ export default function CTA() {
 
               <a
                 href="/app/login"
-                className="inline-flex items-center justify-center rounded-2xl border-2 border-stone-200 bg-white px-8 py-4 text-base font-bold text-neutral-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-stone-300 hover:bg-stone-50 hover:text-neutral-950 active:translate-y-0.5 cursor-pointer"
+                className="inline-flex items-center justify-center rounded-2xl border-2 border-stone-200 bg-white px-8 py-3.5 text-[15px] sm:py-4 sm:text-base font-bold text-neutral-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-stone-300 hover:bg-stone-50 hover:text-neutral-950 active:translate-y-0.5 cursor-pointer"
               >
                 Já tenho uma conta
               </a>
 
-              <span className="mt-1.5 text-sm font-semibold text-neutral-600 sm:text-[15px]">
+              <span className="mt-1.5 text-[13px] font-semibold text-neutral-600 sm:text-[15px]">
                 Gratuito para começar. Sem complicação.
               </span>
             </motion.div>
           </div>
 
           {/* Lado Direito: mascote */}
-          <div className="relative order-1 flex min-h-60 items-center justify-center sm:min-h-88 lg:order-2 lg:justify-start">
+          <div className="relative order-1 flex min-h-48 items-center justify-center sm:min-h-88 lg:order-2 lg:justify-start">
             <div className="relative z-10 flex items-end">
               <motion.div
-                className="relative z-10 h-56 w-56 sm:h-64 sm:w-64 lg:h-76 lg:w-76 xl:h-80 xl:w-80 shrink-0"
+                className="relative z-10 h-44 w-44 sm:h-64 sm:w-64 lg:h-76 lg:w-76 xl:h-80 xl:w-80 shrink-0"
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
@@ -95,7 +95,7 @@ export default function CTA() {
           viewBox="0 0 1440 180"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-24 sm:h-36 lg:h-48 text-red-600 block"
+          className="w-full h-16 sm:h-36 lg:h-48 text-red-600 block"
           preserveAspectRatio="none"
         >
           <path

@@ -23,8 +23,11 @@ const scrollToShowcase = (event: MouseEvent<HTMLAnchorElement>) => {
 
 const Hero = () => {
   return (
-    <section className="relative flex min-h-svh flex-col justify-center overflow-hidden pt-20 pb-8 sm:min-h-[calc(100vh-80px)] sm:pt-32 sm:pb-16">
-      <div className="flex-1 flex items-center px-6">
+    // my-auto em vez de justify-center: margem auto vira 0 quando nao sobra
+    // espaco, entao conteudo alto para no topo do content-box em vez de vazar
+    // pra cima e passar atras da navbar fixa.
+    <section className="relative flex min-h-svh flex-col overflow-hidden pt-28 pb-8 sm:min-h-[calc(100vh-80px)] sm:pt-32 sm:pb-16">
+      <div className="my-auto w-full px-6">
         <div className="mx-auto grid w-full max-w-5xl items-center gap-5 sm:gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
 
           <motion.div
@@ -39,7 +42,7 @@ const Hero = () => {
           <div className="relative z-10 order-2 flex min-w-0 flex-col items-center text-center lg:items-start lg:text-left">
 
             <motion.h1
-              className="w-full max-w-[500px] font-display font-black tracking-tighter leading-[0.95] text-balance text-[clamp(30px,8.6vw,40px)] mb-3 sm:leading-[0.92] sm:text-[52px] sm:mb-4 lg:text-[58px] xl:text-[64px]"
+              className="w-full max-w-[500px] font-display font-black tracking-tighter leading-[0.95] text-balance text-[clamp(26px,7.4vw,34px)] mb-2.5 sm:leading-[0.92] sm:text-[52px] sm:mb-4 lg:text-[58px] xl:text-[64px]"
               {...fadeUp(0.08)}
             >
               <span className="text-neutral-950 transition-colors duration-300">
@@ -53,7 +56,7 @@ const Hero = () => {
             </motion.h1>
 
             <motion.p
-              className="text-neutral-700 text-[16px] sm:text-[20px] leading-relaxed max-w-105 mb-6 sm:mb-9 font-medium transition-colors duration-300"
+              className="text-neutral-700 text-[14px] sm:text-[20px] leading-relaxed max-w-100 sm:max-w-105 mb-5 sm:mb-9 font-medium transition-colors duration-300"
               {...fadeUp(0.36)}
             >
               Conte o que comeu por texto ou voz. O Strawby calcula as calorias,
@@ -66,7 +69,7 @@ const Hero = () => {
             >
               <a
                 href="/app/create-account"
-                className="flex items-center justify-center gap-2 rounded-xl border-2 border-red-600 bg-red-600 px-8 py-4 text-[15px] font-semibold text-white transition-colors duration-150 hover:border-red-700 hover:bg-red-700 active:border-red-800 active:bg-red-800 cursor-pointer"
+                className="flex items-center justify-center gap-2 rounded-xl border-2 border-red-600 bg-red-600 px-7 py-3.5 text-[14px] sm:px-8 sm:py-4 sm:text-[15px] font-semibold text-white transition-colors duration-150 hover:border-red-700 hover:bg-red-700 active:border-red-800 active:bg-red-800 cursor-pointer"
               >
                 Experimentar grátis
                 <ArrowRight size={17} />
@@ -75,7 +78,7 @@ const Hero = () => {
               <a
                 href="#conheca"
                 onClick={scrollToShowcase}
-                className="group flex items-center justify-center gap-2 rounded-xl border-2 border-stone-200 bg-white px-8 py-4 text-[15px] font-semibold text-neutral-700 transition-colors duration-150 hover:border-stone-300 hover:bg-stone-50 hover:text-neutral-950 cursor-pointer"
+                className="group flex items-center justify-center gap-2 rounded-xl border-2 border-stone-200 bg-white px-7 py-3.5 text-[14px] sm:px-8 sm:py-4 sm:text-[15px] font-semibold text-neutral-700 transition-colors duration-150 hover:border-stone-300 hover:bg-stone-50 hover:text-neutral-950 cursor-pointer"
               >
                 Conhecer o aplicativo
                 <ChevronDown
