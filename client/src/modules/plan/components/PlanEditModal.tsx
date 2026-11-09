@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { AnimatePresence, motion } from 'framer-motion'
 import { planSchema, type PlanData } from '../types/plan'
 import { Flame, Pencil, Save, X } from 'lucide-react'
@@ -20,16 +20,16 @@ interface PlanEditModalProps {
 
 
 export default function PlanEditModal({ isOpen, onClose, defaultValues, onSave, isPending }: PlanEditModalProps) {
-  const { handleSubmit, register, watch, setValue } = useForm<PlanData>({
+  const { handleSubmit, register, control, setValue } = useForm<PlanData>({
     resolver: zodResolver(planSchema),
     defaultValues,
   })
 
-  const watched = watch()
+  const watched = useWatch({ control, defaultValue: defaultValues }) as PlanData
 
-  const calories = watch('calories')
-  const protein = watch('protein')
-  const fat = watch('fat')
+  const calories = useWatch({ control, name: 'calories' })
+  const protein = useWatch({ control, name: 'protein' })
+  const fat = useWatch({ control, name: 'fat' })
   useEffect(() => {
     const carbs = balanceCarbs(calories, protein, fat)
     if (carbs === null) return

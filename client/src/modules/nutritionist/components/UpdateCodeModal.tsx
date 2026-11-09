@@ -22,7 +22,7 @@ export default function UpdateCodeModal({ isOpen, currentCode, isPending, onClos
 
   useEffect(() => {
     if (isOpen) reset({ code: currentCode ?? '' })
-  }, [isOpen, currentCode])
+  }, [isOpen, currentCode, reset])
 
   const onSubmit = handleSubmit((data) => onSave(data))
 

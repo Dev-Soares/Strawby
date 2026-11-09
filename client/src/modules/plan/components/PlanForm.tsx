@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { planSchema, type PlanData } from '../types/plan'
 import { Flame, Save } from 'lucide-react'
@@ -20,13 +20,17 @@ interface PlanFormProps {
 }
 
 export default function PlanForm({ defaultValues }: PlanFormProps) {
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<PlanData>({
+  const { register, handleSubmit, formState: { errors }, control } = useForm<PlanData>({
     resolver: zodResolver(planSchema),
     defaultValues,
   })
 
-  const calories = watch('calories')
-  const watchValues = { protein: watch('protein'), carbs: watch('carbs'), fat: watch('fat') }
+  const calories = useWatch({ control, name: 'calories' })
+  const watchValues = {
+    protein: useWatch({ control, name: 'protein' }),
+    carbs: useWatch({ control, name: 'carbs' }),
+    fat: useWatch({ control, name: 'fat' }),
+  }
 
   const onSubmit = handleSubmit(() => toast.success('Plano salvo com sucesso!'))
 

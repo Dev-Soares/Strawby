@@ -30,7 +30,6 @@ async function initializeFirebase(): Promise<Messaging | null> {
         return messagingInstance
       } catch (error) {
         initError = error instanceof Error ? error : new Error(String(error))
-        // eslint-disable-next-line no-console
         console.warn('[Firebase] Falha ao inicializar messaging:', initError.message)
         return null
       }

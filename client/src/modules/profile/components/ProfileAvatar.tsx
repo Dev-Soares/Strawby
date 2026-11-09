@@ -12,7 +12,7 @@ interface Props {
 
 export default function ProfileAvatar({ name, role }: Props) {
   return (
-    <div data-tutorial="profile-avatar" className="flex items-center gap-4 mb-8">
+    <div className="flex items-center gap-4 mb-8">
       <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-red-500 to-rose-700 flex items-center justify-center shrink-0 shadow-md shadow-red-200/50 dark:shadow-red-950/30">
         <span className="font-display text-xl font-extrabold text-white tracking-tight">
           {getInitials(name)}

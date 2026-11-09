@@ -1,13 +1,7 @@
-import { createContext, useContext } from 'react'
-import { useTheme, type ThemeState } from '../hooks/useTheme'
+import { useTheme } from '../hooks/useTheme'
+import { ThemeContext } from './theme-context'
 
-const ThemeContext = createContext<ThemeState | null>(null)
-
-export function useThemeContext(): ThemeState {
-  const ctx = useContext(ThemeContext)
-  if (!ctx) throw new Error('useThemeContext must be used within ThemeProvider')
-  return ctx
-}
+export type { ThemeState } from '../hooks/useTheme'
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const value = useTheme()

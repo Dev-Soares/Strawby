@@ -1,11 +1,15 @@
 import { z } from 'zod'
 
+/** Quem definiu as metas — espelha o enum `PlanSource` do backend. */
+export type PlanSource = 'ASSISTANT' | 'MANUAL' | 'NUTRITIONIST'
+
 export type Plan = {
   id: string
   calories: number
   protein: number
   carbs: number
   fat: number
+  source: PlanSource
   patientId: string
 }
 

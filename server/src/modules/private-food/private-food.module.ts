@@ -9,5 +9,6 @@ import { PrivateFoodService } from './private-food.service';
   imports: [DatabaseModule, AuthGuardModule, PatientAccessModule],
   controllers: [PrivateFoodController],
   providers: [PrivateFoodService],
+  exports: [PrivateFoodService],
 })
 export class PrivateFoodModule {}

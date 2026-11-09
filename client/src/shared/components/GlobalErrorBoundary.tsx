@@ -1,4 +1,4 @@
-import { Component, type ErrorInfo, type ReactNode } from 'react'
+import { Component, type ReactNode } from 'react'
 
 interface Props {
   children: ReactNode
@@ -19,7 +19,7 @@ export default class GlobalErrorBoundary extends Component<Props, State> {
     return { hasError: true, error }
   }
 
-  componentDidCatch(_error: Error, _info: ErrorInfo) {
+  componentDidCatch() {
     // Erros já são tratados pelo React ErrorBoundary; evita crashar a árvore toda.
   }
 

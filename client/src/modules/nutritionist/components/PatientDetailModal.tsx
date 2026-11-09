@@ -272,6 +272,7 @@ export default function PatientDetailModal({ patient, isOpen, onClose }: Props) 
         onSubmit={(data) => createMutation.mutate(data, { onSuccess: () => setCreateOpen(false) })}
         isPending={createMutation.isPending}
         initialMode={createMode}
+        isNutritionist
       />
 
       {plan && (

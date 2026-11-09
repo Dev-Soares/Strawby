@@ -8,7 +8,8 @@ import WeightRecordModal from './WeightRecordModal'
 import WeightHistoryModal from './WeightHistoryModal'
 import type { WeightRecordFormData } from '@/modules/patient/types/weightRecord'
 import { toLocalISODate } from '@/shared/utils/date'
-import WeightBarChart, { deriveWeightChartData } from '@/shared/components/WeightBarChart'
+import WeightBarChart from '@/shared/components/WeightBarChart'
+import { deriveWeightChartData } from '@/shared/utils/deriveWeightChartData'
 import { PROFILE_ACCENTS } from '../config/profileAccents'
 
 const { color, track } = PROFILE_ACCENTS.brand

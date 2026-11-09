@@ -23,6 +23,14 @@ enum MealKind {
   PLAN
 }
 
+/// Quem definiu as metas do plano — um plano calculado pelo app é uma
+/// estimativa e precisa ser sinalizado como tal, não é prescrição profissional.
+enum PlanSource {
+  ASSISTANT
+  MANUAL
+  NUTRITIONIST
+}
+
 enum ConnectionRequestStatus {
   PENDING
   ACCEPTED
@@ -53,6 +61,8 @@ model User {
   passwordResetToken          String?       @unique
   passwordResetTokenExpiresAt DateTime?
   notificationToken           NotificationToken[]
+  assistantUsageCount         Int           @default(0)
+  assistantUsageResetAt       DateTime      @default(now())
 }
 
 model Patient {
@@ -101,15 +111,16 @@ model DailyScore {
 }
 
 model Plan {
-  id        String   @id @default(uuid())
+  id        String     @id @default(uuid())
   calories  Float
   protein   Float
   carbs     Float
   fat       Float
-  patientId String   @unique
-  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  source    PlanSource @default(MANUAL)
+  patientId String     @unique
+  patient   Patient    @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Food {
@@ -251,8 +262,15 @@ model NotificationToken {
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   token     String   @unique
+  // identifica o aparelho (uuid no localStorage do cliente). O FCM rotaciona o
+  // token, então a chave do registro é userId+deviceId — sem isso cada rotação
+  // criava uma linha nova e o mesmo aparelho recebia a push várias vezes.
+  deviceId  String
   createdAt DateTime @default(now())
+  // tocado a cada re-registro (o app refaz na abertura) — base pra podar tokens mortos
+  updatedAt DateTime @updatedAt
 
+  @@unique([userId, deviceId])
   @@index([userId])
 }
 

@@ -21,7 +21,6 @@ export default function ProfilePage() {
       <div className="px-6 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-8 sm:py-12">
 
         <motion.div
-          data-tutorial="profile-header"
           className="mb-10 sm:mb-12"
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -46,11 +45,17 @@ export default function ProfilePage() {
             {/* Colunas empilham independente — evita buraco entre seções de alturas diferentes */}
             {/* Mobile: peso → meta → métricas. Desktop: meta+métricas à esquerda, peso à direita */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-x-14 items-start">
-              <WeightHistoryChart patientId={user!.id} />
+              <div data-tour="profile-weight">
+                <WeightHistoryChart patientId={user!.id} />
+              </div>
 
               <div className="flex flex-col gap-12 lg:order-first">
                 {patient && <GoalProgressSection patientId={user!.id} patient={patient} />}
-                {patient && <ProfileBodyDataSection patient={patient} />}
+                {patient && (
+                  <div data-tour="profile-body">
+                    <ProfileBodyDataSection patient={patient} />
+                  </div>
+                )}
               </div>
             </div>
           </>
@@ -58,7 +63,9 @@ export default function ProfilePage() {
 
         {isNutritionist && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-x-14 items-start">
-            <ProfileInviteCodeSection />
+            <div data-tour="profile-invite">
+              <ProfileInviteCodeSection />
+            </div>
           </div>
         )}
 

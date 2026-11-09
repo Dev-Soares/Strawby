@@ -1,86 +1,73 @@
 import { Link } from 'react-router-dom'
-import { ArrowUpRight } from 'lucide-react'
 import { InstagramLogo } from '@phosphor-icons/react'
+import { useSmoothScrollTo } from '@/shared/hooks/useSmoothScrollTo'
+
 const productLinks = [
-  { label: 'Funcionalidades', href: '#funcionalidades' },
-  { label: 'FAQ', href: '/faq' },
+  { label: 'Conheça o Strawby', href: '#conheca' },
+  { label: 'Funcionalidades', href: '#diferenciais' },
+  { label: 'Começar agora', href: '/app/create-account' },
 ]
 
 const legalLinks = [
-  { label: 'Privacidade', href: '/privacy' },
-  { label: 'Termos', href: '/terms' },
+  { label: 'Termos de uso', href: '/terms' },
+  { label: 'Política de privacidade', href: '/privacy' },
 ]
 
 const socials = [
-  { icon: InstagramLogo, href: 'https://www.instagram.com/strawbyapp/', label: 'Instagram' },
+  {
+    icon: InstagramLogo,
+    href: 'https://www.instagram.com/strawbyapp/',
+    label: 'Instagram',
+  },
 ]
 
 export default function Footer() {
+  const scrollToAnchor = useSmoothScrollTo()
+
   return (
-    <footer className="relative bg-white dark:bg-neutral-950 text-neutral-950 dark:text-neutral-100 overflow-hidden border-t border-neutral-200 dark:border-neutral-800 transition-colors duration-300">
-      <div className="relative max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 pt-20 lg:pt-28 pb-10">
-
-        <div className="grid grid-cols-1 lg:grid-cols-[1.4fr_1fr_1fr_1fr] gap-12 lg:gap-16 pb-16 border-b border-neutral-200 dark:border-neutral-800 transition-colors duration-300">
-
-          <div>
-            <a href="/" className="inline-flex items-center gap-2.5 mb-10 group select-none">
-              <img draggable={false} src="/logo.webp" width={128} height={128} alt="Strawby" className="w-10 h-10 object-contain" />
-               <span className="font-display text-neutral-950 dark:text-neutral-100 text-xl tracking-tighter font-extrabold transition-colors duration-300">
+    <footer className="relative bg-red-600 text-white selection:bg-white selection:text-red-600 pt-6 sm:pt-10 pb-16">
+      <div className="mx-auto max-w-6xl px-6 sm:px-8 lg:px-12">
+        {/* ================================================================= */}
+        {/* 1. Área Superior: Identidade Institucional + Colunas de Links     */}
+        {/* ================================================================= */}
+        <div className="grid grid-cols-1 gap-12 pb-14 border-b border-white/20 lg:grid-cols-[1.5fr_1fr_1fr_1fr_0.8fr] lg:gap-10">
+          {/* Apresentação da Marca */}
+          <div className="max-w-sm">
+            <a href="/" className="inline-flex items-center gap-3 select-none mb-5">
+              <img
+                draggable={false}
+                src="/logo.webp"
+                width={128}
+                height={128}
+                alt="Strawby"
+                className="h-10 w-10 object-contain brightness-0 invert"
+              />
+              <span className="font-display text-2xl font-black tracking-tight text-white">
                 Strawby
               </span>
             </a>
 
-            <h3 className="font-display text-[44px] sm:text-[56px] font-black tracking-[-0.03em] leading-[0.95] mb-8 text-neutral-950 dark:text-neutral-100 transition-colors duration-300">
-              Coma melhor.<br />
-              <span className="text-red-600">Todo dia.</span>
-            </h3>
+            <p className="font-display text-base font-bold text-white mb-2">
+              Pequenos passos, grandes mudanças.
+            </p>
 
-            <a
-              href="/app/create-account"
-              className="group inline-flex hover:-translate-y-0.5 items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-6 py-3.5 rounded-full transition-all duration-200 text-sm"
-            >
-              Começar grátis
-              <ArrowUpRight size={16} className="group-hover:rotate-45 transition-transform duration-200" />
-            </a>
+            <p className="text-sm font-medium leading-relaxed text-white/80">
+              Acompanhe suas refeições, entenda seus hábitos e construa uma rotina saudável sem complicação.
+            </p>
           </div>
 
+          {/* Coluna 1: Produto */}
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-red-600 mb-6">
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-white/70 mb-4">
               Produto
             </p>
-            <ul className="flex flex-col gap-3.5">
+            <ul className="flex flex-col gap-3">
               {productLinks.map(({ label, href }) => (
-                <li key={label}>
-                  {href.startsWith('/') ? (
-                    <Link
-                      to={href}
-                      className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-100 transition-colors duration-150 text-[15px] font-medium"
-                    >
-                      {label}
-                    </Link>
-                  ) : (
-                    <a
-                      href={href}
-                      className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-100 transition-colors duration-150 text-[15px] font-medium"
-                    >
-                      {label}
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-red-600 mb-6">
-              Legal
-            </p>
-            <ul className="flex flex-col gap-3.5">
-              {legalLinks.map(({ label, href }) => (
                 <li key={label}>
                   <a
                     href={href}
-                    className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-neutral-100 transition-colors duration-150 text-[15px] font-medium"
+                    onClick={(event) => scrollToAnchor(event, href)}
+                    className="text-sm font-semibold text-white/90 hover:text-white hover:underline transition-colors duration-150"
                   >
                     {label}
                   </a>
@@ -89,21 +76,43 @@ export default function Footer() {
             </ul>
           </div>
 
+        
+
+          {/* Coluna 2: Legal */}
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.25em] text-red-600 mb-6">
-              Siga
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-white/70 mb-4">
+              Legal
             </p>
-            <ul className="flex gap-3">
+            <ul className="flex flex-col gap-3">
+              {legalLinks.map(({ label, href }) => (
+                <li key={label}>
+                  <Link
+                    to={href}
+                    className="text-sm font-semibold text-white/90 hover:text-white hover:underline transition-colors duration-150"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Coluna 4: Redes Sociais */}
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-white/70 mb-4">
+              Redes sociais
+            </p>
+            <ul className="flex items-center gap-3">
               {socials.map(({ icon: Icon, href, label }) => (
                 <li key={label}>
                   <a
                     href={href}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     aria-label={label}
-                    className="flex w-10 h-10 items-center justify-center rounded-full border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-red-600 hover:border-red-600 hover:text-white transition-colors duration-200"
+                    className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/25 bg-white/10 text-white hover:bg-white/20 hover:border-white/40 transition-all duration-200"
                   >
-                    <Icon size={16} />
+                    <Icon size={20} weight="fill" />
                   </a>
                 </li>
               ))}
@@ -111,14 +120,14 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-8">
-          <p className="text-xs text-neutral-500 dark:text-neutral-400 tracking-wide transition-colors duration-300">
-            © {new Date().getFullYear()} Strawby. Todos os direitos reservados.
-          </p>
-        
+        {/* ================================================================= */}
+        {/* 2. Área Inferior: Copyright e Informações                         */}
+        {/* ================================================================= */}
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium text-white/75">
+          <p>© 2026 Strawby. Todos os direitos reservados.</p>
+          
         </div>
       </div>
-
     </footer>
   )
 }

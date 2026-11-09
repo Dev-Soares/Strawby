@@ -8,7 +8,7 @@ export default function GoalHint({ weight, target }: { weight?: number; target?:
 
   if (!ready) {
     return (
-      <p className="mt-4 text-[13px] font-semibold text-white/50">
+      <p className="mt-5 text-[13px] font-bold text-neutral-400 dark:text-neutral-500">
         Digite seu peso ideal
       </p>
     )
@@ -24,8 +24,8 @@ export default function GoalHint({ weight, target }: { weight?: number; target?:
         : { Icon: TrendingUp, label: `Ganhar ${absDiff.toFixed(1)} kg` }
 
   return (
-    <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-1.5 text-[13px] font-bold text-white">
-      <hint.Icon size={15} />
+    <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-red-50 px-4 py-1.5 text-[13px] font-extrabold text-red-600 dark:bg-red-950/50 dark:text-red-300">
+      <hint.Icon size={15} strokeWidth={2.6} />
       {hint.label}
     </span>
   )

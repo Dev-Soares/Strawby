@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import BlobMenu from './BlobMenu'
 import TabBar from './TabBar'
 import NotificationPermissionPopup from '@/modules/notifications/components/NotificationPermissionPopup'
+import { useTour } from '@/modules/onboarding/hooks/useTour'
+import AssistantLauncher from '@/modules/strawby-assistant/components/AssistantLauncher'
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -10,6 +13,7 @@ interface AppLayoutProps {
 
 export default function AppLayout({ children }: AppLayoutProps) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const { isActive: isTourActive } = useTour()
 
   useEffect(() => {
     if (!menuOpen) return
@@ -24,20 +28,22 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 transition-colors duration-300">
+      {/* Dentro do app a aba mostra so a marca: o title do index.html e a chamada de
+          marketing da landing, que fica truncada e repetida em toda tela. Aqui tambem
+          vale noindex — /app/* ja esta bloqueado no robots, isto reforca caso um link
+          escape. Uma pagina pode sobrescrever montando o proprio Helmet depois. */}
+      <Helmet>
+        <title>Strawby</title>
+        <meta name="robots" content="noindex, nofollow" />
+      </Helmet>
+
       {/* Sem backdrop-blur: o Safari re-rasteriza o backdrop-filter a cada frame
           de scroll na largura toda do viewport, e o header e sticky em todas as
-          telas do app — era a causa do scroll travado no iOS. O degrade pro
-          transparente da o mesmo "conteudo sumindo atras do header" com um
-          paint estatico no lugar do blur por frame. */}
-      <div className={`sticky top-0 z-70 pt-3 sm:pt-4 ${menuOpen ? 'bg-transparent' : 'bg-neutral-50 dark:bg-neutral-950'}`}>
-        {/* O degrade mora num overlay ancorado em top-full, fora do fluxo: assim
-            ele desce abaixo do header sem empurrar o conteudo da pagina. */}
-        {!menuOpen && (
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-full h-10 sm:h-12 bg-linear-to-b from-neutral-50 to-transparent dark:from-neutral-950"
-          />
-        )}
+          telas do app — era a causa do scroll travado no iOS. Tambem sem overlay
+          de degrade: ele pintava por cima do conteudo e lavava o topo dos
+          elementos coloridos (botao vermelho da home) com uma faixa branca.
+          Fundo solido + corte limpo. */}
+      <div className={`sticky top-0 z-70 pt-3 sm:pt-4 pb-2 sm:pb-3 ${menuOpen ? 'bg-transparent' : 'bg-neutral-50 dark:bg-neutral-950'}`}>
         <header className="flex items-center justify-between px-5 sm:px-8 lg:px-13 xl:px-21 h-14 sm:h-16 md:h-20">
           <Link
             to="/app/home"
@@ -69,6 +75,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <BlobMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
 
       <main className="pb-24 sm:pb-28 lg:pb-32">{children}</main>
+
+      {/* fixo como header/TabBar: o botao do assistente existe em toda tela do app.
+          Durante o tutorial ele sai: o mascote do tour ja desenha a bolinha no
+          mesmo lugar, e duas estragariam o efeito de ele sair e voltar pra la */}
+      <AssistantLauncher hidden={menuOpen || isTourActive} />
 
       <NotificationPermissionPopup />
     </div>

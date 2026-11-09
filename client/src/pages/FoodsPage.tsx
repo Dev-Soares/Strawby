@@ -32,7 +32,10 @@ export default function FoodsPage() {
           <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-3 transition-colors duration-300">Busque na base pública, gerencie seus alimentos privados ou monte receitas</p>
         </div>
 
-        <div data-tutorial="foods-tabs" className="flex gap-1 mb-6 bg-neutral-100 dark:bg-neutral-800 rounded-xl p-1 transition-colors duration-300">
+        <div
+          data-tour="foods-tabs"
+          className="flex gap-1 mb-6 bg-neutral-100 dark:bg-neutral-800 rounded-xl p-1 transition-colors duration-300"
+        >
           {TABS.map((t) => (
             <button
               key={t.key}

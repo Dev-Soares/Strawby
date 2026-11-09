@@ -15,7 +15,9 @@ export class PatientAccessService {
         select: { id: true },
       });
       if (!linked)
-        throw new ForbiddenException('Sem permissão para acessar este paciente');
+        throw new ForbiddenException(
+          'Sem permissão para acessar este paciente',
+        );
     } catch (error) {
       mapPrismaError(error, 'Erro ao verificar acesso ao paciente');
     }

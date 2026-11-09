@@ -12,11 +12,15 @@
     "moduleDetection": "force",
     "noEmit": true,
     "strict": true,
+    // scripts/ é JS puro (roda no Node, fora do bundle) — checkJs faz o tsc -b
+    // validá-lo junto com o resto em vez de deixar passar erro silencioso.
+    "allowJs": true,
+    "checkJs": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts", "scripts/**/*.mjs"]
 }

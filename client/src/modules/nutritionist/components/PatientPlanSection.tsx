@@ -68,7 +68,7 @@ export default function PatientPlanSection({
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-extrabold text-neutral-950 dark:text-neutral-100 leading-tight">Inserir manualmente</p>
-                <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5 leading-tight">Defina as metas de macros você mesmo</p>
+                <p className="text-xs text-neutral-400 dark:text-neutral-500 mt-0.5 leading-tight">Defina as metas de nutrientes você mesmo</p>
               </div>
             </button>
             <button

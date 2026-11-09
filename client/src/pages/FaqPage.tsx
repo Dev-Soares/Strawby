@@ -23,7 +23,7 @@ const faqGroups: FaqGroup[] = [
       {
         question: 'O que é o Strawby?',
         answer:
-          'É um app para acompanhar calorias, macros e refeições do dia a dia. A ideia é transformar a alimentação em algo visual, simples e consistente.',
+          'É um app para acompanhar calorias, nutrientes e refeições do dia a dia. A ideia é transformar a alimentação em algo visual, simples e consistente.',
       },
       {
         question: 'Como eu começo a usar?',
@@ -60,10 +60,10 @@ const faqGroups: FaqGroup[] = [
   },
   {
     title: 'Metas e progresso',
-    description: 'Como acompanhar consistência, macros e evolução diária.',
+    description: 'Como acompanhar consistência, nutrientes e evolução diária.',
     items: [
       {
-        question: 'O Strawby mostra minhas metas de calorias e macros?',
+        question: 'O Strawby mostra minhas metas de calorias e nutrientes?',
         answer:
           'Mostra sim. O plano diário inclui calorias, proteína, carboidratos e gordura, com visualização clara do que já foi consumido e do que ainda falta.',
       },
@@ -100,8 +100,8 @@ export default function FaqPage() {
   return (
     <>
       <PageSEO
-        title="Perguntas Frequentes — Strawby"
-        description="Tire suas dúvidas sobre o Strawby: como criar conta, registrar refeições, buscar alimentos, criar receitas e acompanhar metas de calorias e macros."
+        title="Perguntas Frequentes - Strawby"
+        description="Tire suas dúvidas sobre o Strawby: como criar conta, registrar refeições, buscar alimentos, criar receitas e acompanhar metas de calorias e nutrientes."
         path="/faq"
         jsonLd={faqSchema}
       />
@@ -141,7 +141,7 @@ export default function FaqPage() {
               </div>
               <div className="rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-4 transition-colors duration-300 dark:border-neutral-800 dark:bg-neutral-950">
                 <p className="text-[10px] font-black uppercase tracking-[0.22em] text-neutral-500 dark:text-neutral-400">Acompanhamento</p>
-                <p className="mt-2 text-sm font-semibold text-neutral-900 dark:text-neutral-100">Macros, consistência e pontuação</p>
+                <p className="mt-2 text-sm font-semibold text-neutral-900 dark:text-neutral-100">Nutrientes, consistência e pontuação</p>
               </div>
             </div>
 

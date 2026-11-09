@@ -1,5 +1,5 @@
 import { useParams, useSearchParams } from 'react-router-dom'
-import { useThemeContext } from '@/shared/contexts/ThemeProvider'
+import { useThemeContext } from '@/shared/hooks/useThemeContext'
 import { ArrowLeft, ChefHat, Clock, Plus, Save, StickyNote, Trash2, Utensils } from 'lucide-react'
 import AppLayout from '@/shared/layouts/AppLayout'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'

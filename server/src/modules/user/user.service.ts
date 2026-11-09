@@ -1,10 +1,21 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HashService } from '../../common/hash/hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { CompleteOnboardingDto } from './dto/complete-onboarding.dto';
 import { mapPrismaError } from '../../common/utils/prisma-error.mapper';
+import { nextAppMidnight } from '../../common/utils/date.util';
+import {
+  ASSISTANT_DAILY_LIMIT,
+  ASSISTANT_QUOTA_EXCEEDED_CODE,
+} from '../../common/config/assistant-quota.config';
 import { UserPublic, userSelect, UserCredentials } from './types';
 import { generateVerificationCode } from '../../common/utils/generate-verification-code';
 import { EmailService } from '../email/email.service';
@@ -279,6 +290,56 @@ export class UserService {
       await this.emailService.sendVerificationEmail(email, verificationToken);
     } catch (error) {
       mapPrismaError(error, 'Erro ao reenviar e-mail de verificação');
+    }
+  }
+
+  /**
+   * Cobra uma chamada paga ao LLM da cota do usuário. Lança 429 quando o teto
+   * do dia foi atingido.
+   */
+  async consumeAssistantQuota(userId: string): Promise<void> {
+    const now = new Date();
+
+    try {
+      await this.prisma.user.updateMany({
+        where: { id: userId, assistantUsageResetAt: { lte: now } },
+        data: {
+          assistantUsageCount: 0,
+          assistantUsageResetAt: nextAppMidnight(now),
+        },
+      });
+
+      //teste se o usage count é menor que o limite antes de incrementar. Se não for, lança P2025.
+      await this.prisma.user.update({
+        where: {
+          id: userId,
+          assistantUsageCount: { lt: ASSISTANT_DAILY_LIMIT },
+        },
+        data: { assistantUsageCount: { increment: 1 } },
+        select: { id: true },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        const exists = await this.prisma.user.findUnique({
+          where: { id: userId },
+          select: { id: true },
+        });
+
+        if (!exists) throw new NotFoundException('Usuário não encontrado');
+
+        throw new HttpException(
+          {
+            message:
+              'Limite diário do Strawby Assistant atingido. Sua cota volta amanhã.',
+            code: ASSISTANT_QUOTA_EXCEEDED_CODE,
+          },
+          HttpStatus.TOO_MANY_REQUESTS,
+        );
+      }
+      mapPrismaError(error, 'Erro ao consumir cota do assistente');
     }
   }
 

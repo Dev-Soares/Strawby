@@ -29,7 +29,7 @@ export default function TermsPage() {
   return (
     <>
       <PageSEO
-        title="Termos de Uso — Strawby"
+        title="Termos de Uso - Strawby"
         description="Leia os termos de uso do Strawby. Entenda suas responsabilidades e os nossos compromissos ao usar a plataforma de nutrição."
         path="/terms"
         noIndex={false}

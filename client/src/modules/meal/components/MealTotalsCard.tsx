@@ -2,7 +2,7 @@ import { ChartPie } from 'lucide-react'
 import type { MealTotals } from '../types/meal'
 import type { MealTypeConfig } from '@/shared/config/mealTypes'
 import { getMealAccent } from '@/shared/config/mealTypes'
-import { useThemeContext } from '@/shared/contexts/ThemeProvider'
+import { useThemeContext } from '@/shared/hooks/useThemeContext'
 import { NUTRIENTS } from '@/shared/config/macros'
 
 type Props = {

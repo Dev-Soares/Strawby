@@ -19,7 +19,9 @@ export default function PatientHomeContent() {
           <PatientHomeHeader name={user?.name ?? 'Bem-vindo'} />
         </div>
 
-        <DaySelector />
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-start gap-3 mb-8 sm:mb-10">
+          <DaySelector className="!mb-0" />
+        </div>
 
         {mealsError && (
           <div className="rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900 p-4 mb-6 mt-4 transition-colors duration-300">
@@ -34,10 +36,10 @@ export default function PatientHomeContent() {
           </div>
         ) : (
           <div className={`grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-start transition-opacity duration-200 ${mealsFetching ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
-            <div data-tutorial="meal-list">
+            <div data-tour="home-meals">
               <MealList meals={meals ?? []} />
             </div>
-            <div data-tutorial="daily-summary">
+            <div data-tour="home-summary">
               {summary ? <DailySummary data={summary} /> : <DailySummarySkeleton />}
             </div>
           </div>

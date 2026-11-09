@@ -37,7 +37,7 @@ export default function DailyScoreDashboard() {
   const monthly = buildMonthlyScoreData(scores, monthStart, daysInMonth, firstDayOffset)
 
   return (
-    <div data-tutorial="score-dashboard">
+    <div>
       <LayoutGroup id="score-view">
         <div className="flex gap-1 p-1 bg-neutral-100 dark:bg-neutral-800 rounded-xl w-fit mb-6 sm:mb-8 transition-colors duration-300">
           {views.map((view) => {
@@ -70,8 +70,12 @@ export default function DailyScoreDashboard() {
 
       {activeView === 'hoje' ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
-          <DailyScoreCard />
-          <PatientStreakCard />
+          <div data-tour="score-today">
+            <DailyScoreCard />
+          </div>
+          <div data-tour="score-streak">
+            <PatientStreakCard />
+          </div>
         </div>
       ) : (
         <div
