@@ -1,7 +1,16 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, ArrowRight, Frown } from 'lucide-react'
+import { ArrowRight, House } from 'lucide-react'
 import PageSEO from '@/shared/components/PageSEO'
+import StrawbyMascot from '@/shared/components/StrawbyMascot'
+
+const ease = [0.34, 1.05, 0.64, 1] as const
+
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.6, ease, delay },
+})
 
 export default function NotFoundPage() {
   return (
@@ -11,50 +20,56 @@ export default function NotFoundPage() {
         description="A página que você tentou acessar não existe."
         path="/404"
       />
-      <main className="min-h-screen bg-[radial-gradient(circle_at_top_right,rgba(244,63,94,0.12),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(255,255,255,0.9),transparent_35%)] text-neutral-900 transition-colors duration-300 dark:bg-[radial-gradient(circle_at_top_right,rgba(127,29,29,0.35),transparent_24%),linear-gradient(180deg,#09090b_0%,#09090b_100%)] dark:text-neutral-100 flex items-center justify-center px-4">
-        <div className="mx-auto w-full max-w-lg">
+      <main className="flex min-h-svh flex-col items-center justify-center bg-white px-6 py-16 transition-colors duration-300 dark:bg-neutral-950">
+        <div className="flex w-full max-w-lg flex-col items-center text-center">
+          {/* O mascote carrega o tom da página: decepção, não erro técnico. */}
           <motion.div
-            className="rounded-[2rem] border border-neutral-200 bg-white/90 px-7 py-10 shadow-[0_18px_50px_-34px_rgba(0,0,0,0.28)] backdrop-blur dark:border-neutral-800 dark:bg-neutral-900/90 text-center"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: [0.34, 1.05, 0.64, 1] }}
+            className="h-44 w-44 sm:h-52 sm:w-52"
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease }}
           >
-            <div className="flex justify-center mb-6">
-              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-300">
-                <Frown size={36} />
-              </span>
-            </div>
+            <StrawbyMascot
+              action="upset"
+              playback="once"
+              className="h-full w-full drop-shadow-[0_16px_28px_rgba(220,38,38,0.16)]"
+            />
+          </motion.div>
 
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-red-600 mb-3">
-              Erro 404
-            </p>
+          <motion.h1
+            className="mt-4 font-display text-[40px] font-black leading-[0.92] tracking-tighter text-neutral-950 transition-colors duration-300 sm:text-[54px] dark:text-neutral-50"
+            {...fadeUp(0.1)}
+          >
+            Essa página <span className="text-red-600">não existe.</span>
+          </motion.h1>
 
-            <h1 className="font-display text-4xl font-black tracking-[-0.04em] leading-[0.92] sm:text-5xl">
-              Página não
-              <span className="block text-red-600">encontrada.</span>
-            </h1>
+          <motion.p
+            className="mt-4 max-w-md text-base font-medium leading-relaxed text-neutral-600 sm:text-lg dark:text-neutral-400"
+            {...fadeUp(0.18)}
+          >
+            O endereço que você acessou foi movido ou nunca existiu. Nada se perdeu
+            no caminho: seus registros continuam lá.
+          </motion.p>
 
-            <p className="mt-5 text-[15px] leading-7 text-neutral-600 dark:text-neutral-400">
-              A URL que você tentou acessar não existe ou foi movida. Verifique o endereço ou volte para o início.
-            </p>
+          <motion.div
+            className="mt-8 flex w-full max-w-sm flex-col items-stretch gap-3 sm:max-w-none sm:flex-row sm:justify-center"
+            {...fadeUp(0.28)}
+          >
+            <Link
+              to="/app/home"
+              className="flex items-center justify-center gap-2 rounded-xl border-2 border-red-600 bg-red-600 px-8 py-4 text-[15px] font-semibold text-white transition-colors duration-150 hover:border-red-700 hover:bg-red-700 active:border-red-800 active:bg-red-800"
+            >
+              Voltar para o app
+              <ArrowRight size={17} />
+            </Link>
 
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-              <Link
-                to="/login"
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-neutral-200 bg-white px-5 py-3 text-sm font-medium text-neutral-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-red-200 hover:text-red-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-red-900/50 dark:hover:text-red-300"
-              >
-                <ArrowLeft size={16} />
-                Login
-              </Link>
-
-              <Link
-                to="/app/home"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-red-600 px-5 py-3 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-700"
-              >
-                Abrir app
-                <ArrowRight size={16} />
-              </Link>
-            </div>
+            <Link
+              to="/"
+              className="flex items-center justify-center gap-2 rounded-xl border-2 border-stone-200 bg-white px-8 py-4 text-[15px] font-semibold text-neutral-700 transition-colors duration-150 hover:border-stone-300 hover:bg-stone-50 hover:text-neutral-950 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-300 dark:hover:border-neutral-700 dark:hover:bg-neutral-900 dark:hover:text-neutral-50"
+            >
+              <House size={17} />
+              Ir para o início
+            </Link>
           </motion.div>
         </div>
       </main>

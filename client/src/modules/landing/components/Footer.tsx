@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { InstagramLogo } from '@phosphor-icons/react'
+import { useSmoothScrollTo } from '@/shared/hooks/useSmoothScrollTo'
 
 const productLinks = [
   { label: 'Conheça o Strawby', href: '#conheca' },
@@ -21,6 +22,8 @@ const socials = [
 ]
 
 export default function Footer() {
+  const scrollToAnchor = useSmoothScrollTo()
+
   return (
     <footer className="relative bg-red-600 text-white selection:bg-white selection:text-red-600 pt-6 sm:pt-10 pb-16">
       <div className="mx-auto max-w-6xl px-6 sm:px-8 lg:px-12">
@@ -63,6 +66,7 @@ export default function Footer() {
                 <li key={label}>
                   <a
                     href={href}
+                    onClick={(event) => scrollToAnchor(event, href)}
                     className="text-sm font-semibold text-white/90 hover:text-white hover:underline transition-colors duration-150"
                   >
                     {label}

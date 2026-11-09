@@ -56,7 +56,8 @@ const Hero = () => {
               className="text-neutral-700 text-[16px] sm:text-[20px] leading-relaxed max-w-105 mb-6 sm:mb-9 font-medium transition-colors duration-300"
               {...fadeUp(0.36)}
             >
-              Comeu, registrou, e a gente calcula. Simples assim.
+              Conte o que comeu por texto ou voz. O Strawby calcula as calorias,
+              acompanha seus nutrientes e mostra como foi o seu dia.
             </motion.p>
 
             <motion.div
