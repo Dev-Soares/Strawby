@@ -67,7 +67,7 @@ export class FoodService {
     }
   }
 
-  async search(query: string): Promise<FoodPublic[]> {
+  async search(query: string, limit = 20): Promise<FoodPublic[]> {
     const trimmed = query.trim();
     if (trimmed.length < 2) return [];
 
@@ -120,10 +120,10 @@ export class FoodService {
                  similarity(unaccent(name), unaccent(${trimmed})) DESC,
                  length(name) ASC,
                  name ASC
-        LIMIT 60
+        LIMIT ${limit * 3}
       `;
 
-      return rankByRelevance(results, trimmed).slice(0, 20);
+      return rankByRelevance(results, trimmed).slice(0, limit);
     } catch (error) {
       mapPrismaError(error, 'Erro ao buscar alimentos');
     }

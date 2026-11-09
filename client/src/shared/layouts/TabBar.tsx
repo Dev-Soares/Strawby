@@ -11,7 +11,7 @@ const patientTabs = [
 ]
 
 const nutritionistTabs = [
-  { label: 'Pacientes', href: '/app/home', icon: Users, tourId: undefined },
+  { label: 'Pacientes', href: '/app/home', icon: Users, tourId: 'nav-patients' },
   { label: 'Resultados', href: '/app/nutritionist/results', icon: ChartColumn, tourId: 'nav-reports' },
   { label: 'Perfil', href: '/app/profile', icon: CircleUser, tourId: 'nav-profile' },
 ]

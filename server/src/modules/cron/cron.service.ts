@@ -5,6 +5,7 @@ import { PatientService } from '../patient/patient.service';
 import { UserService } from '../user/user.service';
 import { appTimeWindow, yesterdayInAppTz } from '../../common/utils/date.util';
 import { NotificationService } from '../notification/send-notification/notification.service';
+import { NotificationTokenService } from '../notification/notification-token/notification-token.service';
 import { MealService } from '../meal/meal.service';
 
 @Injectable()
@@ -16,7 +17,8 @@ export class CronService {
     private readonly patientService: PatientService,
     private readonly userService: UserService,
     private readonly notificationService: NotificationService,
-    private readonly mealService: MealService
+    private readonly notificationTokenService: NotificationTokenService,
+    private readonly mealService: MealService,
   ) {}
 
   @Cron(CronExpression.EVERY_DAY_AT_2AM, { timeZone: 'America/Sao_Paulo' })
@@ -60,6 +62,18 @@ export class CronService {
     }
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_4AM, { timeZone: 'America/Sao_Paulo' })
+  async clearStaleNotificationTokens(): Promise<void> {
+    try {
+      const count = await this.notificationTokenService.removeStale();
+      if (count > 0) {
+        this.logger.log(`Tokens de notificação expirados removidos: ${count}`);
+      }
+    } catch (error) {
+      this.logger.error('clearStaleNotificationTokens falhou', error);
+    }
+  }
+
   @Cron(CronExpression.EVERY_DAY_AT_6PM, { timeZone: 'America/Sao_Paulo' })
   async notifyPatientsWithoutDailyMeal() {
     try {
@@ -73,7 +87,7 @@ export class CronService {
     } catch (error) {
       this.logger.error('notifyPatientsWithoutDailyMeal falhou', error);
     }
-  } 
+  }
 
   @Cron(CronExpression.EVERY_10_MINUTES, { timeZone: 'America/Sao_Paulo' })
   async notifyPatientsWithPlannedMeal() {

@@ -35,7 +35,10 @@ export class NotificationTokenController {
   @UseGuards(AuthGuard)
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Body() dto: DeleteNotificationTokenDto) {
-    return this.notificationTokenService.remove(dto.token);
+  remove(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: DeleteNotificationTokenDto,
+  ) {
+    return this.notificationTokenService.remove(req.user.sub, dto.token);
   }
 }

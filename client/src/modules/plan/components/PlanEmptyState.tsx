@@ -7,7 +7,7 @@ interface PlanEmptyStateProps {
 
 const BENEFITS = [
   { Icon: Flame, text: 'Meta calórica personalizada para seu corpo' },
-  { Icon: ChartColumn, text: 'Macros calculados por objetivo (perda ou ganho)' },
+  { Icon: ChartColumn, text: 'Nutrientes calculados por objetivo (perda ou ganho)' },
   { Icon: Zap, text: 'Baseado na fórmula Mifflin-St Jeor' },
 ]
 
@@ -55,11 +55,11 @@ export default function PlanEmptyState({ onGenerate }: PlanEmptyStateProps) {
       </div>
 
       <motion.button
-        data-tutorial="plan-cta"
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.42 }}
         onClick={onGenerate}
+        data-tour="plan-generate"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.97 }}
         className="flex items-center gap-2.5 bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-4 rounded-2xl transition-colors duration-200 cursor-pointer text-sm"

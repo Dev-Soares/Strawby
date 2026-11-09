@@ -1,19 +1,22 @@
 import Navbar from '@/modules/landing/components/Navbar';
 import Hero from '@/modules/landing/components/Hero';
-import Features from '@/modules/landing/components/Features';
-import FoodShowcase from '@/modules/landing/components/FoodShowcase';
+import ProductShowcaseSection from '@/modules/landing/components/ProductShowcaseSection';
+import HowToUseSection from '@/modules/landing/components/HowToUseSection';
+import DifferentialsSection from '@/modules/landing/components/DifferentialsSection';
 import CTA from '@/modules/landing/components/CTA';
-import DownloadSection from '@/modules/landing/components/DownloadSection';
 import Footer from '@/modules/landing/components/Footer';
+import { useLightThemeOnly } from '@/modules/landing/hooks/useLightThemeOnly';
 import PageSEO from '@/shared/components/PageSEO';
+
+const SITE_URL = (import.meta.env.VITE_SITE_URL ?? '').replace(/\/$/, '')
 
 const webAppSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: 'Strawby',
-  url: 'https://strawby.com',
+  url: SITE_URL,
   description:
-    'App de nutrição para acompanhar calorias, macros e refeições do dia a dia. Simples, visual e consistente.',
+    'App de nutrição para acompanhar calorias, nutrientes e refeições do dia a dia. Simples, visual e consistente.',
   applicationCategory: 'HealthApplication',
   operatingSystem: 'Web, Android, iOS',
   offers: {
@@ -34,31 +37,39 @@ const webAppSchema = {
   ],
 }
 
+// `sameAs` fica de fora enquanto não houver perfis oficiais — array vazio não
+// agrega nada ao schema e só ocupa espaço no payload.
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'Strawby',
-  url: 'https://strawby.com',
-  logo: 'https://strawby.com/logo.webp',
-  description: 'App de nutrição para acompanhar calorias, macros e refeições do dia a dia.',
-  sameAs: [],
+  url: SITE_URL,
+  logo: `${SITE_URL}/logo.webp`,
+  description: 'App de nutrição para acompanhar calorias, nutrientes e refeições do dia a dia.',
 }
 
 export default function LandingPage() {
+  useLightThemeOnly()
+
   return (
     <>
       <PageSEO
-        title="Strawby — Controle de Refeições e Nutrição Diária"
-        description="Strawby é o app de nutrição para acompanhar calorias, macros e refeições do dia a dia. Simples, visual e consistente. Grátis e funciona como PWA."
+        title="Strawby - Controle de Refeições e Nutrição Diária"
+        description="Strawby é o app de nutrição para acompanhar calorias, nutrientes e refeições do dia a dia. Simples, visual e consistente. Grátis e funciona como PWA."
         path="/"
         jsonLd={[webAppSchema, organizationSchema]}
       />
-      <main className="bg-white dark:bg-neutral-950 min-h-screen transition-colors duration-300">
+      <main className="min-h-screen bg-white transition-colors duration-300">
         <Navbar />
+        {/* S1: Hero */}
         <Hero />
-        <Features />
-        <FoodShowcase />
-        <DownloadSection />
+        {/* S2: Conheça o Strawby */}
+        <ProductShowcaseSection />
+        {/* S3: Como usar */}
+        <HowToUseSection />
+        {/* S4: Não é só sobre contar calorias */}
+        <DifferentialsSection />
+        {/* S5: CTA Final + Footer */}
         <CTA />
         <Footer />
       </main>

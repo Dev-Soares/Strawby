@@ -2,9 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
 import { useSignUp } from '../hooks/useSignUp'
-import { useGoogleSignIn } from '../hooks/useGoogleSignIn'
 import Spinner from '../../../shared/components/Spinner'
-import GoogleAuthButton from './GoogleAuthButton'
+import GoogleAuthSection from './GoogleAuthSection'
 
 export default function SignUpForm() {
   const [step, setStep] = useState(1)
@@ -19,8 +18,6 @@ export default function SignUpForm() {
     formState: { errors },
     isPending,
   } = useSignUp()
-
-  const googleSignIn = useGoogleSignIn()
 
   const handleStep1 = async () => {
     const valid = await trigger(['name', 'email'])
@@ -81,16 +78,7 @@ export default function SignUpForm() {
                   Continuar
                 </button>
 
-                <div className="flex items-center gap-3">
-                  <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
-                  <span className="text-[11px] font-semibold text-neutral-500 uppercase tracking-widest">ou</span>
-                  <div className="h-px flex-1 bg-neutral-200 dark:bg-neutral-700" />
-                </div>
-
-                <GoogleAuthButton
-                  label="Continuar com Google"
-                  onClick={googleSignIn.signIn}
-                />
+                <GoogleAuthSection label="Continuar com Google" />
 
                 <p className="text-[14px] text-neutral-500">
                   Já tem conta?{' '}

@@ -6,6 +6,7 @@ import ProfileAccountSection from '@/modules/profile/components/ProfileAccountSe
 import ProfileThemeSection from '@/modules/profile/components/ProfileThemeSection'
 import ProfileSupportSection from '@/modules/profile/components/ProfileSupportSection'
 import ProfileNotificationsSection from '@/modules/notifications/components/ProfileNotificationsSection'
+import ReplayTourSection from '@/modules/onboarding/components/ReplayTourSection'
 import ConfirmDeleteModal from '@/shared/components/ConfirmDeleteModal'
 import Spinner from '@/shared/components/Spinner'
 import { useAuth } from '@/modules/auth/hooks/useAuth'
@@ -19,15 +20,19 @@ export default function SettingsPage() {
     <AppLayout>
       <div className="px-4 sm:px-10 lg:px-16 xl:px-24 pt-10 pb-32 max-w-2xl mx-auto">
 
-        <h1 data-tutorial="settings-header" className="text-3xl sm:text-4xl font-extrabold text-neutral-900 dark:text-neutral-100 mb-8 transition-colors duration-300">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-neutral-900 dark:text-neutral-100 mb-8 transition-colors duration-300">
           Ajustes
         </h1>
 
         <ProfileAccountSection id={user?.id ?? ''} name={user?.name ?? '—'} email={user?.email ?? '—'} />
 
-        <ProfileThemeSection />
+        <div data-tour="settings-prefs">
+          <ProfileThemeSection />
 
-        <ProfileNotificationsSection />
+          <ProfileNotificationsSection />
+        </div>
+
+        <ReplayTourSection />
 
         <ProfileSupportSection />
 

@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useAuth } from '../../auth/hooks/useAuth'
 import { useGetMealsByDay } from '../../meal/hooks/useGetMealsByDay'
 import { useGetPlan } from '../../plan/hooks/useGetPlan'
-import { useDay } from '../../daily-summary/contexts/DayContext'
+import { useDay } from '../../daily-summary/hooks/useDay'
 import type { DailySummary } from '../../daily-summary/types/dailySummary'
 import { CALORIES, getMacro } from '@/shared/config/macros'
 

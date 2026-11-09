@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useGoogleCallback } from '@/modules/auth/hooks/useGoogleCallback'
 import Spinner from '@/shared/components/Spinner'
+import PageTitle from '@/shared/components/PageTitle'
 
 export default function GoogleCallbackPage() {
   const [params] = useSearchParams()
@@ -23,8 +24,11 @@ export default function GoogleCallbackPage() {
   }, [params, mutate, navigate])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-neutral-950">
-      <Spinner size={32} className="border-neutral-300 border-t-red-600" />
-    </div>
+    <>
+      <PageTitle title="Entrando" />
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-neutral-950">
+        <Spinner size={32} className="border-neutral-300 border-t-red-600" />
+      </div>
+    </>
   )
 }

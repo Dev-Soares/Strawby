@@ -12,7 +12,5 @@ export const parseServingSize = (
   servingSize: string | null | undefined,
 ): number => {
   const parsed = servingSize ? Number(servingSize) : NaN;
-  return Number.isFinite(parsed) && parsed > 0
-    ? parsed
-    : DEFAULT_SERVING_SIZE;
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_SERVING_SIZE;
 };

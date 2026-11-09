@@ -15,34 +15,41 @@ import { planRoutes } from './routes/planRoutes'
 import { scoreRoutes } from './routes/scoreRoutes'
 import { profileRoutes } from './routes/profileRoutes'
 import { nutritionistRoutes } from './routes/nutritionistRoutes'
+import { assistantRoutes } from './routes/assistantRoutes'
+import AssistantSessionProvider from './modules/strawby-assistant/contexts/AssistantSessionProvider'
+import TourProvider from './modules/onboarding/contexts/TourProvider'
 
 export default function App() {
   return (
-    <>
-      <ScrollToTop />
-      <UnauthorizedListener />
-      <NotificationTokenRefresher />
-      <PwaAutoUpdate />
-      <Suspense
-        fallback={
-          <div className="flex min-h-screen items-center justify-center bg-white dark:bg-neutral-950">
-            <Spinner size={32} className="border-red-600/30 border-t-red-600" />
-          </div>
-        }
-      >
-        <Routes>
-          {publicRoutes}
-          {authRoutes}
-          {homeRoutes}
-          {mealRoutes}
-          {foodRoutes}
-          {recipeRoutes}
-          {planRoutes}
-          {scoreRoutes}
-          {profileRoutes}
-          {nutritionistRoutes}
-        </Routes>
-      </Suspense>
-    </>
+    <AssistantSessionProvider>
+      {/* acima das rotas: o tutorial navega entre telas e o estado tem que sobreviver */}
+      <TourProvider>
+        <ScrollToTop />
+        <UnauthorizedListener />
+        <NotificationTokenRefresher />
+        <PwaAutoUpdate />
+        <Suspense
+          fallback={
+            <div className="flex min-h-screen items-center justify-center bg-white dark:bg-neutral-950">
+              <Spinner size={32} className="border-red-600/30 border-t-red-600" />
+            </div>
+          }
+        >
+          <Routes>
+            {publicRoutes}
+            {authRoutes}
+            {homeRoutes}
+            {mealRoutes}
+            {foodRoutes}
+            {recipeRoutes}
+            {planRoutes}
+            {scoreRoutes}
+            {profileRoutes}
+            {nutritionistRoutes}
+            {assistantRoutes}
+          </Routes>
+        </Suspense>
+      </TourProvider>
+    </AssistantSessionProvider>
   )
 }

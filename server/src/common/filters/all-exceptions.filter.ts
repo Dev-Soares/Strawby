@@ -39,6 +39,22 @@ function redact(value: unknown, depth = 0): unknown {
   return out;
 }
 
+/**
+ * Código de domínio opcional no corpo do erro. Serve pra desambiguar status
+ * que a API reusa em situações diferentes — ex.: 429 do throttle por IP vs 429
+ * de cota diária esgotada. Só o campo `code` passa; o resto do corpo continua
+ * achatado em `{ statusCode, message }`.
+ */
+function extractCode(exception: unknown): string | undefined {
+  if (!(exception instanceof HttpException)) return undefined;
+
+  const response = exception.getResponse();
+  if (typeof response !== 'object' || response === null) return undefined;
+
+  const { code } = response as { code?: unknown };
+  return typeof code === 'string' ? code : undefined;
+}
+
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
   constructor(private readonly logger: PinoLogger) {}
@@ -54,6 +70,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
     const isServerError = status >= 500;
+    const code = extractCode(exception);
 
     const logPayload: Record<string, unknown> = {
       method: req.method,
@@ -105,6 +122,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     res.status(status).json({
       statusCode: status,
       message,
+      ...(code && { code }),
     });
   }
 }

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { createPortal } from 'react-dom'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Pencil, Save, X } from 'lucide-react'
@@ -21,7 +21,7 @@ interface Props {
 const FALLBACK_TYPE = 'breakfast'
 
 export default function EditMealTimeModal({ isOpen, currentMealType, currentTime, currentObservations, isPending, onClose, onSave }: Props) {
-  const { register, handleSubmit, watch, setValue, formState: { errors }, reset } = useForm<UpdateMealData>({
+  const { register, handleSubmit, control, setValue, formState: { errors }, reset } = useForm<UpdateMealData>({
     resolver: zodResolver(updateMealSchema),
     defaultValues: {
       mealType: (MEAL_TYPES as readonly string[]).includes(currentMealType ?? '')
@@ -32,7 +32,7 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
     },
   })
 
-  const selectedType = watch('mealType')
+  const selectedType = useWatch({ control, name: 'mealType' })
 
   useEffect(() => {
     if (isOpen) {
@@ -44,7 +44,7 @@ export default function EditMealTimeModal({ isOpen, currentMealType, currentTime
         observations: currentObservations ?? '',
       })
     }
-  }, [isOpen, currentMealType, currentTime, currentObservations])
+  }, [isOpen, currentMealType, currentTime, currentObservations, reset])
 
   const onSubmit = handleSubmit((data) => onSave(data))
 

@@ -2,7 +2,7 @@ import { Copy as CopySimple, Save, X } from 'lucide-react'
 import { MEAL_TYPE_LIST } from '@/shared/config/mealTypes'
 import { useCreateMealForm } from '../hooks/useCreateMealForm'
 import PlanMealPicker from './PlanMealPicker'
-import { useThemeContext } from '@/shared/contexts/ThemeProvider'
+import { useThemeContext } from '@/shared/hooks/useThemeContext'
 
 export default function CreateMealForm() {
   const {

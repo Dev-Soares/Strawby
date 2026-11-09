@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowRight, Carrot, CircleUser, House, Settings, Users } from 'lucide-react'
+import { ArrowRight, Carrot, CircleUser, House, Settings, Sparkles, Users } from 'lucide-react'
 import type { LucideIcon as Icon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
@@ -14,6 +14,7 @@ const blobPath = 'M 24 0 C 8 8, 0 22, 2 38 C 4 54, 22 58, 20 70 C 16 82, 6 86, 1
 
 const patientNavItems: { label: string; href: string; icon: Icon }[] = [
   { label: 'Início', href: '/app/home', icon: House },
+  { label: 'Assistente', href: '/app/assistant', icon: Sparkles },
   { label: 'Alimentos', href: '/app/foods', icon: Carrot },
   { label: 'Ajustes', href: '/app/settings', icon: Settings },
 ]

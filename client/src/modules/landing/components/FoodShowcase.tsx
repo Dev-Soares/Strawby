@@ -1,42 +1,8 @@
-import { Beer, Cake, Carrot, Wine as Champagne, Citrus, Coffee, Cookie, CookingPot, Croissant, CupSoda, Egg, Fish, Hamburger, IceCreamCone, Leaf, Martini, Milk, Nut, Pizza, Salad, Shrimp, Soup, Vegan, Wheat, Wine } from 'lucide-react'
-import type { LucideIcon as Icon } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { foodShowcaseItems } from '../config/foodShowcaseItems'
 
 const ease = [0.34, 1.05, 0.64, 1] as const
 const easeIcons = [0.34, 1.2, 0.64, 1] as const
-
-interface FoodItem {
-  icon: Icon
-  color: string
-}
-
-const foods: FoodItem[] = [
-  { icon: Citrus,  color: 'text-orange-500'  },
-  { icon: Salad,      color: 'text-lime-500'    },
-  { icon: Carrot,       color: 'text-orange-500'  },
-  { icon: Fish,         color: 'text-cyan-500'    },
-  { icon: Egg,          color: 'text-yellow-400'  },
-  { icon: Pizza,        color: 'text-red-500'     },
-  { icon: Coffee,       color: 'text-amber-800'   },
-  { icon: CupSoda,       color: 'text-green-600'   },
-  { icon: Hamburger,    color: 'text-yellow-600'  },
-  { icon: Leaf,         color: 'text-green-500'   },
-  { icon: Wheat,       color: 'text-yellow-500'  },
-  { icon: Wine,         color: 'text-rose-600'    },
-  { icon: Champagne,    color: 'text-yellow-400'  },
-  { icon: Martini,      color: 'text-indigo-500'  },
-  { icon: Beer,    color: 'text-amber-400'   },
-  { icon: Shrimp,       color: 'text-pink-500'    },
-  { icon: Croissant,        color: 'text-amber-500'   },
-  { icon: Cookie,       color: 'text-orange-600'  },
-  { icon: IceCreamCone,     color: 'text-fuchsia-500' },
-  { icon: CookingPot,   color: 'text-teal-600'    },
-  { icon: Soup,    color: 'text-cyan-600'    },
-  { icon: Vegan,       color: 'text-red-600'     },
-  { icon: Cake,         color: 'text-pink-500'    },
-  { icon: Milk,       color: 'text-yellow-500'  },
-  { icon: Nut,          color: 'text-amber-600'   },
-]
 
 const iconVariants = {
   hidden: { opacity: 0, scale: 0.5 },
@@ -54,7 +20,7 @@ const containerVariants = {
 
 export default function FoodShowcase() {
   return (
-    <section id="funcionalidades" className="relative overflow-hidden flex items-center pt-40 lg:pt-56 pb-28 lg:pb-32 bg-white dark:bg-neutral-950 transition-colors duration-300">
+    <section id="funcionalidades" className="relative overflow-hidden flex items-center pt-40 lg:pt-56 pb-28 lg:pb-32 bg-white transition-colors duration-300">
 
       <div className="relative max-w-6xl mx-auto px-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-16 mb-24">
@@ -63,7 +29,7 @@ export default function FoodShowcase() {
           <div className="shrink-0 max-w-md">
 
             <motion.h2
-              className="text-neutral-950 dark:text-neutral-100 font-black text-[44px] sm:text-[52px] lg:text-[60px] leading-[1.02] tracking-tight transition-colors duration-300"
+              className="text-neutral-950 font-black text-[44px] sm:text-[52px] lg:text-[60px] leading-[1.02] tracking-tight transition-colors duration-300"
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
@@ -77,7 +43,7 @@ export default function FoodShowcase() {
             </motion.h2>
 
             <motion.p
-              className="text-neutral-600 dark:text-neutral-400 text-[17px] leading-relaxed mt-6 transition-colors duration-300"
+              className="text-neutral-600 text-[17px] leading-relaxed mt-6 transition-colors duration-300"
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
@@ -87,7 +53,7 @@ export default function FoodShowcase() {
             </motion.p>
 
             <motion.div
-              className="flex items-center gap-6 mt-10 pt-8 border-t border-neutral-200 dark:border-neutral-800 transition-colors duration-300"
+              className="flex items-center gap-6 mt-10 pt-8 border-t border-neutral-200 transition-colors duration-300"
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.4 }}
@@ -97,16 +63,16 @@ export default function FoodShowcase() {
                 <p className="font-display text-red-600 font-black text-[38px] leading-none tracking-tight">
                   5K<span className="text-red-600 ml-1">+</span>
                 </p>
-                <p className="text-neutral-500 dark:text-neutral-400 text-[13px] font-semibold uppercase tracking-wider mt-2 transition-colors duration-300">
+                <p className="text-neutral-500 text-[13px] font-semibold uppercase tracking-wider mt-2 transition-colors duration-300">
                   alimentos
                 </p>
               </div>
-              <div className="w-px h-14 bg-linear-to-b from-transparent via-neutral-300 dark:via-neutral-700 to-transparent transition-colors duration-300" />
+              <div className="w-px h-14 bg-linear-to-b from-transparent via-neutral-300 to-transparent transition-colors duration-300" />
               <div>
                 <p className="font-display text-red-600 font-black text-[38px] leading-none tracking-tight">
                   100<span className="text-red-600">%</span>
                 </p>
-                <p className="text-neutral-500 dark:text-neutral-400 text-[13px] font-semibold uppercase tracking-wider mt-2 transition-colors duration-300">
+                <p className="text-neutral-500 text-[13px] font-semibold uppercase tracking-wider mt-2 transition-colors duration-300">
                   gratuito
                 </p>
               </div>
@@ -121,7 +87,7 @@ export default function FoodShowcase() {
             whileInView="show"
             viewport={{ once: true, amount: 0.2 }}
           >
-            {foods.map((food, i) => (
+            {foodShowcaseItems.map((food, i) => (
               <motion.div key={i} variants={iconVariants}>
                 <food.icon
                   className={`${food.color} cursor-default select-none transition-[scale] duration-200 hover:scale-125`}

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "assistantUsageCount" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "assistantUsageResetAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

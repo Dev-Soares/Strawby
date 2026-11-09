@@ -25,3 +25,6 @@ dist-ssr
 
 # Env
 .env
+
+# sitemap.xml e as rotas prerenderizadas sao geradas no build (scripts/)
+public/sitemap.xml

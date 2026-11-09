@@ -8,5 +8,6 @@ import { FoodService } from './food.service';
   imports: [DatabaseModule, AuthGuardModule],
   controllers: [FoodController],
   providers: [FoodService],
+  exports: [FoodService],
 })
 export class FoodModule {}

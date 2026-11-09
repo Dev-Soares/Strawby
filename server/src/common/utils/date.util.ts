@@ -85,14 +85,37 @@ export function appTimeWindow(minutes: number): {
   startTime: string;
   endTime: string;
 } {
-  const now = new Date();
-  const startTime = appTimeHHmm(now);
-  const end = new Date(now.getTime() + minutes * 60 * 1000);
+  const step = minutes * 60 * 1000;
+  // Arredonda pro múltiplo de `minutes` mais próximo em vez de usar o relógio
+  // cru: o cron pode disparar alguns ms adiantado ou atrasado e o 'HH:MM'
+  // truncado geraria uma janela deslocada, sobreposta à anterior — refeição
+  // notificada duas vezes. Os fusos do app são offsets inteiros de hora, então
+  // o múltiplo no epoch coincide com o múltiplo no horário local.
+  const start = new Date(Math.round(Date.now() / step) * step);
+  const startTime = appTimeHHmm(start);
+  const end = new Date(start.getTime() + step);
   const endTime = appTimeHHmm(end);
   return {
     startTime,
     endTime: endTime <= startTime ? '24:00' : endTime,
   };
+}
+
+/**
+ * Instante (UTC) da próxima meia-noite no fuso de São Paulo.
+ *
+ * USO: fim da janela de cota diária. Meia-noite fixa em vez de 24h rolantes
+ * porque o usuário precisa saber quando a cota volta ("amanhã"), e o front
+ * consegue montar contagem regressiva a partir disso.
+ *
+ * Ex.: 2026-11-09 20:00 local -> 2026-11-10T03:00:00Z
+ */
+export function nextAppMidnight(from: Date = new Date()): Date {
+  const todayStr = from.toLocaleDateString('en-CA', { timeZone: APP_TIMEZONE });
+  const [y, m, d] = todayStr.split('-').map(Number);
+  const tomorrowUtcMidnight = Date.UTC(y, m - 1, d) + 86_400_000;
+  // local midnight = utc midnight - offset (offset é negativo => soma 3h)
+  return new Date(tomorrowUtcMidnight - APP_TZ_OFFSET_HOURS * 60 * 60 * 1000);
 }
 
 export function yesterdayInAppTz(): string {

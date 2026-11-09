@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 interface StandaloneRedirectProps {
   children: React.ReactNode
@@ -14,11 +14,7 @@ function checkIsStandalone(): boolean {
 }
 
 export default function StandaloneRedirect({ children }: StandaloneRedirectProps) {
-  const [isStandalone, setIsStandalone] = useState(false)
-
-  useEffect(() => {
-    setIsStandalone(checkIsStandalone())
-  }, [])
+  const [isStandalone] = useState(() => checkIsStandalone())
 
   if (isStandalone) {
     return <Navigate to="/app/home" replace />

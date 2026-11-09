@@ -1,5 +1,8 @@
 # Strawby — app de nutrição para acompanhar calorias, macros e refeições (pt-BR)
-# Descrição completa para IAs: https://strawby.com/llms.txt
+# Descrição completa para IAs: /llms.txt
+#
+# A linha "Sitemap:" não fica aqui: ela carrega o domínio e é acrescentada no build
+# por scripts/generate-sitemap.mjs, a partir de VITE_SITE_URL.
 
 User-agent: *
 Allow: /
@@ -69,5 +72,3 @@ User-agent: CCBot
 Allow: /
 Allow: /llms.txt
 Disallow: /app/
-
-Sitemap: https://strawby.com/sitemap.xml
