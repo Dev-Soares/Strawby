@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import StrawbyMascot from '@/shared/components/StrawbyMascot'
 import { preloadMascotActions } from '@/shared/config/mascotActions'
-import { foodShowcaseItems } from './FoodShowcase'
+import { foodShowcaseItems } from '../config/foodShowcaseItems'
 
 const FireAnimation = lazy(() => import('../../patient/components/FireAnimation'))
 

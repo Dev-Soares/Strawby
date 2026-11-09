@@ -283,7 +283,7 @@ Full schema: [`prisma/schema.prisma`](server/prisma/schema.prisma)
 ### Prerequisites
 
 - **Node.js ≥ 20** and **pnpm**
-- **Docker Desktop** (recommended — runs Postgres + API) *or* a local/cloud PostgreSQL
+- **Docker Desktop** (recommended — runs the Postgres container) *or* a local/cloud PostgreSQL
 
 ### 1. Install
 
@@ -300,29 +300,34 @@ cp server/.env.example server/.env   # then fill JWT_SECRET etc. (see below)
 cp client/.env.example client/.env   # then fill VITE_API_URL / VITE_SITE_URL
 ```
 
-### 3a. Run with Docker (recommended)
+### 3. Start PostgreSQL
 
-`docker-compose.yml` brings up **PostgreSQL + API** together, with a healthcheck so the API only boots once Postgres is ready.
-
-```bash
-docker compose up -d        # Postgres + API in the background
-docker compose logs -f      # follow logs
-docker compose down         # stop everything
-```
-
-The frontend is **not** containerized — run it separately:
+`docker-compose.yml` runs **PostgreSQL only** (database `strawby`, host port **5440**), with a healthcheck:
 
 ```bash
-pnpm --filter client dev
+pnpm docker:up              # or: docker compose up -d
+pnpm docker:logs            # follow logs
+pnpm docker:down            # stop
 ```
 
-### 3b. Run locally (no Docker)
+Match `server/.env` to it:
+
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5440/strawby"
+DIRECT_URL="postgresql://postgres:postgres@localhost:5440/strawby"
+```
+
+Already have Postgres elsewhere? Skip the container and point `DATABASE_URL` at it.
+
+### 4. Run the app
+
+Server and client run on the host (neither is containerized):
 
 ```bash
 pnpm dev                          # server + client in parallel
 # or individually:
-pnpm --filter server start:dev
-pnpm --filter client dev
+pnpm --filter ./server start:dev
+pnpm --filter ./client dev
 ```
 
 | Service | URL |
@@ -352,9 +357,9 @@ Nutritionist connection code: **`ANALIMA`**
 NODE_ENV=development
 PORT=3000
 
-# PostgreSQL — docker compose default below
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/appdb"
-DIRECT_URL="postgresql://postgres:postgres@localhost:5432/appdb"
+# PostgreSQL — matches the docker compose service (db strawby, host port 5440)
+DATABASE_URL="postgresql://postgres:postgres@localhost:5440/strawby"
+DIRECT_URL="postgresql://postgres:postgres@localhost:5440/strawby"
 
 # Frontend origin allowed by CORS (comma-separate for multiple)
 CORS_ORIGIN="http://localhost:5173"
@@ -708,8 +713,7 @@ Strawby/
 │   │       ├── pdf/              # headless-Chromium rendering
 │   │       ├── database/         # PrismaService
 │   │       └── health/
-│   ├── prisma/                   # schema, migrations, seed, food import/audit scripts
-│   └── Dockerfile
+│   └── prisma/                   # schema, migrations, seed, food import/audit scripts
 │
 ├── client/                       # React 19 PWA + prerendered landing
 │   ├── src/
@@ -728,7 +732,8 @@ Strawby/
 │
 ├── .claude/rules/                # documented architecture rules (server + client)
 ├── docs/                         # mascot prompt notes
-├── docker-compose.yml            # Postgres + API
+├── docker-compose.yml            # PostgreSQL (dev)
+├── vercel.json                   # client deploy (build + SPA rewrites)
 ├── pnpm-workspace.yaml
 └── package.json                  # workspace root
 ```
