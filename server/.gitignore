@@ -45,3 +45,8 @@ lerna-debug.log*
 
 # Large regenerable data dumps (OFF full export — baixado sob demanda)
 /prisma/data/off-products.csv.gz
+
+# Snapshots da tabela Food gerados por `backup:foods`. ~2 MB cada, são dados de
+# produção e regeneráveis. Ficam em disco como caminho de rollback de
+# `fix:foods` / `restore:foods`, mas não entram no repo.
+/prisma/backups

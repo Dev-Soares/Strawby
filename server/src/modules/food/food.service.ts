@@ -99,14 +99,29 @@ export class FoodService {
       ),
     ];
 
+    // Cobertura: quantas palavras da query aparecem como palavra inteira no
+    // nome. Espelha wordCoverage() de search.utils.
+    const coverage = Prisma.join(
+      words.map(
+        (w) =>
+          Prisma.sql`(CASE WHEN ${nameNormalized} ~ ${`(^| )${w}( |$)`} THEN 1 ELSE 0 END)`,
+      ),
+      ' + ',
+    );
+
     try {
       // A ordenação SQL precisa espelhar a hierarquia de rankByRelevance, não
       // só filtrar: o LIMIT corta antes do ranking em TS rodar, então um item
       // relevante que fique fora da janela nunca é recuperado depois.
       //
+      // COBERTURA ANTES DE PRIORITY, MATCH EXATO DEPOIS — ver a justificativa
+      // completa em rankByRelevance (search.utils.ts). Resumo: priority em 1º
+      // fazia o LIMIT cortar "Leite condensado" (735) numa janela cheia de
+      // priority alta; match exato em 1º fazia "arroz" devolver o rótulo
+      // "Arroz" cru (374 kcal) em vez de "Arroz tipo 1 cozido" (128 kcal).
+      //
       // ts_rank NÃO entra aqui: em nome de alimento o termo aparece uma única
-      // vez, então o valor é constante (~0.0608) e o critério nunca desempata —
-      // como primeiro item do ORDER BY ele só mascarava priority.
+      // vez, então o valor é constante (~0.0608) e o critério nunca desempata.
       const results = await this.prisma.$queryRaw<FoodPublic[]>`
         SELECT id, name, source::text AS source, priority, calories, protein, carbs, fat, fiber, sodium
         FROM "Food"
@@ -114,7 +129,8 @@ export class FoodService {
           filters.map((f) => Prisma.sql`(${f})`),
           ' OR ',
         )}
-        ORDER BY priority DESC,
+        ORDER BY (${coverage}) DESC,
+                 priority DESC,
                  (${nameNormalized} = ${normalized}) DESC,
                  (${nameNormalized} LIKE ${normalized} || '%') DESC,
                  similarity(unaccent(name), unaccent(${trimmed})) DESC,
